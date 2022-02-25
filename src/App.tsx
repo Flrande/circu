@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react"
 import { createEditor, Descendant } from "slate"
 import { Editable, RenderElementProps, Slate, withReact } from "slate-react"
+import { doc, docContainer } from "./App.css"
 import Leaf from "./slate/components/Leaf"
 import ParagraphElement from "./slate/components/ParagraphElement"
 import { toggleMark } from "./slate/utils"
@@ -28,28 +29,32 @@ const App: React.FC = () => {
   const renderLeaf = useCallback((props) => <Leaf {...props}></Leaf>, [])
 
   return (
-    <Slate editor={editor} value={value} onChange={(newValue) => setValue(newValue)}>
-      <Editable
-        renderElement={renderElement}
-        renderLeaf={renderLeaf}
-        onKeyDown={(event) => {
-          if (!event.altKey) return
+    <div className={docContainer}>
+      <div className={doc}>
+        <Slate editor={editor} value={value} onChange={(newValue) => setValue(newValue)}>
+          <Editable
+            renderElement={renderElement}
+            renderLeaf={renderLeaf}
+            onKeyDown={(event) => {
+              if (!event.altKey) return
 
-          switch (event.key) {
-            case "q":
-            case "Q":
-              event.preventDefault()
-              toggleMark(editor, "code")
-              break
-            case "w":
-            case "W":
-              event.preventDefault()
-              toggleMark(editor, "bold")
-              break
-          }
-        }}
-      />
-    </Slate>
+              switch (event.key) {
+                case "q":
+                case "Q":
+                  event.preventDefault()
+                  toggleMark(editor, "code")
+                  break
+                case "w":
+                case "W":
+                  event.preventDefault()
+                  toggleMark(editor, "bold")
+                  break
+              }
+            }}
+          />
+        </Slate>
+      </div>
+    </div>
   )
 }
 
