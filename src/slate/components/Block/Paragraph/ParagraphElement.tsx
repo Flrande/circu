@@ -3,7 +3,16 @@ export interface ParagraphElementProps {
 }
 
 const ParagraphElement: React.FC<ParagraphElementProps> = ({ attributes, children }) => {
-  return <p {...attributes}>{children}</p>
+  return (
+    <div
+      {...attributes}
+      style={{
+        margin: "8px 0",
+      }}
+    >
+      {children}
+    </div>
+  )
 }
 
 export default ParagraphElement

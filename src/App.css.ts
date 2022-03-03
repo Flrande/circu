@@ -10,8 +10,11 @@ export const docContainer = style({
 
 export const doc = style({
   width: "790px",
-  fontFamily:
-    "LarkHackSafariFont,LarkEmojiFont,LarkChineseQuote,-apple-system,BlinkMacSystemFont,Helvetica Neue,Arial,Segoe UI,PingFang SC,Microsoft Yahei,Hiragino Sans GB,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji!important",
+  fontFamily: "Source Code Pro,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Microsoft Yahei;",
   color: "#ebebeb",
+  fontSize: "16px",
+  fontWeight: "400",
   padding: "16px",
+  letterSpacing: ".02em",
+  lineHeight: "1.6",
 })

@@ -16,7 +16,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "importsNotUsedAsValues": "error"
+    "importsNotUsedAsValues": "error",
+    "strictFunctionTypes": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
