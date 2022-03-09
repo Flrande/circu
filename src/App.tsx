@@ -2,6 +2,7 @@ import { useState } from "react"
 import { createEditor, Descendant } from "slate"
 import { Slate, withReact } from "slate-react"
 import { doc, docContainer } from "./App.css"
+import ToolBar from "./slate/components/ToolBar/ToolBar"
 import { withInlines } from "./slate/plugins/withInlines"
 import SlateEditable from "./slate/SlateEditable"
 
@@ -23,6 +24,7 @@ const App: React.FC = () => {
       <div className={doc}>
         <Slate editor={editor} value={value} onChange={(newValue) => setValue(newValue)}>
           <SlateEditable></SlateEditable>
+          <ToolBar></ToolBar>
         </Slate>
       </div>
     </div>

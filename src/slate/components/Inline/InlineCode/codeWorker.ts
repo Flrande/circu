@@ -38,8 +38,7 @@ export const untoggleInlineCode = (editor: Editor) => {
     match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "inlineCode",
   })
 
-  // 用于 unwrap 后焦点在 code element 外
-  const unhangSelectRef = Editor.rangeRef(
+  const untoggleRangeRef = Editor.rangeRef(
     editor,
     Editor.unhangRange(editor, {
       anchor: selectStartRef.current!,
@@ -48,17 +47,13 @@ export const untoggleInlineCode = (editor: Editor) => {
   )
 
   Transforms.unwrapNodes(editor, {
-    at: unhangSelectRef.current!,
+    at: untoggleRangeRef.current!,
     match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "inlineCode",
   })
 
-  // 使 unwrap 后焦点在 code element 外
-  Transforms.select(editor, {
-    anchor: unhangSelectRef.current!.focus,
-    focus: unhangSelectRef.current!.focus,
-  })
+  Transforms.select(editor, Editor.unhangRange(editor, untoggleRangeRef.current!))
 
-  unhangSelectRef.unref()
+  untoggleRangeRef.unref()
   selectStartRef.unref()
   selectEndRef.unref()
 }
@@ -79,12 +74,22 @@ export const toggleInlineCode = (editor: Editor) => {
     return
   }
 
+  const [selectStart, selectEnd] = Editor.edges(editor, editor.selection)
+  const untoggleRangeRef = Editor.rangeRef(
+    editor,
+    Editor.unhangRange(editor, {
+      anchor: selectStart,
+      focus: selectEnd,
+    })
+  )
+
   const newElement: InlineCodeElement = {
     type: "inlineCode",
     children: [],
   }
   Transforms.wrapNodes(editor, newElement, { split: true })
 
-  Transforms.collapse(editor, { edge: "end" })
-  Transforms.move(editor, { unit: "offset" })
+  // 恢复 selection, 注意需要 unhangRange
+  Transforms.select(editor, Editor.unhangRange(editor, untoggleRangeRef.current!))
+  untoggleRangeRef.unref()
 }

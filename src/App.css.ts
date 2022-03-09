@@ -1,8 +1,6 @@
 import { style } from "@vanilla-extract/css"
 
 export const docContainer = style({
-  height: "100vh",
-  width: "100vw",
   display: "flex",
   justifyContent: "center",
   backgroundColor: "#1a1a1a",
