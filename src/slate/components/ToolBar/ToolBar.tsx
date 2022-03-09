@@ -61,10 +61,8 @@ const ToolBarItem: React.FC<{
 }
 
 const ToolBar: React.FC = () => {
-  const editor = useSlate()
   const { boldHandler, inlineCodeHandler } = useToolBarHandlers()
   const [isEditorMouseUp] = useAtom(isEditorMouseUpAtom)
-  // const toolBarStyle = useRef<React.CSSProperties>()
 
   const nativeSelection = window.getSelection()
   const isToolBarActive = !!(isEditorMouseUp && nativeSelection && !nativeSelection.isCollapsed)
