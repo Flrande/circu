@@ -1,7 +1,7 @@
 import { useAtom } from "jotai"
 import type React from "react"
 import { ReactEditor, useSlate } from "slate-react"
-import { isEditorMouseUpAtom } from "../../state/editorMouse"
+import { isMouseUpAtom } from "../../state/mouse"
 import { toggleInlineCode } from "../Inline/InlineCode/codeWorker"
 import { toggleMark } from "../Text/TextWorker"
 import type { IconTypes } from "./icons/types"
@@ -62,10 +62,10 @@ const ToolBarItem: React.FC<{
 
 const ToolBar: React.FC = () => {
   const { boldHandler, inlineCodeHandler } = useToolBarHandlers()
-  const [isEditorMouseUp] = useAtom(isEditorMouseUpAtom)
+  const [isMouseUp] = useAtom(isMouseUpAtom)
 
   const nativeSelection = window.getSelection()
-  const isToolBarActive = !!(isEditorMouseUp && nativeSelection && !nativeSelection.isCollapsed)
+  const isToolBarActive = !!(isMouseUp && nativeSelection && !nativeSelection.isCollapsed)
 
   if (isToolBarActive) {
     const selectedRange = nativeSelection.getRangeAt(0)
