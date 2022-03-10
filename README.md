@@ -1,3 +1,4 @@
 # A Text Editor
-* Based on Slate.js
-* Imitating feishu docs
+
+- Based on Slate.js
+- Imitating feishu docs
