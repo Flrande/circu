@@ -2,12 +2,14 @@ import { useAtom } from "jotai"
 import type React from "react"
 import { ReactEditor, useSlate } from "slate-react"
 import { isMouseUpAtom } from "../../state/mouse"
-import { toggleInlineCode } from "../Inline/InlineCode/codeWorker"
-import { toggleMark } from "../Text/TextWorker"
+import { toggleMark } from "../Nodes/Text/TextWorker"
 import type { IconTypes } from "./icons/types"
 import BoldIcon from "./icons/BoldIcon"
 import InlineCodeIcon from "./icons/InlineCodeIcon"
 import { toolBar, toolBarContainer } from "./ToolBar.css"
+import { toggleInlineCode } from "../Nodes/Inline/InlineCode/codeWorker"
+import { toggleBlockCode } from "../Nodes/Block/BlockCode/blockCodeWorker"
+import BlockCodeIcon from "./icons/BlockCodeIcon"
 
 const useToolBarHandlers = () => {
   const editor = useSlate()
@@ -28,9 +30,23 @@ const useToolBarHandlers = () => {
     }
   }
 
+  const blockCodeHandler = (event: React.MouseEvent) => {
+    event.preventDefault()
+    event.stopPropagation()
+    if (editor.selection) {
+      toggleBlockCode(editor)
+      const event = new MouseEvent("mousedown", {
+        bubbles: true,
+        cancelable: true,
+      })
+      window.getSelection()?.anchorNode?.parentElement?.dispatchEvent(event)
+    }
+  }
+
   return {
     boldHandler,
     inlineCodeHandler,
+    blockCodeHandler,
   }
 }
 
@@ -61,7 +77,7 @@ const ToolBarItem: React.FC<{
 }
 
 const ToolBar: React.FC = () => {
-  const { boldHandler, inlineCodeHandler } = useToolBarHandlers()
+  const { boldHandler, inlineCodeHandler, blockCodeHandler } = useToolBarHandlers()
   const [isMouseUp] = useAtom(isMouseUpAtom)
 
   const nativeSelection = window.getSelection()
@@ -90,6 +106,7 @@ const ToolBar: React.FC = () => {
           <ul className={toolBar}>
             <ToolBarItem IconComponent={BoldIcon} onMouseDown={boldHandler}></ToolBarItem>
             <ToolBarItem IconComponent={InlineCodeIcon} onMouseDown={inlineCodeHandler}></ToolBarItem>
+            <ToolBarItem IconComponent={BlockCodeIcon} onMouseDown={blockCodeHandler}></ToolBarItem>
           </ul>
         </div>
       </div>

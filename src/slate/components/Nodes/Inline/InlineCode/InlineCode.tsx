@@ -1,4 +1,4 @@
-export interface InlineCodeElementProps {
+export interface InlineCodeProps {
   attributes: { [key: string]: any }
 }
 
@@ -15,7 +15,7 @@ const InlineChromiumBugfix = () => (
   </span>
 )
 
-const InlineCodeElement: React.FC<InlineCodeElementProps> = ({ attributes, children }) => {
+const InlineCode: React.FC<InlineCodeProps> = ({ attributes, children }) => {
   return (
     <span
       {...attributes}
@@ -34,4 +34,4 @@ const InlineCodeElement: React.FC<InlineCodeElementProps> = ({ attributes, child
   )
 }
 
-export default InlineCodeElement
+export default InlineCode

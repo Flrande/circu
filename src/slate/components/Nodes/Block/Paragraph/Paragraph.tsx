@@ -1,8 +1,8 @@
-export interface ParagraphElementProps {
+export interface ParagraphProps {
   attributes: { [key: string]: any }
 }
 
-const ParagraphElement: React.FC<ParagraphElementProps> = ({ attributes, children }) => {
+const Paragraph: React.FC<ParagraphProps> = ({ attributes, children }) => {
   return (
     <div
       {...attributes}
@@ -15,4 +15,4 @@ const ParagraphElement: React.FC<ParagraphElementProps> = ({ attributes, childre
   )
 }
 
-export default ParagraphElement
+export default Paragraph

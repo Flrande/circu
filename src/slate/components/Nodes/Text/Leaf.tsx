@@ -1,5 +1,6 @@
-import type { CustomText } from "../../types/interface"
+import type { CustomText } from "../../../types/interface"
 import Bold from "./Bold"
+
 export interface LeafProps {
   attributes: { [key: string]: any }
   leaf: CustomText

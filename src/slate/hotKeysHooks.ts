@@ -1,6 +1,7 @@
 import type React from "react"
 import { Editor, Range, Transforms } from "slate"
 import { useSlate } from "slate-react"
+import { toggleBlockCode } from "./components/Nodes/Block/BlockCode/blockCodeWorker"
 
 const leftRightHandler = (event: React.KeyboardEvent, editor: Editor) => {
   const { code } = event
@@ -24,6 +25,20 @@ export const useOnKeyDown = () => {
   const onKeyDown: React.KeyboardEventHandler = (event) => {
     if (selection && Range.isCollapsed(selection)) {
       leftRightHandler(event, editor)
+    }
+
+    // for debug and develop
+    if (event.altKey && event.key === "q") {
+      console.log(editor.selection?.anchor, editor.selection?.focus)
+    }
+    if (event.altKey && event.key === "w") {
+      console.log(window.getSelection(), editor.selection?.anchor, editor.selection?.focus)
+      toggleBlockCode(editor)
+      const event = new MouseEvent("mousedown", {
+        bubbles: true,
+        cancelable: true,
+      })
+      window.getSelection()?.anchorNode?.parentElement?.dispatchEvent(event)
     }
   }
 

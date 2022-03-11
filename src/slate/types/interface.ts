@@ -1,35 +1,18 @@
 import type { BaseEditor } from "slate"
 import type { ReactEditor } from "slate-react"
-import type { KeysValueUnion } from "./utils"
+import type { BlockCodeType } from "../components/Nodes/Block/BlockCode/types"
+import type { ParagraphType } from "../components/Nodes/Block/Paragraph/types"
+import type { InlineCodeType } from "../components/Nodes/Inline/InlineCode/types"
+import type { CustomTextType } from "../components/Nodes/Text/types"
 
-// Text
-export type CustomText = {
-  text: string
-  bold?: boolean
-}
-
-// Block Element
-export type ParagraphElement = {
-  type: "paragraph"
-  children: CustomText[]
-}
-
-// Inline Element
-export type InlineCodeElement = {
-  type: "inlineCode"
-  children: CustomText[]
-}
-
-export type BlockElement = ParagraphElement
-export type InlineElement = InlineCodeElement
-
-export const inlineTypes: Array<Exclude<KeysValueUnion<InlineElement>, CustomText[]>> = ["inlineCode"]
+export type BlockElement = ParagraphType | BlockCodeType
+export type InlineElement = InlineCodeType
 
 export type CustomElement = BlockElement | InlineElement
 declare module "slate" {
   interface CustomTypes {
     Editor: BaseEditor & ReactEditor
     Element: CustomElement
-    Text: CustomText
+    Text: CustomTextType
   }
 }
