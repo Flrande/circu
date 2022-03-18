@@ -1,12 +1,7 @@
-import type { CustomText } from "../../../types/interface"
+import type { RenderLeafProps } from "slate-react"
 import Bold from "./Bold"
 
-export interface LeafProps {
-  attributes: { [key: string]: any }
-  leaf: CustomText
-}
-
-const Leaf: React.FC<LeafProps> = ({ attributes, children, leaf }) => {
+const Leaf: React.FC<RenderLeafProps> = ({ attributes, children, leaf }) => {
   if (leaf.bold) {
     children = <Bold>{children}</Bold>
   }

@@ -10,7 +10,9 @@ const SlateEditable: React.FC = () => {
 
   useMouse()
 
-  return <Editable renderElement={renderElement} renderLeaf={renderLeaf} onKeyDown={onKeyDown}></Editable>
+  return (
+    <Editable renderElement={renderElement} renderLeaf={renderLeaf} onKeyDown={onKeyDown} spellCheck={false}></Editable>
+  )
 }
 
 export default SlateEditable

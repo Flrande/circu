@@ -1,4 +1,5 @@
-import { Editor, Path, Point, Transforms } from "slate"
+import { Editor, Path, Point, Transforms, Element as SlateElement } from "slate"
+import type { ParagraphType } from "../Paragraph/types"
 import type { BlockCodeType } from "./types"
 
 // export const isBlockCodeActive = (editor: Editor) => {
@@ -14,11 +15,11 @@ import type { BlockCodeType } from "./types"
 //   return match.length > 0 ? true : false
 // }
 
+//TODO: 撤销代码块
 export const unToggleBlockCode = (editor: Editor) => {}
 
-//TODO: 行首直接添加一个代码块
-//TODO: 代码块为首个 block element 且代码块内文本为空时, 键盘触发 Backspace 后删除整个代码块
-//TODO: 光标在代码块首部, 触发 Backspace 时不删除整个代码块
+//TODO: 直接添加一个空代码块(需要新的toolbar?)
+//TODO-BUG: 1 - 2 - 3 , 将 2 转化为代码块时, 会变成 1 - 3 - <2>
 export const toggleBlockCode = (editor: Editor) => {
   // if (isBlockCodeActive(editor)) {
   //   unToggleBlockCode(editor)
@@ -30,16 +31,52 @@ export const toggleBlockCode = (editor: Editor) => {
     return
   }
 
+  const selectedParagraphNodes = Array.from(
+    Editor.nodes(editor, {
+      match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "paragraph",
+    })
+  ).map((item) => item[0]) as ParagraphType[]
+
+  // children 必须遵循 paragraph - codeArea - paragraph
   const newNode: BlockCodeType = {
     type: "blockCode",
     lang: "PlainText",
-    children: [],
+    children: [
+      {
+        type: "paragraph",
+        children: [
+          {
+            text: "",
+          },
+        ],
+        isVoid: true,
+      },
+      {
+        type: "blockCode_codeArea",
+        children: selectedParagraphNodes,
+      },
+      {
+        type: "paragraph",
+        children: [
+          {
+            text: "",
+          },
+        ],
+        isVoid: true,
+      },
+    ],
   }
 
-  Transforms.wrapNodes(editor, newNode)
-  const newPath: Path = [editor.selection.anchor.path[0] + 1]
+  Transforms.removeNodes(editor)
+  Transforms.insertNodes(editor, newNode, {
+    at: [editor.selection.anchor.path[0] + 1],
+  })
+
+  // 为代码块后添加一个空行
+  //TODO: 最后一行一直为一个空行, 添加代码块后光标在代码块内
+  const newPath: Path = [editor.selection.anchor.path[0] + 2]
   const newPoint: Point = {
-    path: [editor.selection.anchor.path[0] + 1, 0],
+    path: [editor.selection.anchor.path[0] + 2, 0],
     offset: 0,
   }
   Transforms.insertNodes(
@@ -47,6 +84,7 @@ export const toggleBlockCode = (editor: Editor) => {
     {
       type: "paragraph",
       children: [{ text: "" }],
+      isVoid: false,
     },
     { at: newPath }
   )

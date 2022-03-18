@@ -1,8 +1,7 @@
-export interface ParagraphProps {
-  attributes: { [key: string]: any }
-}
+import type { CustomRenderElementProps } from "../../../../types/utils"
+import type { ParagraphType } from "./types"
 
-const Paragraph: React.FC<ParagraphProps> = ({ attributes, children }) => {
+const Paragraph: React.FC<CustomRenderElementProps<ParagraphType>> = ({ attributes, children }) => {
   return (
     <div
       {...attributes}
