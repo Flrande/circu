@@ -19,7 +19,6 @@ import type { BlockCodeType } from "./types"
 export const unToggleBlockCode = (editor: Editor) => {}
 
 //TODO: 直接添加一个空代码块(需要新的toolbar?)
-//TODO: 添加代码块后光标在代码块内最后一个字符
 export const toggleBlockCode = (editor: Editor) => {
   // if (isBlockCodeActive(editor)) {
   //   unToggleBlockCode(editor)
@@ -69,9 +68,8 @@ export const toggleBlockCode = (editor: Editor) => {
 
   const selectedStartPath = Range.start(editor.selection).path
   Transforms.removeNodes(editor)
-  console.log(selectedStartPath)
   Transforms.insertNodes(editor, newNode, {
     at: [selectedStartPath[0]],
   })
-  Transforms.select(editor, selectedStartPath)
+  Transforms.select(editor, Editor.end(editor, [selectedStartPath[0], 1]))
 }
