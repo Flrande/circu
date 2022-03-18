@@ -1,4 +1,4 @@
-import { Editor, Path, Point, Transforms, Element as SlateElement } from "slate"
+import { Editor, Transforms, Element as SlateElement, Range } from "slate"
 import type { ParagraphType } from "../Paragraph/types"
 import type { BlockCodeType } from "./types"
 
@@ -19,7 +19,7 @@ import type { BlockCodeType } from "./types"
 export const unToggleBlockCode = (editor: Editor) => {}
 
 //TODO: 直接添加一个空代码块(需要新的toolbar?)
-//TODO-BUG: 1 - 2 - 3 , 将 2 转化为代码块时, 会变成 1 - 3 - <2>
+//TODO: 添加代码块后光标在代码块内最后一个字符
 export const toggleBlockCode = (editor: Editor) => {
   // if (isBlockCodeActive(editor)) {
   //   unToggleBlockCode(editor)
@@ -67,26 +67,11 @@ export const toggleBlockCode = (editor: Editor) => {
     ],
   }
 
+  const selectedStartPath = Range.start(editor.selection).path
   Transforms.removeNodes(editor)
+  console.log(selectedStartPath)
   Transforms.insertNodes(editor, newNode, {
-    at: [editor.selection.anchor.path[0] + 1],
+    at: [selectedStartPath[0]],
   })
-
-  // 为代码块后添加一个空行
-  //TODO: 最后一行一直为一个空行, 添加代码块后光标在代码块内
-  const newPath: Path = [editor.selection.anchor.path[0] + 2]
-  const newPoint: Point = {
-    path: [editor.selection.anchor.path[0] + 2, 0],
-    offset: 0,
-  }
-  Transforms.insertNodes(
-    editor,
-    {
-      type: "paragraph",
-      children: [{ text: "" }],
-      isVoid: false,
-    },
-    { at: newPath }
-  )
-  Transforms.select(editor, newPoint)
+  Transforms.select(editor, selectedStartPath)
 }

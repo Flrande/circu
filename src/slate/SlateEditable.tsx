@@ -1,6 +1,7 @@
 import { Editable } from "slate-react"
-import { useOnKeyDown } from "./hotKeysHooks"
-import { useRenderElement, useRenderLeaf } from "./renderHooks"
+import { useOnKeyDown } from "./hooks/hotKeysHooks"
+import { useRenderLeaf, useRenderElement } from "./hooks/renderHooks"
+import { useEndLine } from "./hooks/useEndLine"
 import { useMouse } from "./state/mouse"
 
 const SlateEditable: React.FC = () => {
@@ -9,6 +10,7 @@ const SlateEditable: React.FC = () => {
   const onKeyDown = useOnKeyDown()
 
   useMouse()
+  useEndLine()
 
   return (
     <Editable renderElement={renderElement} renderLeaf={renderLeaf} onKeyDown={onKeyDown} spellCheck={false}></Editable>

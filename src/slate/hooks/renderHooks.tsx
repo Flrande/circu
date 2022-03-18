@@ -1,13 +1,13 @@
 import type { RenderElementProps, RenderLeafProps } from "slate-react"
-import BlockCode from "./components/Nodes/Block/BlockCode/BlockCode"
-import CodeArea from "./components/Nodes/Block/BlockCode/CodeArea"
-import type { BlockCodeType, BlockCode_CodeAreaType } from "./components/Nodes/Block/BlockCode/types"
-import Paragraph from "./components/Nodes/Block/Paragraph/Paragraph"
-import type { ParagraphType } from "./components/Nodes/Block/Paragraph/types"
-import InlineCode from "./components/Nodes/Inline/InlineCode/InlineCode"
-import type { InlineCodeType } from "./components/Nodes/Inline/InlineCode/types"
-import Leaf from "./components/Nodes/Text/Leaf"
-import type { CustomRenderElementProps } from "./types/utils"
+import BlockCode from "../components/Nodes/Block/BlockCode/BlockCode"
+import CodeArea from "../components/Nodes/Block/BlockCode/CodeArea"
+import type { BlockCodeType, BlockCode_CodeAreaType } from "../components/Nodes/Block/BlockCode/types"
+import Paragraph from "../components/Nodes/Block/Paragraph/Paragraph"
+import type { ParagraphType } from "../components/Nodes/Block/Paragraph/types"
+import InlineCode from "../components/Nodes/Inline/InlineCode/InlineCode"
+import type { InlineCodeType } from "../components/Nodes/Inline/InlineCode/types"
+import Leaf from "../components/Nodes/Text/Leaf"
+import type { CustomRenderElementProps } from "../types/utils"
 
 export const useRenderLeaf = () => {
   return (props: RenderLeafProps) => <Leaf {...props}></Leaf>
