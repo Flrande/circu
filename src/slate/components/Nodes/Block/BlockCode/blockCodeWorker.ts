@@ -1,4 +1,5 @@
-import { Editor, Transforms, Element as SlateElement, Range } from "slate"
+import { Editor, Transforms, Range } from "slate"
+import { SlateElement } from "../../../../types/slate"
 import type { ParagraphType } from "../Paragraph/types"
 import type { BlockCodeType } from "./types"
 

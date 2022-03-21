@@ -1,4 +1,5 @@
-import { Editor, Element as SlateElement, Range, Transforms } from "slate"
+import { Editor, Range, Transforms } from "slate"
+import { SlateElement } from "../types/slate"
 
 // selection 在一个 Paragraph 中, 前一个 Block Node 为 blockCode,
 // 触发 deleteBackward 时选中 blockCode, 再次触发 deleteBackward 时删除它

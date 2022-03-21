@@ -1,4 +1,5 @@
-import { Editor, Element as SlateElement, Range, Transforms } from "slate"
+import { Editor, Range, Transforms } from "slate"
+import { SlateElement } from "../../../../types/slate"
 import type { InlineCodeType } from "./types"
 
 export const isInlineCodeActive = (editor: Editor) => {
