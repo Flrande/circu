@@ -7,7 +7,7 @@ export const isInlineCodeActive = (editor: Editor) => {
 
   const match = Array.from(
     Editor.nodes(editor, {
-      match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "inlineCode",
+      match: (n) => SlateElement.isElement(n) && n.type === "inlineCode",
     })
   )
   return match.length > 0 ? true : false
@@ -31,11 +31,11 @@ export const untoggleInlineCode = (editor: Editor) => {
   // 在两个 point 上分割该 inline element
   Transforms.splitNodes(editor, {
     at: selectStartRef.current!,
-    match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "inlineCode",
+    match: (n) => SlateElement.isElement(n) && n.type === "inlineCode",
   })
   Transforms.splitNodes(editor, {
     at: selectEndRef.current!,
-    match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "inlineCode",
+    match: (n) => SlateElement.isElement(n) && n.type === "inlineCode",
   })
 
   const untoggleRangeRef = Editor.rangeRef(
@@ -48,7 +48,7 @@ export const untoggleInlineCode = (editor: Editor) => {
 
   Transforms.unwrapNodes(editor, {
     at: untoggleRangeRef.current!,
-    match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "inlineCode",
+    match: (n) => SlateElement.isElement(n) && n.type === "inlineCode",
   })
 
   Transforms.select(editor, Editor.unhangRange(editor, untoggleRangeRef.current!))

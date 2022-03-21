@@ -26,7 +26,6 @@ export const withDeleteBackward = (editor: Editor) => {
         // 若前一个 BlockNode 为 blockCode
         if (
           previousNodeEntry &&
-          !Editor.isEditor(previousNodeEntry[0]) &&
           SlateElement.isElement(previousNodeEntry[0]) &&
           previousNodeEntry[0].type === "blockCode"
         ) {

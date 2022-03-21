@@ -8,7 +8,7 @@ import type { BlockCodeType } from "./types"
 
 //   const match = Array.from(
 //     Editor.nodes(editor, {
-//       match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "blockCode",
+//       match: (n) => SlateElement.isElement(n) && n.type === "blockCode",
 //     })
 //   )
 
@@ -32,7 +32,7 @@ export const toggleBlockCode = (editor: Editor) => {
 
   const selectedParagraphNodes = Array.from(
     Editor.nodes(editor, {
-      match: (n) => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type === "paragraph",
+      match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
     })
   ).map((item) => item[0]) as ParagraphType[]
 
