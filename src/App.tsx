@@ -1,15 +1,13 @@
 import { useState } from "react"
-import { createEditor, Descendant } from "slate"
-import { Slate, withReact } from "slate-react"
+import type { Descendant } from "slate"
+import { Slate } from "slate-react"
 import { doc, docContainer } from "./App.css"
 import ToolBar from "./slate/components/ToolBar/ToolBar"
-import { withDelete } from "./slate/plugins/withDelete"
-import { withInlines } from "./slate/plugins/withInlines"
-import { withVoid } from "./slate/plugins/withVoid"
+import { useCreateEditor } from "./slate/hooks/useCreateEditor"
 import SlateEditable from "./slate/SlateEditable"
 
 const App: React.FC = () => {
-  const [editor] = useState(() => withVoid(withDelete(withInlines(withReact(createEditor()))))) // 保证单一实例
+  const editor = useCreateEditor()
   const [value, setValue] = useState<Descendant[]>([
     {
       type: "paragraph",
