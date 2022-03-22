@@ -1,3 +1,3 @@
-import { Node as SlateNode, Element as SlateElement } from "slate"
+import { Node as SlateNode, Element as SlateElement, Text as SlateText } from "slate"
 
-export { SlateNode, SlateElement }
+export { SlateNode, SlateElement, SlateText }
