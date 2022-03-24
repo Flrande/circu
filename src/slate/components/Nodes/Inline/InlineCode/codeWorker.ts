@@ -1,5 +1,5 @@
-import { Editor, Range, Transforms } from "slate"
-import { SlateElement } from "../../../../types/slate"
+import { Editor, Transforms } from "slate"
+import { SlateElement, SlateRange } from "../../../../types/slate"
 import type { InlineCodeType } from "./types"
 
 export const isInlineCodeActive = (editor: Editor) => {
@@ -70,7 +70,7 @@ export const toggleInlineCode = (editor: Editor) => {
     return
   }
 
-  if (Range.isCollapsed(editor.selection)) {
+  if (SlateRange.isCollapsed(editor.selection)) {
     console.error("toggleInlineCode() should not called with collapsed editor.selection.")
     return
   }

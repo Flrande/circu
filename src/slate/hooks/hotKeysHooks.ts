@@ -1,7 +1,7 @@
 import type React from "react"
-import { Editor, Range, Transforms } from "slate"
+import { Editor, Transforms } from "slate"
 import { useSlate } from "slate-react"
-import { SlateNode } from "../types/slate"
+import { SlateNode, SlateRange } from "../types/slate"
 
 const leftRightHandler = (event: React.KeyboardEvent, editor: Editor) => {
   const { code } = event
@@ -23,7 +23,7 @@ export const useOnKeyDown = () => {
   const { selection } = editor
 
   const onKeyDown: React.KeyboardEventHandler = (event) => {
-    if (selection && Range.isCollapsed(selection)) {
+    if (selection && SlateRange.isCollapsed(selection)) {
       leftRightHandler(event, editor)
     }
 

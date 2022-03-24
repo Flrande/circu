@@ -1,5 +1,5 @@
-import { Editor, Range, Transforms } from "slate"
-import { SlateElement } from "../types/slate"
+import { Editor, Transforms } from "slate"
+import { SlateElement, SlateRange } from "../types/slate"
 
 // selection 在一个 Paragraph 中, 前一个 Block Node 为 blockCode,
 // 触发 deleteBackward 时选中 blockCode, 再次触发 deleteBackward 时删除它
@@ -39,7 +39,7 @@ const withDeleteBackward = (editor: Editor) => {
       // 若当前 BlockNode 为 blockCode
       else if (SlateElement.isElement(currentBlockNodeEntry[0]) && currentBlockNodeEntry[0].type === "blockCode") {
         // 若到达当前 Block 的 首个 Point, 静默, 不删除
-        if (Range.isCollapsed(selection) && selection.anchor.offset === 0) {
+        if (SlateRange.isCollapsed(selection) && selection.anchor.offset === 0) {
         } else {
           deleteBackward(unit)
         }
@@ -70,7 +70,7 @@ const withDeleteFragment = (editor: Editor) => {
       if (
         SlateElement.isElement(currentBlockNodeEntry[0]) &&
         currentBlockNodeEntry[0].type === "blockCode" &&
-        Range.includes(selection, [currentBlockNodeEntry[1][1], 2])
+        SlateRange.includes(selection, [currentBlockNodeEntry[1][1], 2])
       ) {
         Transforms.removeNodes(editor, {
           at: currentBlockNodeEntry[1],
