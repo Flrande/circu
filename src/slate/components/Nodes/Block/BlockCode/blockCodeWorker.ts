@@ -1,5 +1,5 @@
-import { Editor, Transforms, Range } from "slate"
-import { SlateElement } from "../../../../types/slate"
+import { Editor, Transforms } from "slate"
+import { SlateElement, SlateRange } from "../../../../types/slate"
 import type { ParagraphType } from "../Paragraph/types"
 import type { BlockCodeType } from "./types"
 
@@ -16,10 +16,12 @@ import type { BlockCodeType } from "./types"
 //   return match.length > 0 ? true : false
 // }
 
-//TODO: 撤销代码块
+//TODO: 解除代码块
 export const unToggleBlockCode = (editor: Editor) => {}
 
 //TODO: 直接添加一个空代码块(需要新的toolbar?)
+//TODO: 粘贴和复制
+//TODO-BUG: 代码块内删除时无法切至上一行 (加个首行判断?)
 export const toggleBlockCode = (editor: Editor) => {
   // if (isBlockCodeActive(editor)) {
   //   unToggleBlockCode(editor)
@@ -40,7 +42,6 @@ export const toggleBlockCode = (editor: Editor) => {
   // children 必须遵循 paragraph - codeArea - paragraph
   const newNode: BlockCodeType = {
     type: "blockCode",
-    lang: "PlainText",
     children: [
       {
         type: "paragraph",
@@ -53,6 +54,7 @@ export const toggleBlockCode = (editor: Editor) => {
       },
       {
         type: "blockCode_codeArea",
+        lang: "PlainText",
         children: selectedParagraphNodes,
       },
       {
@@ -67,7 +69,7 @@ export const toggleBlockCode = (editor: Editor) => {
     ],
   }
 
-  const selectedStartPath = Range.start(editor.selection).path
+  const selectedStartPath = SlateRange.start(editor.selection).path
   Transforms.removeNodes(editor)
   Transforms.insertNodes(editor, newNode, {
     at: [selectedStartPath[0]],

@@ -11,12 +11,14 @@
     "@vanilla-extract/css": "^1.6.8",
     "@vanilla-extract/vite-plugin": "^3.1.2",
     "jotai": "^1.6.0",
+    "prismjs": "^1.27.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "slate": "^0.72.8",
     "slate-react": "^0.72.9"
   },
   "devDependencies": {
+    "@types/prismjs": "^1.26.0",
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.10",
     "@vitejs/plugin-react": "^1.0.7",

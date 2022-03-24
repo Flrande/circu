@@ -3,11 +3,7 @@ import type { CustomRenderElementProps } from "../../../../types/utils"
 import { BlockCodeConntainer } from "./BlockCode.css"
 import type { BlockCodeType } from "./types"
 
-export interface BlockCodeProps {
-  attributes: { [key: string]: any }
-}
-
-const BlockCode: React.FC<CustomRenderElementProps<BlockCodeType>> = ({ attributes, children }) => {
+const BlockCode: React.FC<CustomRenderElementProps<BlockCodeType>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
 
   return (

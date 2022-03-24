@@ -16,6 +16,7 @@ const verifyBlockCodeChild = (node: BlockCodeType) => {
   )
 }
 
+// TODO-BUG: 全选删除代码块时报错
 const withNormalizeForBlockCode = (editor: Editor) => {
   const { normalizeNode } = editor
 

@@ -5,10 +5,11 @@ import type { ParagraphType } from "../components/Nodes/Block/Paragraph/types"
 import type { InlineCodeType } from "../components/Nodes/Inline/InlineCode/types"
 import type { CustomTextType } from "../components/Nodes/Text/types"
 
-export type BlockElementType = ParagraphType | BlockCodeType | BlockCode_CodeAreaType
-export type InlineElementType = InlineCodeType
+// Type 后缀的都是有对应组件的
+export type BlockElement = ParagraphType | BlockCodeType | BlockCode_CodeAreaType
+export type InlineElement = InlineCodeType
 
-export type CustomElement = BlockElementType | InlineElementType
+export type CustomElement = BlockElement | InlineElement
 export type CustomText = CustomTextType
 
 declare module "slate" {

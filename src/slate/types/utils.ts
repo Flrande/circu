@@ -1,6 +1,13 @@
 import type { RenderElementProps } from "slate-react"
 import type { CustomElement } from "./interface"
 
+// interface a {
+//   id: number
+//   name: string
+// }
+// type b = KeysUnion<a> -> type b = "id" | "name"
+// type c = KeysValueUnion<a> -> type c = string | number
+
 // 提取 object 的 property name
 export type KeysUnion<T> = NonNullable<
   {

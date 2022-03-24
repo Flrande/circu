@@ -36,7 +36,8 @@ export const useOnKeyDown = () => {
         const blockNodeEntry = Editor.node(editor, editor.selection, {
           depth: 1,
         })
-        console.log(blockNodeEntry[0])
+        const selectedNodeEntry = Editor.node(editor, editor.selection)
+        // console.log(selectedNodeEntry[0], SlateNode.parent(editor, selectedNodeEntry[1].slice(0, -1)))
         console.log(Array.from(SlateNode.children(blockNodeEntry[0], [])))
       }
     }

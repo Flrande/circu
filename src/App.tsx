@@ -6,6 +6,7 @@ import ToolBar from "./slate/components/ToolBar/ToolBar"
 import { useCreateEditor } from "./slate/hooks/useCreateEditor"
 import SlateEditable from "./slate/SlateEditable"
 
+//TODO: 用 useSlateStatic 替代 useSlate 减少重渲染
 const App: React.FC = () => {
   const editor = useCreateEditor()
   const [value, setValue] = useState<Descendant[]>([
@@ -20,7 +21,6 @@ const App: React.FC = () => {
     },
     {
       type: "blockCode",
-      lang: "PlainText",
       children: [
         {
           type: "paragraph",
@@ -33,12 +33,31 @@ const App: React.FC = () => {
         },
         {
           type: "blockCode_codeArea",
+          lang: "Javascript",
           children: [
             {
               type: "paragraph",
               children: [
                 {
-                  text: "A line of code.",
+                  text: "const tmp = 1",
+                },
+              ],
+              isVoid: false,
+            },
+            {
+              type: "paragraph",
+              children: [
+                {
+                  text: "const foo = 2",
+                },
+              ],
+              isVoid: false,
+            },
+            {
+              type: "paragraph",
+              children: [
+                {
+                  text: "console.log(tmp + foo)",
                 },
               ],
               isVoid: false,
