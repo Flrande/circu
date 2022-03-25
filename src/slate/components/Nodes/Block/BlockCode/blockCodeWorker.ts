@@ -21,7 +21,6 @@ export const unToggleBlockCode = (editor: Editor) => {}
 
 //TODO: 直接添加一个空代码块(需要新的toolbar?)
 //TODO: 粘贴和复制
-//TODO-BUG: 代码块内删除时无法切至上一行 (加个首行判断?)
 export const toggleBlockCode = (editor: Editor) => {
   // if (isBlockCodeActive(editor)) {
   //   unToggleBlockCode(editor)

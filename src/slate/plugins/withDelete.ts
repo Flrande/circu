@@ -39,7 +39,12 @@ const withDeleteBackward = (editor: Editor) => {
       // 若当前 BlockNode 为 blockCode
       else if (SlateElement.isElement(currentBlockNodeEntry[0]) && currentBlockNodeEntry[0].type === "blockCode") {
         // 若到达当前 Block 的 首个 Point, 静默, 不删除
-        if (SlateRange.isCollapsed(selection) && selection.anchor.offset === 0) {
+        if (
+          SlateRange.isCollapsed(selection) &&
+          // 判断是否为首行
+          selection.anchor.path[selection.anchor.path.length - 2] === 0 &&
+          selection.anchor.offset === 0
+        ) {
         } else {
           deleteBackward(unit)
         }
