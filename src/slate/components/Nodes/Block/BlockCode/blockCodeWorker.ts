@@ -43,13 +43,12 @@ export const toggleBlockCode = (editor: Editor) => {
     type: "blockCode",
     children: [
       {
-        type: "paragraph",
+        type: "blockCode_voidArea",
         children: [
           {
             text: "",
           },
         ],
-        isVoid: true,
       },
       {
         type: "blockCode_codeArea",
@@ -57,13 +56,12 @@ export const toggleBlockCode = (editor: Editor) => {
         children: selectedParagraphNodes,
       },
       {
-        type: "paragraph",
+        type: "blockCode_voidArea",
         children: [
           {
             text: "",
           },
         ],
-        isVoid: true,
       },
     ],
   }

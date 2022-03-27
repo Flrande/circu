@@ -6,17 +6,16 @@ const verifyBlockCodeChild = (node: BlockCodeType) => {
   const children = node.children
   return (
     children.length === 3 &&
-    children[0].type === "paragraph" &&
+    children[0].type === "blockCode_voidArea" &&
     children[0].children.length === 1 &&
     children[0].children[0].text === "" &&
     children[1].type === "blockCode_codeArea" &&
-    children[2].type === "paragraph" &&
+    children[2].type === "blockCode_voidArea" &&
     children[2].children.length === 1 &&
     children[2].children[0].text === ""
   )
 }
 
-// TODO-BUG: 全选删除代码块时报错
 const withNormalizeForBlockCode = (editor: Editor) => {
   const { normalizeNode } = editor
 
@@ -28,8 +27,7 @@ const withNormalizeForBlockCode = (editor: Editor) => {
       if (verifyBlockCodeChild(currentNode)) {
         return
       } else {
-        // 若不符合 blockCode 的内建约束, 删除该代码块并报错
-        console.error(`BlockCode Node in [${currentPath}] is invalid.`)
+        // 若不符合 blockCode 的内建约束, 删除该代码块
         Transforms.removeNodes(editor, {
           at: currentPath,
         })

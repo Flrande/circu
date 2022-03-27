@@ -1,7 +1,7 @@
 import type React from "react"
 import { Editor, Transforms } from "slate"
 import { useSlate } from "slate-react"
-import { SlateNode, SlateRange } from "../types/slate"
+import { SlateRange } from "../types/slate"
 
 const leftRightHandler = (event: React.KeyboardEvent, editor: Editor) => {
   const { code } = event
@@ -29,16 +29,23 @@ export const useOnKeyDown = () => {
 
     // for debug and develop
     if (event.altKey && event.key === "q") {
-      console.log(editor.selection?.anchor.offset, editor.selection?.anchor.path, window.getSelection())
+      console.log(editor.selection, window.getSelection())
     }
     if (event.altKey && event.key === "w") {
       if (editor.selection) {
         const blockNodeEntry = Editor.node(editor, editor.selection, {
-          depth: 1,
+          // depth: 1,
         })
-        const selectedNodeEntry = Editor.node(editor, editor.selection)
-        // console.log(selectedNodeEntry[0], SlateNode.parent(editor, selectedNodeEntry[1].slice(0, -1)))
-        console.log(Array.from(SlateNode.children(blockNodeEntry[0], [])))
+        // console.log(blockNodeEntry)
+        console.log(
+          Array.from(
+            Editor.nodes(editor, {
+              at: editor.selection,
+              match: (n) => !Editor.isEditor(n),
+              mode: "highest",
+            })
+          )
+        )
       }
     }
   }

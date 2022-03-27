@@ -17,19 +17,17 @@ const App: React.FC = () => {
           text: "A line of text in a paragraph. - 1",
         },
       ],
-      isVoid: false,
     },
     {
       type: "blockCode",
       children: [
         {
-          type: "paragraph",
+          type: "blockCode_voidArea",
           children: [
             {
               text: "",
             },
           ],
-          isVoid: true,
         },
         {
           type: "blockCode_codeArea",
@@ -42,7 +40,6 @@ const App: React.FC = () => {
                   text: "const tmp = 1",
                 },
               ],
-              isVoid: false,
             },
             {
               type: "paragraph",
@@ -51,7 +48,6 @@ const App: React.FC = () => {
                   text: "const foo = 2",
                 },
               ],
-              isVoid: false,
             },
             {
               type: "paragraph",
@@ -60,18 +56,16 @@ const App: React.FC = () => {
                   text: "console.log(tmp + foo)",
                 },
               ],
-              isVoid: false,
             },
           ],
         },
         {
-          type: "paragraph",
+          type: "blockCode_voidArea",
           children: [
             {
               text: "",
             },
           ],
-          isVoid: true,
         },
       ],
     },
@@ -82,7 +76,6 @@ const App: React.FC = () => {
           text: "A line of text in a paragraph. - 2",
         },
       ],
-      isVoid: false,
     },
     {
       type: "paragraph",
@@ -91,7 +84,6 @@ const App: React.FC = () => {
           text: "A line of text in a paragraph. - 3",
         },
       ],
-      isVoid: false,
     },
   ])
 

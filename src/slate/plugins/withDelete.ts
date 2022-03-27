@@ -63,31 +63,9 @@ const withDeleteFragment = (editor: Editor) => {
   const { deleteFragment } = editor
 
   editor.deleteFragment = (direction?: "forward" | "backward") => {
-    const { selection } = editor
-
-    if (selection) {
-      // 拿到当前 BlockNode
-      const currentBlockNodeEntry = Editor.node(editor, selection, {
-        depth: 1,
-      })
-
-      // 若当前 BlockNode 为 blockCode 且 selection 包含 blockCode 空白标记块, 删除该 blockCode
-      if (
-        SlateElement.isElement(currentBlockNodeEntry[0]) &&
-        currentBlockNodeEntry[0].type === "blockCode" &&
-        SlateRange.includes(selection, [currentBlockNodeEntry[1][1], 2])
-      ) {
-        Transforms.removeNodes(editor, {
-          at: currentBlockNodeEntry[1],
-        })
-        const sel = window.getSelection()
-        sel?.removeAllRanges()
-      } else {
-        deleteFragment(direction)
-      }
-    } else {
-      deleteFragment(direction)
-    }
+    deleteFragment(direction)
+    const sel = window.getSelection()
+    sel?.removeAllRanges()
   }
 
   return editor

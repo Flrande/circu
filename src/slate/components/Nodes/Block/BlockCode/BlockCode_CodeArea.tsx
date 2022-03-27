@@ -1,7 +1,7 @@
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { BlockCode_CodeAreaType } from "./types"
 
-const CodeArea: React.FC<CustomRenderElementProps<BlockCode_CodeAreaType>> = ({ attributes, children }) => {
+const BlockCode_CodeArea: React.FC<CustomRenderElementProps<BlockCode_CodeAreaType>> = ({ attributes, children }) => {
   return (
     <div
       {...attributes}
@@ -14,4 +14,4 @@ const CodeArea: React.FC<CustomRenderElementProps<BlockCode_CodeAreaType>> = ({ 
   )
 }
 
-export default CodeArea
+export default BlockCode_CodeArea
