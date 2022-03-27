@@ -2,14 +2,14 @@ import { useAtom } from "jotai"
 import type React from "react"
 import { ReactEditor, useSlate } from "slate-react"
 import { isMouseUpAtom } from "../../state/mouse"
-import { toggleMark } from "../Nodes/Text/TextWorker"
 import type { IconTypes } from "./icons/types"
 import BoldIcon from "./icons/BoldIcon"
 import InlineCodeIcon from "./icons/InlineCodeIcon"
 import { toolBar, toolBarContainer } from "./ToolBar.css"
-import { toggleInlineCode } from "../Nodes/Inline/InlineCode/codeWorker"
-import { toggleBlockCode } from "../Nodes/Block/BlockCode/blockCodeWorker"
+import { toggleInlineCode } from "../Nodes/Inline/InlineCode/inlineCodeHelper"
+import { toggleBlockCode } from "../Nodes/Block/BlockCode/blockCodeHelper"
 import BlockCodeIcon from "./icons/BlockCodeIcon"
+import { toggleMark } from "../Nodes/Text/TextHelper"
 
 const useToolBarHandlers = () => {
   const editor = useSlate()
