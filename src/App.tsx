@@ -34,7 +34,7 @@ const App: React.FC = () => {
           lang: "Javascript",
           children: [
             {
-              type: "paragraph",
+              type: "blockCode_codeLine",
               children: [
                 {
                   text: "const tmp = 1",
@@ -42,7 +42,7 @@ const App: React.FC = () => {
               ],
             },
             {
-              type: "paragraph",
+              type: "blockCode_codeLine",
               children: [
                 {
                   text: "const foo = 2",
@@ -50,7 +50,7 @@ const App: React.FC = () => {
               ],
             },
             {
-              type: "paragraph",
+              type: "blockCode_codeLine",
               children: [
                 {
                   text: "console.log(tmp + foo)",

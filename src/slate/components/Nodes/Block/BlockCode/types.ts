@@ -8,10 +8,15 @@ export type CodeAreaLangMap = {
   Javascript: "javascript"
 }
 
+export type BlockCode_CodeLineType = {
+  type: "blockCode_codeLine"
+  children: CustomTextType[]
+}
+
 export type BlockCode_CodeAreaType = {
   type: "blockCode_codeArea"
   lang: KeysUnion<CodeAreaLangMap>
-  children: ParagraphType[]
+  children: BlockCode_CodeLineType[]
 }
 
 export type BlockCode_VoidAreaType = {

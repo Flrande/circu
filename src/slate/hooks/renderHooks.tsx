@@ -4,6 +4,7 @@ import BlockCode_CodeArea from "../components/Nodes/Block/BlockCode/BlockCode_Co
 import type {
   BlockCodeType,
   BlockCode_CodeAreaType,
+  BlockCode_CodeLineType,
   BlockCode_VoidAreaType,
 } from "../components/Nodes/Block/BlockCode/types"
 import BlockCode_VoidArea from "../components/Nodes/Block/BlockCode/BlockCode_VoidArea"
@@ -13,6 +14,7 @@ import InlineCode from "../components/Nodes/Inline/InlineCode/InlineCode"
 import type { InlineCodeType } from "../components/Nodes/Inline/InlineCode/types"
 import Leaf from "../components/Nodes/Text/Leaf"
 import type { CustomRenderElementProps } from "../types/utils"
+import BlockCode_CodeLine from "../components/Nodes/Block/BlockCode/BlockCode_CodeLine"
 
 export const useRenderLeaf = () => {
   return (props: RenderLeafProps) => <Leaf {...props}></Leaf>
@@ -34,6 +36,10 @@ export const useRenderElement = () => {
       case "blockCode_voidArea":
         return (
           <BlockCode_VoidArea {...(props as CustomRenderElementProps<BlockCode_VoidAreaType>)}></BlockCode_VoidArea>
+        )
+      case "blockCode_codeLine":
+        return (
+          <BlockCode_CodeLine {...(props as CustomRenderElementProps<BlockCode_CodeLineType>)}></BlockCode_CodeLine>
         )
     }
   }

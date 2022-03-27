@@ -1,7 +1,7 @@
 import { Editor, Transforms } from "slate"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 import type { ParagraphType } from "../Paragraph/types"
-import type { BlockCodeType } from "./types"
+import type { BlockCodeType, BlockCode_CodeLineType } from "./types"
 
 // export const isBlockCodeActive = (editor: Editor) => {
 //   const { selection } = editor
@@ -38,7 +38,12 @@ export const toggleBlockCode = (editor: Editor) => {
     })
   ).map((item) => item[0]) as ParagraphType[]
 
-  // children 必须遵循 paragraph - codeArea - paragraph
+  const newNodeChildren: BlockCode_CodeLineType[] = selectedParagraphNodes.map<BlockCode_CodeLineType>((item) => {
+    return {
+      type: "blockCode_codeLine",
+      children: item.children,
+    }
+  })
   const newNode: BlockCodeType = {
     type: "blockCode",
     children: [
@@ -53,7 +58,7 @@ export const toggleBlockCode = (editor: Editor) => {
       {
         type: "blockCode_codeArea",
         lang: "PlainText",
-        children: selectedParagraphNodes,
+        children: newNodeChildren,
       },
       {
         type: "blockCode_voidArea",
