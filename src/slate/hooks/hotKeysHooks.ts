@@ -33,19 +33,21 @@ export const useOnKeyDown = () => {
     }
     if (event.altKey && event.key === "w") {
       if (editor.selection) {
-        const blockNodeEntry = Editor.node(editor, editor.selection, {
-          // depth: 1,
-        })
-        // console.log(blockNodeEntry)
-        console.log(
-          Array.from(
-            Editor.nodes(editor, {
-              at: editor.selection,
-              match: (n) => !Editor.isEditor(n),
-              mode: "highest",
-            })
-          )
-        )
+        // const blockNodeEntry = Editor.node(editor, editor.selection, {
+        //   // depth: 1,
+        // })
+        // // console.log(blockNodeEntry)
+        // console.log(
+        //   Array.from(
+        //     Editor.nodes(editor, {
+        //       at: editor.selection,
+        //       match: (n) => !Editor.isEditor(n),
+        //       mode: "highest",
+        //     })
+        //   )
+        // )
+        const currentNode = Editor.node(editor, editor.selection)
+        console.log(currentNode)
       }
     }
   }

@@ -1,6 +1,6 @@
 import { style } from "@vanilla-extract/css"
 
-export const BlockCodeConntainer = style({
+export const BlockCodeContainer = style({
   backgroundColor: "#292929",
   margin: "8px 0",
   display: "flex",
