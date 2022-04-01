@@ -1,6 +1,6 @@
 import type Prism from "prismjs"
 import type { NodeEntry } from "slate"
-import { useDecorateCode } from "../components/Nodes/Block/BlockCode/decorateCode"
+import { useDecorateCode } from "../components/Nodes/Block/BlockCode/useDecorateCode"
 import type { CustomText } from "../types/interface"
 import type { SlateRange } from "../types/slate"
 

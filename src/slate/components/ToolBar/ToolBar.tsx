@@ -9,7 +9,7 @@ import { toolBar, toolBarContainer } from "./ToolBar.css"
 import { toggleInlineCode } from "../Nodes/Inline/InlineCode/inlineCodeHelper"
 import { toggleBlockCode } from "../Nodes/Block/BlockCode/blockCodeHelper"
 import BlockCodeIcon from "./icons/BlockCodeIcon"
-import { toggleMark } from "../Nodes/Text/TextHelper"
+import { toggleMark } from "../Nodes/Text/textHelper"
 
 const useToolBarHandlers = () => {
   const editor = useSlate()

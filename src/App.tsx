@@ -78,10 +78,224 @@ const App: React.FC = () => {
       ],
     },
     {
+      type: "blockCode",
+      children: [
+        {
+          type: "blockCode_voidArea",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        },
+        {
+          type: "blockCode_codeArea",
+          lang: "PlainText",
+          children: [
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "blockCode with PlainText",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: "blockCode_voidArea",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        },
+      ],
+    },
+    {
       type: "paragraph",
       children: [
         {
           text: "A line of text in a paragraph. - 3",
+        },
+      ],
+    },
+    {
+      type: "blockCode",
+      children: [
+        {
+          type: "blockCode_voidArea",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        },
+        {
+          type: "blockCode_codeArea",
+          lang: "Javascript",
+          children: [
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'import React from "react"',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'import * as ReactDOMClient from "react-dom/client"',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'import App from "./App"',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'import "./normalize.css"',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'document.body.setAttribute("arco-theme", "dark")',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'const container = document.getElementById("root")',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'if (!container) throw "Can\'t find root dom."',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "const root = ReactDOMClient.createRoot(container)",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "root.render(",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "  <React.StrictMode>",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "    <App />",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "  </React.StrictMode>",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: ")",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: "blockCode_voidArea",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: "paragraph",
+      children: [
+        {
+          text: "",
         },
       ],
     },

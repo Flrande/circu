@@ -1,6 +1,5 @@
 import type { KeysUnion } from "../../../../types/utils"
 import type { CustomTextType } from "../../Text/types"
-import type { ParagraphType } from "../Paragraph/types"
 
 // [显示格式] - [Prism 对应 key string] (PlainText 为特例)
 export type CodeAreaLangMap = {
@@ -15,7 +14,7 @@ export type BlockCode_CodeLineType = {
 
 export type BlockCode_CodeAreaType = {
   type: "blockCode_codeArea"
-  lang: KeysUnion<CodeAreaLangMap>
+  lang: KeysUnion<CodeAreaLangMap> // 显示格式
   children: BlockCode_CodeLineType[]
 }
 

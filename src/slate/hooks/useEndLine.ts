@@ -17,7 +17,6 @@ export const useEndLine = () => {
             text: "",
           },
         ],
-        isVoid: false,
       }
       Transforms.insertNodes(editor, blankLineNode, {
         at: [editor.children.length],
