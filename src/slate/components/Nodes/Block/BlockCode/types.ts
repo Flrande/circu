@@ -4,7 +4,24 @@ import type { CustomTextType } from "../../Text/types"
 // [显示格式] - [Prism 对应 key string] (PlainText 为特例)
 export type CodeAreaLangMap = {
   PlainText: "plainText"
+  C: "c"
+  "C++": "cpp"
+  Dart: "dart"
+  Docker: "docker"
+  Git: "git"
+  Go: "go"
+  GraphQL: "graphql"
+  Haskell: "haskell"
+  HTTP: "http"
   Javascript: "javascript"
+  Java: "java"
+  JSON: "json"
+  LaTeX: "latex"
+  Perl: "perl"
+  PHP: "php"
+  "PL/SQL": "plsql"
+  SQL: "sql"
+  WebAssembly: "wasm"
 }
 
 export type BlockCode_CodeLineType = {
