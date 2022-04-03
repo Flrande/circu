@@ -1,4 +1,5 @@
 import { ReactEditor, useSlate } from "slate-react"
+import { SlateNode } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { BlockCode_CodeLineType } from "./types"
 
@@ -9,6 +10,11 @@ const BlockCode_CodeLine: React.FC<CustomRenderElementProps<BlockCode_CodeLineTy
 }) => {
   const editor = useSlate()
   const currentNodePath = ReactEditor.findPath(editor, element)
+  const parentNode = SlateNode.parent(editor, currentNodePath)
+
+  // 序号块长度, 3位之后每多一位加16
+  const serialNumberWidth =
+    54 + (parentNode.children.length < 1000 ? 0 : (parentNode.children.length.toString().length - 3) * 16)
 
   return (
     <div
@@ -20,19 +26,15 @@ const BlockCode_CodeLine: React.FC<CustomRenderElementProps<BlockCode_CodeLineTy
       <span
         style={{
           display: "inline-block",
-          width: "45px",
+          width: `${serialNumberWidth}px`,
           color: "#a6a6a6",
           userSelect: "none",
+          textAlign: "right",
+          paddingRight: "16px",
         }}
         contentEditable={false}
       >
-        <span
-          style={{
-            marginLeft: "24px",
-          }}
-        >
-          {currentNodePath[currentNodePath.length - 1] + 1}
-        </span>
+        {currentNodePath[currentNodePath.length - 1] + 1}
       </span>
       {children}
     </div>
