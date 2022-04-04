@@ -4,7 +4,6 @@ import type { ParagraphType } from "../Paragraph/types"
 import type { BlockCodeType, BlockCode_CodeLineType } from "./types"
 
 //TODO: 行首直接添加一个空代码块 (需要新的toolbar?)
-//TODO: 粘贴
 export const toggleBlockCode = (editor: Editor) => {
   if (!editor.selection) {
     console.error("toggleBlockCode() need editor.selection.")
