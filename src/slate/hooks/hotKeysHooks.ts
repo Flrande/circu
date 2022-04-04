@@ -1,7 +1,8 @@
+import Item from "@arco-design/web-react/es/Breadcrumb/item"
 import type React from "react"
 import { Editor, Transforms } from "slate"
 import { useSlate } from "slate-react"
-import { SlateRange } from "../types/slate"
+import { SlateElement, SlateNode, SlateRange } from "../types/slate"
 
 const leftRightHandler = (event: React.KeyboardEvent, editor: Editor) => {
   const { code } = event
@@ -30,15 +31,21 @@ export const useOnKeyDown = () => {
     // for debug and develop
     if (event.altKey && event.key === "q") {
       // console.log(editor.selection, window.getSelection())
-      console.log(editor.children)
+      // console.log(editor.children)
+      Transforms.splitNodes(editor, {
+        height: 2,
+      })
+      // Transforms.removeNodes(editor)
+      // Transforms.liftNodes(editor)
     }
     if (event.altKey && event.key === "w") {
       if (editor.selection) {
-        const blockNodeEntry = Editor.node(editor, editor.selection, {
-          depth: 1,
-        })
-        console.log(blockNodeEntry[1])
-        Transforms.select(editor, blockNodeEntry[1])
+        const selectedNodes = Array.from(
+          Editor.nodes(editor, {
+            match: (n) => SlateElement.isElement(n),
+          })
+        ).map((item) => item[0])
+        console.log(selectedNodes)
       }
     }
   }

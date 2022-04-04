@@ -76,7 +76,6 @@ const ToolBarItem: React.FC<{
   )
 }
 
-//TODO: 使出现位置更合理 (忽视一些不可编辑的部分)
 const ToolBar: React.FC = () => {
   const { boldHandler, inlineCodeHandler, blockCodeHandler } = useToolBarHandlers()
   const [isMouseUp] = useAtom(isMouseUpAtom)
