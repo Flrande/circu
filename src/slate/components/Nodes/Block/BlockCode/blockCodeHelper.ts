@@ -1,11 +1,10 @@
 import { Editor, NodeEntry, Transforms } from "slate"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 import type { ParagraphType } from "../Paragraph/types"
-import type { BlockCodeType, BlockCode_CodeAreaType, BlockCode_CodeLineType, BlockCode_VoidAreaType } from "./types"
+import type { BlockCodeType, BlockCode_CodeLineType } from "./types"
 
 //TODO: 行首直接添加一个空代码块 (需要新的toolbar?)
 //TODO: 触发 toggleBlockCode, 选区开始于代码块外, 但包含代码块, 将整个选区合成为一个代码块
-//TODO: 用元组避免该函数内的部分断言
 export const toggleBlockCode = (editor: Editor) => {
   if (!editor.selection) {
     console.error("toggleBlockCode() need editor.selection.")
@@ -41,8 +40,8 @@ export const toggleBlockCode = (editor: Editor) => {
         match: (n) => SlateElement.isElement(n) && n.type === "blockCode",
       })
     )[0] as NodeEntry<BlockCodeType>
-    const voidArea = blockCode.children[0] as BlockCode_VoidAreaType
-    const codeArea = blockCode.children[1] as BlockCode_CodeAreaType
+    const voidArea = blockCode.children[0]
+    const codeArea = blockCode.children[1]
     const firstCodeLineIndex = codeLineEntryArr[0][1].slice(-1)[0]
     const lastCodeLineIndex = codeLineEntryArr.slice(-1)[0][1].slice(-1)[0]
 

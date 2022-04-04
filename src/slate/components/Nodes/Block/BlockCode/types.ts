@@ -42,7 +42,6 @@ export type BlockCode_VoidAreaType = {
 
 export type BlockCodeType = {
   type: "blockCode"
-  //TODO: 用元组添加类型约束
   // 需遵循 VoidArea - CodeArea - VoidArea
-  children: (BlockCode_CodeAreaType | BlockCode_VoidAreaType)[]
+  children: [BlockCode_VoidAreaType, BlockCode_CodeAreaType, BlockCode_VoidAreaType]
 }
