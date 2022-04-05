@@ -10,7 +10,7 @@ export const useToolBarHandlers = () => {
   const strikeHandler = (event: React.MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
-    toggleMark(editor, "strike")
+    toggleMark(editor, "strike", true)
     ReactEditor.focus(editor)
   }
 
@@ -18,7 +18,7 @@ export const useToolBarHandlers = () => {
   const boldHandler = (event: React.MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
-    toggleMark(editor, "bold")
+    toggleMark(editor, "bold", true)
     ReactEditor.focus(editor)
   }
 

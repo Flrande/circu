@@ -7,12 +7,16 @@ export const isMarkActive = (editor: Editor, format: Exclude<KeysUnion<CustomTex
   return marks ? marks[format] === true : false
 }
 
-export const toggleMark = (editor: Editor, format: Exclude<KeysUnion<CustomTextType>, "text">) => {
+export const toggleMark = <T extends Exclude<KeysUnion<CustomTextType>, "text">>(
+  editor: Editor,
+  format: T,
+  value: CustomTextType[T]
+) => {
   const isActive = isMarkActive(editor, format)
 
   if (isActive) {
     Editor.removeMark(editor, format)
   } else {
-    Editor.addMark(editor, format, true)
+    Editor.addMark(editor, format, value)
   }
 }

@@ -1,7 +1,7 @@
-import Item from "@arco-design/web-react/es/Breadcrumb/item"
 import type React from "react"
 import { Editor, Transforms } from "slate"
 import { useSlate } from "slate-react"
+import { toggleMark } from "../components/Nodes/Text/textHelper"
 import { SlateElement, SlateNode, SlateRange } from "../types/slate"
 
 const leftRightHandler = (event: React.KeyboardEvent, editor: Editor) => {
@@ -32,11 +32,15 @@ export const useOnKeyDown = () => {
     if (event.altKey && event.key === "q") {
       // console.log(editor.selection, window.getSelection())
       // console.log(editor.children)
-      Transforms.splitNodes(editor, {
-        height: 2,
-      })
+      // Transforms.splitNodes(editor, {
+      //   height: 2,
+      // })
       // Transforms.removeNodes(editor)
       // Transforms.liftNodes(editor)
+      toggleMark(editor, "color", {
+        fontColor: "yellow",
+        backgroundColor: "blue_2",
+      })
     }
     if (event.altKey && event.key === "w") {
       if (editor.selection) {
