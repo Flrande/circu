@@ -4,7 +4,6 @@ import type { ParagraphType } from "../Paragraph/types"
 import type { BlockCodeType, BlockCode_CodeLineType } from "./types"
 
 //TODO: 行首直接添加一个空代码块 (需要新的toolbar?)
-//TODO: 触发 toggleBlockCode, 选区开始于代码块外, 但包含代码块, 将整个选区合成为一个代码块
 export const toggleBlockCode = (editor: Editor) => {
   if (!editor.selection) {
     console.error("toggleBlockCode() need editor.selection.")
@@ -17,7 +16,10 @@ export const toggleBlockCode = (editor: Editor) => {
     })
   ) as NodeEntry<SlateElement>[]
 
+  // --------------------------------------------------
+  // case-1
   // 判断选区是否在代码块内, 若是, 将对应 CodeLine 拆分出来, 上下分割出两个代码块
+  // --------------------------------------------------
   if (selectedNodeEntryArr.every(([node]) => node.type.startsWith("blockCode"))) {
     // 选中的 codeLine
     const codeLineEntryArr = selectedNodeEntryArr.filter(
@@ -81,56 +83,119 @@ export const toggleBlockCode = (editor: Editor) => {
     const newPointPath = blockCodePath.slice(0, -1).concat([blockCodePath.slice(-1)[0] + newNodes.length])
     const newPoint = Editor.end(editor, newPointPath)
     Transforms.select(editor, newPoint)
-    return
-  }
 
-  // 选区从 paragraph 开始, 判断选区是否包含代码块, 若是, 将选区合成一个大的代码块
-  if (selectedNodeEntryArr.some(([node]) => node.type.startsWith("blockCode"))) {
-  }
+    // --------------------------------------------------
+    // case-2
+    // 选区从 paragraph 开始, 判断选区是否包含代码块, 若是, 将选区合成一个大的代码块
+    // --------------------------------------------------
+  } else if (selectedNodeEntryArr.some(([node]) => node.type.startsWith("blockCode"))) {
+    // 选中的 paragraph 和 blockCode
+    const selectedEntryArr = selectedNodeEntryArr.filter(
+      ([node]) => node.type === "paragraph" || node.type === "blockCode"
+    ) as NodeEntry<ParagraphType | BlockCodeType>[]
 
-  const selectedParagraphNodes = Array.from(
-    Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
-    })
-  ).map((item) => item[0]) as ParagraphType[]
-
-  const newNodeChildren: BlockCode_CodeLineType[] = selectedParagraphNodes.map<BlockCode_CodeLineType>((item) => {
-    return {
-      type: "blockCode_codeLine",
-      children: item.children,
+    // 新的 blockCode
+    const newNode: BlockCodeType = {
+      type: "blockCode",
+      children: [
+        {
+          type: "blockCode_voidArea",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        },
+        {
+          type: "blockCode_codeArea",
+          lang: "PlainText",
+          children: selectedEntryArr.flatMap(([node]) => {
+            if (node.type === "paragraph") {
+              const newItem: BlockCode_CodeLineType = {
+                type: "blockCode_codeLine",
+                children: node.children,
+              }
+              return newItem
+            } else {
+              const newItems: BlockCode_CodeLineType[] = node.children[1].children.map((node) => {
+                const newItem: BlockCode_CodeLineType = {
+                  type: "blockCode_codeLine",
+                  children: node.children,
+                }
+                return newItem
+              })
+              return newItems
+            }
+          }),
+        },
+        {
+          type: "blockCode_voidArea",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        },
+      ],
     }
-  })
-  const newNode: BlockCodeType = {
-    type: "blockCode",
-    children: [
-      {
-        type: "blockCode_voidArea",
-        children: [
-          {
-            text: "",
-          },
-        ],
-      },
-      {
-        type: "blockCode_codeArea",
-        lang: "PlainText",
-        children: newNodeChildren,
-      },
-      {
-        type: "blockCode_voidArea",
-        children: [
-          {
-            text: "",
-          },
-        ],
-      },
-    ],
-  }
 
-  const selectedStartPath = SlateRange.start(editor.selection).path
-  Transforms.removeNodes(editor)
-  Transforms.insertNodes(editor, newNode, {
-    at: [selectedStartPath[0]],
-  })
-  Transforms.select(editor, Editor.end(editor, [selectedStartPath[0], 1]))
+    const selectedStartPath = SlateRange.start(editor.selection).path
+    Transforms.removeNodes(editor)
+    Transforms.insertNodes(editor, newNode, {
+      at: [selectedStartPath[0]],
+    })
+    const newPoint = Editor.end(editor, [selectedStartPath[0], 1])
+    Transforms.select(editor, newPoint)
+
+    // --------------------------------------------------
+    // case-3
+    // 选区仅包括 paragraph
+    // --------------------------------------------------
+  } else {
+    const selectedParagraphNodes = Array.from(
+      Editor.nodes(editor, {
+        match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
+      })
+    ).map((item) => item[0]) as ParagraphType[]
+
+    const newNodeChildren: BlockCode_CodeLineType[] = selectedParagraphNodes.map<BlockCode_CodeLineType>((item) => {
+      return {
+        type: "blockCode_codeLine",
+        children: item.children,
+      }
+    })
+    const newNode: BlockCodeType = {
+      type: "blockCode",
+      children: [
+        {
+          type: "blockCode_voidArea",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        },
+        {
+          type: "blockCode_codeArea",
+          lang: "PlainText",
+          children: newNodeChildren,
+        },
+        {
+          type: "blockCode_voidArea",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        },
+      ],
+    }
+
+    const selectedStartPath = SlateRange.start(editor.selection).path
+    Transforms.removeNodes(editor)
+    Transforms.insertNodes(editor, newNode, {
+      at: [selectedStartPath[0]],
+    })
+    Transforms.select(editor, Editor.end(editor, [selectedStartPath[0], 1]))
+  }
 }
