@@ -1,54 +1,13 @@
 import { useAtom } from "jotai"
 import type React from "react"
-import { ReactEditor, useSlate } from "slate-react"
 import { isMouseUpAtom } from "../../state/mouse"
 import type { IconTypes } from "./icons/types"
 import BoldIcon from "./icons/BoldIcon"
 import InlineCodeIcon from "./icons/InlineCodeIcon"
 import { toolBar, toolBarContainer } from "./ToolBar.css"
-import { toggleInlineCode } from "../Nodes/Inline/InlineCode/inlineCodeHelper"
-import { toggleBlockCode } from "../Nodes/Block/BlockCode/blockCodeHelper"
 import BlockCodeIcon from "./icons/BlockCodeIcon"
-import { toggleMark } from "../Nodes/Text/textHelper"
-
-const useToolBarHandlers = () => {
-  const editor = useSlate()
-
-  const boldHandler = (event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    toggleMark(editor, "bold")
-    ReactEditor.focus(editor)
-  }
-
-  const inlineCodeHandler = (event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    if (editor.selection) {
-      toggleInlineCode(editor)
-      ReactEditor.focus(editor)
-    }
-  }
-
-  const blockCodeHandler = (event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    if (editor.selection) {
-      toggleBlockCode(editor)
-      const event = new MouseEvent("mousedown", {
-        bubbles: true,
-        cancelable: true,
-      })
-      window.getSelection()?.anchorNode?.parentElement?.dispatchEvent(event)
-    }
-  }
-
-  return {
-    boldHandler,
-    inlineCodeHandler,
-    blockCodeHandler,
-  }
-}
+import { useToolBarHandlers } from "./useToolBarHandlers"
+import StrikeIcon from "./icons/StrikeIcon"
 
 const ToolBarItem: React.FC<{
   // 利用标称类型限制 IconComponent 的类型
@@ -77,7 +36,7 @@ const ToolBarItem: React.FC<{
 }
 
 const ToolBar: React.FC = () => {
-  const { boldHandler, inlineCodeHandler, blockCodeHandler } = useToolBarHandlers()
+  const { boldHandler, strikeHandler, inlineCodeHandler, blockCodeHandler } = useToolBarHandlers()
   const [isMouseUp] = useAtom(isMouseUpAtom)
 
   const nativeSelection = window.getSelection()
@@ -105,6 +64,7 @@ const ToolBar: React.FC = () => {
         <div style={{ display: "inline-block" }}>
           <ul className={toolBar}>
             <ToolBarItem IconComponent={BoldIcon} onMouseDown={boldHandler}></ToolBarItem>
+            <ToolBarItem IconComponent={StrikeIcon} onMouseDown={strikeHandler}></ToolBarItem>
             <ToolBarItem IconComponent={InlineCodeIcon} onMouseDown={inlineCodeHandler}></ToolBarItem>
             <ToolBarItem IconComponent={BlockCodeIcon} onMouseDown={blockCodeHandler}></ToolBarItem>
           </ul>
