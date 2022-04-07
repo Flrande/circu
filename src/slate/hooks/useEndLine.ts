@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { Transforms } from "slate"
 import { useSlate } from "slate-react"
-import type { ParagraphType } from "../components/Nodes/Block/Paragraph/types"
+import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import type { SlateElement } from "../types/slate"
 
 export const useEndLine = () => {
@@ -10,7 +10,7 @@ export const useEndLine = () => {
 
   useEffect(() => {
     if (lastChild.type !== "paragraph") {
-      const blankLineNode: ParagraphType = {
+      const blankLineNode: IParagraph = {
         type: "paragraph",
         children: [
           {

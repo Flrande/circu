@@ -1,5 +1,5 @@
+import type { CustomText } from "../../../../types/interface"
 import type { KeysUnion } from "../../../../types/utils"
-import type { CustomTextType } from "../../Text/types"
 
 // [显示格式] - [Prism 对应 key string] (PlainText 为特例)
 export type CodeAreaLangMap = {
@@ -24,24 +24,24 @@ export type CodeAreaLangMap = {
   WebAssembly: "wasm"
 }
 
-export type BlockCode_CodeLineType = {
+export type IBlockCode_CodeLine = {
   type: "blockCode_codeLine"
-  children: CustomTextType[]
+  children: CustomText[]
 }
 
-export type BlockCode_CodeAreaType = {
+export type IBlockCode_CodeArea = {
   type: "blockCode_codeArea"
   lang: KeysUnion<CodeAreaLangMap> // 显示格式
-  children: BlockCode_CodeLineType[]
+  children: IBlockCode_CodeLine[]
 }
 
-export type BlockCode_VoidAreaType = {
+export type IBlockCode_VoidArea = {
   type: "blockCode_voidArea"
-  children: CustomTextType[]
+  children: CustomText[]
 }
 
-export type BlockCodeType = {
+export type IBlockCode = {
   type: "blockCode"
   // 需遵循 VoidArea - CodeArea - VoidArea
-  children: [BlockCode_VoidAreaType, BlockCode_CodeAreaType, BlockCode_VoidAreaType]
+  children: [IBlockCode_VoidArea, IBlockCode_CodeArea, IBlockCode_VoidArea]
 }

@@ -1,8 +1,8 @@
 import { Editor, Transforms } from "slate"
-import type { BlockCodeType } from "../components/Nodes/Block/BlockCode/types"
+import type { IBlockCode } from "../components/Nodes/Block/BlockCode/types"
 import { SlateElement } from "../types/slate"
 
-const verifyBlockCodeChild = (node: BlockCodeType) => {
+const verifyBlockCodeChild = (node: IBlockCode) => {
   const children = node.children
   return (
     children.length === 3 &&

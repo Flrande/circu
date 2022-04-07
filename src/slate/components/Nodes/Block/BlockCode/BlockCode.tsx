@@ -1,14 +1,13 @@
 import { ReactEditor, useSelected, useSlate } from "slate-react"
 import type { CustomRenderElementProps, KeysUnion } from "../../../../types/utils"
 import { BlockCodeContainer } from "./BlockCode.css"
-import type { BlockCodeType, BlockCode_CodeAreaType, CodeAreaLangMap } from "./types"
+import type { IBlockCode, IBlockCode_CodeArea, CodeAreaLangMap } from "./types"
 import { Select } from "@arco-design/web-react"
 import { SlateNode } from "../../../../types/slate"
 import { Transforms } from "slate"
 import { codeAreaLangMap } from "./constant"
 
-//TODO: 高亮语言选择
-const BlockCode: React.FC<CustomRenderElementProps<BlockCodeType>> = ({ attributes, children, element }) => {
+const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
   const editor = useSlate()
 
@@ -24,7 +23,7 @@ const BlockCode: React.FC<CustomRenderElementProps<BlockCodeType>> = ({ attribut
     >
       <div contentEditable={false}>
         <Select
-          defaultValue={(SlateNode.child(element, 1) as BlockCode_CodeAreaType).lang}
+          defaultValue={(SlateNode.child(element, 1) as IBlockCode_CodeArea).lang}
           style={{ width: 154 }}
           onChange={(value) => {
             const codeArea = SlateNode.child(element, 1)

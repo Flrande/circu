@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { ReactEditor, useSlate } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
-import type { BlockCode_CodeAreaType } from "./types"
+import type { IBlockCode_CodeArea } from "./types"
 
-const BlockCode_CodeArea: React.FC<CustomRenderElementProps<BlockCode_CodeAreaType>> = ({
+const BlockCode_CodeArea: React.FC<CustomRenderElementProps<IBlockCode_CodeArea>> = ({
   attributes,
   children,
   element,

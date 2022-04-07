@@ -1,7 +1,7 @@
 import type { CustomRenderElementProps } from "../../../../types/utils"
-import type { ParagraphType } from "./types"
+import type { IParagraph } from "./types"
 
-const Paragraph: React.FC<CustomRenderElementProps<ParagraphType>> = ({ attributes, children }) => {
+const Paragraph: React.FC<CustomRenderElementProps<IParagraph>> = ({ attributes, children }) => {
   return (
     <div
       {...attributes}

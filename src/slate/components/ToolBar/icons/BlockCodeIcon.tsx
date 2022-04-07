@@ -1,9 +1,4 @@
-// 标称类型
-export type BlockCodeIconType = React.FC & {
-  _BlockCodeIcon: string
-}
-
-const BlockCodeIcon: BlockCodeIconType = (() => {
+const BlockCodeIcon: React.FC = () => {
   return (
     <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2663">
       <path
@@ -20,6 +15,6 @@ const BlockCodeIcon: BlockCodeIconType = (() => {
       ></path>
     </svg>
   )
-}) as any
+}
 
 export default BlockCodeIcon

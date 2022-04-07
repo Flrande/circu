@@ -1,9 +1,4 @@
-// 标称类型
-export type StrikeIconType = React.FC & {
-  _StrikeIcon: string
-}
-
-const StrikeIcon: StrikeIconType = (() => {
+const StrikeIcon: React.FC = () => {
   return (
     <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1841">
       <path
@@ -18,6 +13,6 @@ const StrikeIcon: StrikeIconType = (() => {
       ></path>
     </svg>
   )
-}) as any
+}
 
 export default StrikeIcon

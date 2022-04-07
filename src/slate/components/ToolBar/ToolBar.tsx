@@ -1,42 +1,13 @@
 import { useAtom } from "jotai"
 import type React from "react"
 import { isMouseUpAtom } from "../../state/mouse"
-import type { IconTypes } from "./icons/types"
-import BoldIcon from "./icons/BoldIcon"
-import InlineCodeIcon from "./icons/InlineCodeIcon"
 import { toolBar, toolBarContainer } from "./ToolBar.css"
-import BlockCodeIcon from "./icons/BlockCodeIcon"
-import { useToolBarHandlers } from "./useToolBarHandlers"
-import StrikeIcon from "./icons/StrikeIcon"
-
-const ToolBarItem: React.FC<{
-  // 利用标称类型限制 IconComponent 的类型
-  IconComponent: IconTypes
-  onMouseDown?: React.MouseEventHandler
-}> = ({ IconComponent, onMouseDown }) => {
-  return (
-    <div>
-      <div
-        style={{
-          padding: "8px 4px",
-        }}
-      >
-        <div
-          style={{
-            height: "24px",
-            width: "24px",
-          }}
-          onMouseDown={onMouseDown}
-        >
-          <IconComponent></IconComponent>
-        </div>
-      </div>
-    </div>
-  )
-}
+import BoldButton from "./components/Bold/BoldButton"
+import StrikeButton from "./components/Strike/StrikeButton"
+import InlineCodeButton from "./components/InlineCode/InlineCodeButton"
+import BlockCodeButton from "./components/BlockCode/BlockCodeButton"
 
 const ToolBar: React.FC = () => {
-  const { boldHandler, strikeHandler, inlineCodeHandler, blockCodeHandler } = useToolBarHandlers()
   const [isMouseUp] = useAtom(isMouseUpAtom)
 
   const nativeSelection = window.getSelection()
@@ -63,10 +34,10 @@ const ToolBar: React.FC = () => {
       <div className={toolBarContainer} style={toolBarStyle}>
         <div style={{ display: "inline-block" }}>
           <ul className={toolBar}>
-            <ToolBarItem IconComponent={BoldIcon} onMouseDown={boldHandler}></ToolBarItem>
-            <ToolBarItem IconComponent={StrikeIcon} onMouseDown={strikeHandler}></ToolBarItem>
-            <ToolBarItem IconComponent={InlineCodeIcon} onMouseDown={inlineCodeHandler}></ToolBarItem>
-            <ToolBarItem IconComponent={BlockCodeIcon} onMouseDown={blockCodeHandler}></ToolBarItem>
+            <BoldButton></BoldButton>
+            <StrikeButton></StrikeButton>
+            <InlineCodeButton></InlineCodeButton>
+            <BlockCodeButton></BlockCodeButton>
           </ul>
         </div>
       </div>

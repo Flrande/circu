@@ -38,8 +38,8 @@ export const useOnKeyDown = () => {
       // Transforms.removeNodes(editor)
       // Transforms.liftNodes(editor)
       toggleMark(editor, "color", {
-        fontColor: "yellow",
-        backgroundColor: "blue_2",
+        fontColorKey: "yellow",
+        backgroundColorKey: "blue_2",
       })
     }
     if (event.altKey && event.key === "w") {

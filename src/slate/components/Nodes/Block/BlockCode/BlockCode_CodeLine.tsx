@@ -1,9 +1,9 @@
 import { ReactEditor, useSlate } from "slate-react"
 import { SlateNode } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
-import type { BlockCode_CodeLineType } from "./types"
+import type { IBlockCode_CodeLine } from "./types"
 
-const BlockCode_CodeLine: React.FC<CustomRenderElementProps<BlockCode_CodeLineType>> = ({
+const BlockCode_CodeLine: React.FC<CustomRenderElementProps<IBlockCode_CodeLine>> = ({
   attributes,
   children,
   element,

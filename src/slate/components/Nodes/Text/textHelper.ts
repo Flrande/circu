@@ -1,16 +1,16 @@
 import { Editor } from "slate"
+import type { CustomText } from "../../../types/interface"
 import type { KeysUnion } from "../../../types/utils"
-import type { CustomTextType } from "./types"
 
-export const isMarkActive = (editor: Editor, format: Exclude<KeysUnion<CustomTextType>, "text">) => {
+export const isMarkActive = (editor: Editor, format: Exclude<KeysUnion<CustomText>, "text">) => {
   const marks = Editor.marks(editor)
   return marks ? marks[format] === true : false
 }
 
-export const toggleMark = <T extends Exclude<KeysUnion<CustomTextType>, "text">>(
+export const toggleMark = <T extends Exclude<KeysUnion<CustomText>, "text">>(
   editor: Editor,
   format: T,
-  value: CustomTextType[T]
+  value: CustomText[T]
 ) => {
   const isActive = isMarkActive(editor, format)
 

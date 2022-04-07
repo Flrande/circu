@@ -1,9 +1,4 @@
-// 标称类型
-export type BoldIconType = React.FC & {
-  _BoldIcon: string
-}
-
-const BoldIcon: BoldIconType = (() => {
+const BoldIcon: React.FC = () => {
   return (
     <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4522">
       <path
@@ -23,6 +18,6 @@ const BoldIcon: BoldIconType = (() => {
       ></path>
     </svg>
   )
-}) as any
+}
 
 export default BoldIcon

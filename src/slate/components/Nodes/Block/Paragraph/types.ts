@@ -1,6 +1,6 @@
-import type { CustomTextType } from "../../Text/types"
+import type { CustomText } from "../../../../types/interface"
 
-export type ParagraphType = {
+export type IParagraph = {
   type: "paragraph"
-  children: CustomTextType[]
+  children: CustomText[]
 }

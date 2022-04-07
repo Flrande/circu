@@ -1,7 +1,7 @@
 import { Editor, NodeEntry, Transforms } from "slate"
 import { SlateElement, SlateRange } from "../../../../types/slate"
-import type { ParagraphType } from "../Paragraph/types"
-import type { BlockCodeType, BlockCode_CodeLineType } from "./types"
+import type { IParagraph } from "../Paragraph/types"
+import type { IBlockCode, IBlockCode_CodeLine } from "./types"
 
 //TODO: 行首直接添加一个空代码块 (需要新的toolbar?)
 export const toggleBlockCode = (editor: Editor) => {
@@ -24,11 +24,11 @@ export const toggleBlockCode = (editor: Editor) => {
     // 选中的 codeLine
     const codeLineEntryArr = selectedNodeEntryArr.filter(
       ([node]) => node.type === "blockCode_codeLine"
-    ) as NodeEntry<BlockCode_CodeLineType>[]
+    ) as NodeEntry<IBlockCode_CodeLine>[]
 
     // 根据选中 codeLine 生产的 paragraph
-    const newNodes: ParagraphType[] = codeLineEntryArr.map(([node]) => {
-      const newNode: ParagraphType = {
+    const newNodes: IParagraph[] = codeLineEntryArr.map(([node]) => {
+      const newNode: IParagraph = {
         type: "paragraph",
         children: node.children,
       }
@@ -41,7 +41,7 @@ export const toggleBlockCode = (editor: Editor) => {
         at: editor.selection,
         match: (n) => SlateElement.isElement(n) && n.type === "blockCode",
       })
-    )[0] as NodeEntry<BlockCodeType>
+    )[0] as NodeEntry<IBlockCode>
     const voidArea = blockCode.children[0]
     const codeArea = blockCode.children[1]
     const firstCodeLineIndex = codeLineEntryArr[0][1].slice(-1)[0]
@@ -49,7 +49,7 @@ export const toggleBlockCode = (editor: Editor) => {
 
     // 拆分后 -> startBlockCode - newParagraph - lastBlockCode
     // 关于 Object.assign({}, voidArea) -> https://github.com/ianstormtaylor/slate/issues/4309
-    const startBlockCode: BlockCodeType = {
+    const startBlockCode: IBlockCode = {
       type: "blockCode",
       children: [
         voidArea,
@@ -61,7 +61,7 @@ export const toggleBlockCode = (editor: Editor) => {
         Object.assign({}, voidArea),
       ],
     }
-    const lastBlockCode: BlockCodeType = {
+    const lastBlockCode: IBlockCode = {
       type: "blockCode",
       children: [
         voidArea,
@@ -92,10 +92,10 @@ export const toggleBlockCode = (editor: Editor) => {
     // 选中的 paragraph 和 blockCode
     const selectedEntryArr = selectedNodeEntryArr.filter(
       ([node]) => node.type === "paragraph" || node.type === "blockCode"
-    ) as NodeEntry<ParagraphType | BlockCodeType>[]
+    ) as NodeEntry<IParagraph | IBlockCode>[]
 
     // 新的 blockCode
-    const newNode: BlockCodeType = {
+    const newNode: IBlockCode = {
       type: "blockCode",
       children: [
         {
@@ -111,14 +111,14 @@ export const toggleBlockCode = (editor: Editor) => {
           lang: "PlainText",
           children: selectedEntryArr.flatMap(([node]) => {
             if (node.type === "paragraph") {
-              const newItem: BlockCode_CodeLineType = {
+              const newItem: IBlockCode_CodeLine = {
                 type: "blockCode_codeLine",
                 children: node.children,
               }
               return newItem
             } else {
-              const newItems: BlockCode_CodeLineType[] = node.children[1].children.map((node) => {
-                const newItem: BlockCode_CodeLineType = {
+              const newItems: IBlockCode_CodeLine[] = node.children[1].children.map((node) => {
+                const newItem: IBlockCode_CodeLine = {
                   type: "blockCode_codeLine",
                   children: node.children,
                 }
@@ -156,15 +156,15 @@ export const toggleBlockCode = (editor: Editor) => {
       Editor.nodes(editor, {
         match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
       })
-    ).map((item) => item[0]) as ParagraphType[]
+    ).map((item) => item[0]) as IParagraph[]
 
-    const newNodeChildren: BlockCode_CodeLineType[] = selectedParagraphNodes.map<BlockCode_CodeLineType>((item) => {
+    const newNodeChildren: IBlockCode_CodeLine[] = selectedParagraphNodes.map<IBlockCode_CodeLine>((item) => {
       return {
         type: "blockCode_codeLine",
         children: item.children,
       }
     })
-    const newNode: BlockCodeType = {
+    const newNode: IBlockCode = {
       type: "blockCode",
       children: [
         {

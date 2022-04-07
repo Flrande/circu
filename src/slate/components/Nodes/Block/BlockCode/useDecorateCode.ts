@@ -20,9 +20,9 @@ import "prismjs/components/prism-wasm"
 
 import type { NodeEntry } from "slate"
 import { useSlate } from "slate-react"
-import type { CustomText } from "../../../../types/interface"
 import { type SlateRange, SlateText, SlateNode, SlateElement } from "../../../../types/slate"
 import { codeAreaLangMap } from "./constant"
+import type { CustomText } from "../../../../types/interface"
 
 const getTokenLength: (token: string | Prism.Token) => number = (token) => {
   if (typeof token === "string") {

@@ -1,9 +1,4 @@
-// 标称类型
-export type InlineCodeIconType = React.FC & {
-  _InlineCodeIcon: string
-}
-
-const InlineCodeIcon: InlineCodeIconType = (() => {
+const InlineCodeIcon: React.FC = () => {
   return (
     <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4676">
       <path
@@ -13,6 +8,6 @@ const InlineCodeIcon: InlineCodeIconType = (() => {
       ></path>
     </svg>
   )
-}) as any
+}
 
 export default InlineCodeIcon

@@ -50,7 +50,7 @@ const Leaf: React.FC<RenderLeafProps> = ({ attributes, children, leaf }) => {
 
   if (leaf.color) {
     children = (
-      <Color fontColor={leaf.color.fontColor} backgroundColor={leaf.color.backgroundColor}>
+      <Color fontColorKey={leaf.color.fontColorKey} backgroundColorKey={leaf.color.backgroundColorKey}>
         {children}
       </Color>
     )

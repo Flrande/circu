@@ -1,8 +1,8 @@
 import { ReactEditor, useSlate } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
-import type { BlockCode_VoidAreaType } from "./types"
+import type { IBlockCode_VoidArea } from "./types"
 
-const BlockCode_VoidArea: React.FC<CustomRenderElementProps<BlockCode_VoidAreaType>> = ({
+const BlockCode_VoidArea: React.FC<CustomRenderElementProps<IBlockCode_VoidArea>> = ({
   attributes,
   children,
   element,

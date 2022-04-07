@@ -56,14 +56,14 @@ export const backgroundColorMap = {
 }
 
 const Color: React.FC<{
-  fontColor?: KeysUnion<fontColorMap>
-  backgroundColor?: KeysUnion<backgroundColorMap>
-}> = ({ fontColor, backgroundColor, children }) => {
+  fontColorKey?: KeysUnion<fontColorMap>
+  backgroundColorKey?: KeysUnion<backgroundColorMap>
+}> = ({ fontColorKey, backgroundColorKey, children }) => {
   return (
     <span
       style={{
-        backgroundColor: backgroundColor ? backgroundColorMap[backgroundColor] : undefined,
-        color: fontColor ? fontColorMap[fontColor] : undefined,
+        backgroundColor: backgroundColorKey ? backgroundColorMap[backgroundColorKey] : undefined,
+        color: fontColorKey ? fontColorMap[fontColorKey] : undefined,
       }}
     >
       {children}

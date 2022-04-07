@@ -1,6 +1,6 @@
-import type { CustomTextType } from "../../Text/types"
+import type { CustomText } from "../../../../types/interface"
 
-export type InlineCodeType = {
+export type IInlineCode = {
   type: "inlineCode"
-  children: CustomTextType[]
+  children: CustomText[]
 }

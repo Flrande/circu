@@ -1,27 +1,21 @@
 import type { BaseEditor } from "slate"
 import type { ReactEditor } from "slate-react"
 import type {
-  BlockCodeType,
-  BlockCode_CodeAreaType,
-  BlockCode_CodeLineType,
-  BlockCode_VoidAreaType,
+  IBlockCode,
+  IBlockCode_CodeArea,
+  IBlockCode_CodeLine,
+  IBlockCode_VoidArea,
 } from "../components/Nodes/Block/BlockCode/types"
-import type { ParagraphType } from "../components/Nodes/Block/Paragraph/types"
-import type { InlineCodeType } from "../components/Nodes/Inline/InlineCode/types"
-import type { CustomTextType } from "../components/Nodes/Text/types"
+import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
+import type { IInlineCode } from "../components/Nodes/Inline/InlineCode/types"
+import type { ICustomText } from "../components/Nodes/Text/types"
 
-// Type 后缀的都是有对应组件的
-export type BlockElement =
-  | ParagraphType
-  | BlockCodeType
-  | BlockCode_CodeAreaType
-  | BlockCode_VoidAreaType
-  | BlockCode_CodeLineType
-export type InlineElement = InlineCodeType
-export type VoidElement = BlockCode_VoidAreaType
+export type BlockElement = IParagraph | IBlockCode | IBlockCode_CodeArea | IBlockCode_VoidArea | IBlockCode_CodeLine
+export type InlineElement = IInlineCode
+export type VoidElement = IBlockCode_VoidArea
 
 export type CustomElement = BlockElement | InlineElement
-export type CustomText = CustomTextType
+export type CustomText = ICustomText
 
 declare module "slate" {
   interface CustomTypes {

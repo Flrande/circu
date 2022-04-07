@@ -1,5 +1,5 @@
 import type { CustomRenderElementProps } from "../../../../types/utils"
-import type { InlineCodeType } from "./types"
+import type { IInlineCode } from "./types"
 
 // Put this at the start and end of an inline component to work around this Chromium bug:
 // https://bugs.chromium.org/p/chromium/issues/detail?id=1249405
@@ -14,7 +14,7 @@ const InlineChromiumBugfix = () => (
   </span>
 )
 
-const InlineCode: React.FC<CustomRenderElementProps<InlineCodeType>> = ({ attributes, children }) => {
+const InlineCode: React.FC<CustomRenderElementProps<IInlineCode>> = ({ attributes, children }) => {
   return (
     <span
       {...attributes}

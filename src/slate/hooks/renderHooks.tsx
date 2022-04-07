@@ -1,20 +1,20 @@
 import type { RenderElementProps, RenderLeafProps } from "slate-react"
 import BlockCode from "../components/Nodes/Block/BlockCode/BlockCode"
 import BlockCode_CodeArea from "../components/Nodes/Block/BlockCode/BlockCode_CodeArea"
-import type {
-  BlockCodeType,
-  BlockCode_CodeAreaType,
-  BlockCode_CodeLineType,
-  BlockCode_VoidAreaType,
-} from "../components/Nodes/Block/BlockCode/types"
+import BlockCode_CodeLine from "../components/Nodes/Block/BlockCode/BlockCode_CodeLine"
 import BlockCode_VoidArea from "../components/Nodes/Block/BlockCode/BlockCode_VoidArea"
+import type {
+  IBlockCode,
+  IBlockCode_CodeArea,
+  IBlockCode_CodeLine,
+  IBlockCode_VoidArea,
+} from "../components/Nodes/Block/BlockCode/types"
 import Paragraph from "../components/Nodes/Block/Paragraph/Paragraph"
-import type { ParagraphType } from "../components/Nodes/Block/Paragraph/types"
+import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import InlineCode from "../components/Nodes/Inline/InlineCode/InlineCode"
-import type { InlineCodeType } from "../components/Nodes/Inline/InlineCode/types"
+import type { IInlineCode } from "../components/Nodes/Inline/InlineCode/types"
 import Leaf from "../components/Nodes/Text/Leaf"
 import type { CustomRenderElementProps } from "../types/utils"
-import BlockCode_CodeLine from "../components/Nodes/Block/BlockCode/BlockCode_CodeLine"
 
 export const useRenderLeaf = () => {
   return (props: RenderLeafProps) => <Leaf {...props}></Leaf>
@@ -24,23 +24,17 @@ export const useRenderElement = () => {
   return (props: RenderElementProps) => {
     switch (props.element.type) {
       case "paragraph":
-        return <Paragraph {...(props as CustomRenderElementProps<ParagraphType>)}></Paragraph>
+        return <Paragraph {...(props as CustomRenderElementProps<IParagraph>)}></Paragraph>
       case "blockCode":
-        return <BlockCode {...(props as CustomRenderElementProps<BlockCodeType>)}></BlockCode>
+        return <BlockCode {...(props as CustomRenderElementProps<IBlockCode>)}></BlockCode>
       case "inlineCode":
-        return <InlineCode {...(props as CustomRenderElementProps<InlineCodeType>)}></InlineCode>
+        return <InlineCode {...(props as CustomRenderElementProps<IInlineCode>)}></InlineCode>
       case "blockCode_codeArea":
-        return (
-          <BlockCode_CodeArea {...(props as CustomRenderElementProps<BlockCode_CodeAreaType>)}></BlockCode_CodeArea>
-        )
+        return <BlockCode_CodeArea {...(props as CustomRenderElementProps<IBlockCode_CodeArea>)}></BlockCode_CodeArea>
       case "blockCode_voidArea":
-        return (
-          <BlockCode_VoidArea {...(props as CustomRenderElementProps<BlockCode_VoidAreaType>)}></BlockCode_VoidArea>
-        )
+        return <BlockCode_VoidArea {...(props as CustomRenderElementProps<IBlockCode_VoidArea>)}></BlockCode_VoidArea>
       case "blockCode_codeLine":
-        return (
-          <BlockCode_CodeLine {...(props as CustomRenderElementProps<BlockCode_CodeLineType>)}></BlockCode_CodeLine>
-        )
+        return <BlockCode_CodeLine {...(props as CustomRenderElementProps<IBlockCode_CodeLine>)}></BlockCode_CodeLine>
     }
   }
 }

@@ -1,6 +1,6 @@
 import { Editor, Transforms } from "slate"
 import { SlateElement, SlateRange } from "../../../../types/slate"
-import type { InlineCodeType } from "./types"
+import type { IInlineCode } from "./types"
 
 export const isInlineCodeActive = (editor: Editor) => {
   const { selection } = editor
@@ -84,7 +84,7 @@ export const toggleInlineCode = (editor: Editor) => {
     })
   )
 
-  const newElement: InlineCodeType = {
+  const newElement: IInlineCode = {
     type: "inlineCode",
     children: [],
   }
