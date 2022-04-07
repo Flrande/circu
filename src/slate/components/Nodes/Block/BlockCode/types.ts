@@ -1,8 +1,9 @@
 import type { CustomText } from "../../../../types/interface"
 import type { KeysUnion } from "../../../../types/utils"
 
+// TODO: 改成接口类型名
 // [显示格式] - [Prism 对应 key string] (PlainText 为特例)
-export type CodeAreaLangMap = {
+export type ICodeAreaLangMap = {
   PlainText: "plainText"
   C: "c"
   "C++": "cpp"
@@ -31,7 +32,7 @@ export type IBlockCode_CodeLine = {
 
 export type IBlockCode_CodeArea = {
   type: "blockCode_codeArea"
-  lang: KeysUnion<CodeAreaLangMap> // 显示格式
+  langKey: KeysUnion<ICodeAreaLangMap> // 显示格式
   children: IBlockCode_CodeLine[]
 }
 

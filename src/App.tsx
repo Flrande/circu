@@ -6,6 +6,7 @@ import ToolBar from "./slate/components/ToolBar/ToolBar"
 import { useCreateEditor } from "./slate/hooks/useCreateEditor"
 import SlateEditable from "./slate/SlateEditable"
 
+//TODO-BUG: 行内样式光标移不出来?
 //TODO: 用 useSlateStatic 替代 useSlate 减少重渲染
 const App: React.FC = () => {
   const editor = useCreateEditor()
@@ -31,7 +32,7 @@ const App: React.FC = () => {
         },
         {
           type: "blockCode_codeArea",
-          lang: "Javascript",
+          langKey: "Javascript",
           children: [
             {
               type: "blockCode_codeLine",
@@ -90,7 +91,7 @@ const App: React.FC = () => {
         },
         {
           type: "blockCode_codeArea",
-          lang: "PlainText",
+          langKey: "PlainText",
           children: [
             {
               type: "blockCode_codeLine",
@@ -133,7 +134,7 @@ const App: React.FC = () => {
         },
         {
           type: "blockCode_codeArea",
-          lang: "Javascript",
+          langKey: "Javascript",
           children: [
             {
               type: "blockCode_codeLine",

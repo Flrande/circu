@@ -55,7 +55,7 @@ export const toggleBlockCode = (editor: Editor) => {
         voidArea,
         {
           type: "blockCode_codeArea",
-          lang: codeArea.lang,
+          langKey: codeArea.langKey,
           children: codeArea.children.slice(0, firstCodeLineIndex),
         },
         Object.assign({}, voidArea),
@@ -67,7 +67,7 @@ export const toggleBlockCode = (editor: Editor) => {
         voidArea,
         {
           type: "blockCode_codeArea",
-          lang: codeArea.lang,
+          langKey: codeArea.langKey,
           children: codeArea.children.slice(lastCodeLineIndex + 1),
         },
         Object.assign({}, voidArea),
@@ -108,7 +108,7 @@ export const toggleBlockCode = (editor: Editor) => {
         },
         {
           type: "blockCode_codeArea",
-          lang: "PlainText",
+          langKey: "PlainText",
           children: selectedEntryArr.flatMap(([node]) => {
             if (node.type === "paragraph") {
               const newItem: IBlockCode_CodeLine = {
@@ -177,7 +177,7 @@ export const toggleBlockCode = (editor: Editor) => {
         },
         {
           type: "blockCode_codeArea",
-          lang: "PlainText",
+          langKey: "PlainText",
           children: newNodeChildren,
         },
         {

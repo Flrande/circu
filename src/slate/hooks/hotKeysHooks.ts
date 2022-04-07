@@ -30,17 +30,7 @@ export const useOnKeyDown = () => {
 
     // for debug and develop
     if (event.altKey && event.key === "q") {
-      // console.log(editor.selection, window.getSelection())
-      // console.log(editor.children)
-      // Transforms.splitNodes(editor, {
-      //   height: 2,
-      // })
-      // Transforms.removeNodes(editor)
-      // Transforms.liftNodes(editor)
-      toggleMark(editor, "color", {
-        fontColorKey: "yellow",
-        backgroundColorKey: "blue_2",
-      })
+      console.log(editor.selection?.anchor)
     }
     if (event.altKey && event.key === "w") {
       if (editor.selection) {

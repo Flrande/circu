@@ -1,5 +1,6 @@
 import type { KeysUnion } from "../../../../types/utils"
-import { backgroundColorMap, fontColorMap } from "../../../Nodes/Text/Color"
+import type { IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
+import { backgroundColorMap } from "../../../Nodes/Text/Color"
 import ColorBarIcon from "./ColorBarIcon"
 
 const ColorBarItem = <T extends "font" | "background">({
@@ -7,7 +8,7 @@ const ColorBarItem = <T extends "font" | "background">({
   colorKey,
 }: {
   type: T
-  colorKey: T extends "font" ? KeysUnion<fontColorMap> : KeysUnion<backgroundColorMap>
+  colorKey: T extends "font" ? KeysUnion<IFontColorMap> : KeysUnion<IBackgroundColorMap>
 }) => {
   if (type === "font") {
     return (
@@ -18,7 +19,7 @@ const ColorBarItem = <T extends "font" | "background">({
             width: "24px",
           }}
         >
-          <ColorBarIcon fontColorKey={colorKey as KeysUnion<fontColorMap>}></ColorBarIcon>
+          <ColorBarIcon fontColorKey={colorKey as KeysUnion<IFontColorMap>}></ColorBarIcon>
         </div>
       </div>
     )
@@ -29,7 +30,7 @@ const ColorBarItem = <T extends "font" | "background">({
           style={{
             height: "24px",
             width: "24px",
-            backgroundColor: backgroundColorMap[colorKey as KeysUnion<backgroundColorMap>],
+            backgroundColor: backgroundColorMap[colorKey as KeysUnion<IBackgroundColorMap>],
           }}
         >
           <ColorBarIcon></ColorBarIcon>
@@ -41,7 +42,7 @@ const ColorBarItem = <T extends "font" | "background">({
 const ColorBar: React.FC = () => {
   const fontList: Array<{
     type: "font"
-    color: KeysUnion<fontColorMap>
+    color: KeysUnion<IFontColorMap>
   }> = [
     {
       type: "font",
@@ -74,7 +75,7 @@ const ColorBar: React.FC = () => {
   ]
   const backgroundList: Array<{
     type: "background"
-    color: KeysUnion<backgroundColorMap>
+    color: KeysUnion<IBackgroundColorMap>
   }> = [
     {
       type: "background",

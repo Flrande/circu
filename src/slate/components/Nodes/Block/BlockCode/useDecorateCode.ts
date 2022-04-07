@@ -18,11 +18,12 @@ import "prismjs/components/prism-sql"
 import "prismjs/components/prism-plsql" // sql要在plsql前面
 import "prismjs/components/prism-wasm"
 
-import type { NodeEntry } from "slate"
+import { Editor, NodeEntry } from "slate"
 import { useSlate } from "slate-react"
 import { type SlateRange, SlateText, SlateNode, SlateElement } from "../../../../types/slate"
 import { codeAreaLangMap } from "./constant"
 import type { CustomText } from "../../../../types/interface"
+import type { IBlockCode_CodeArea } from "./types"
 
 const getTokenLength: (token: string | Prism.Token) => number = (token) => {
   if (typeof token === "string") {
@@ -43,32 +44,77 @@ export const useDecorateCode = () => {
       tokenTypes: CustomText["tokenTypes"]
     })[] = []
 
-    if (SlateText.isText(node)) {
-      const parentNode = SlateNode.parent(editor, path.slice(0, -1))
+    if (SlateElement.isElement(node) && node.type === "blockCode_codeLine") {
+      const parentNode = SlateNode.parent(editor, path) as IBlockCode_CodeArea
+      const lang = codeAreaLangMap[parentNode.langKey]
+      const string = SlateNode.string(node)
+      if (lang !== "plainText") {
+        const tokens = Prism.tokenize(string, Prism.languages[lang])
 
-      if (SlateElement.isElement(parentNode) && parentNode.type === "blockCode_codeArea") {
-        const lang = codeAreaLangMap[parentNode.lang]
+        // string 中 token 的 offset (附加 token 类型)
+        // 如对 const tmp = 1 tokenize 后 -> [[0, 5], [10, 11], [12, 13]] (Javascript)
+        let splitOffset: Array<[number, number, string]> = []
+        let start = 0
+        for (const token of tokens) {
+          const length = getTokenLength(token)
+          const end = start + length
 
-        if (lang !== "plainText") {
-          const tokens = Prism.tokenize(node.text, Prism.languages[lang])
+          if (typeof token !== "string") {
+            splitOffset.push([start, end, token.type]) // 附加 token 类型
+          }
 
-          let start = 0
-          for (const token of tokens) {
-            const length = getTokenLength(token)
-            const end = start + length
+          start = end
+        }
 
-            if (typeof token !== "string") {
-              // slate-react 会将 Point 以外的属性分配到对应的 leaf 中
+        // 当前 node 下的所有 Text
+        const textEntryArr = Array.from(
+          Editor.nodes(editor, {
+            at: path,
+            match: (n) => SlateText.isText(n),
+          })
+        ) as NodeEntry<CustomText>[]
+
+        // 遍历每个 token, 找到每个 token 对应的所有 Range
+        for (const tokenOffset of splitOffset) {
+          const [start, end, tokenType] = tokenOffset
+          // 当前到达的 Point offset (以 Text 为单位进行跳跃, 这个 offset 相对于整个 node 的 string)
+          let currentOffset = 0
+          for (const [node, path] of textEntryArr) {
+            // 无视 { text: "" }
+            if (node.text.length === 0) continue
+
+            const newCurrentOffset = currentOffset + node.text.length
+            if (newCurrentOffset > start && newCurrentOffset >= end) {
               ranges.push({
                 tokenTypes: {
-                  [token.type]: true,
+                  [tokenType]: true,
                 },
-                anchor: { path, offset: start },
-                focus: { path, offset: end },
+                anchor: {
+                  path,
+                  offset: start - currentOffset < 0 ? 0 : start - currentOffset,
+                },
+                focus: {
+                  path,
+                  offset: end - currentOffset,
+                },
               })
             }
-
-            start = end
+            if (newCurrentOffset > start && newCurrentOffset < end) {
+              ranges.push({
+                tokenTypes: {
+                  [tokenType]: true,
+                },
+                anchor: {
+                  path,
+                  offset: start - currentOffset,
+                },
+                focus: {
+                  path,
+                  offset: node.text.length,
+                },
+              })
+            }
+            currentOffset = newCurrentOffset
           }
         }
       }

@@ -1,6 +1,6 @@
-import type { CodeAreaLangMap } from "./types"
+import type { ICodeAreaLangMap } from "./types"
 
-export const codeAreaLangMap: CodeAreaLangMap = {
+export const codeAreaLangMap: ICodeAreaLangMap = {
   PlainText: "plainText",
   C: "c",
   "C++": "cpp",

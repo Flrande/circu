@@ -1,8 +1,9 @@
 import type { KeysUnion } from "../../../../types/utils"
+import type { IFontColorMap } from "../../../Nodes/Text/Color"
 import { fontColorMap } from "../../../Nodes/Text/Color"
 
 const ColorBarIcon: React.FC<{
-  fontColorKey?: KeysUnion<fontColorMap>
+  fontColorKey?: KeysUnion<IFontColorMap>
 }> = ({ fontColorKey }) => {
   const fontColor = fontColorKey ? fontColorMap[fontColorKey] : "#ffffff"
 

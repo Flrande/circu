@@ -1,7 +1,7 @@
 import type { KeysUnion } from "../../../types/utils"
 
 // 参考色板 -> https://arco.design/react/docs/palette
-export type fontColorMap = {
+export type IFontColorMap = {
   red: "#F76965"
   orange: "#FF9626"
   yellow: "#FBE94B"
@@ -11,7 +11,7 @@ export type fontColorMap = {
   gray: "#929293"
 }
 
-export type backgroundColorMap = {
+export type IBackgroundColorMap = {
   red_1: "#770611"
   red_2: "#CB2E34"
   orange_1: "#4D1B00"
@@ -28,7 +28,7 @@ export type backgroundColorMap = {
   gray_2: "#5F5F60"
 }
 
-export const fontColorMap: fontColorMap = {
+export const fontColorMap: IFontColorMap = {
   red: "#F76965",
   orange: "#FF9626",
   yellow: "#FBE94B",
@@ -38,7 +38,7 @@ export const fontColorMap: fontColorMap = {
   gray: "#929293",
 }
 
-export const backgroundColorMap = {
+export const backgroundColorMap: IBackgroundColorMap = {
   red_1: "#770611",
   red_2: "#CB2E34",
   orange_1: "#4D1B00",
@@ -56,8 +56,8 @@ export const backgroundColorMap = {
 }
 
 const Color: React.FC<{
-  fontColorKey?: KeysUnion<fontColorMap>
-  backgroundColorKey?: KeysUnion<backgroundColorMap>
+  fontColorKey?: KeysUnion<IFontColorMap>
+  backgroundColorKey?: KeysUnion<IBackgroundColorMap>
 }> = ({ fontColorKey, backgroundColorKey, children }) => {
   return (
     <span
