@@ -1,6 +1,6 @@
 import { useSlate } from "slate-react"
 import { toggleBlockCode } from "../../../Nodes/Block/BlockCode/blockCodeHelper"
-import BlockCodeIcon from "../../icons/BlockCodeIcon"
+import BlockCodeIcon from "./BlockCodeIcon"
 
 const BlockCodeButton: React.FC = () => {
   const editor = useSlate()

@@ -1,6 +1,6 @@
 import { ReactEditor, useSlate } from "slate-react"
 import { toggleMark } from "../../../Nodes/Text/textHelper"
-import BoldIcon from "../../icons/BoldIcon"
+import BoldIcon from "./BoldIcon"
 
 const BoldButton: React.FC = () => {
   const editor = useSlate()

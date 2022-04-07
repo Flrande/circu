@@ -1,6 +1,6 @@
 import { useSlate, ReactEditor } from "slate-react"
 import { toggleMark } from "../../../Nodes/Text/textHelper"
-import StrikeIcon from "../../icons/StrikeIcon"
+import StrikeIcon from "./StrikeIcon"
 
 const StrikeButton: React.FC = () => {
   const editor = useSlate()

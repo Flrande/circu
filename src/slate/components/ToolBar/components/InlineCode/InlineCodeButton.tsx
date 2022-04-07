@@ -1,6 +1,6 @@
 import { ReactEditor, useSlate } from "slate-react"
 import { toggleInlineCode } from "../../../Nodes/Inline/InlineCode/inlineCodeHelper"
-import InlineCodeIcon from "../../icons/InlineCodeIcon"
+import InlineCodeIcon from "./InlineCodeIcon"
 
 const InlineCodeButton: React.FC = () => {
   const editor = useSlate()

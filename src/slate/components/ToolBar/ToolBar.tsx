@@ -6,6 +6,7 @@ import BoldButton from "./components/Bold/BoldButton"
 import StrikeButton from "./components/Strike/StrikeButton"
 import InlineCodeButton from "./components/InlineCode/InlineCodeButton"
 import BlockCodeButton from "./components/BlockCode/BlockCodeButton"
+import ColorButton from "./components/Color/ColorButton"
 
 const ToolBar: React.FC = () => {
   const [isMouseUp] = useAtom(isMouseUpAtom)
@@ -36,6 +37,7 @@ const ToolBar: React.FC = () => {
           <ul className={toolBar}>
             <BoldButton></BoldButton>
             <StrikeButton></StrikeButton>
+            <ColorButton></ColorButton>
             <InlineCodeButton></InlineCodeButton>
             <BlockCodeButton></BlockCodeButton>
           </ul>
