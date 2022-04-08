@@ -3,7 +3,6 @@ import { ReactEditor, useSlate } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { IBlockCode_CodeArea } from "./types"
 
-// TODO-BUG: 鼠标点击代码块, 移出代码块后无法输入
 const BlockCode_CodeArea: React.FC<CustomRenderElementProps<IBlockCode_CodeArea>> = ({
   attributes,
   children,
@@ -17,9 +16,11 @@ const BlockCode_CodeArea: React.FC<CustomRenderElementProps<IBlockCode_CodeArea>
   useEffect(() => {
     if (containerDom) {
       const controller = new AbortController()
+
       containerDom.addEventListener(
         "mousedown",
         () => {
+          const mouseleaveController = new AbortController()
           setIfEditable(undefined)
 
           containerDom.addEventListener(
@@ -28,19 +29,20 @@ const BlockCode_CodeArea: React.FC<CustomRenderElementProps<IBlockCode_CodeArea>
               setIfEditable(false)
             },
             {
-              signal: controller.signal,
+              signal: mouseleaveController.signal,
             }
           )
-        },
-        {
-          signal: controller.signal,
-        }
-      )
 
-      document.addEventListener(
-        "mouseup",
-        () => {
-          setIfEditable(undefined)
+          document.addEventListener(
+            "mouseup",
+            () => {
+              setIfEditable(undefined)
+              mouseleaveController.abort()
+            },
+            {
+              signal: mouseleaveController.signal,
+            }
+          )
         },
         {
           signal: controller.signal,
