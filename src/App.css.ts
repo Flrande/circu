@@ -11,7 +11,6 @@ export const doc = style({
   fontFamily: "Source Code Pro,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Microsoft Yahei;",
   color: "#ebebeb",
   fontSize: "16px",
-  fontWeight: "400",
   padding: "16px",
   letterSpacing: ".02em",
   lineHeight: "1.6",

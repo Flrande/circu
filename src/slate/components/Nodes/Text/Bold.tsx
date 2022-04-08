@@ -2,7 +2,7 @@ const Bold: React.FC = ({ children }) => {
   return (
     <span
       style={{
-        fontWeight: "600",
+        fontWeight: "700",
       }}
     >
       {children}
