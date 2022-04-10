@@ -1,9 +1,11 @@
 import { useSlate, ReactEditor } from "slate-react"
-import { toggleMark } from "../../../Nodes/Text/textHelper"
+import { isMarkActive, toggleMark } from "../../../Nodes/Text/textHelper"
+import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import StrikeIcon from "./StrikeIcon"
 
 const StrikeButton: React.FC = () => {
   const editor = useSlate()
+  const isStrikeActive = isMarkActive(editor, "strike")
   const onMouseDown = (event: React.MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
@@ -12,23 +14,9 @@ const StrikeButton: React.FC = () => {
   }
 
   return (
-    <div>
-      <div
-        style={{
-          padding: "8px 4px",
-        }}
-      >
-        <div
-          style={{
-            height: "24px",
-            width: "24px",
-          }}
-          onMouseDown={onMouseDown}
-        >
-          <StrikeIcon></StrikeIcon>
-        </div>
-      </div>
-    </div>
+    <ToolBarItem isStyleActive={isStrikeActive} onMouseDown={onMouseDown}>
+      <StrikeIcon></StrikeIcon>
+    </ToolBarItem>
   )
 }
 

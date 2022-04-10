@@ -8,6 +8,7 @@ import InlineCodeButton from "./components/InlineCode/InlineCodeButton"
 import BlockCodeButton from "./components/BlockCode/BlockCodeButton"
 import ColorButton from "./components/Color/ColorButton"
 
+// TODO: item 可控拖拽
 const ToolBar: React.FC = () => {
   const [isMouseUp] = useAtom(isMouseUpAtom)
 

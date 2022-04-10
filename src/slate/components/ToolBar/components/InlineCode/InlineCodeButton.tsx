@@ -1,9 +1,11 @@
 import { ReactEditor, useSlate } from "slate-react"
-import { toggleInlineCode } from "../../../Nodes/Inline/InlineCode/inlineCodeHelper"
+import { isInlineCodeActive, toggleInlineCode } from "../../../Nodes/Inline/InlineCode/inlineCodeHelper"
+import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import InlineCodeIcon from "./InlineCodeIcon"
 
 const InlineCodeButton: React.FC = () => {
   const editor = useSlate()
+  const isActive = isInlineCodeActive(editor)
   const onMouseDown = (event: React.MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
@@ -14,23 +16,9 @@ const InlineCodeButton: React.FC = () => {
   }
 
   return (
-    <div>
-      <div
-        style={{
-          padding: "8px 4px",
-        }}
-      >
-        <div
-          style={{
-            height: "24px",
-            width: "24px",
-          }}
-          onMouseDown={onMouseDown}
-        >
-          <InlineCodeIcon></InlineCodeIcon>
-        </div>
-      </div>
-    </div>
+    <ToolBarItem isStyleActive={isActive} onMouseDown={onMouseDown}>
+      <InlineCodeIcon></InlineCodeIcon>
+    </ToolBarItem>
   )
 }
 
