@@ -14,6 +14,7 @@ export const isInlineCodeActive = (editor: Editor) => {
   return match.length > 0 ? true : false
 }
 
+// TODO: 测试下各种 case
 export const untoggleInlineCode = (editor: Editor) => {
   if (!editor.selection) {
     console.error("untoggleInlineCode() need editor.selection.")

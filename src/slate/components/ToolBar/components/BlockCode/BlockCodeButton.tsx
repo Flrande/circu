@@ -1,9 +1,11 @@
 import { useSlate } from "slate-react"
-import { toggleBlockCode } from "../../../Nodes/Block/BlockCode/blockCodeHelper"
+import { isBlockCodeActive, toggleBlockCode } from "../../../Nodes/Block/BlockCode/blockCodeHelper"
+import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import BlockCodeIcon from "./BlockCodeIcon"
 
 const BlockCodeButton: React.FC = () => {
   const editor = useSlate()
+  const isActive = isBlockCodeActive(editor)
   const onMouseDown = (event: React.MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
@@ -18,23 +20,9 @@ const BlockCodeButton: React.FC = () => {
   }
 
   return (
-    <div>
-      <div
-        style={{
-          padding: "8px 4px",
-        }}
-      >
-        <div
-          style={{
-            height: "24px",
-            width: "24px",
-          }}
-          onMouseDown={onMouseDown}
-        >
-          <BlockCodeIcon></BlockCodeIcon>
-        </div>
-      </div>
-    </div>
+    <ToolBarItem isStyleActive={isActive} onMouseDown={onMouseDown}>
+      <BlockCodeIcon></BlockCodeIcon>
+    </ToolBarItem>
   )
 }
 

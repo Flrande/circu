@@ -3,6 +3,18 @@ import { SlateElement, SlateRange } from "../../../../types/slate"
 import type { IParagraph } from "../Paragraph/types"
 import type { IBlockCode, IBlockCode_CodeLine } from "./types"
 
+export const isBlockCodeActive = (editor: Editor) => {
+  const { selection } = editor
+  if (!selection) return false
+
+  const match = Array.from(
+    Editor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && n.type === "blockCode",
+    })
+  )
+  return match.length > 0 ? true : false
+}
+
 //TODO: 行首直接添加一个空代码块 (需要新的toolbar?)
 export const toggleBlockCode = (editor: Editor) => {
   if (!editor.selection) {
@@ -16,6 +28,7 @@ export const toggleBlockCode = (editor: Editor) => {
     })
   ) as NodeEntry<SlateElement>[]
 
+  // TODO-BUG: case-1, 代码块时仅有一行时 toggle 多出两个代码块
   // --------------------------------------------------
   // case-1
   // 判断选区是否在代码块内, 若是, 将对应 CodeLine 拆分出来, 上下分割出两个代码块
