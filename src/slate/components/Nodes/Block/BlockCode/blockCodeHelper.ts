@@ -15,10 +15,9 @@ export const isBlockCodeActive = (editor: Editor) => {
   return match.length > 0 ? true : false
 }
 
-//TODO: 行首直接添加一个空代码块 (需要新的toolbar?)
-export const toggleBlockCode = (editor: Editor) => {
+export const unToggleBlockCode = (editor: Editor) => {
   if (!editor.selection) {
-    console.error("toggleBlockCode() need editor.selection.")
+    console.error("unToggleBlockCode() need editor.selection.")
     return
   }
 
@@ -28,10 +27,9 @@ export const toggleBlockCode = (editor: Editor) => {
     })
   ) as NodeEntry<SlateElement>[]
 
-  // TODO-BUG: case-1, 代码块时仅有一行时 toggle 多出两个代码块
   // --------------------------------------------------
   // case-1
-  // 判断选区是否在代码块内, 若是, 将对应 CodeLine 拆分出来, 上下分割出两个代码块
+  // 选区在代码块内 -> 将对应 CodeLine 拆分出来, 上下分割出两个代码块
   // --------------------------------------------------
   if (selectedNodeEntryArr.every(([node]) => node.type.startsWith("blockCode"))) {
     // 选中的 codeLine
@@ -40,7 +38,7 @@ export const toggleBlockCode = (editor: Editor) => {
     ) as NodeEntry<IBlockCode_CodeLine>[]
 
     // 根据选中 codeLine 生产的 paragraph
-    const newNodes: IParagraph[] = codeLineEntryArr.map(([node]) => {
+    const newParagraphNodes: IParagraph[] = codeLineEntryArr.map(([node]) => {
       const newNode: IParagraph = {
         type: "paragraph",
         children: node.children,
@@ -87,19 +85,27 @@ export const toggleBlockCode = (editor: Editor) => {
       ],
     }
 
+    const newNodes: (IBlockCode | IParagraph)[] = [...newParagraphNodes]
+    if (firstCodeLineIndex !== 0) {
+      newNodes.unshift(startBlockCode)
+    }
+    if (lastCodeLineIndex !== codeArea.children.length - 1) {
+      newNodes.push(lastBlockCode)
+    }
+
     Transforms.removeNodes(editor, {
       at: blockCodePath,
     })
-    Transforms.insertNodes(editor, [startBlockCode, ...newNodes, lastBlockCode], {
+    Transforms.insertNodes(editor, newNodes, {
       at: blockCodePath,
     })
-    const newPointPath = blockCodePath.slice(0, -1).concat([blockCodePath.slice(-1)[0] + newNodes.length])
+    const newPointPath = blockCodePath.slice(0, -1).concat([blockCodePath.slice(-1)[0] + newParagraphNodes.length])
     const newPoint = Editor.end(editor, newPointPath)
     Transforms.select(editor, newPoint)
 
     // --------------------------------------------------
     // case-2
-    // 选区从 paragraph 开始, 判断选区是否包含代码块, 若是, 将选区合成一个大的代码块
+    // 选区从 paragraph 开始, 并包含代码块 -> 将选区合成一个大的代码块
     // --------------------------------------------------
   } else if (selectedNodeEntryArr.some(([node]) => node.type.startsWith("blockCode"))) {
     // 选中的 paragraph 和 blockCode
@@ -159,11 +165,20 @@ export const toggleBlockCode = (editor: Editor) => {
     })
     const newPoint = Editor.end(editor, [selectedStartPath[0], 1])
     Transforms.select(editor, newPoint)
+  } else {
+    console.error("unToggleBlockCode() encounters a situation that cannot be handled.")
+  }
+}
 
-    // --------------------------------------------------
-    // case-3
-    // 选区仅包括 paragraph
-    // --------------------------------------------------
+//TODO: 行首直接添加一个空代码块 (需要新的toolbar?)
+export const toggleBlockCode = (editor: Editor) => {
+  if (!editor.selection) {
+    console.error("toggleBlockCode() need editor.selection.")
+    return
+  }
+
+  if (isBlockCodeActive(editor)) {
+    unToggleBlockCode(editor)
   } else {
     const selectedParagraphNodes = Array.from(
       Editor.nodes(editor, {
