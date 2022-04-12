@@ -20,3 +20,22 @@ export const toolBar = style({
   padding: "0",
   margin: "0",
 })
+
+export const toolBarItemContainer = style({
+  padding: "6px 2px",
+})
+
+export const toolBarButton = style({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  height: "30px",
+  width: "30px",
+  overflow: "hidden",
+  borderRadius: "6px",
+})
+
+export const toolBarButtonSvg = style({
+  height: "24px",
+  width: "24px",
+})

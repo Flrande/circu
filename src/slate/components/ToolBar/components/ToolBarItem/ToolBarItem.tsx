@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { toolBarButton, toolBarButtonSvg, toolBarItemContainer } from "../../ToolBar.css"
 import { useIconColor } from "./useIconColor"
 
 const ToolBarItem: React.FC<{
@@ -12,11 +13,7 @@ const ToolBarItem: React.FC<{
 
   return (
     <div>
-      <div
-        style={{
-          padding: "8px 4px",
-        }}
-      >
+      <div className={toolBarItemContainer}>
         <div
           onMouseDown={onMouseDown}
           onMouseEnter={(event) => {
@@ -31,18 +28,21 @@ const ToolBarItem: React.FC<{
               onMouseLeave(event)
             }
           }}
+          className={toolBarButton}
           style={{
-            height: "24px",
-            width: "24px",
-            overflow: "hidden",
-            borderRadius: "6px",
             backgroundColor: backgroundColor,
-            // 设计上这应该是离 icon svg 最近的一个 color,
-            // 否则 svg 中的 currentColor 会导致颜色与预期不符
-            color: fillColor,
           }}
         >
-          {children}
+          <div
+            className={toolBarButtonSvg}
+            style={{
+              // 设计上这应该是离 icon svg 最近的一个 color,
+              // 否则 svg 中的 currentColor 会导致颜色与预期不符
+              color: fillColor,
+            }}
+          >
+            {children}
+          </div>
         </div>
       </div>
     </div>

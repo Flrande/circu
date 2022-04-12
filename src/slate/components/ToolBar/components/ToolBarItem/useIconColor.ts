@@ -3,14 +3,14 @@
 // 2. mouse active + style not active -> #383838
 // 3. mouse not active + style active -> #333c52
 // 4. mouse active + style active -> #3d4b6c
-const toolBarIconBackgroundColor = {
+export const toolBarIconBackgroundColor = {
   focusStatic: "#383838",
   nofocusActive: "#333c52",
   focusActive: "#3d4b6c",
 }
 
 // 样式激活时 svg 的 fill color
-const toolBarIconActiveFillColor = "#5985f5"
+export const toolBarIconActiveFillColor = "#5985f5"
 
 // 接受鼠标状态和样式状态, 返回 backgroundColor 和 fillColor
 export const useIconColor = (isStyleActive: boolean, isMouseenter: boolean) => {
