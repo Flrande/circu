@@ -1,48 +1,16 @@
+import { useAtomValue } from "jotai"
+import { useState } from "react"
+import { useSlate } from "slate-react"
 import type { KeysUnion } from "../../../../types/utils"
 import type { IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
-import { backgroundColorMap } from "../../../Nodes/Text/Color"
-import ColorBarIcon from "./ColorBarIcon"
+import { cleanColorMark } from "../../../Nodes/Text/colorHelper"
+import ColorBarItem from "./ColorBarItem"
+import { isColorBarActiveAtom, selectedColorAtom } from "./state"
 
-const ColorBarItem = <T extends "font" | "background">({
-  type,
-  colorKey,
-}: {
-  type: T
-  colorKey: T extends "font" ? KeysUnion<IFontColorMap> : KeysUnion<IBackgroundColorMap>
-}) => {
-  if (type === "font") {
-    return (
-      <div>
-        <div
-          style={{
-            height: "24px",
-            width: "24px",
-          }}
-        >
-          <ColorBarIcon fontColorKey={colorKey as KeysUnion<IFontColorMap>}></ColorBarIcon>
-        </div>
-      </div>
-    )
-  } else {
-    return (
-      <div>
-        <div
-          style={{
-            height: "24px",
-            width: "24px",
-            backgroundColor: backgroundColorMap[colorKey as KeysUnion<IBackgroundColorMap>],
-          }}
-        >
-          <ColorBarIcon></ColorBarIcon>
-        </div>
-      </div>
-    )
-  }
-}
 const ColorBar: React.FC = () => {
   const fontList: Array<{
     type: "font"
-    color: KeysUnion<IFontColorMap>
+    color: Exclude<KeysUnion<IFontColorMap>, "initialWhite">
   }> = [
     {
       type: "font",
@@ -134,31 +102,111 @@ const ColorBar: React.FC = () => {
       color: "gray_2",
     },
   ]
-  const ifColorBarActive = false
+  const editor = useSlate()
+  const isColorBarActive = useAtomValue(isColorBarActiveAtom)
+  const [isMouseEnterCleanButton, setIsMouseEnterCleanButton] = useState(false)
 
-  if (ifColorBarActive) {
+  const onCleanButtonDown: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+    cleanColorMark(editor)
+  }
+
+  //TODO: 抽离 css
+  //TODO: 放大渐变效果?
+  if (isColorBarActive) {
     return (
-      <div>
-        <div>
-          <span>字体颜色</span>
-        </div>
-        <div>
-          {fontList.map(({ type, color }) => (
-            <ColorBarItem type={type} colorKey={color}></ColorBarItem>
-          ))}
-        </div>
-        <div>
-          <span>背景颜色</span>
-        </div>
-        <div>
-          {backgroundList.map(({ type, color }) => (
-            <ColorBarItem type={type} colorKey={color}></ColorBarItem>
-          ))}
+      <div
+        style={{
+          position: "absolute",
+          padding: "12px 0",
+          opacity: "1",
+          transitionProperty: "opacity, transform",
+          transitionDuration: "0.3s, 0.3s",
+          transitionDelay: "0.017s, 0.017s",
+          transform: "translate(-103px, 0)", // 水平偏移距离: ColorBarWidth / 2 - ColorButtonWidth / 2
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: "#292929",
+            border: "1px solid #3c3c3c",
+            borderRadius: "6px",
+            padding: "12px",
+            width: "236px",
+            filter: "drop-shadow(0px 8px 16px rgba(0,0,0,0.28))",
+          }}
+        >
+          <div
+            style={{
+              fontSize: "13px",
+              margin: "6px 0 4px 0",
+            }}
+          >
+            <span>字体颜色</span>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+            }}
+          >
+            {fontList.map(({ type, color }, index) => (
+              <ColorBarItem type={type} colorKey={color} key={index}></ColorBarItem>
+            ))}
+          </div>
+          <div
+            style={{
+              fontSize: "13px",
+              margin: "6px 0 4px 0",
+            }}
+          >
+            <span>背景颜色</span>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+            }}
+          >
+            {backgroundList.map(({ type, color }, index) => (
+              <ColorBarItem type={type} colorKey={color} key={index}></ColorBarItem>
+            ))}
+          </div>
+          <div
+            onMouseDown={onCleanButtonDown}
+            onMouseEnter={() => {
+              setIsMouseEnterCleanButton(true)
+            }}
+            onMouseLeave={() => {
+              setIsMouseEnterCleanButton(false)
+            }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "6px 0 4px 0",
+              padding: "4px 0",
+              fontSize: "13px",
+              border: "1px solid #3b3b3b",
+              borderRadius: "4px",
+              backgroundColor: isMouseEnterCleanButton ? "#373737" : undefined,
+            }}
+          >
+            <span>清除</span>
+          </div>
         </div>
       </div>
     )
   }
-  return <div style={{ opacity: "0" }}></div>
+  return (
+    <div
+      style={{
+        opacity: "0",
+        transform: "translate(-103px, 0)",
+      }}
+    ></div>
+  )
 }
 
 export default ColorBar

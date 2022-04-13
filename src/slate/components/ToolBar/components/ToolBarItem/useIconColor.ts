@@ -9,7 +9,8 @@ export const toolBarIconBackgroundColor = {
   focusActive: "#3d4b6c",
 }
 
-// 样式激活时 svg 的 fill color
+// 样式激活前后 svg 的 fill color
+export const toolBarIconStaticFillColor = "#ffffff"
 export const toolBarIconActiveFillColor = "#5985f5"
 
 // 接受鼠标状态和样式状态, 返回 backgroundColor 和 fillColor
@@ -18,7 +19,7 @@ export const useIconColor = (isStyleActive: boolean, isMouseenter: boolean) => {
     fillColor: string
     backgroundColor: string | undefined
   } = {
-    fillColor: "#ffffff", // 默认为白色
+    fillColor: toolBarIconStaticFillColor,
     backgroundColor: undefined,
   }
 

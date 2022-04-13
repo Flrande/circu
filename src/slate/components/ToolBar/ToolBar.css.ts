@@ -33,6 +33,7 @@ export const toolBarButton = style({
   width: "30px",
   overflow: "hidden",
   borderRadius: "6px",
+  cursor: "pointer",
 })
 
 export const toolBarButtonSvg = style({

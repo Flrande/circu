@@ -58,3 +58,7 @@ export const toggleColorMark = <T extends "font" | "background">(
     Editor.addMark(editor, "color", color)
   }
 }
+
+export const cleanColorMark = (editor: Editor) => {
+  Editor.removeMark(editor, "color")
+}

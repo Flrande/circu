@@ -1,58 +1,67 @@
-import { useAtom } from "jotai"
+import { useAtom, useAtomValue } from "jotai"
 import { useState } from "react"
 import { ReactEditor, useSlate } from "slate-react"
 import { backgroundColorMap, fontColorMap } from "../../../Nodes/Text/Color"
 import { toggleColorMark } from "../../../Nodes/Text/colorHelper"
 import { toolBarButton, toolBarButtonSvg, toolBarItemContainer } from "../../ToolBar.css"
 import { toolBarIconBackgroundColor } from "../ToolBarItem/useIconColor"
+import ColorBar from "./ColorBar"
 import ColorIcon from "./ColorIcon"
-import { selectedColorAtom } from "./state"
+import { buttonColorAtom, isColorBarActiveAtom, selectedColorAtom } from "./state"
 
 const ColorButton: React.FC = () => {
   const editor = useSlate()
   const [isMouseenter, setIsMouseenter] = useState(false)
-  const [colorState, setColorState] = useAtom(selectedColorAtom)
+  const buttonColor = useAtomValue(buttonColorAtom)
+  const selectedColor = useAtomValue(selectedColorAtom)
+  const [, setIsColorBarActive] = useAtom(isColorBarActiveAtom)
+
   const onMouseDown = (event: React.MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
-    if (colorState.fontColorKey) {
-      toggleColorMark(editor, "font", colorState.fontColorKey)
+    if (selectedColor.fontColorKey) {
+      toggleColorMark(editor, "font", selectedColor.fontColorKey)
     }
-    if (colorState.backgroundColorKey) {
-      toggleColorMark(editor, "background", colorState.backgroundColorKey)
+    if (selectedColor.backgroundColorKey) {
+      toggleColorMark(editor, "background", selectedColor.backgroundColorKey)
     }
     ReactEditor.focus(editor)
   }
 
   return (
-    <div>
-      <div className={toolBarItemContainer}>
+    <div
+      onMouseLeave={() => {
+        setIsColorBarActive(false)
+      }}
+      className={toolBarItemContainer}
+    >
+      <div
+        onMouseDown={onMouseDown}
+        onMouseEnter={() => {
+          setIsMouseenter(true)
+          setIsColorBarActive(true)
+        }}
+        onMouseLeave={() => {
+          setIsMouseenter(false)
+        }}
+        className={toolBarButton}
+        style={{
+          backgroundColor: isMouseenter ? toolBarIconBackgroundColor.focusStatic : undefined,
+        }}
+      >
         <div
-          onMouseDown={onMouseDown}
-          onMouseEnter={() => {
-            setIsMouseenter(true)
-          }}
-          onMouseLeave={() => {
-            setIsMouseenter(false)
-          }}
-          className={toolBarButton}
+          className={toolBarButtonSvg}
           style={{
-            backgroundColor: isMouseenter ? toolBarIconBackgroundColor.focusStatic : undefined,
+            backgroundColor: backgroundColorMap[buttonColor.backgroundColorKey],
+            // 设计上这应该是离 icon svg 最近的一个 color,
+            // 否则 svg 中的 currentColor 会导致颜色与预期不符
+            color: fontColorMap[buttonColor.fontColorKey],
           }}
         >
-          <div
-            className={toolBarButtonSvg}
-            style={{
-              backgroundColor: backgroundColorMap[colorState.backgroundColorKey],
-              // 设计上这应该是离 icon svg 最近的一个 color,
-              // 否则 svg 中的 currentColor 会导致颜色与预期不符
-              color: colorState.fontColorKey ? fontColorMap[colorState.fontColorKey] : "#ffffff",
-            }}
-          >
-            <ColorIcon></ColorIcon>
-          </div>
+          <ColorIcon></ColorIcon>
         </div>
       </div>
+      <ColorBar></ColorBar>
     </div>
   )
 }

@@ -2,6 +2,7 @@ import type { KeysUnion } from "../../../types/utils"
 
 // 参考色板 -> https://arco.design/react/docs/palette
 export type IFontColorMap = {
+  initialWhite: "#ffffff"
   red: "#F76965"
   orange: "#FF9626"
   yellow: "#FBE94B"
@@ -29,6 +30,7 @@ export type IBackgroundColorMap = {
 }
 
 export const fontColorMap: IFontColorMap = {
+  initialWhite: "#ffffff",
   red: "#F76965",
   orange: "#FF9626",
   yellow: "#FBE94B",

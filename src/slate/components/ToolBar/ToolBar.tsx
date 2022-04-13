@@ -1,4 +1,4 @@
-import { useAtom } from "jotai"
+import { useAtomValue } from "jotai"
 import type React from "react"
 import { isMouseUpAtom } from "../../state/mouse"
 import { toolBar, toolBarContainer } from "./ToolBar.css"
@@ -8,9 +8,10 @@ import InlineCodeButton from "./components/InlineCode/InlineCodeButton"
 import BlockCodeButton from "./components/BlockCode/BlockCodeButton"
 import ColorButton from "./components/Color/ColorButton"
 
-// TODO: item 可控拖拽
+//TODO: item 可控拖拽
+//TODO: need ReactEditor.focus(editor)?
 const ToolBar: React.FC = () => {
-  const [isMouseUp] = useAtom(isMouseUpAtom)
+  const isMouseUp = useAtomValue(isMouseUpAtom)
 
   const nativeSelection = window.getSelection()
   const isToolBarActive = !!(isMouseUp && nativeSelection && !nativeSelection.isCollapsed)
