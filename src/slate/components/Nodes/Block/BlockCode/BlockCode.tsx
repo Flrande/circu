@@ -1,6 +1,6 @@
 import { ReactEditor, useSelected, useSlate } from "slate-react"
 import type { CustomRenderElementProps, KeysUnion } from "../../../../types/utils"
-import { BlockCodeContainer } from "./BlockCode.css"
+import { blockCodeContainer } from "./BlockCode.css"
 import type { IBlockCode, IBlockCode_CodeArea, ICodeAreaLangMap } from "./types"
 import { Select } from "@arco-design/web-react"
 import { SlateNode } from "../../../../types/slate"
@@ -19,7 +19,7 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
       style={{
         border: isSelected ? "1px solid #5a87f7" : undefined,
       }}
-      className={BlockCodeContainer}
+      className={blockCodeContainer}
     >
       <div contentEditable={false}>
         <Select

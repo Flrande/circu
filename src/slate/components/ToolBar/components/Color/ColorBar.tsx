@@ -4,13 +4,7 @@ import { useSlate } from "slate-react"
 import type { KeysUnion } from "../../../../types/utils"
 import type { IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
 import { cleanColorMark } from "../../../Nodes/Text/colorHelper"
-import {
-  ColorBarBody,
-  ColorBarCleanButton,
-  ColorBarContainer,
-  ColorBarItemContainer,
-  ColorBarText,
-} from "./ColorBar.css"
+import { colorBar, colorBarCleanButton, colorBarContainer, colorBarItemContainer, colorBarText } from "./ColorBar.css"
 import ColorBarItem from "./ColorBarItem"
 import { isColorBarActiveAtom } from "./state"
 
@@ -122,20 +116,20 @@ const ColorBar: React.FC = () => {
   //TODO: 放大渐变效果?
   if (isColorBarActive) {
     return (
-      <div className={ColorBarContainer}>
-        <div className={ColorBarBody}>
-          <div className={ColorBarText}>
+      <div className={colorBarContainer}>
+        <div className={colorBar}>
+          <div className={colorBarText}>
             <span>字体颜色</span>
           </div>
-          <div className={ColorBarItemContainer}>
+          <div className={colorBarItemContainer}>
             {fontList.map(({ type, color }, index) => (
               <ColorBarItem type={type} colorKey={color} key={index}></ColorBarItem>
             ))}
           </div>
-          <div className={ColorBarText}>
+          <div className={colorBarText}>
             <span>背景颜色</span>
           </div>
-          <div className={ColorBarItemContainer}>
+          <div className={colorBarItemContainer}>
             {backgroundList.map(({ type, color }, index) => (
               <ColorBarItem type={type} colorKey={color} key={index}></ColorBarItem>
             ))}
@@ -148,7 +142,7 @@ const ColorBar: React.FC = () => {
             onMouseLeave={() => {
               setIsMouseEnterCleanButton(false)
             }}
-            className={ColorBarCleanButton}
+            className={colorBarCleanButton}
             style={{
               backgroundColor: isMouseEnterCleanButton ? "#373737" : undefined,
             }}

@@ -1,6 +1,7 @@
 import { ReactEditor, useSlate } from "slate-react"
 import { SlateNode } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
+import { codeLineSerialNumberContainer } from "./BlockCode.css"
 import type { IBlockCode_CodeLine } from "./types"
 
 const BlockCode_CodeLine: React.FC<CustomRenderElementProps<IBlockCode_CodeLine>> = ({
@@ -24,6 +25,7 @@ const BlockCode_CodeLine: React.FC<CustomRenderElementProps<IBlockCode_CodeLine>
       }}
     >
       <span
+        className={codeLineSerialNumberContainer}
         style={{
           display: "inline-block",
           width: `${serialNumberWidth}px`,
