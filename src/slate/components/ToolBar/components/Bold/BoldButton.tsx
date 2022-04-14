@@ -1,4 +1,4 @@
-import { ReactEditor, useSlate } from "slate-react"
+import { useSlate } from "slate-react"
 import { isMarkActive, toggleMark } from "../../../Nodes/Text/textHelper"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import BoldIcon from "./BoldIcon"
@@ -10,7 +10,6 @@ const BoldButton: React.FC = () => {
     event.preventDefault()
     event.stopPropagation()
     toggleMark(editor, "bold", true)
-    ReactEditor.focus(editor)
   }
 
   return (

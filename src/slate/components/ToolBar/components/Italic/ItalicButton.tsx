@@ -1,4 +1,4 @@
-import { ReactEditor, useSlate } from "slate-react"
+import { useSlate } from "slate-react"
 import { isMarkActive, toggleMark } from "../../../Nodes/Text/textHelper"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import ItalicIcon from "./ItalicIcon"
@@ -10,7 +10,6 @@ const ItalicButton: React.FC = () => {
     event.preventDefault()
     event.stopPropagation()
     toggleMark(editor, "italic", true)
-    ReactEditor.focus(editor)
   }
 
   return (

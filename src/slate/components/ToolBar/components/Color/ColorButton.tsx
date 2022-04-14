@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from "jotai"
 import { useState } from "react"
-import { ReactEditor, useSlate } from "slate-react"
+import { useSlate } from "slate-react"
 import { backgroundColorMap, fontColorMap } from "../../../Nodes/Text/Color"
 import { toggleColorMark } from "../../../Nodes/Text/colorHelper"
 import { toolBarButton, toolBarButtonSvg, toolBarItemContainer } from "../../ToolBar.css"
@@ -25,7 +25,6 @@ const ColorButton: React.FC = () => {
     if (selectedColor.backgroundColorKey) {
       toggleColorMark(editor, "background", selectedColor.backgroundColorKey)
     }
-    ReactEditor.focus(editor)
   }
 
   return (

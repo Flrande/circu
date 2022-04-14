@@ -10,7 +10,6 @@ import ColorButton from "./components/Color/ColorButton"
 import ItalicButton from "./components/Italic/ItalicButton"
 
 //TODO: item 可控拖拽
-//TODO: need ReactEditor.focus(editor)?
 const ToolBar: React.FC = () => {
   const isMouseUp = useAtomValue(isMouseUpAtom)
 
