@@ -1,11 +1,11 @@
-import { useAtom } from "jotai"
+import { useAtom, useAtomValue } from "jotai"
 import { useState } from "react"
 import { ReactEditor, useSlate } from "slate-react"
 import type { KeysUnion } from "../../../../types/utils"
 import { backgroundColorMap, fontColorMap, IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
 import { isColorMarkActive, toggleColorMark } from "../../../Nodes/Text/colorHelper"
 import ColorIcon from "./ColorIcon"
-import { buttonColorAtom, selectedColorAtom } from "./state"
+import { selectedColorAtom } from "./state"
 
 const ColorBarItem = <T extends "font" | "background">({
   type,
@@ -17,7 +17,6 @@ const ColorBarItem = <T extends "font" | "background">({
   const editor = useSlate()
   const [isMouseEnter, setIsMouseEnter] = useState(false)
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom)
-  const [buttonColor, setButtonColor] = useAtom(buttonColorAtom)
   const isActive = isColorMarkActive(editor, type, colorKey)
 
   const onMouseDown = (event: React.MouseEvent) => {
@@ -29,18 +28,10 @@ const ColorBarItem = <T extends "font" | "background">({
         ...selectedColor,
         fontColorKey: colorKey as Exclude<KeysUnion<IFontColorMap>, "initialWhite">,
       })
-      setButtonColor({
-        ...buttonColor,
-        fontColorKey: colorKey as Exclude<KeysUnion<IFontColorMap>, "initialWhite">,
-      })
     } else {
       toggleColorMark(editor, "background", colorKey as KeysUnion<IBackgroundColorMap>)
       setSelectedColor({
         ...selectedColor,
-        backgroundColorKey: colorKey as KeysUnion<IBackgroundColorMap>,
-      })
-      setButtonColor({
-        ...buttonColor,
         backgroundColorKey: colorKey as KeysUnion<IBackgroundColorMap>,
       })
     }

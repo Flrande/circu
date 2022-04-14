@@ -2,7 +2,6 @@ import { atom } from "jotai"
 import type { KeysUnion } from "../../../../types/utils"
 import type { IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
 
-//TODO: 通过 jotai 相关 api 将逻辑写一块?
 // colorBar 当前选中的颜色
 export const selectedColorAtom = atom<{
   fontColorKey?: Exclude<KeysUnion<IFontColorMap>, "initialWhite">
@@ -11,13 +10,27 @@ export const selectedColorAtom = atom<{
   backgroundColorKey: "gray_2",
 })
 
-// 记录最近一次选中的颜色, 与 selectedColor 独立
+// 记录最近一次选中的颜色
 export const buttonColorAtom = atom<{
   fontColorKey: KeysUnion<IFontColorMap>
   backgroundColorKey: KeysUnion<IBackgroundColorMap>
-}>({
-  fontColorKey: "initialWhite",
-  backgroundColorKey: "gray_2",
+}>((get) => {
+  const currentSelectedColor = get(selectedColorAtom)
+  let result: {
+    fontColorKey: KeysUnion<IFontColorMap>
+    backgroundColorKey: KeysUnion<IBackgroundColorMap>
+  } = {
+    fontColorKey: "initialWhite",
+    backgroundColorKey: "gray_2",
+  }
+  if (currentSelectedColor.fontColorKey) {
+    result.fontColorKey = currentSelectedColor.fontColorKey
+  }
+  if (currentSelectedColor.backgroundColorKey) {
+    result.backgroundColorKey = currentSelectedColor.backgroundColorKey
+  }
+
+  return result
 })
 
 export const isColorBarActiveAtom = atom(false)
