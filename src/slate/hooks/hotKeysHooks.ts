@@ -1,7 +1,6 @@
 import type React from "react"
-import { Editor } from "slate"
 import { useSlate } from "slate-react"
-import { SlateElement } from "../types/slate"
+import { toggleLink } from "../components/Nodes/Inline/Link/linkHelper"
 
 export const useOnKeyDown = () => {
   const editor = useSlate()
@@ -13,12 +12,7 @@ export const useOnKeyDown = () => {
     }
     if (event.altKey && event.key === "w") {
       if (editor.selection) {
-        const selectedNodes = Array.from(
-          Editor.nodes(editor, {
-            match: (n) => SlateElement.isElement(n),
-          })
-        ).map((item) => item[0])
-        console.log(selectedNodes)
+        toggleLink(editor, "www.baidu.com")
       }
     }
   }

@@ -21,7 +21,7 @@ export const untoggleInlineCode = (editor: Editor) => {
   }
 
   if (!isInlineCodeActive(editor)) {
-    console.error("untoggleInlineCode() should not called when inline code active.")
+    console.error("untoggleInlineCode() should be called when inline code active.")
     return
   }
 

@@ -13,6 +13,8 @@ import Paragraph from "../components/Nodes/Block/Paragraph/Paragraph"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import InlineCode from "../components/Nodes/Inline/InlineCode/InlineCode"
 import type { IInlineCode } from "../components/Nodes/Inline/InlineCode/types"
+import Link from "../components/Nodes/Inline/Link/Link"
+import type { ILink } from "../components/Nodes/Inline/Link/types"
 import Leaf from "../components/Nodes/Text/Leaf"
 import type { CustomRenderElementProps } from "../types/utils"
 
@@ -27,14 +29,16 @@ export const useRenderElement = () => {
         return <Paragraph {...(props as CustomRenderElementProps<IParagraph>)}></Paragraph>
       case "blockCode":
         return <BlockCode {...(props as CustomRenderElementProps<IBlockCode>)}></BlockCode>
-      case "inlineCode":
-        return <InlineCode {...(props as CustomRenderElementProps<IInlineCode>)}></InlineCode>
       case "blockCode_codeArea":
         return <BlockCode_CodeArea {...(props as CustomRenderElementProps<IBlockCode_CodeArea>)}></BlockCode_CodeArea>
       case "blockCode_voidArea":
         return <BlockCode_VoidArea {...(props as CustomRenderElementProps<IBlockCode_VoidArea>)}></BlockCode_VoidArea>
       case "blockCode_codeLine":
         return <BlockCode_CodeLine {...(props as CustomRenderElementProps<IBlockCode_CodeLine>)}></BlockCode_CodeLine>
+      case "inlineCode":
+        return <InlineCode {...(props as CustomRenderElementProps<IInlineCode>)}></InlineCode>
+      case "link":
+        return <Link {...(props as CustomRenderElementProps<ILink>)}></Link>
     }
   }
 }
