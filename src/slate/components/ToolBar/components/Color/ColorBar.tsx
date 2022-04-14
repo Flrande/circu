@@ -4,8 +4,15 @@ import { useSlate } from "slate-react"
 import type { KeysUnion } from "../../../../types/utils"
 import type { IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
 import { cleanColorMark } from "../../../Nodes/Text/colorHelper"
+import {
+  ColorBarBody,
+  ColorBarCleanButton,
+  ColorBarContainer,
+  ColorBarItemContainer,
+  ColorBarText,
+} from "./ColorBar.css"
 import ColorBarItem from "./ColorBarItem"
-import { isColorBarActiveAtom, selectedColorAtom } from "./state"
+import { isColorBarActiveAtom } from "./state"
 
 const ColorBar: React.FC = () => {
   const fontList: Array<{
@@ -112,63 +119,23 @@ const ColorBar: React.FC = () => {
     cleanColorMark(editor)
   }
 
-  //TODO: 抽离 css
   //TODO: 放大渐变效果?
   if (isColorBarActive) {
     return (
-      <div
-        style={{
-          position: "absolute",
-          padding: "12px 0",
-          opacity: "1",
-          transitionProperty: "opacity, transform",
-          transitionDuration: "0.3s, 0.3s",
-          transitionDelay: "0.017s, 0.017s",
-          transform: "translate(-103px, 0)", // 水平偏移距离: ColorBarWidth / 2 - ColorButtonWidth / 2
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: "#292929",
-            border: "1px solid #3c3c3c",
-            borderRadius: "6px",
-            padding: "12px",
-            width: "236px",
-            filter: "drop-shadow(0px 8px 16px rgba(0,0,0,0.28))",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "13px",
-              margin: "6px 0 4px 0",
-            }}
-          >
+      <div className={ColorBarContainer}>
+        <div className={ColorBarBody}>
+          <div className={ColorBarText}>
             <span>字体颜色</span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-            }}
-          >
+          <div className={ColorBarItemContainer}>
             {fontList.map(({ type, color }, index) => (
               <ColorBarItem type={type} colorKey={color} key={index}></ColorBarItem>
             ))}
           </div>
-          <div
-            style={{
-              fontSize: "13px",
-              margin: "6px 0 4px 0",
-            }}
-          >
+          <div className={ColorBarText}>
             <span>背景颜色</span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-            }}
-          >
+          <div className={ColorBarItemContainer}>
             {backgroundList.map(({ type, color }, index) => (
               <ColorBarItem type={type} colorKey={color} key={index}></ColorBarItem>
             ))}
@@ -181,15 +148,8 @@ const ColorBar: React.FC = () => {
             onMouseLeave={() => {
               setIsMouseEnterCleanButton(false)
             }}
+            className={ColorBarCleanButton}
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "6px 0 4px 0",
-              padding: "4px 0",
-              fontSize: "13px",
-              border: "1px solid #3b3b3b",
-              borderRadius: "4px",
               backgroundColor: isMouseEnterCleanButton ? "#373737" : undefined,
             }}
           >
