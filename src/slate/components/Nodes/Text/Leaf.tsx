@@ -2,6 +2,7 @@ import type { RenderLeafProps } from "slate-react"
 import type { CustomText } from "../../../types/interface"
 import Bold from "./Bold"
 import Color from "./Color"
+import Italic from "./Italic"
 import Strike from "./Strike"
 
 const getTokenColor = (tokenTypes: CustomText["tokenTypes"]) => {
@@ -40,6 +41,10 @@ const getTokenColor = (tokenTypes: CustomText["tokenTypes"]) => {
 }
 
 const Leaf: React.FC<RenderLeafProps> = ({ attributes, children, leaf }) => {
+  if (leaf.italic) {
+    children = <Italic>{children}</Italic>
+  }
+
   if (leaf.bold) {
     children = <Bold>{children}</Bold>
   }

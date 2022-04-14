@@ -7,6 +7,7 @@ import StrikeButton from "./components/Strike/StrikeButton"
 import InlineCodeButton from "./components/InlineCode/InlineCodeButton"
 import BlockCodeButton from "./components/BlockCode/BlockCodeButton"
 import ColorButton from "./components/Color/ColorButton"
+import ItalicButton from "./components/Italic/ItalicButton"
 
 //TODO: item 可控拖拽
 //TODO: need ReactEditor.focus(editor)?
@@ -39,6 +40,7 @@ const ToolBar: React.FC = () => {
           <ul className={toolBar}>
             <BoldButton></BoldButton>
             <StrikeButton></StrikeButton>
+            <ItalicButton></ItalicButton>
             <ColorButton></ColorButton>
             <InlineCodeButton></InlineCodeButton>
             <BlockCodeButton></BlockCodeButton>
