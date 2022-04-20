@@ -16,7 +16,7 @@ export const colorBar = style({
   borderRadius: "6px",
   padding: "12px",
   width: "236px",
-  filter: "drop-shadow(0px 8px 16px rgba(0,0,0,0.28))",
+  boxShadow: "0 6px 24px rgba(0, 0, 0, 0.28)",
 })
 
 export const colorBarText = style({

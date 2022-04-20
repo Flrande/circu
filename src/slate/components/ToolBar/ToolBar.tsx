@@ -14,6 +14,7 @@ const ToolBar: React.FC = () => {
   const isMouseUp = useAtomValue(isMouseUpAtom)
 
   const nativeSelection = window.getSelection()
+  //TODO: 替换 isMouseUp
   const isToolBarActive = !!(isMouseUp && nativeSelection && !nativeSelection.isCollapsed)
 
   if (isToolBarActive) {
