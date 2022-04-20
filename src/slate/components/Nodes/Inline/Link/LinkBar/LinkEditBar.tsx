@@ -2,6 +2,13 @@ import { useAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { Transforms } from "slate"
 import { useSlate } from "slate-react"
+import {
+  linkEditBarButton,
+  linkEditBarContainer,
+  linkEditBarRow,
+  linkEditBarRowInput,
+  linkEditBarSpan,
+} from "../Link.css"
 import { isLinkEditBarActiveAtom, linkEditBarStateDerivedAtom, linkStateDerivedAtom } from "../state"
 import type { ILink } from "../types"
 
@@ -62,100 +69,42 @@ const LinkEditBar: React.FC = () => {
           }
         }}
         tabIndex={-1}
+        className={linkEditBarContainer}
         style={{
-          position: "absolute",
-          zIndex: "5",
-          backgroundColor: "#292929",
-          border: "1px solid #3c3c3c",
-          borderRadius: "6px",
-          padding: "8px 16px",
-          boxShadow: "0 3px 12px 0 rga(0, 0, 0, 0.28)",
           left: linkEditBarState.position.left,
           top: linkEditBarState.position.top,
         }}
       >
         <div
+          className={linkEditBarRow}
           style={{
-            color: "#ebebeb",
-            fontSize: "14px",
-            lineHeight: "1.5",
             marginBottom: "6px",
           }}
         >
-          <span
-            style={{
-              textAlign: "right",
-              marginRight: "12px",
-            }}
-          >
-            文本
-          </span>
+          <span className={linkEditBarSpan}>文本</span>
           <input
             value={text}
             onChange={(event) => {
               setText(event.target.value)
             }}
-            style={{
-              height: "32px",
-              width: "250px",
-              lineHeight: "32px",
-              paddingLeft: "12px",
-              borderRadius: "6px",
-              border: "1px solid #464646",
-              backgroundColor: "#292929",
-              color: "#ebebeb",
-              fontSize: "14px",
-            }}
+            className={linkEditBarRowInput}
           ></input>
         </div>
 
-        <div
-          style={{
-            color: "#ebebeb",
-            fontSize: "14px",
-            lineHeight: "1.5",
-          }}
-        >
-          <span
-            style={{
-              textAlign: "right",
-              marginRight: "12px",
-            }}
-          >
-            链接
-          </span>
+        <div className={linkEditBarRow}>
+          <span className={linkEditBarSpan}>链接</span>
           <input
             ref={linkInputDom}
             value={url}
             onChange={(event) => {
               setUrl(event.target.value)
             }}
+            className={linkEditBarRowInput}
             style={{
-              height: "32px",
-              width: "250px",
-              lineHeight: "32px",
-              paddingLeft: "12px",
-              borderRadius: "6px",
-              border: "1px solid #464646",
-              backgroundColor: "#292929",
-              color: "#ebebeb",
-              fontSize: "14px",
               marginRight: "16px",
             }}
           ></input>
-          <button
-            onClick={onButtonClick}
-            style={{
-              width: "68px",
-              height: "32px",
-              color: "#ebebeb",
-              border: "none",
-              backgroundColor: "#5a87f7",
-              borderRadius: "6px",
-              fontSize: "14px",
-              cursor: "pointer",
-            }}
-          >
+          <button onClick={onButtonClick} className={linkEditBarButton}>
             确定
           </button>
         </div>

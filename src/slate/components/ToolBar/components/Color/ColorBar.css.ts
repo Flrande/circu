@@ -38,4 +38,7 @@ export const colorBarCleanButton = style({
   fontSize: "13px",
   border: "1px solid #3b3b3b",
   borderRadius: "4px",
+  ":hover": {
+    backgroundColor: "#373737",
+  },
 })

@@ -7,7 +7,6 @@ import { linkContainer } from "./Link.css"
 import { isLinkBarActiveDerivedAtom, linkStateDerivedAtom } from "./state"
 import type { ILink } from "./types"
 
-//TODO: 提取 css
 const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children, element }) => {
   const editor = useSlate()
 
@@ -15,11 +14,9 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
 
   const [, setLinkStateDerived] = useAtom(linkStateDerivedAtom)
 
-  const [isMouseEnterLink, setIsMouseEnterLink] = useState(false)
   const [linkDom, setLinkDom] = useState<HTMLElement>()
 
   const onMouseEnter: React.MouseEventHandler<HTMLAnchorElement> = () => {
-    setIsMouseEnterLink(true)
     if (linkDom) {
       setIsLinkBarActiveDerived({
         type: "instant",
@@ -41,7 +38,6 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
   }
 
   const onMouseLeave: React.MouseEventHandler<HTMLAnchorElement> = () => {
-    setIsMouseEnterLink(false)
     setIsLinkBarActiveDerived({
       type: "delayed",
       value: false,
@@ -61,9 +57,6 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
         }}
         href={element.url}
         className={linkContainer}
-        style={{
-          textDecoration: isMouseEnterLink ? "underline" : "none",
-        }}
       >
         {children}
       </a>

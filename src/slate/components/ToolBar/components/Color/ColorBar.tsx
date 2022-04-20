@@ -105,7 +105,6 @@ const ColorBar: React.FC = () => {
   ]
   const editor = useSlate()
   const isColorBarActive = useAtomValue(isColorBarActiveAtom)
-  const [isMouseEnterCleanButton, setIsMouseEnterCleanButton] = useState(false)
 
   const onCleanButtonDown: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.preventDefault()
@@ -134,19 +133,7 @@ const ColorBar: React.FC = () => {
               <ColorBarItem type={type} colorKey={color} key={index}></ColorBarItem>
             ))}
           </div>
-          <div
-            onMouseDown={onCleanButtonDown}
-            onMouseEnter={() => {
-              setIsMouseEnterCleanButton(true)
-            }}
-            onMouseLeave={() => {
-              setIsMouseEnterCleanButton(false)
-            }}
-            className={colorBarCleanButton}
-            style={{
-              backgroundColor: isMouseEnterCleanButton ? "#373737" : undefined,
-            }}
-          >
+          <div onMouseDown={onCleanButtonDown} className={colorBarCleanButton}>
             <span>清除</span>
           </div>
         </div>
