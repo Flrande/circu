@@ -11,7 +11,7 @@ import { buttonColorAtom, isColorBarActiveAtom, selectedColorAtom } from "./stat
 
 const ColorButton: React.FC = () => {
   const editor = useSlate()
-  const [isMouseenter, setIsMouseenter] = useState(false)
+  const [isMouseEnter, setIsMouseEnter] = useState(false)
   const buttonColor = useAtomValue(buttonColorAtom)
   const selectedColor = useAtomValue(selectedColorAtom)
   const [, setIsColorBarActive] = useAtom(isColorBarActiveAtom)
@@ -37,15 +37,15 @@ const ColorButton: React.FC = () => {
       <div
         onMouseDown={onMouseDown}
         onMouseEnter={() => {
-          setIsMouseenter(true)
+          setIsMouseEnter(true)
           setIsColorBarActive(true)
         }}
         onMouseLeave={() => {
-          setIsMouseenter(false)
+          setIsMouseEnter(false)
         }}
         className={toolBarButton}
         style={{
-          backgroundColor: isMouseenter ? toolBarIconBackgroundColor.focusStatic : undefined,
+          backgroundColor: isMouseEnter ? toolBarIconBackgroundColor.focusStatic : undefined,
         }}
       >
         <div

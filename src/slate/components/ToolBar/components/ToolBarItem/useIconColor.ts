@@ -14,7 +14,7 @@ export const toolBarIconStaticFillColor = "#ffffff"
 export const toolBarIconActiveFillColor = "#5985f5"
 
 // 接受鼠标状态和样式状态, 返回 backgroundColor 和 fillColor
-export const useIconColor = (isStyleActive: boolean, isMouseenter: boolean) => {
+export const useIconColor = (isStyleActive: boolean, isMouseEnter: boolean) => {
   let result: {
     fillColor: string
     backgroundColor: string | undefined
@@ -23,12 +23,12 @@ export const useIconColor = (isStyleActive: boolean, isMouseenter: boolean) => {
     backgroundColor: undefined,
   }
 
-  if (!isStyleActive && isMouseenter) {
+  if (!isStyleActive && isMouseEnter) {
     result.backgroundColor = toolBarIconBackgroundColor.focusStatic
-  } else if (isStyleActive && isMouseenter) {
+  } else if (isStyleActive && isMouseEnter) {
     result.backgroundColor = toolBarIconBackgroundColor.focusActive
     result.fillColor = toolBarIconActiveFillColor
-  } else if (isStyleActive && !isMouseenter) {
+  } else if (isStyleActive && !isMouseEnter) {
     result.backgroundColor = toolBarIconBackgroundColor.nofocusActive
     result.fillColor = toolBarIconActiveFillColor
   }

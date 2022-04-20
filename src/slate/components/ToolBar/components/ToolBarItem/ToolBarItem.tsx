@@ -8,21 +8,21 @@ const ToolBarItem: React.FC<{
   onMouseEnter?: React.MouseEventHandler<HTMLDivElement>
   onMouseLeave?: React.MouseEventHandler<HTMLDivElement>
 }> = ({ isStyleActive, onMouseDown, onMouseEnter, onMouseLeave, children }) => {
-  const [isMouseenter, setIsMouseenter] = useState(false)
-  const { fillColor, backgroundColor } = useIconColor(isStyleActive, isMouseenter)
+  const [isMouseEnter, setIsMouseEnter] = useState(false)
+  const { fillColor, backgroundColor } = useIconColor(isStyleActive, isMouseEnter)
 
   return (
     <div className={toolBarItemContainer}>
       <div
         onMouseDown={onMouseDown}
         onMouseEnter={(event) => {
-          setIsMouseenter(true)
+          setIsMouseEnter(true)
           if (onMouseEnter) {
             onMouseEnter(event)
           }
         }}
         onMouseLeave={(event) => {
-          setIsMouseenter(false)
+          setIsMouseEnter(false)
           if (onMouseLeave) {
             onMouseLeave(event)
           }
