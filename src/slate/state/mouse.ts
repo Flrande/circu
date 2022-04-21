@@ -1,6 +1,7 @@
 import { atom, useAtom } from "jotai"
 import { useEffect } from "react"
 
+// 用于控制主工具栏
 export const isMouseUpAtom = atom<boolean>(false)
 
 export const useMouse = () => {

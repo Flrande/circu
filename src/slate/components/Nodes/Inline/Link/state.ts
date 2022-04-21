@@ -67,6 +67,7 @@ export const linkBarStateAtom = atom((get) => {
   if (linkState) {
     return {
       url: linkState.url,
+      linkElementPath: linkState.linkElementPath,
       position: linkState.position,
     }
   }
@@ -75,6 +76,7 @@ export const linkBarStateAtom = atom((get) => {
 
 export const linkEditBarStateDerivedAtom = atom(
   (get) => get(linkEditBarStateAtom),
+  // 自动同步, 不用传参
   (get, set) => {
     const linkState = get(linkStateDerivedAtom)
     set(linkEditBarStateAtom, linkState)
