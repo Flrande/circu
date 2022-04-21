@@ -36,7 +36,6 @@ const LinkEditBar: React.FC = () => {
 
   if (isLinkEditBarActive && linkEditBarState) {
     const onButtonClick = () => {
-      console.log(text, url, linkEditBarState.linkElementPath)
       Transforms.setNodes<ILink>(
         editor,
         {

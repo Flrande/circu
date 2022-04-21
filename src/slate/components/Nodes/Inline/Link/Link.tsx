@@ -16,15 +16,17 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
 
   const [linkDom, setLinkDom] = useState<HTMLElement>()
 
-  const onMouseEnter: React.MouseEventHandler<HTMLAnchorElement> = () => {
+  const onMouseEnter: React.MouseEventHandler<HTMLAnchorElement> = (event) => {
     if (linkDom) {
       setIsLinkBarActiveDerived({
         type: "instant",
         value: true,
       })
 
+      // 文档左右两边到视口的距离, 790 为文档宽度
+      const docXPadding = (document.documentElement.clientWidth - 790) / 2
       const top = window.scrollY + linkDom.getBoundingClientRect().top + 28
-      const left = window.scrollX + linkDom.getBoundingClientRect().left
+      const left = window.scrollX + linkDom.getBoundingClientRect().left - docXPadding
       setLinkStateDerived({
         text: SlateNode.string(element),
         url: element.url,

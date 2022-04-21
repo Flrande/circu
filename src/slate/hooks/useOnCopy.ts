@@ -24,7 +24,6 @@ export const useOnCopy = () => {
 
         str = str.concat(`${startText}\n`)
         nodeEntryArr.map((item) => {
-          console.log(item[1], startPoint.path, endPoint.path)
           if (!(Path.isChild(startPoint.path, item[1]) || Path.isChild(endPoint.path, item[1]))) {
             str = str.concat(`${SlateNode.string(item[0])}\n`)
           }

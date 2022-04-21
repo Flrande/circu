@@ -1,10 +1,10 @@
 import { Editable } from "slate-react"
+import { useToolBar } from "./components/ToolBar/state"
 import { useOnKeyDown } from "./hooks/hotKeysHooks"
 import { useRenderLeaf, useRenderElement } from "./hooks/renderHooks"
 import { useDecorate } from "./hooks/useDecorate"
 import { useEndLine } from "./hooks/useEndLine"
 import { useOnCopy } from "./hooks/useOnCopy"
-import { useMouse } from "./state/mouse"
 
 const SlateEditable: React.FC = () => {
   const renderLeaf = useRenderLeaf()
@@ -13,7 +13,7 @@ const SlateEditable: React.FC = () => {
   const onCopy = useOnCopy()
   const decorate = useDecorate()
 
-  useMouse()
+  useToolBar()
   useEndLine()
 
   return (

@@ -1,6 +1,5 @@
 import { useAtomValue } from "jotai"
 import type React from "react"
-import { isMouseUpAtom } from "../../state/mouse"
 import { toolBar, toolBarContainer } from "./ToolBar.css"
 import BoldButton from "./components/Bold/BoldButton"
 import StrikeButton from "./components/Strike/StrikeButton"
@@ -8,28 +7,24 @@ import InlineCodeButton from "./components/InlineCode/InlineCodeButton"
 import BlockCodeButton from "./components/BlockCode/BlockCodeButton"
 import ColorButton from "./components/Color/ColorButton"
 import ItalicButton from "./components/Italic/ItalicButton"
+import { toolBarStateAtom } from "./state"
 
 //TODO: item 可控拖拽
 const ToolBar: React.FC = () => {
-  const isMouseUp = useAtomValue(isMouseUpAtom)
+  const toolBarState = useAtomValue(toolBarStateAtom)
 
-  const nativeSelection = window.getSelection()
-  const isToolBarActive = !!(isMouseUp && nativeSelection && !nativeSelection.isCollapsed)
+  const isActive = toolBarState.isActive
+  const position = toolBarState.position
 
-  if (isToolBarActive) {
-    const selectedRange = nativeSelection.getRangeAt(0)
-
-    const topDistance = window.scrollY + selectedRange.getBoundingClientRect().top
-    const leftDistance = window.scrollX + selectedRange.getBoundingClientRect().left
-
+  if (isActive && position) {
     const toolBarStyle: React.CSSProperties = {
-      transform: `${topDistance > 80 ? "translate3d(0, -10px, 0px)" : "translate3d(0, 10px, 0px)"} `,
+      transform: `translate3d(0, ${position.translateY}px, 0px)`,
       opacity: "1",
       transitionProperty: "opacity, transform",
       transitionDuration: "0.3s, 0.3s",
       transitionDelay: "0.017s, 0.017s",
-      top: `${topDistance > 80 ? topDistance - 40 : topDistance + 20}px`,
-      left: `${leftDistance}px`,
+      top: `${position.y}px`,
+      left: `${position.x}px`,
       userSelect: "none",
     }
 

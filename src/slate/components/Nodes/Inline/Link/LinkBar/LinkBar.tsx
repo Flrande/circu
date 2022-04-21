@@ -35,7 +35,6 @@ const LinkBar: React.FC = () => {
     // 2022-4-21
     // 使用 onClick 似乎会导致 editor.selection 修改后与 原生 selection 不同步
     // 暂未找到解决办法
-    //TODO-BUG: 连续清除多个链接时, 主工具栏的位置基于上一个链接
     const onBreakButtonMouseDown: React.MouseEventHandler<HTMLDivElement> = (event) => {
       event.preventDefault()
       event.stopPropagation()

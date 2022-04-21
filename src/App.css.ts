@@ -7,6 +7,7 @@ export const docContainer = style({
 })
 
 export const doc = style({
+  position: "relative",
   width: "790px",
   fontFamily: "Source Code Pro,Menlo,Monaco,Consolas,Liberation Mono,Courier New,Microsoft Yahei;",
   color: "#ebebeb",
