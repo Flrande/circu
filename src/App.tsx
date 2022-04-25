@@ -4,6 +4,7 @@ import { Slate } from "slate-react"
 import { doc, docContainer } from "./App.css"
 import LinkBar from "./slate/components/Nodes/Inline/Link/LinkBar/LinkBar"
 import LinkEditBar from "./slate/components/Nodes/Inline/Link/LinkBar/LinkEditBar"
+import LinkButtonBar from "./slate/components/ToolBar/components/Link/LinkButtonBar"
 import ToolBar from "./slate/components/ToolBar/ToolBar"
 import { useCreateEditor } from "./slate/hooks/useCreateEditor"
 import SlateEditable from "./slate/SlateEditable"
@@ -309,6 +310,7 @@ const App: React.FC = () => {
         <Slate editor={editor} value={value} onChange={(newValue) => setValue(newValue)}>
           <SlateEditable></SlateEditable>
           <ToolBar></ToolBar>
+          <LinkButtonBar></LinkButtonBar>
           <LinkBar></LinkBar>
           <LinkEditBar></LinkEditBar>
         </Slate>

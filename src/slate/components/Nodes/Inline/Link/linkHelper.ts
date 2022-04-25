@@ -31,10 +31,16 @@ export const unToggleLink = (editor: Editor) => {
       match: (n) => SlateElement.isElement(n) && n.type === "link",
     })
   )
-  for (const [, path] of selectedLinkEntryArr) {
-    Transforms.unwrapNodes(editor, {
-      at: path,
-    })
+
+  const selectedLinkPathRefArr = selectedLinkEntryArr.map((entry) => {
+    return Editor.pathRef(editor, entry[1])
+  })
+  for (const pathRef of selectedLinkPathRefArr) {
+    if (pathRef.current) {
+      Transforms.unwrapNodes(editor, {
+        at: pathRef.current,
+      })
+    }
   }
 }
 

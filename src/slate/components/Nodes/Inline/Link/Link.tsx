@@ -18,6 +18,7 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
 
   const onMouseEnter: React.MouseEventHandler<HTMLAnchorElement> = (event) => {
     if (linkDom) {
+      //TODO 延迟显示
       setIsLinkBarActiveDerived({
         type: "instant",
         value: true,

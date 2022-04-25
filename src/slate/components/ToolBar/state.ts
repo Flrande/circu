@@ -22,8 +22,6 @@ export const useToolBar = () => {
     document.addEventListener(
       "mousedown",
       () => {
-        const mouseUpController = new AbortController()
-
         setToolBarState({
           isActive: false,
           position: null,
@@ -47,11 +45,12 @@ export const useToolBar = () => {
                 x -= docXPadding
                 x += 20
               }
-              if (y < 80) {
-                y += 20
+              if (event.clientY < 80) {
+                y += 30
               } else {
-                y -= 40
+                y -= 80
               }
+
               setToolBarState({
                 isActive: true,
                 position: {
@@ -61,12 +60,10 @@ export const useToolBar = () => {
                 },
               })
             }
-
-            // 自销毁
-            mouseUpController.abort()
           },
           {
-            signal: mouseUpController.signal,
+            // 自销毁
+            once: true,
           }
         )
       },
