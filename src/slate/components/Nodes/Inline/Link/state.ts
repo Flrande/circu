@@ -2,7 +2,7 @@ import { atom } from "jotai"
 import type { Path } from "slate"
 
 const isLinkBarActiveAtom = atom(false)
-// isMouseEnterLinkBarOnceAtom 用于判断 1500ms 后鼠标是否曾进入 linkBar 中
+// isMouseEnterLinkBarOnceAtom 用于判断 500ms 后鼠标是否曾进入 linkBar 中
 export const isMouseEnterLinkBarOnceAtom = atom(false)
 export const isLinkBarActiveDerivedAtom = atom<
   boolean,
@@ -18,7 +18,7 @@ export const isLinkBarActiveDerivedAtom = atom<
         if (!get(isMouseEnterLinkBarOnceAtom)) {
           set(isLinkBarActiveAtom, action.value)
         }
-      }, 1500)
+      }, 500)
     } else {
       set(isLinkBarActiveAtom, action.value)
     }

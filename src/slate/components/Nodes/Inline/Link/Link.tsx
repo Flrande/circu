@@ -1,5 +1,5 @@
 import { useAtom } from "jotai"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ReactEditor, useSlate } from "slate-react"
 import { SlateNode } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
@@ -15,14 +15,17 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
   const [, setLinkStateDerived] = useAtom(linkStateDerivedAtom)
 
   const [linkDom, setLinkDom] = useState<HTMLElement>()
+  const timeoutId = useRef<number | null>(null)
 
   const onMouseEnter: React.MouseEventHandler<HTMLAnchorElement> = (event) => {
     if (linkDom) {
-      //TODO 延迟显示
-      setIsLinkBarActiveDerived({
-        type: "instant",
-        value: true,
-      })
+      // 计时, 若用户 800 毫秒内没有离开 link, 触发 linkBar
+      timeoutId.current = window.setTimeout(() => {
+        setIsLinkBarActiveDerived({
+          type: "instant",
+          value: true,
+        })
+      }, 800)
 
       // 文档左右两边到视口的距离, 790 为文档宽度
       const docXPadding = (document.documentElement.clientWidth - 790) / 2
@@ -41,6 +44,9 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
   }
 
   const onMouseLeave: React.MouseEventHandler<HTMLAnchorElement> = () => {
+    if (timeoutId.current) {
+      clearTimeout(timeoutId.current)
+    }
     setIsLinkBarActiveDerived({
       type: "delayed",
       value: false,
