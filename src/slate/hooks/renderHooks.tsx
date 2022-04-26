@@ -9,6 +9,8 @@ import type {
   IBlockCode_CodeLine,
   IBlockCode_VoidArea,
 } from "../components/Nodes/Block/BlockCode/types"
+import List from "../components/Nodes/Block/List/List"
+import type { IList } from "../components/Nodes/Block/List/types"
 import Paragraph from "../components/Nodes/Block/Paragraph/Paragraph"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import InlineCode from "../components/Nodes/Inline/InlineCode/InlineCode"
@@ -39,6 +41,8 @@ export const useRenderElement = () => {
         return <InlineCode {...(props as CustomRenderElementProps<IInlineCode>)}></InlineCode>
       case "link":
         return <Link {...(props as CustomRenderElementProps<ILink>)}></Link>
+      case "list":
+        return <List {...(props as CustomRenderElementProps<IList>)}></List>
     }
   }
 }

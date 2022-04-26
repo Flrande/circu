@@ -1,5 +1,8 @@
 import { Editor, NodeEntry, Transforms } from "slate"
+import { PARAGRAPH_TYPE_ELEMENTS } from "../../../../types/constant"
+import type { ParagraphTypeElement } from "../../../../types/interface"
 import { SlateElement, SlateRange } from "../../../../types/slate"
+import { arrayIncludes } from "../../../../utils/general"
 import type { IParagraph } from "../Paragraph/types"
 import type { IBlockCode, IBlockCode_CodeLine } from "./types"
 
@@ -108,10 +111,10 @@ export const unToggleBlockCode = (editor: Editor) => {
     // 选区从 paragraph 开始, 并包含代码块 -> 将选区合成一个大的代码块
     // --------------------------------------------------
   } else if (selectedNodeEntryArr.some(([node]) => node.type.startsWith("blockCode"))) {
-    // 选中的 paragraph 和 blockCode
+    // 选中的段落型元素和代码块元素
     const selectedEntryArr = selectedNodeEntryArr.filter(
-      ([node]) => node.type === "paragraph" || node.type === "blockCode"
-    ) as NodeEntry<IParagraph | IBlockCode>[]
+      ([node]) => arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, node.type) || node.type === "blockCode"
+    ) as NodeEntry<ParagraphTypeElement | IBlockCode>[]
 
     // 新的 blockCode
     const newNode: IBlockCode = {
@@ -129,7 +132,7 @@ export const unToggleBlockCode = (editor: Editor) => {
           type: "blockCode_codeArea",
           langKey: "PlainText",
           children: selectedEntryArr.flatMap(([node]) => {
-            if (node.type === "paragraph") {
+            if (node.type !== "blockCode") {
               const newItem: IBlockCode_CodeLine = {
                 type: "blockCode_codeLine",
                 children: node.children,
@@ -180,13 +183,13 @@ export const toggleBlockCode = (editor: Editor) => {
   if (isBlockCodeActive(editor)) {
     unToggleBlockCode(editor)
   } else {
-    const selectedParagraphNodes = Array.from(
+    const selectedParagraphTypeNodes = Array.from(
       Editor.nodes(editor, {
-        match: (n) => SlateElement.isElement(n) && n.type === "paragraph",
+        match: (n) => SlateElement.isElement(n) && arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, n.type),
       })
-    ).map((item) => item[0]) as IParagraph[]
+    ).map((item) => item[0]) as ParagraphTypeElement[]
 
-    const newNodeChildren: IBlockCode_CodeLine[] = selectedParagraphNodes.map<IBlockCode_CodeLine>((item) => {
+    const newNodeChildren: IBlockCode_CodeLine[] = selectedParagraphTypeNodes.map<IBlockCode_CodeLine>((item) => {
       return {
         type: "blockCode_codeLine",
         children: item.children,

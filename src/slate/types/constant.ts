@@ -1,6 +1,7 @@
-import type { CustomText, InlineElement, VoidElement } from "./interface"
-import type { KeysValueUnion } from "./utils"
+import type { InlineElement, ParagraphTypeElement, VoidElement } from "./interface"
 
-export const INLINE_ELEMENTS: Array<Exclude<KeysValueUnion<InlineElement>, CustomText[]>> = ["inlineCode", "link"]
+export const INLINE_ELEMENTS: Array<InlineElement["type"]> = ["inlineCode", "link"]
 
-export const VOID_ELEMENTS: Array<Exclude<KeysValueUnion<VoidElement>, CustomText[]>> = ["blockCode_voidArea"]
+export const VOID_ELEMENTS: Array<VoidElement["type"]> = ["blockCode_voidArea"]
+
+export const PARAGRAPH_TYPE_ELEMENTS: Array<ParagraphTypeElement["type"]> = ["paragraph", "list"]
