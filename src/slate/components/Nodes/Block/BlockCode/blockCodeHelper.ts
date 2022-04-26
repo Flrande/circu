@@ -111,10 +111,10 @@ export const unToggleBlockCode = (editor: Editor) => {
     // 选区从 paragraph 开始, 并包含代码块 -> 将选区合成一个大的代码块
     // --------------------------------------------------
   } else if (selectedNodeEntryArr.some(([node]) => node.type.startsWith("blockCode"))) {
-    // 选中的段落型元素和代码块元素
-    const selectedEntryArr = selectedNodeEntryArr.filter(
-      ([node]) => arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, node.type) || node.type === "blockCode"
-    ) as NodeEntry<ParagraphTypeElement | IBlockCode>[]
+    // 选中的段落型元素
+    const selectedParagraphTypeEntryArr = selectedNodeEntryArr.filter(([node]) =>
+      arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, node.type)
+    ) as NodeEntry<ParagraphTypeElement>[]
 
     // 新的 blockCode
     const newNode: IBlockCode = {
@@ -131,23 +131,12 @@ export const unToggleBlockCode = (editor: Editor) => {
         {
           type: "blockCode_codeArea",
           langKey: "PlainText",
-          children: selectedEntryArr.flatMap(([node]) => {
-            if (node.type !== "blockCode") {
-              const newItem: IBlockCode_CodeLine = {
-                type: "blockCode_codeLine",
-                children: node.children,
-              }
-              return newItem
-            } else {
-              const newItems: IBlockCode_CodeLine[] = node.children[1].children.map((node) => {
-                const newItem: IBlockCode_CodeLine = {
-                  type: "blockCode_codeLine",
-                  children: node.children,
-                }
-                return newItem
-              })
-              return newItems
+          children: selectedParagraphTypeEntryArr.map(([node]) => {
+            const newItem: IBlockCode_CodeLine = {
+              type: "blockCode_codeLine",
+              children: node.children,
             }
+            return newItem
           }),
         },
         {
@@ -183,11 +172,19 @@ export const toggleBlockCode = (editor: Editor) => {
   if (isBlockCodeActive(editor)) {
     unToggleBlockCode(editor)
   } else {
+    // 选中的段落型元素
     const selectedParagraphTypeNodes = Array.from(
       Editor.nodes(editor, {
         match: (n) => SlateElement.isElement(n) && arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, n.type),
       })
     ).map((item) => item[0]) as ParagraphTypeElement[]
+
+    // 预期下 selectedParagraphTypeNodes 中不应含有 blockCode_codeLine,
+    // 因为前面 isBlockCodeActive 已经判断过了
+    if (selectedParagraphTypeNodes.some((node) => node.type === "blockCode_codeLine")) {
+      console.error("toggleBlockCode does not work as expected.")
+      return
+    }
 
     const newNodeChildren: IBlockCode_CodeLine[] = selectedParagraphTypeNodes.map<IBlockCode_CodeLine>((item) => {
       return {

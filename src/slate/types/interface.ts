@@ -21,8 +21,8 @@ export type BlockElement =
   | IList
 export type InlineElement = IInlineCode | ILink
 export type VoidElement = IBlockCode_VoidArea
-// 段落型元素, 不止 Paragraph
-export type ParagraphTypeElement = IParagraph | IList
+// 段落型元素, 结构上和 Paragraph 相近, 观感上占 "一行"
+export type ParagraphTypeElement = IParagraph | IList | IBlockCode_CodeLine
 
 export type CustomElement = BlockElement | InlineElement
 export type CustomText = ICustomText
