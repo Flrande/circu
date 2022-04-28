@@ -35,6 +35,10 @@ const getTokenLength: (token: string | Prism.Token) => number = (token) => {
   }
 }
 
+/**
+ * 用于在代码块中生成高亮的钩子
+ * @returns 1个 decorate 函数, 此函数返回相应的 range 数组
+ */
 export const useDecorateCode = () => {
   const editor = useSlate()
 

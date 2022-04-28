@@ -22,57 +22,6 @@ const App: React.FC = () => {
       ],
     },
     {
-      type: "blockCode",
-      children: [
-        {
-          type: "blockCode_voidArea",
-          children: [
-            {
-              text: "",
-            },
-          ],
-        },
-        {
-          type: "blockCode_codeArea",
-          langKey: "Javascript",
-          children: [
-            {
-              type: "blockCode_codeLine",
-              children: [
-                {
-                  text: "const tmp = 1",
-                },
-              ],
-            },
-            {
-              type: "blockCode_codeLine",
-              children: [
-                {
-                  text: "const foo = 2",
-                },
-              ],
-            },
-            {
-              type: "blockCode_codeLine",
-              children: [
-                {
-                  text: "console.log(tmp + foo)",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: "blockCode_voidArea",
-          children: [
-            {
-              text: "",
-            },
-          ],
-        },
-      ],
-    },
-    {
       type: "paragraph",
       children: [
         {
@@ -81,37 +30,10 @@ const App: React.FC = () => {
       ],
     },
     {
-      type: "blockCode",
+      type: "paragraph",
       children: [
         {
-          type: "blockCode_voidArea",
-          children: [
-            {
-              text: "",
-            },
-          ],
-        },
-        {
-          type: "blockCode_codeArea",
-          langKey: "PlainText",
-          children: [
-            {
-              type: "blockCode_codeLine",
-              children: [
-                {
-                  text: "blockCode with PlainText",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          type: "blockCode_voidArea",
-          children: [
-            {
-              text: "",
-            },
-          ],
+          text: "A line of text in a paragraph. - 3",
         },
       ],
     },
@@ -119,7 +41,39 @@ const App: React.FC = () => {
       type: "paragraph",
       children: [
         {
-          text: "A line of text in a paragraph. - 3",
+          text: "A line of text in a paragraph. - 4",
+        },
+      ],
+    },
+    {
+      type: "paragraph",
+      children: [
+        {
+          text: "A line of text in a paragraph. - 5",
+        },
+      ],
+    },
+    {
+      type: "paragraph",
+      children: [
+        {
+          text: "A line of text in a paragraph. - 6",
+        },
+      ],
+    },
+    {
+      type: "paragraph",
+      children: [
+        {
+          text: "A line of text in a paragraph. - 7",
+        },
+      ],
+    },
+    {
+      type: "paragraph",
+      children: [
+        {
+          text: "A line of text in a paragraph. - 8",
         },
       ],
     },

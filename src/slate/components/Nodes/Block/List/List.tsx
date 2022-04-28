@@ -1,27 +1,18 @@
-import { useState } from "react"
-import { ReactEditor, useSlate } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { IList } from "./types"
 
-//TODO: index
-// 对于有序列表有两种模式 (mode):
+// 对于有序列表有两种模式 (状态):
 // 作为列表开头 - head
 // 跟随前一个 list 的编号 - selfIncrement
-// 在接下来的表述中
-// head-list 表示 head 模式的 list
-// selfIncrement-list 表示 selfIncrement 模式的 list
 //
-// head:
-// 1. head 作为一组列表的开头, 决定一组列表 index 的下界
-// 2. head-list 的 index 不一定为 1,
-//    当在 head-list 前 (相邻) 添加一个新 list 时,
-//    该 head-list 模式切换为 selfIncrement,
-//    新添加的 list 模式为 head
-// 3. 在 head-list 中换行后新添加的 list 为 selfIncrement-list
+// 其中  head 作为一组列表的开头, 决定一组列表 index 的下界
+// 在接下来的表述中,
+// head-list 表示 head 模式的 list,
+// selfIncrement-list 表示 selfIncrement 模式的 list
 //
 // --------------------------------------------------
 //
-// 有三种切换行为 (method):
+// 有三种切换行为:
 // 继续之前的编号 - continue
 // 开始新列表 - reStart
 // 切换编号 - change
@@ -63,7 +54,7 @@ const List: React.FC<CustomRenderElementProps<IList>> = ({ attributes, children,
         {children}
       </div>
     )
-  } else {
+  } else if (element.listType === "unordered") {
     return (
       <div
         {...attributes}
@@ -82,6 +73,18 @@ const List: React.FC<CustomRenderElementProps<IList>> = ({ attributes, children,
         >
           {"\u2022"}
         </span>
+        {children}
+      </div>
+    )
+  } else {
+    return (
+      <div
+        {...attributes}
+        style={{
+          margin: "8px 0",
+          paddingLeft: "22px",
+        }}
+      >
         {children}
       </div>
     )

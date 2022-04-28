@@ -5,7 +5,7 @@ import type { IBlockCode, IBlockCode_CodeLine } from "./types"
 
 /**
  * 用于分割代码块的函数, 仅作用于一个代码块,
- * 执行完成后 editor.selection 为 range 对应的段落型元素
+ * 执行完成后 editor.selection 为 range 对应选区
  *
  * @param editor 对应编辑器实例
  * @param range 要分割出的范围
