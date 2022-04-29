@@ -6,7 +6,7 @@ import type {
   IBlockCode_CodeLine,
   IBlockCode_VoidArea,
 } from "../components/Nodes/Block/BlockCode/types"
-import type { IList } from "../components/Nodes/Block/List/types"
+import type { IOrderedList, IUnorderedList } from "../components/Nodes/Block/List/types"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import type { IInlineCode } from "../components/Nodes/Inline/InlineCode/types"
 import type { ILink } from "../components/Nodes/Inline/Link/types"
@@ -18,11 +18,12 @@ export type BlockElement =
   | IBlockCode_CodeArea
   | IBlockCode_VoidArea
   | IBlockCode_CodeLine
-  | IList
+  | IOrderedList
+  | IUnorderedList
 export type InlineElement = IInlineCode | ILink
 export type VoidElement = IBlockCode_VoidArea
 // 段落型元素, 结构上和 Paragraph 相近, 观感上占 "一行"
-export type ParagraphTypeElement = IParagraph | IList | IBlockCode_CodeLine
+export type ParagraphTypeElement = IParagraph | IOrderedList | IUnorderedList | IBlockCode_CodeLine
 
 export type CustomElement = BlockElement | InlineElement
 export type CustomText = ICustomText

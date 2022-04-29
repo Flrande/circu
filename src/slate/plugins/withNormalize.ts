@@ -1,38 +1,26 @@
-import { Editor, Transforms } from "slate"
+import { Editor, NodeEntry } from "slate"
+import { normalizeBlockCode } from "../components/Nodes/Block/BlockCode/normalizeBlockCode"
 import type { IBlockCode } from "../components/Nodes/Block/BlockCode/types"
+import { normalizeOrderedList } from "../components/Nodes/Block/List/normalizeList"
 import { SlateElement } from "../types/slate"
-
-const verifyBlockCodeChild = (node: IBlockCode) => {
-  const children = node.children
-  return (
-    children.length === 3 &&
-    children[0].type === "blockCode_voidArea" &&
-    children[0].children.length === 1 &&
-    children[0].children[0].text === "" &&
-    children[1].type === "blockCode_codeArea" &&
-    children[2].type === "blockCode_voidArea" &&
-    children[2].children.length === 1 &&
-    children[2].children[0].text === ""
-  )
-}
 
 const withNormalizeForBlockCode = (editor: Editor) => {
   const { normalizeNode } = editor
 
   editor.normalizeNode = (entry) => {
-    const [currentNode, currentPath] = entry
-    normalizeNode(entry)
+    const [currentNode] = entry
+
+    if (Editor.isEditor(currentNode)) {
+      normalizeOrderedList(editor)
+      return
+    }
 
     if (SlateElement.isElement(currentNode) && currentNode.type === "blockCode") {
-      if (verifyBlockCodeChild(currentNode)) {
-        return
-      } else {
-        // 若不符合 blockCode 的内建约束, 删除该代码块
-        Transforms.removeNodes(editor, {
-          at: currentPath,
-        })
-      }
+      normalizeBlockCode(editor, entry as NodeEntry<IBlockCode>)
+      return
     }
+
+    normalizeNode(entry)
   }
 
   return editor

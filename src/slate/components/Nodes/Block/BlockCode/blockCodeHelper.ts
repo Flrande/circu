@@ -3,7 +3,7 @@ import { PARAGRAPH_TYPE_ELEMENTS } from "../../../../types/constant"
 import type { ParagraphTypeElement } from "../../../../types/interface"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
-import { spiltBlockCode } from "./blockCodeUtils"
+import { spiltBlockCode } from "./spiltBlockCode"
 import type { IBlockCode, IBlockCode_CodeLine } from "./types"
 
 export const isBlockCodeActive = (editor: Editor) => {

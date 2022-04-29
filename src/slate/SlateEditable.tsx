@@ -1,5 +1,4 @@
 import { Editable } from "slate-react"
-import { useListIndexUpdate } from "./components/Nodes/Block/List/useListUpdate"
 import { useToolBar } from "./components/ToolBar/state"
 import { useOnKeyDown } from "./hooks/hotKeysHooks"
 import { useRenderLeaf, useRenderElement } from "./hooks/renderHooks"
@@ -16,7 +15,6 @@ const SlateEditable: React.FC = () => {
 
   useToolBar()
   useEndLine()
-  useListIndexUpdate()
 
   return (
     <Editable

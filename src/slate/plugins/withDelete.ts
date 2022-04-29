@@ -1,6 +1,8 @@
 import { Editor, Transforms } from "slate"
 import { SlateElement, SlateRange } from "../types/slate"
 
+//TODO：将各个元素相关的逻辑拆分出来
+//TODO: 多级列表
 const withDeleteBackward = (editor: Editor) => {
   const { deleteBackward } = editor
 
@@ -49,21 +51,20 @@ const withDeleteBackward = (editor: Editor) => {
         }
 
         // --------------------------------------------------
-        // 若当前 BlockNode 为 list
+        // 若当前 BlockNode 为 orderedList
         // --------------------------------------------------
-      } else if (SlateElement.isElement(currentBlockNode) && currentBlockNode.type === "list") {
-        // 判断是否到达 list 的首个 Point
+      } else if (SlateElement.isElement(currentBlockNode) && currentBlockNode.type === "orderedList") {
+        // 判断是否到达有序列表的首个 Point
         if (SlateRange.isCollapsed(selection) && Editor.isStart(editor, selection.anchor, currentBlockNodePath)) {
-          // 若 list 的 listType 不为 noindex,
-          // 触发 deleteBackward 相当于将当前 list 的类型转为 noindex
-          if (currentBlockNode.listType !== "noindex") {
+          // 若有序列表不为无索引
+          // 触发 deleteBackward 相当于将当前有序列表变为无索引
+          if (currentBlockNode.indexState.type !== "noIndex") {
             Transforms.setNodes(
               editor,
               {
-                listType: "noindex",
-                orderedListMode: undefined,
-                index: undefined,
-                headIndex: undefined,
+                indexState: {
+                  type: "noIndex",
+                },
               },
               {
                 at: currentBlockNodePath,
@@ -71,14 +72,49 @@ const withDeleteBackward = (editor: Editor) => {
             )
             return
 
-            // 若 list 的 listType 为 noindex,
-            // 触发 deleteBackward 相当于将当前 list 转化为 paragraph
-          } else if (currentBlockNode.listType === "noindex") {
+            // 若有序列表为有索引
+            // 触发 deleteBackward 相当于将当前 orderedList 变为 paragraph
+          } else if (currentBlockNode.indexState.type === "noIndex") {
             Transforms.setNodes(
               editor,
               {
                 type: "paragraph",
-                children: [{ text: "" }],
+              },
+              {
+                at: currentBlockNodePath,
+              }
+            )
+            return
+          }
+        }
+
+        // --------------------------------------------------
+        // 若当前 BlockNode 为 unorderedList
+        // --------------------------------------------------
+      } else if (SlateElement.isElement(currentBlockNode) && currentBlockNode.type === "unorderedList") {
+        // 判断是否到达无序列表的首个 Point
+        if (SlateRange.isCollapsed(selection) && Editor.isStart(editor, selection.anchor, currentBlockNodePath)) {
+          // 若有序列表不为无索引
+          // 触发 deleteBackward 相当于将当前有序列表变为无索引
+          if (currentBlockNode.indexState !== "noIndex") {
+            Transforms.setNodes(
+              editor,
+              {
+                indexState: "noIndex",
+              },
+              {
+                at: currentBlockNodePath,
+              }
+            )
+            return
+
+            // 若无序列表为有索引
+            // 触发 deleteBackward 相当于将当前 unorderedList 变为 paragraph
+          } else if (currentBlockNode.indexState === "noIndex") {
+            Transforms.setNodes(
+              editor,
+              {
+                type: "paragraph",
               },
               {
                 at: currentBlockNodePath,
