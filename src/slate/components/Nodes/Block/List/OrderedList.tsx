@@ -33,41 +33,27 @@ import type { IOrderedList } from "./types"
 // 3. 任何时候均可触发 change, 相当于将当前 selfIncrement-list
 //    的模式转为 head
 const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attributes, children, element }) => {
-  if (element.indexState.type !== "noIndex") {
-    return (
-      <div
-        {...attributes}
+  return (
+    <div
+      {...attributes}
+      style={{
+        margin: "8px 0",
+      }}
+    >
+      <span
+        contentEditable={false}
         style={{
-          margin: "8px 0",
+          display: "inline-block",
+          userSelect: "none",
+          minWidth: "22px",
+          color: "#5a87f7",
         }}
       >
-        <span
-          contentEditable={false}
-          style={{
-            display: "inline-block",
-            userSelect: "none",
-            minWidth: "22px",
-            color: "#5a87f7",
-          }}
-        >
-          {element.indexState.index}.
-        </span>
-        {children}
-      </div>
-    )
-  } else {
-    return (
-      <div
-        {...attributes}
-        style={{
-          margin: "8px 0",
-          paddingLeft: "22px",
-        }}
-      >
-        {children}
-      </div>
-    )
-  }
+        {element.indexState.index}.
+      </span>
+      {children}
+    </div>
+  )
 }
 
 export default OrderedList

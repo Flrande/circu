@@ -15,6 +15,7 @@ const App: React.FC = () => {
   const [value, setValue] = useState<Descendant[]>([
     {
       type: "paragraph",
+      indentLevel: 0,
       children: [
         {
           text: "A line of text in a paragraph. - 1",
@@ -23,6 +24,7 @@ const App: React.FC = () => {
     },
     {
       type: "paragraph",
+      indentLevel: 0,
       children: [
         {
           text: "A line of text in a paragraph. - 2",
@@ -31,6 +33,7 @@ const App: React.FC = () => {
     },
     {
       type: "paragraph",
+      indentLevel: 0,
       children: [
         {
           text: "A line of text in a paragraph. - 3",
@@ -39,6 +42,7 @@ const App: React.FC = () => {
     },
     {
       type: "paragraph",
+      indentLevel: 0,
       children: [
         {
           text: "A line of text in a paragraph. - 4",
@@ -47,6 +51,7 @@ const App: React.FC = () => {
     },
     {
       type: "paragraph",
+      indentLevel: 0,
       children: [
         {
           text: "A line of text in a paragraph. - 5",
@@ -55,6 +60,7 @@ const App: React.FC = () => {
     },
     {
       type: "paragraph",
+      indentLevel: 0,
       children: [
         {
           text: "A line of text in a paragraph. - 6",
@@ -63,6 +69,7 @@ const App: React.FC = () => {
     },
     {
       type: "paragraph",
+      indentLevel: 0,
       children: [
         {
           text: "A line of text in a paragraph. - 7",
@@ -71,6 +78,7 @@ const App: React.FC = () => {
     },
     {
       type: "paragraph",
+      indentLevel: 0,
       children: [
         {
           text: "A line of text in a paragraph. - 8",
@@ -250,6 +258,7 @@ const App: React.FC = () => {
     },
     {
       type: "paragraph",
+      indentLevel: 0,
       children: [
         {
           text: "",

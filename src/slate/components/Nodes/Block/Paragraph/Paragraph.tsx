@@ -1,7 +1,7 @@
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { IParagraph } from "./types"
 
-const Paragraph: React.FC<CustomRenderElementProps<IParagraph>> = ({ attributes, children }) => {
+const Paragraph: React.FC<CustomRenderElementProps<IParagraph>> = ({ attributes, children, element }) => {
   return (
     <div
       {...attributes}
@@ -9,7 +9,9 @@ const Paragraph: React.FC<CustomRenderElementProps<IParagraph>> = ({ attributes,
         margin: "8px 0",
       }}
     >
-      {children}
+      <div style={{
+        marginLeft: `${element.indentLevel * 22}px`
+      }}>{children}</div>
     </div>
   )
 }

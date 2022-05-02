@@ -14,16 +14,12 @@ export const normalizeOrderedList = (editor: Editor) => {
   const listEntryArr = Array.from(
     Editor.nodes(editor, {
       at: [],
-      match: (n) => SlateElement.isElement(n) && n.type === "orderedList" && n.indexState.type !== "noIndex",
+      match: (n) => SlateElement.isElement(n) && n.type === "orderedList",
     })
   ) as NodeEntry<IOrderedList>[]
 
   let currentIndex = 1
   for (const [list, path] of listEntryArr) {
-    if (list.indexState.type === "noIndex") {
-      continue
-    }
-
     if (list.indexState.type === "head") {
       currentIndex = list.indexState.index
     } else {

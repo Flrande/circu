@@ -94,6 +94,46 @@ export const toggleOrderedList = (editor: Editor) => {
     at: firstPath,
   })
 
-  const lastPoint = SlateRange.end(Editor.range(editor, lastPath))
-  Transforms.select(editor, lastPoint)
+  Transforms.select(editor, Editor.end(editor, lastPath))
+}
+
+export const toggleUnorderedList = (editor: Editor) => {
+  if (!editor.selection) {
+    console.error("toggleUnorderedList() need editor.selection.")
+    return
+  }
+
+  const selectedParagraphTypeEntryArr = Array.from(
+    Editor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, n.type),
+    })
+  ) as Array<NodeEntry<ParagraphTypeElement>>
+
+  let newNodes: IUnorderedList[] = selectedParagraphTypeEntryArr.map(([node]) => {
+    const list: IUnorderedList = {
+      type: "unorderedList",
+      listLevel: 1,
+      children: node.children,
+    }
+    return list
+  })
+
+  // 选区在代码块内, 先将 codeLine 分离出来
+  if (selectedParagraphTypeEntryArr.every(([node]) => node.type.startsWith("blockCode"))) {
+    // spiltBlockCode 执行完成后 editor.selection 仍为对应选区
+    spiltBlockCode(editor, editor.selection)
+  }
+
+  // newNodes 中头尾 list 的 Path
+  const firstPath = SlateRange.start(editor.selection).path.slice(0, 1)
+  const lastPath = [firstPath[0] + newNodes.length - 1]
+
+  Transforms.removeNodes(editor, {
+    at: editor.selection,
+  })
+  Transforms.insertNodes(editor, newNodes, {
+    at: firstPath,
+  })
+
+  Transforms.select(editor, Editor.end(editor, lastPath))
 }

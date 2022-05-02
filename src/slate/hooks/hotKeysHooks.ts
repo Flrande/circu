@@ -1,8 +1,10 @@
 import type React from "react"
 import { Editor } from "slate"
 import { useSlate } from "slate-react"
-import { toggleOrderedList } from "../components/Nodes/Block/List/listHelper"
+import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
 import { orderedListLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
+import { switchUnorderedListLevel } from "../components/Nodes/Block/List/switchListLevel"
+import { switchParagraphLevel } from "../components/Nodes/Block/Paragraph/switchParagraphLevel"
 import { PARAGRAPH_TYPE_ELEMENTS } from "../types/constant"
 import type { ParagraphTypeElement } from "../types/interface"
 import { SlateElement } from "../types/slate"
@@ -12,18 +14,32 @@ export const useOnKeyDown = () => {
   const editor = useSlate()
 
   const onKeyDown: React.KeyboardEventHandler = (event) => {
-    if (event.key === "Enter") {
-      const selectedParagraphNodes = Array.from(
-        Editor.nodes(editor, {
-          match: (n) => SlateElement.isElement(n) && arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, n.type),
-        })
-      ).map(([node]) => node) as ParagraphTypeElement[]
+    // 选中的段落型元素
+    const selectedParagraphTypeNodes = Array.from(
+      Editor.nodes(editor, {
+        match: (n) => SlateElement.isElement(n) && arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, n.type),
+      })
+    ).map(([node]) => node) as ParagraphTypeElement[]
 
-      if (selectedParagraphNodes.every((node) => node.type === "orderedList")) {
+    if (event.key === "Enter") {
+      if (selectedParagraphTypeNodes.every((node) => node.type === "orderedList")) {
         event.preventDefault()
         orderedListLineBreakHandler(editor)
         return
       }
+    }
+
+    if (event.key === "Tab") {
+      if (event.shiftKey) {
+        event.preventDefault()
+        switchUnorderedListLevel(editor, "decrease")
+        switchParagraphLevel(editor, "decrease")
+        return
+      }
+      event.preventDefault()
+      switchUnorderedListLevel(editor, "increase")
+      switchParagraphLevel(editor, "increase")
+      return
     }
 
     // --------------------------------------------------
@@ -31,12 +47,15 @@ export const useOnKeyDown = () => {
     if (event.altKey && event.key === "q") {
       // console.log(editor.selection?.anchor)
       toggleOrderedList(editor)
+      return
     }
     if (event.altKey && event.key === "w") {
       // if (editor.selection) {
       //   toggleLink(editor, "http://www.baidu.com")
       // }
       // console.log(editor.selection?.anchor)
+      toggleUnorderedList(editor)
+      return
     }
     // --------------------------------------------------
   }

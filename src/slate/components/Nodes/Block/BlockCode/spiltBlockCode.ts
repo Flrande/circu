@@ -51,6 +51,7 @@ export const spiltBlockCode = (editor: Editor, range: SlateRange) => {
   const newParagraphNodes: IParagraph[] = codeLineEntryArr.map(([node]) => {
     const newNode: IParagraph = {
       type: "paragraph",
+      indentLevel: 0,
       children: node.children,
     }
     return newNode
