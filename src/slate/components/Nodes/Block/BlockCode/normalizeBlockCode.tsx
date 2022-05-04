@@ -16,7 +16,7 @@ const verifyBlockCodeChild = (node: IBlockCode) => {
 }
 
 /**
- * 用于规范化代码块结构的函数, 保证 blockCode 内遵循
+ * 用于规格化代码块的函数, 保证 blockCode 内遵循
  * VoidArea - CodeArea - VoidArea
  *
  * @param editor 当前编辑器实例

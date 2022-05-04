@@ -32,7 +32,121 @@ import type { IOrderedList } from "./types"
 //    的模式转为 head, 并设 index 为 1
 // 3. 任何时候均可触发 change, 相当于将当前 selfIncrement-list
 //    的模式转为 head
+
+// 阿拉伯数字转罗马数字
+const arabicToRomanNumber = (num: number) => {
+  let result = ""
+  const map: {
+    [i: number]: string
+  } = {
+    1: "i",
+    4: "iv",
+    5: "v",
+    9: "ix",
+    10: "x",
+    40: "xl",
+    50: "l",
+    90: "xc",
+    100: "c",
+    400: "cd",
+    500: "d",
+    900: "cm",
+    1000: "m",
+  }
+  const nums = [1, 4, 5, 9, 10, 40, 50, 90, 100, 400, 500, 900, 1000]
+
+  for (let i = nums.length - 1; i >= 0; i--) {
+    const cache = num
+    const tmp = num % nums[i]
+    if (tmp === cache && i !== 0) continue
+    result += map[nums[i]].repeat(Math.floor((num - tmp) / nums[i]))
+    num = tmp
+  }
+  return result
+}
+
+// 将数字型 index 转化成 字母型 index
+const numberToLetter = (num: number) => {
+  let result = ""
+  const map: {
+    [i: number]: string
+  } = {
+    1: "a",
+    2: "b",
+    3: "c",
+    4: "d",
+    5: "e",
+    6: "f",
+    7: "g",
+    8: "h",
+    9: "i",
+    10: "j",
+    11: "k",
+    12: "l",
+    13: "m",
+    14: "n",
+    15: "o",
+    16: "p",
+    17: "q",
+    18: "r",
+    19: "s",
+    20: "t",
+    21: "u",
+    22: "v",
+    23: "w",
+    24: "x",
+    25: "y",
+    26: "z",
+  }
+
+  let resultLen = 1 // 结果长度
+  let boundary = 26
+  let boundaryArr = [] // [26, 26+26^2, 26+26^2+26^3...], 对应 z, zz, zzz...
+  let sumArr = [] // [1, 1+26, 1+26+26^2...], 对应 a, aa, aaa...
+  boundaryArr.push(boundary)
+  sumArr.push(1)
+  while (true) {
+    if (num <= boundary) {
+      break
+    } else {
+      resultLen += 1
+      boundary += Math.pow(26, resultLen)
+      boundaryArr.push(boundary)
+      sumArr.push(26 * (resultLen - 1))
+    }
+  }
+
+  let tmpNum = num
+  for (let i = resultLen; i >= 1; i--) {
+    let index = 1
+    for (let j = 1; j <= 25; j++) {
+      if (
+        tmpNum >= Math.pow(26, i - 1) * j + (i - 1 === 0 ? 0 : sumArr[i - 1 - 1]) &&
+        tmpNum < Math.pow(26, i - 1) * (j + 1) + (i - 1 === 0 ? 0 : boundaryArr[i - 1 - 1])
+      ) {
+        index = j
+      }
+      if (tmpNum === Math.pow(26, i - 1) * (j + 1) + (i - 1 === 0 ? 0 : boundaryArr[i - 1 - 1])) {
+        index = j + 1
+      }
+    }
+    result += map[index]
+    tmpNum -= Math.pow(26, i - 1) * index
+  }
+  return result
+}
+
 const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attributes, children, element }) => {
+  //TODO: 可能的优化方式:
+  // worker 异步建表
+  // proxy 劫持
+  const indexSymbol =
+    element.listLevel % 3 === 1
+      ? element.indexState.index
+      : element.listLevel % 3 === 2
+      ? numberToLetter(element.indexState.index)
+      : arabicToRomanNumber(element.indexState.index)
+
   return (
     <div
       {...attributes}
@@ -40,18 +154,31 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
         margin: "8px 0",
       }}
     >
-      <span
-        contentEditable={false}
+      <div
         style={{
-          display: "inline-block",
-          userSelect: "none",
-          minWidth: "22px",
-          color: "#5a87f7",
+          marginLeft: `${(element.listLevel - 1) * 22}px`,
+          display: "flex",
         }}
       >
-        {element.indexState.index}.
-      </span>
-      {children}
+        <span
+          contentEditable={false}
+          style={{
+            userSelect: "none",
+            minWidth: "22px",
+            height: "100%",
+            color: "#5a87f7",
+          }}
+        >
+          {indexSymbol}.
+        </span>
+        <span
+          style={{
+            minWidth: "0",
+          }}
+        >
+          {children}
+        </span>
+      </div>
     </div>
   )
 }

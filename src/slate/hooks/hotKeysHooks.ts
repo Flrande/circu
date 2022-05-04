@@ -3,7 +3,7 @@ import { Editor } from "slate"
 import { useSlate } from "slate-react"
 import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
 import { orderedListLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
-import { switchUnorderedListLevel } from "../components/Nodes/Block/List/switchListLevel"
+import { switchListLevel } from "../components/Nodes/Block/List/switchListLevel"
 import { switchParagraphLevel } from "../components/Nodes/Block/Paragraph/switchParagraphLevel"
 import { PARAGRAPH_TYPE_ELEMENTS } from "../types/constant"
 import type { ParagraphTypeElement } from "../types/interface"
@@ -32,12 +32,12 @@ export const useOnKeyDown = () => {
     if (event.key === "Tab") {
       if (event.shiftKey) {
         event.preventDefault()
-        switchUnorderedListLevel(editor, "decrease")
+        switchListLevel(editor, "decrease")
         switchParagraphLevel(editor, "decrease")
         return
       }
       event.preventDefault()
-      switchUnorderedListLevel(editor, "increase")
+      switchListLevel(editor, "increase")
       switchParagraphLevel(editor, "increase")
       return
     }

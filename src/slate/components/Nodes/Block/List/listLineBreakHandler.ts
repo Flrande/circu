@@ -4,6 +4,7 @@ import type { ParagraphTypeElement } from "../../../../types/interface"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
 
+//TODO: 换行后若列表内容为空, 触发换行时进行缩进前移
 /**
  * 处理有序列表中换行行为的函数, 不负责覆盖默认行为
  *

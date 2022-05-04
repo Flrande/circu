@@ -24,7 +24,7 @@ export type ICodeAreaLangMap = {
   WebAssembly: "wasm"
 }
 
-//TODO: 缩进
+//TODO: Tab 缩进 (表现为空格?)
 export type IBlockCode_CodeLine = {
   type: "blockCode_codeLine"
   children: CustomText[]

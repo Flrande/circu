@@ -13,25 +13,28 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
     >
       <div
         style={{
-          position: "relative",
           marginLeft: `${(element.listLevel - 1) * 22}px`,
-          paddingLeft: "22px",
+          display: "flex",
         }}
       >
         <span
           contentEditable={false}
           style={{
-            position: "absolute",
-            display: "inline-block",
             userSelect: "none",
-            width: "22px",
+            minWidth: "22px",
+            height: "100%",
             color: "#5a87f7",
-            left: "0",
           }}
         >
           {indexSymbol}
         </span>
-        {children}
+        <span
+          style={{
+            minWidth: "0",
+          }}
+        >
+          {children}
+        </span>
       </div>
     </div>
   )

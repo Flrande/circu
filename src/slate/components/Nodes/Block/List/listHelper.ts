@@ -32,10 +32,19 @@ export const toggleOrderedList = (editor: Editor) => {
   ) as Array<NodeEntry<ParagraphTypeElement>>
 
   let newNodes: IOrderedList[] = selectedParagraphTypeEntryArr.map(([node]) => {
+    let level =
+      node.type === "paragraph"
+        ? node.indentLevel
+        : node.type === "orderedList" || node.type === "unorderedList"
+        ? node.listLevel
+        : 1
+    if (level === 0) {
+      level = 1
+    }
+
     const list: IOrderedList = {
       type: "orderedList",
-      //TODO: 多级列表
-      listLevel: 1,
+      listLevel: level,
       indexState: {
         type: "selfIncrement",
         index: 1,
@@ -60,18 +69,28 @@ export const toggleOrderedList = (editor: Editor) => {
     newNodes[0].indexState.type = "head"
   } else {
     const previousNode = Editor.node(editor, [firstPath[0] - 1])[0]
-    // 如果 previousNode 不为有序列表,
-    // newNodes 中的首个 list 设为列表头
-    if (!(SlateElement.isElement(previousNode) && previousNode.type === "orderedList")) {
+    // 如果 previousNode 不为同级别的有序列表 (对于 newNodes 中的首个 list),
+    // 将 newNodes 中的首个 list 设为列表头
+    if (
+      !(
+        SlateElement.isElement(previousNode) &&
+        previousNode.type === "orderedList" &&
+        previousNode.listLevel === newNodes[0].listLevel
+      )
+    ) {
       newNodes[0].indexState.type = "head"
     }
   }
 
-  // newNodes 最后一个 list 为文档尾行时不存在 afterNode
+  // newNodes 中最后一个 list 在文档尾行时不存在 afterNode
   if (lastPath[0] !== editor.children.length - 1) {
     const [afterNode, afterNodePath] = Editor.node(editor, [lastPath[0] + 1])
-    // 如果 afterNode 为有序列表, 将其索引类型调为自增
-    if (SlateElement.isElement(afterNode) && afterNode.type === "orderedList") {
+    // 如果 afterNode 为同级别的有序列表 (对于 newNodes 中最后一个 list), 将其索引类型调为自增
+    if (
+      SlateElement.isElement(afterNode) &&
+      afterNode.type === "orderedList" &&
+      afterNode.listLevel === newNodes[newNodes.length - 1].listLevel
+    ) {
       Transforms.setNodes(
         editor,
         {
@@ -110,9 +129,19 @@ export const toggleUnorderedList = (editor: Editor) => {
   ) as Array<NodeEntry<ParagraphTypeElement>>
 
   let newNodes: IUnorderedList[] = selectedParagraphTypeEntryArr.map(([node]) => {
+    let level =
+      node.type === "paragraph"
+        ? node.indentLevel
+        : node.type === "orderedList" || node.type === "unorderedList"
+        ? node.listLevel
+        : 1
+    if (level === 0) {
+      level = 1
+    }
+
     const list: IUnorderedList = {
       type: "unorderedList",
-      listLevel: 1,
+      listLevel: level,
       children: node.children,
     }
     return list

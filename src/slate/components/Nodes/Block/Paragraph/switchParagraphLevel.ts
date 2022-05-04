@@ -22,7 +22,7 @@ export const switchParagraphLevel = (editor: Editor, type: "increase" | "decreas
     for (const [node, path] of selectedParagraphEntryArr) {
       const newLevel = Math.floor(node.indentLevel + 1) as IParagraphLevel
 
-      if (newLevel >= 0 && newLevel <= 16) {
+      if (newLevel >= 0 && newLevel <= 16 && node.indentLevel !== newLevel) {
         Transforms.setNodes(
           editor,
           {
@@ -39,7 +39,7 @@ export const switchParagraphLevel = (editor: Editor, type: "increase" | "decreas
     for (const [node, path] of selectedParagraphEntryArr) {
       const newLevel = Math.floor(node.indentLevel - 1) as IParagraphLevel
 
-      if (newLevel >= 0 && newLevel <= 16) {
+      if (newLevel >= 0 && newLevel <= 16 && node.indentLevel !== newLevel) {
         Transforms.setNodes(
           editor,
           {
