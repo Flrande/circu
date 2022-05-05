@@ -9,6 +9,8 @@ import ColorButton from "./components/Color/ColorButton"
 import ItalicButton from "./components/Italic/ItalicButton"
 import { toolBarStateAtom } from "./state"
 import LinkButton from "./components/Link/LinkButton"
+import OrderedListButton from "./components/OrderedList/OrderedListButton"
+import UnorderedListButton from "./components/UnorderedList/UnorderedListButton"
 
 //TODO: item 可控拖拽
 const ToolBar: React.FC = () => {
@@ -38,6 +40,8 @@ const ToolBar: React.FC = () => {
             <ItalicButton></ItalicButton>
             <ColorButton></ColorButton>
             <LinkButton></LinkButton>
+            <OrderedListButton></OrderedListButton>
+            <UnorderedListButton></UnorderedListButton>
             <InlineCodeButton></InlineCodeButton>
             <BlockCodeButton></BlockCodeButton>
           </ul>
