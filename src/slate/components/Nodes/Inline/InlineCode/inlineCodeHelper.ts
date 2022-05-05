@@ -14,14 +14,14 @@ export const isInlineCodeActive = (editor: Editor) => {
   return match.length > 0 ? true : false
 }
 
-export const untoggleInlineCode = (editor: Editor) => {
+const unToggleInlineCode = (editor: Editor) => {
   if (!editor.selection) {
-    console.error("untoggleInlineCode() need editor.selection.")
+    console.error("unToggleInlineCode() need editor.selection.")
     return
   }
 
   if (!isInlineCodeActive(editor)) {
-    console.error("untoggleInlineCode() should be called when inline code active.")
+    console.error("unToggleInlineCode() should be called when inline code active.")
     return
   }
 
@@ -39,7 +39,7 @@ export const untoggleInlineCode = (editor: Editor) => {
     match: (n) => SlateElement.isElement(n) && n.type === "inlineCode",
   })
 
-  const untoggleRangeRef = Editor.rangeRef(
+  const unToggleRangeRef = Editor.rangeRef(
     editor,
     Editor.unhangRange(editor, {
       anchor: selectStartRef.current!,
@@ -48,20 +48,20 @@ export const untoggleInlineCode = (editor: Editor) => {
   )
 
   Transforms.unwrapNodes(editor, {
-    at: untoggleRangeRef.current!,
+    at: unToggleRangeRef.current!,
     match: (n) => SlateElement.isElement(n) && n.type === "inlineCode",
   })
 
-  Transforms.select(editor, Editor.unhangRange(editor, untoggleRangeRef.current!))
+  Transforms.select(editor, Editor.unhangRange(editor, unToggleRangeRef.current!))
 
-  untoggleRangeRef.unref()
+  unToggleRangeRef.unref()
   selectStartRef.unref()
   selectEndRef.unref()
 }
 
 export const toggleInlineCode = (editor: Editor) => {
   if (isInlineCodeActive(editor)) {
-    untoggleInlineCode(editor)
+    unToggleInlineCode(editor)
     return
   }
 
@@ -76,7 +76,7 @@ export const toggleInlineCode = (editor: Editor) => {
   }
 
   const [selectStart, selectEnd] = Editor.edges(editor, editor.selection)
-  const untoggleRangeRef = Editor.rangeRef(
+  const unToggleRangeRef = Editor.rangeRef(
     editor,
     Editor.unhangRange(editor, {
       anchor: selectStart,
@@ -91,6 +91,6 @@ export const toggleInlineCode = (editor: Editor) => {
   Transforms.wrapNodes(editor, newElement, { split: true })
 
   // 恢复 selection, 注意需要 unhangRange
-  Transforms.select(editor, Editor.unhangRange(editor, untoggleRangeRef.current!))
-  untoggleRangeRef.unref()
+  Transforms.select(editor, Editor.unhangRange(editor, unToggleRangeRef.current!))
+  unToggleRangeRef.unref()
 }

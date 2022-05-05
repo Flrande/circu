@@ -1,4 +1,4 @@
-import type { InlineElement, ParagraphTypeElement, VoidElement } from "./interface"
+import type { IndentTypeElement, InlineElement, ParagraphTypeElement, VoidElement } from "./interface"
 
 export const INLINE_ELEMENTS: Array<InlineElement["type"]> = ["inlineCode", "link"]
 
@@ -10,3 +10,5 @@ export const PARAGRAPH_TYPE_ELEMENTS: Array<ParagraphTypeElement["type"]> = [
   "unorderedList",
   "blockCode_codeLine",
 ]
+
+export const INDENT_TYPE_ELEMENTS: Array<IndentTypeElement["type"]> = ["paragraph", "orderedList", "unorderedList"]

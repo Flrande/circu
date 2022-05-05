@@ -24,6 +24,8 @@ export type InlineElement = IInlineCode | ILink
 export type VoidElement = IBlockCode_VoidArea
 // 段落型元素, 结构上和 Paragraph 相近, 观感上占 "一行"
 export type ParagraphTypeElement = IParagraph | IOrderedList | IUnorderedList | IBlockCode_CodeLine
+// 缩进型元素, 段落型元素的子集, 可产生缩进, 各元素支持的缩进级别有区别
+export type IndentTypeElement = IParagraph | IOrderedList | IUnorderedList
 
 export type CustomElement = BlockElement | InlineElement
 export type CustomText = ICustomText

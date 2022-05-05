@@ -3,7 +3,7 @@ import { PARAGRAPH_TYPE_ELEMENTS } from "../../../../types/constant"
 import type { ParagraphTypeElement } from "../../../../types/interface"
 import { SlateElement, SlateNode, SlateRange } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
-import type { IListLevel } from "./types"
+import type { IListIndentLevel } from "./types"
 
 /**
  * 处理有序列表中换行行为的函数, 不负责覆盖默认行为
@@ -32,9 +32,9 @@ export const orderedListLineBreakHandler = (editor: Editor) => {
 
     // 若列表内容为空, 触发换行时进行缩进前移
     if (SlateNode.string(selectedList).length === 0) {
-      if (selectedList.listLevel >= 2) {
+      if (selectedList.indentLevel - 1 >= 1 && selectedList.indentLevel - 1 <= 16) {
         Transforms.setNodes(editor, {
-          listLevel: (selectedList.listLevel - 1) as IListLevel,
+          indentLevel: (selectedList.indentLevel - 1) as IListIndentLevel,
         })
       } else {
         Transforms.removeNodes(editor, {

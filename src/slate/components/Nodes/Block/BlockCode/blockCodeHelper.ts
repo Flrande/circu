@@ -18,7 +18,7 @@ export const isBlockCodeActive = (editor: Editor) => {
   return match.length > 0 ? true : false
 }
 
-export const unToggleBlockCode = (editor: Editor) => {
+const unToggleBlockCode = (editor: Editor) => {
   if (!editor.selection) {
     console.error("unToggleBlockCode() need editor.selection.")
     return

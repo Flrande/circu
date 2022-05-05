@@ -14,7 +14,7 @@ export const normalizeOrderedList = (editor: Editor) => {
   for (let i = 1; i <= 16; i++) {
     const listGenerator = Editor.nodes(editor, {
       at: [],
-      match: (n) => SlateElement.isElement(n) && n.type === "orderedList" && n.listLevel === i,
+      match: (n) => SlateElement.isElement(n) && n.type === "orderedList" && n.indentLevel === i,
     })
 
     const firstListGeneratorValue = listGenerator.next()

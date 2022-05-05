@@ -141,9 +141,9 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
   // worker 异步建表
   // proxy 劫持
   const indexSymbol =
-    element.listLevel % 3 === 1
+    element.indentLevel % 3 === 1
       ? element.indexState.index
-      : element.listLevel % 3 === 2
+      : element.indentLevel % 3 === 2
       ? numberToLetter(element.indexState.index)
       : arabicToRomanNumber(element.indexState.index)
 
@@ -156,7 +156,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
     >
       <div
         style={{
-          marginLeft: `${(element.listLevel - 1) * 22}px`,
+          marginLeft: `${(element.indentLevel - 1) * 22}px`,
           display: "flex",
         }}
       >

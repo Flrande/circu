@@ -14,7 +14,7 @@ export const isLinkActive = (editor: Editor) => {
   return match.length > 0 ? true : false
 }
 
-export const unToggleLink = (editor: Editor) => {
+const unToggleLink = (editor: Editor) => {
   if (!editor.selection) {
     console.error("unToggleLink() need editor.selection.")
     return
@@ -61,7 +61,7 @@ export const toggleLink = (editor: Editor, url: string) => {
   }
 
   const [selectStart, selectEnd] = Editor.edges(editor, editor.selection)
-  const untoggleRangeRef = Editor.rangeRef(
+  const unToggleRangeRef = Editor.rangeRef(
     editor,
     Editor.unhangRange(editor, {
       anchor: selectStart,
@@ -77,6 +77,6 @@ export const toggleLink = (editor: Editor, url: string) => {
   Transforms.wrapNodes(editor, newElement, { split: true })
 
   // 恢复 selection, 注意需要 unhangRange
-  Transforms.select(editor, Editor.unhangRange(editor, untoggleRangeRef.current!))
-  untoggleRangeRef.unref()
+  Transforms.select(editor, Editor.unhangRange(editor, unToggleRangeRef.current!))
+  unToggleRangeRef.unref()
 }

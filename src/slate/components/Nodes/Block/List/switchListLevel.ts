@@ -1,6 +1,6 @@
 import { Editor, NodeEntry, Path, Transforms } from "slate"
 import { SlateElement } from "../../../../types/slate"
-import type { IListLevel, IOrderedList, IUnorderedList } from "./types"
+import type { IListIndentLevel, IOrderedList, IUnorderedList } from "./types"
 
 /**
  * 切换列表级别的函数, 不负责覆盖默认行为
@@ -20,13 +20,13 @@ export const switchListLevel = (editor: Editor, type: "increase" | "decrease") =
   if (type === "increase") {
     // 令每个列表的级别加一
     for (const [node, path] of selectedListEntryArr) {
-      const newLevel = Math.floor(node.listLevel + 1) as IListLevel
+      const newLevel = Math.floor(node.indentLevel + 1) as IListIndentLevel
 
-      if (newLevel >= 1 && newLevel <= 16 && node.listLevel !== newLevel) {
+      if (newLevel >= 1 && newLevel <= 16 && node.indentLevel !== newLevel) {
         Transforms.setNodes(
           editor,
           {
-            listLevel: newLevel,
+            indentLevel: newLevel,
           },
           {
             at: path,
@@ -37,13 +37,13 @@ export const switchListLevel = (editor: Editor, type: "increase" | "decrease") =
   } else {
     // 令每个列表的级别减一
     for (const [node, path] of selectedListEntryArr) {
-      const newLevel = Math.floor(node.listLevel - 1) as IListLevel
+      const newLevel = Math.floor(node.indentLevel - 1) as IListIndentLevel
 
-      if (newLevel >= 1 && newLevel <= 16 && node.listLevel !== newLevel) {
+      if (newLevel >= 1 && newLevel <= 16 && node.indentLevel !== newLevel) {
         Transforms.setNodes(
           editor,
           {
-            listLevel: newLevel,
+            indentLevel: newLevel,
           },
           {
             at: path,
@@ -84,7 +84,7 @@ export const switchListLevel = (editor: Editor, type: "increase" | "decrease") =
       if (
         SlateElement.isElement(previousNode) &&
         previousNode.type === "orderedList" &&
-        previousNode.listLevel === node.listLevel
+        previousNode.indentLevel === node.indentLevel
       ) {
         if (node.indexState.type !== "selfIncrement") {
           Transforms.setNodes(
@@ -125,7 +125,7 @@ export const switchListLevel = (editor: Editor, type: "increase" | "decrease") =
       if (
         SlateElement.isElement(afterNode) &&
         afterNode.type === "orderedList" &&
-        afterNode.listLevel === node.listLevel &&
+        afterNode.indentLevel === node.indentLevel &&
         afterNode.indexState.type !== "selfIncrement"
       ) {
         Transforms.setNodes(

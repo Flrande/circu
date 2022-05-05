@@ -3,7 +3,6 @@ import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import { SlateElement, SlateRange } from "../types/slate"
 
 //TODO：将各个元素相关的逻辑拆分出来
-//TODO: 多级列表
 
 // 每段逻辑进行完成后要记得 return
 const withDeleteBackward = (editor: Editor) => {
@@ -84,7 +83,7 @@ const withDeleteBackward = (editor: Editor) => {
 
           const newNode: IParagraph = {
             type: "paragraph",
-            indentLevel: currentBlockNode.listLevel,
+            indentLevel: currentBlockNode.indentLevel,
             children: currentBlockNode.children,
           }
 

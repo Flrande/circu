@@ -2,7 +2,7 @@ import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { IUnorderedList } from "./types"
 
 const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ attributes, children, element }) => {
-  const indexSymbol = element.listLevel % 3 === 1 ? "\u2022" : element.listLevel % 3 === 2 ? "\u25E6" : "\u25AA"
+  const indexSymbol = element.indentLevel % 3 === 1 ? "\u2022" : element.indentLevel % 3 === 2 ? "\u25E6" : "\u25AA"
 
   return (
     <div
@@ -13,7 +13,7 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
     >
       <div
         style={{
-          marginLeft: `${(element.listLevel - 1) * 22}px`,
+          marginLeft: `${(element.indentLevel - 1) * 22}px`,
           display: "flex",
         }}
       >
