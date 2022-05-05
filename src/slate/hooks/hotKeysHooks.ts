@@ -30,13 +30,12 @@ export const useOnKeyDown = () => {
     }
 
     if (event.key === "Tab") {
+      event.preventDefault()
       if (event.shiftKey) {
-        event.preventDefault()
         switchListLevel(editor, "decrease")
         switchParagraphLevel(editor, "decrease")
         return
       }
-      event.preventDefault()
       switchListLevel(editor, "increase")
       switchParagraphLevel(editor, "increase")
       return

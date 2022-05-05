@@ -27,7 +27,7 @@ export const normalizeOrderedList = (editor: Editor) => {
           {
             indexState: {
               type: "head",
-              index: firstList.indexState.index,
+              index: 1,
             },
           },
           {
@@ -41,7 +41,7 @@ export const normalizeOrderedList = (editor: Editor) => {
     }
   }
 
-  // 无序列表无索引, 不参与更新
+  // 遍历选区内的所有有序列表, 更新其索引
   const listEntryArr = Array.from(
     Editor.nodes(editor, {
       at: [],
