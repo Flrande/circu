@@ -9,6 +9,8 @@ import type {
   IBlockCode_CodeLine,
   IBlockCode_VoidArea,
 } from "../components/Nodes/Block/BlockCode/types"
+import Head from "../components/Nodes/Block/Head/Head"
+import type { IHead } from "../components/Nodes/Block/Head/types"
 import OrderedList from "../components/Nodes/Block/List/OrderedList"
 import type { IOrderedList, IUnorderedList } from "../components/Nodes/Block/List/types"
 import UnorderedList from "../components/Nodes/Block/List/UnorderedList"
@@ -46,6 +48,8 @@ export const useRenderElement = () => {
         return <OrderedList {...(props as CustomRenderElementProps<IOrderedList>)}></OrderedList>
       case "unorderedList":
         return <UnorderedList {...(props as CustomRenderElementProps<IUnorderedList>)}></UnorderedList>
+      case "head":
+        return <Head {...(props as CustomRenderElementProps<IHead>)}></Head>
     }
   }
 }

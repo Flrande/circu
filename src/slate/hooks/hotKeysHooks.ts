@@ -1,6 +1,7 @@
 import type React from "react"
 import { Editor } from "slate"
 import { useSlate } from "slate-react"
+import { toggleHead } from "../components/Nodes/Block/Head/HeadHelper"
 import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
 import { orderedListLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
 import { switchListLevel } from "../components/Nodes/Block/List/switchListLevel"
@@ -45,7 +46,7 @@ export const useOnKeyDown = () => {
     // for debug and develop
     if (event.altKey && event.key === "q") {
       // console.log(editor.selection?.anchor)
-      toggleOrderedList(editor)
+      toggleHead(editor, "6")
       return
     }
     if (event.altKey && event.key === "w") {
