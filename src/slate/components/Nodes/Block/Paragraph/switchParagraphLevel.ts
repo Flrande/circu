@@ -1,6 +1,6 @@
 import { Editor, NodeEntry, Transforms } from "slate"
 import { SlateElement } from "../../../../types/slate"
-import type { IParagraph, IParagraphLevel } from "./types"
+import type { IParagraph, IParagraphIndentLevel } from "./types"
 
 /**
  * 切换段落缩进级别的函数, 不负责覆盖默认行为
@@ -20,7 +20,7 @@ export const switchParagraphLevel = (editor: Editor, type: "increase" | "decreas
   if (type === "increase") {
     // 令每个段落的级别加一
     for (const [node, path] of selectedParagraphEntryArr) {
-      const newLevel = Math.floor(node.indentLevel + 1) as IParagraphLevel
+      const newLevel = Math.floor(node.indentLevel + 1) as IParagraphIndentLevel
 
       if (newLevel >= 0 && newLevel <= 16 && node.indentLevel !== newLevel) {
         Transforms.setNodes(
@@ -37,7 +37,7 @@ export const switchParagraphLevel = (editor: Editor, type: "increase" | "decreas
   } else {
     // 令每个段落的级别减一
     for (const [node, path] of selectedParagraphEntryArr) {
-      const newLevel = Math.floor(node.indentLevel - 1) as IParagraphLevel
+      const newLevel = Math.floor(node.indentLevel - 1) as IParagraphIndentLevel
 
       if (newLevel >= 0 && newLevel <= 16 && node.indentLevel !== newLevel) {
         Transforms.setNodes(
