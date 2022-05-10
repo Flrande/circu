@@ -1,4 +1,4 @@
-import { useAtom, useAtomValue } from "jotai"
+import { useAtomValue, useSetAtom } from "jotai"
 import { useState } from "react"
 import { useSlateStatic } from "slate-react"
 import { backgroundColorMap, fontColorMap } from "../../../Nodes/Text/Color"
@@ -14,7 +14,7 @@ const ColorButton: React.FC = () => {
   const [isMouseEnter, setIsMouseEnter] = useState(false)
   const buttonColor = useAtomValue(buttonColorAtom)
   const selectedColor = useAtomValue(selectedColorAtom)
-  const [, setIsColorBarActive] = useAtom(isColorBarActiveAtom)
+  const setIsColorBarActive = useSetAtom(isColorBarActiveAtom)
 
   const onMouseDown = (event: React.MouseEvent) => {
     event.preventDefault()

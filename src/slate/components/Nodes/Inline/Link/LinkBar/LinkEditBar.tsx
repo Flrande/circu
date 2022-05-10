@@ -1,4 +1,4 @@
-import { useAtom } from "jotai"
+import { useAtom, useSetAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { Transforms } from "slate"
 import { useSlateStatic } from "slate-react"
@@ -18,7 +18,7 @@ const LinkEditBar: React.FC = () => {
   const [isLinkEditBarActive, setIsLinkEditBarActive] = useAtom(isLinkEditBarActiveAtom)
 
   const [linkEditBarState, setLinkEditBarStateDerived] = useAtom(linkEditBarStateDerivedAtom)
-  const [, setLinkStateDerived] = useAtom(linkStateDerivedAtom)
+  const setLinkStateDerived = useSetAtom(linkStateDerivedAtom)
 
   const [text, setText] = useState("")
   const [url, setUrl] = useState("")

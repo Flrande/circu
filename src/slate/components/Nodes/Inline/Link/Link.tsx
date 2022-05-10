@@ -1,4 +1,4 @@
-import { useAtom } from "jotai"
+import { useSetAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { SlateNode } from "../../../../types/slate"
@@ -10,9 +10,9 @@ import type { ILink } from "./types"
 const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children, element }) => {
   const editor = useSlateStatic()
 
-  const [, setIsLinkBarActiveDerived] = useAtom(isLinkBarActiveDerivedAtom)
+  const setIsLinkBarActiveDerived = useSetAtom(isLinkBarActiveDerivedAtom)
 
-  const [, setLinkStateDerived] = useAtom(linkStateDerivedAtom)
+  const setLinkStateDerived = useSetAtom(linkStateDerivedAtom)
 
   const [linkDom, setLinkDom] = useState<HTMLElement>()
   const timeoutId = useRef<number | null>(null)

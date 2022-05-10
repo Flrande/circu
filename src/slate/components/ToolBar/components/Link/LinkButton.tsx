@@ -1,4 +1,4 @@
-import { useAtom } from "jotai"
+import { useSetAtom } from "jotai"
 import { useSlateStatic } from "slate-react"
 import { isLinkActive } from "../../../Nodes/Inline/Link/linkHelper"
 import { toolBarStateAtom } from "../../state"
@@ -10,8 +10,8 @@ const LinkButton: React.FC = () => {
   const editor = useSlateStatic()
   const isActive = isLinkActive(editor)
 
-  const [, setToolBarState] = useAtom(toolBarStateAtom)
-  const [, setLinkButtonState] = useAtom(linkButtonBarStateAtom)
+  const setToolBarState = useSetAtom(toolBarStateAtom)
+  const setLinkButtonState = useSetAtom(linkButtonBarStateAtom)
 
   const onMouseDown = (event: React.MouseEvent) => {
     event.preventDefault()

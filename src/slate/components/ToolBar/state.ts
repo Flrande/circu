@@ -1,4 +1,4 @@
-import { atom, useAtom } from "jotai"
+import { atom, useSetAtom } from "jotai"
 import { useEffect } from "react"
 
 export const toolBarStateAtom = atom<{
@@ -14,7 +14,7 @@ export const toolBarStateAtom = atom<{
 })
 
 export const useToolBar = () => {
-  const [, setToolBarState] = useAtom(toolBarStateAtom)
+  const setToolBarState = useSetAtom(toolBarStateAtom)
 
   useEffect(() => {
     const mouseDownController = new AbortController()
