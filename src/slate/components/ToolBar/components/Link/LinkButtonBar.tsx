@@ -1,6 +1,6 @@
 import { atom, useAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { toggleLink } from "../../../Nodes/Inline/Link/linkHelper"
 import { linkButtonBarButton, linkButtonBarContainer, linkButtonBarInput, linkButtonBarSpan } from "./LinkButtonBar.css"
 
@@ -16,7 +16,7 @@ export const linkButtonBarStateAtom = atom<{
 })
 
 const LinkButtonBar: React.FC = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
 
   const [linkButtonBarState, setLinkButtonBarState] = useAtom(linkButtonBarStateAtom)
 

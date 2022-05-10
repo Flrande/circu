@@ -9,7 +9,6 @@ import ToolBar from "./slate/components/ToolBar/ToolBar"
 import { useCreateEditor } from "./slate/hooks/useCreateEditor"
 import SlateEditable from "./slate/SlateEditable"
 
-//TODO: 用 useSlateStatic 替代 useSlate 减少重渲染
 const App: React.FC = () => {
   const editor = useCreateEditor()
   const [value, setValue] = useState<Descendant[]>([

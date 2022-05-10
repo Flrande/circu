@@ -1,6 +1,7 @@
 import type React from "react"
+import { useCallback } from "react"
 import { Editor } from "slate"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { toggleHead } from "../components/Nodes/Block/Head/HeadHelper"
 import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
 import { orderedListLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
@@ -12,9 +13,9 @@ import { SlateElement } from "../types/slate"
 import { arrayIncludes } from "../utils/general"
 
 export const useOnKeyDown = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
 
-  const onKeyDown: React.KeyboardEventHandler = (event) => {
+  return useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
     // 选中的段落型元素
     const selectedParagraphTypeNodes = Array.from(
       Editor.nodes(editor, {
@@ -58,7 +59,5 @@ export const useOnKeyDown = () => {
       return
     }
     // --------------------------------------------------
-  }
-
-  return onKeyDown
+  }, [])
 }

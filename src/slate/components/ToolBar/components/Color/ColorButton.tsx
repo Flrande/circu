@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from "jotai"
 import { useState } from "react"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { backgroundColorMap, fontColorMap } from "../../../Nodes/Text/Color"
 import { toggleColorMark } from "../../../Nodes/Text/colorHelper"
 import { toolBarButton, toolBarButtonSvg, toolBarItemContainer } from "../../ToolBar.css"
@@ -10,7 +10,7 @@ import ColorIcon from "./ColorIcon"
 import { buttonColorAtom, isColorBarActiveAtom, selectedColorAtom } from "./state"
 
 const ColorButton: React.FC = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const [isMouseEnter, setIsMouseEnter] = useState(false)
   const buttonColor = useAtomValue(buttonColorAtom)
   const selectedColor = useAtomValue(selectedColorAtom)

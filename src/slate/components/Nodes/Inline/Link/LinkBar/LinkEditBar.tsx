@@ -1,7 +1,7 @@
 import { useAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { Transforms } from "slate"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import {
   linkEditBarButton,
   linkEditBarContainer,
@@ -13,7 +13,7 @@ import { isLinkEditBarActiveAtom, linkEditBarStateDerivedAtom, linkStateDerivedA
 import type { ILink } from "../types"
 
 const LinkEditBar: React.FC = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
 
   const [isLinkEditBarActive, setIsLinkEditBarActive] = useAtom(isLinkEditBarActiveAtom)
 

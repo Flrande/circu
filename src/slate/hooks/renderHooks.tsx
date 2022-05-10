@@ -1,3 +1,4 @@
+import { useCallback } from "react"
 import type { RenderElementProps, RenderLeafProps } from "slate-react"
 import BlockCode from "../components/Nodes/Block/BlockCode/BlockCode"
 import BlockCode_CodeArea from "../components/Nodes/Block/BlockCode/BlockCode_CodeArea"
@@ -24,11 +25,11 @@ import Leaf from "../components/Nodes/Text/Leaf"
 import type { CustomRenderElementProps } from "../types/utils"
 
 export const useRenderLeaf = () => {
-  return (props: RenderLeafProps) => <Leaf {...props}></Leaf>
+  return useCallback((props: RenderLeafProps) => <Leaf {...props}></Leaf>, [])
 }
 
 export const useRenderElement = () => {
-  return (props: RenderElementProps) => {
+  return useCallback((props: RenderElementProps) => {
     switch (props.element.type) {
       case "paragraph":
         return <Paragraph {...(props as CustomRenderElementProps<IParagraph>)}></Paragraph>
@@ -51,5 +52,5 @@ export const useRenderElement = () => {
       case "head":
         return <Head {...(props as CustomRenderElementProps<IHead>)}></Head>
     }
-  }
+  }, [])
 }

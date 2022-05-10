@@ -1,11 +1,11 @@
 import { useEffect } from "react"
 import { Transforms } from "slate"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import type { SlateElement } from "../types/slate"
 
 export const useEndLine = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const lastChild = editor.children[editor.children.length - 1] as SlateElement
 
   useEffect(() => {

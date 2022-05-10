@@ -1,4 +1,4 @@
-import { ReactEditor, useSlate } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import { SlateNode } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { codeLineSerialNumberContainer } from "./BlockCode.css"
@@ -9,7 +9,7 @@ const BlockCode_CodeLine: React.FC<CustomRenderElementProps<IBlockCode_CodeLine>
   children,
   element,
 }) => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const currentNodePath = ReactEditor.findPath(editor, element)
   const parentNode = SlateNode.parent(editor, currentNodePath)
 

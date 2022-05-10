@@ -1,4 +1,4 @@
-import { ReactEditor, useSlate } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { IBlockCode_VoidArea } from "./types"
 
@@ -7,7 +7,7 @@ const BlockCode_VoidArea: React.FC<CustomRenderElementProps<IBlockCode_VoidArea>
   children,
   element,
 }) => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const currentNodePath = ReactEditor.findPath(editor, element)
 
   let style: React.CSSProperties = {}

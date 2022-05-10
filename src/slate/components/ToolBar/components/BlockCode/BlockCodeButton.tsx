@@ -1,10 +1,10 @@
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { isBlockCodeActive, toggleBlockCode } from "../../../Nodes/Block/BlockCode/blockCodeHelper"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import BlockCodeIcon from "./BlockCodeIcon"
 
 const BlockCodeButton: React.FC = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const isActive = isBlockCodeActive(editor)
   const onMouseDown = (event: React.MouseEvent) => {
     event.preventDefault()

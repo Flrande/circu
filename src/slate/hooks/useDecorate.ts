@@ -1,13 +1,14 @@
+import { useCallback } from "react"
 import type { NodeEntry } from "slate"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { decorateCode } from "../components/Nodes/Block/BlockCode/decorateCode"
 import type { CustomText } from "../types/interface"
 import type { SlateRange } from "../types/slate"
 
 export const useDecorate = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
 
-  const decorate = (entry: NodeEntry) => {
+  return useCallback((entry: NodeEntry) => {
     let ranges: (SlateRange & {
       tokenTypes: CustomText["tokenTypes"]
     })[] = []
@@ -15,7 +16,5 @@ export const useDecorate = () => {
     ranges = ranges.concat(decorateCode(editor, entry))
 
     return ranges
-  }
-
-  return decorate
+  }, [])
 }

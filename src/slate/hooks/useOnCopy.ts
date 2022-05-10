@@ -1,11 +1,13 @@
+import { useCallback } from "react"
 import { Editor, Path } from "slate"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { SlateElement, SlateNode, SlateRange } from "../types/slate"
 
 //TODO: 转化为 Markdown 格式
 export const useOnCopy = () => {
-  const editor = useSlate()
-  const onCopy: React.ClipboardEventHandler<HTMLDivElement> = (event) => {
+  const editor = useSlateStatic()
+
+  return useCallback((event: React.ClipboardEvent<HTMLDivElement>) => {
     let str = ""
 
     if (editor.selection) {
@@ -34,7 +36,5 @@ export const useOnCopy = () => {
 
     event.clipboardData.setData("text/plain", str)
     event.preventDefault()
-  }
-
-  return onCopy
+  }, [])
 }

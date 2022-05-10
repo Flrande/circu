@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import { useState } from "react"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import type { KeysUnion } from "../../../../types/utils"
 import { backgroundColorMap, fontColorMap, IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
 import { isColorMarkActive, toggleColorMark } from "../../../Nodes/Text/colorHelper"
@@ -14,7 +14,7 @@ const ColorBarItem = <T extends "font" | "background">({
   type: T
   colorKey: T extends "font" ? Exclude<KeysUnion<IFontColorMap>, "initialWhite"> : KeysUnion<IBackgroundColorMap>
 }) => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const [isMouseEnter, setIsMouseEnter] = useState(false)
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom)
   const isActive = isColorMarkActive(editor, type, colorKey)

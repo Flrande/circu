@@ -1,10 +1,10 @@
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { isListActive, toggleOrderedList } from "../../../Nodes/Block/List/listHelper"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import OrderedListIcon from "./OrderedListIcon"
 
 const OrderedListButton: React.FC = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const isActive = isListActive(editor, "orderedList")
   const onMouseDown = (event: React.MouseEvent) => {
     event.preventDefault()

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { ReactEditor, useSlate } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { IBlockCode_CodeArea } from "./types"
 
@@ -8,7 +8,7 @@ const BlockCode_CodeArea: React.FC<CustomRenderElementProps<IBlockCode_CodeArea>
   children,
   element,
 }) => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const [containerDom, setContainerDom] = useState<HTMLElement>()
   const [ifEditable, setIfEditable] = useState<false | undefined>(false)
 

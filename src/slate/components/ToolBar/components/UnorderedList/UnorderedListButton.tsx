@@ -1,10 +1,10 @@
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { isListActive, toggleUnorderedList } from "../../../Nodes/Block/List/listHelper"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import UnorderedListIcon from "./UnorderedListIcon"
 
 const UnorderedListButton: React.FC = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const isActive = isListActive(editor, "unorderedList")
   const onMouseDown = (event: React.MouseEvent) => {
     event.preventDefault()

@@ -1,10 +1,10 @@
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { isMarkActive, toggleMark } from "../../../Nodes/Text/textHelper"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import StrikeIcon from "./StrikeIcon"
 
 const StrikeButton: React.FC = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const isStrikeActive = isMarkActive(editor, "strike")
   const onMouseDown = (event: React.MouseEvent) => {
     event.preventDefault()

@@ -1,6 +1,5 @@
 import { useAtomValue } from "jotai"
-import { useState } from "react"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import type { KeysUnion } from "../../../../types/utils"
 import type { IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
 import { cleanColorMark } from "../../../Nodes/Text/colorHelper"
@@ -103,7 +102,7 @@ const ColorBar: React.FC = () => {
       color: "gray_2",
     },
   ]
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const isColorBarActive = useAtomValue(isColorBarActiveAtom)
 
   const onCleanButtonDown: React.MouseEventHandler<HTMLDivElement> = (event) => {

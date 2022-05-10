@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from "jotai"
 import { Editor, Transforms } from "slate"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { linkBarBreakIconContainer, linkBarContainer, linkBarEditIconContainer, linkBarUrlContainer } from "../Link.css"
 import {
   isLinkBarActiveDerivedAtom,
@@ -13,7 +13,7 @@ import LinkBarBreakIcon from "./LinkBarBreakIcon"
 import LinkBarEditIcon from "./LinkBarEditIcon"
 
 const LinkBar: React.FC = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
 
   const [isLinkBarActive, setIsLinkBarActiveDerived] = useAtom(isLinkBarActiveDerivedAtom)
   const [, setIsMouseEnterLinkBarOnce] = useAtom(isMouseEnterLinkBarOnceAtom)

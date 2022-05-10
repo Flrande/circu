@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
-import { ReactEditor, useSlate } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import { SlateNode } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { linkContainer } from "./Link.css"
@@ -8,7 +8,7 @@ import { isLinkBarActiveDerivedAtom, linkStateDerivedAtom } from "./state"
 import type { ILink } from "./types"
 
 const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children, element }) => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
 
   const [, setIsLinkBarActiveDerived] = useAtom(isLinkBarActiveDerivedAtom)
 

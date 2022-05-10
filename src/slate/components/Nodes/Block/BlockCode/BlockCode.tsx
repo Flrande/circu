@@ -1,4 +1,4 @@
-import { ReactEditor, useSelected, useSlate } from "slate-react"
+import { ReactEditor, useSelected, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps, KeysUnion } from "../../../../types/utils"
 import { blockCodeContainer } from "./BlockCode.css"
 import type { IBlockCode, IBlockCode_CodeArea, ICodeAreaLangMap } from "./types"
@@ -9,7 +9,7 @@ import { codeAreaLangMap } from "./constant"
 
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
-  const editor = useSlate()
+  const editor = useSlateStatic()
 
   const langOptions: KeysUnion<ICodeAreaLangMap>[] = Object.keys(codeAreaLangMap) as KeysUnion<ICodeAreaLangMap>[]
 

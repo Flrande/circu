@@ -1,5 +1,5 @@
 import { useAtom } from "jotai"
-import { useSlate } from "slate-react"
+import { useSlateStatic } from "slate-react"
 import { isLinkActive } from "../../../Nodes/Inline/Link/linkHelper"
 import { toolBarStateAtom } from "../../state"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
@@ -7,7 +7,7 @@ import { linkButtonBarStateAtom } from "./LinkButtonBar"
 import LinkIcon from "./LinkIcon"
 
 const LinkButton: React.FC = () => {
-  const editor = useSlate()
+  const editor = useSlateStatic()
   const isActive = isLinkActive(editor)
 
   const [, setToolBarState] = useAtom(toolBarStateAtom)
