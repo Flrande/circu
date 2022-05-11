@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
+    "dev:huge": "vite --mode huge-document",
     "build": "vite build",
+    "build:huge": "vite build --mode huge-document",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -20,6 +22,7 @@
   },
   "devDependencies": {
     "@arco-plugins/vite-react": "^1.0.6",
+    "@faker-js/faker": "^6.3.1",
     "@types/prismjs": "^1.26.0",
     "@types/react": "^17.0.43",
     "@types/react-dom": "^17.0.14",

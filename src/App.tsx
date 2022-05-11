@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker"
 import { useState } from "react"
 import type { Descendant } from "slate"
 import { Slate } from "slate-react"
@@ -9,9 +10,9 @@ import ToolBar from "./slate/components/ToolBar/ToolBar"
 import { useCreateEditor } from "./slate/hooks/useCreateEditor"
 import SlateEditable from "./slate/SlateEditable"
 
-const App: React.FC = () => {
-  const editor = useCreateEditor()
-  const [value, setValue] = useState<Descendant[]>([
+let initialValue: Descendant[] = []
+if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
+  initialValue = [
     {
       type: "paragraph",
       indentLevel: 0,
@@ -264,7 +265,205 @@ const App: React.FC = () => {
         },
       ],
     },
-  ])
+  ]
+} else if (import.meta.env.VITE_INITIAL_VALUE_MODE === "huge") {
+  for (let i = 0; i < 10; i++) {
+    for (let p = 0; p < 5; p++) {
+      initialValue.push({
+        type: "paragraph",
+        indentLevel: 0,
+        children: [{ text: faker.lorem.paragraph() }],
+      })
+    }
+    initialValue.push({
+      type: "blockCode",
+      children: [
+        {
+          type: "blockCode_voidArea",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        },
+        {
+          type: "blockCode_codeArea",
+          langKey: "Javascript",
+          children: [
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'import React from "react"',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'import * as ReactDOMClient from "react-dom/client"',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'import App from "./App"',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'import "./normalize.css"',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'document.body.setAttribute("arco-theme", "dark")',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'const container = document.getElementById("root")',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: 'if (!container) throw "Can\'t find root dom."',
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "const root = ReactDOMClient.createRoot(container)",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "root.render(",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "  <React.StrictMode>",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "    <App />",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: "  </React.StrictMode>",
+                },
+              ],
+            },
+            {
+              type: "blockCode_codeLine",
+              children: [
+                {
+                  text: ")",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: "blockCode_voidArea",
+          children: [
+            {
+              text: "",
+            },
+          ],
+        },
+      ],
+    })
+  }
+} else {
+  initialValue = [
+    {
+      type: "paragraph",
+      indentLevel: 0,
+      children: [
+        {
+          text: "",
+        },
+      ],
+    },
+  ]
+}
+
+const App: React.FC = () => {
+  const editor = useCreateEditor()
+  const [value, setValue] = useState<Descendant[]>(initialValue)
 
   return (
     <div className={docContainer}>
