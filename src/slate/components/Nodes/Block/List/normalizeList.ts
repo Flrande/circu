@@ -12,6 +12,7 @@ import type { IOrderedList } from "./types"
 export const normalizeOrderedList = (editor: Editor) => {
   // 遍历每一级的有序列表, 保证每一级的首个有序列表一定为列表头
   for (let i = 1; i <= 16; i++) {
+    //TODO: 优化
     const listGenerator = Editor.nodes(editor, {
       at: [],
       match: (n) => SlateElement.isElement(n) && n.type === "orderedList" && n.indentLevel === i,
