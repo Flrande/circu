@@ -10,17 +10,19 @@ import type { IOrderedList } from "./types"
  *
  */
 export const normalizeOrderedList = (editor: Editor) => {
+  const listEntryArr = Array.from(
+    Editor.nodes(editor, {
+      at: [],
+      match: (n) => SlateElement.isElement(n) && n.type === "orderedList",
+    })
+  ) as NodeEntry<IOrderedList>[]
+
   // 遍历每一级的有序列表, 保证每一级的首个有序列表一定为列表头
   for (let i = 1; i <= 16; i++) {
-    //TODO: 优化
-    const listGenerator = Editor.nodes(editor, {
-      at: [],
-      match: (n) => SlateElement.isElement(n) && n.type === "orderedList" && n.indentLevel === i,
-    })
+    const currentListEntryArr = listEntryArr.filter(([node]) => node.indentLevel === i)
 
-    const firstListGeneratorValue = listGenerator.next()
-    if (!firstListGeneratorValue.done) {
-      const [firstList, firstListPath] = firstListGeneratorValue.value as NodeEntry<IOrderedList>
+    if (currentListEntryArr.length > 0) {
+      const [firstList, firstListPath] = currentListEntryArr[0]
 
       if (firstList.indexState.type !== "head") {
         Transforms.setNodes(
@@ -41,14 +43,6 @@ export const normalizeOrderedList = (editor: Editor) => {
       }
     }
   }
-
-  // 遍历选区内的所有有序列表, 更新其索引
-  const listEntryArr = Array.from(
-    Editor.nodes(editor, {
-      at: [],
-      match: (n) => SlateElement.isElement(n) && n.type === "orderedList",
-    })
-  ) as NodeEntry<IOrderedList>[]
 
   let currentIndex = 1
   for (const [list, path] of listEntryArr) {
