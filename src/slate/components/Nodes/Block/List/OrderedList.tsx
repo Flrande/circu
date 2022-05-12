@@ -164,12 +164,11 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
           contentEditable={false}
           style={{
             userSelect: "none",
-            minWidth: "22px",
             height: "100%",
             color: "#5a87f7",
           }}
         >
-          {indexSymbol}.
+          {`${indexSymbol}.`}
         </span>
         <span
           style={{
