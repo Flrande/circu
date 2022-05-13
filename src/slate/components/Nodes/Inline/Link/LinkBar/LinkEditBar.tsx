@@ -58,6 +58,7 @@ const LinkEditBar: React.FC = () => {
         position: linkEditBarState.position,
       })
       setLinkEditBarStateDerived()
+      setIsLinkEditBarActive(false)
     }
 
     return (
