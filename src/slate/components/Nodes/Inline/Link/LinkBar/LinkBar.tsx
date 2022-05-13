@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue, useSetAtom } from "jotai"
 import { Editor, Transforms } from "slate"
-import { useSlateStatic } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import { linkBarBreakIconContainer, linkBarContainer, linkBarEditIconContainer, linkBarUrlContainer } from "../Link.css"
 import {
   isLinkBarActiveDerivedAtom,
@@ -32,13 +32,7 @@ const LinkBar: React.FC = () => {
       setIsLinkEditBarActive(true)
     }
 
-    // 2022-4-21
-    // 使用 onClick 似乎会导致 editor.selection 修改后与 原生 selection 不同步
-    // 暂未找到解决办法
-    //FIXME: onClick
-    const onBreakButtonMouseDown: React.MouseEventHandler<HTMLDivElement> = (event) => {
-      event.preventDefault()
-      event.stopPropagation()
+    const onBreakButtonClick: React.MouseEventHandler<HTMLDivElement> = () => {
       const linkPath = linkBarState.linkElementPath
       const rangeRef = Editor.rangeRef(editor, Editor.range(editor, linkPath))
 
@@ -46,6 +40,7 @@ const LinkBar: React.FC = () => {
         at: linkPath,
       })
       if (rangeRef.current) {
+        ReactEditor.focus(editor)
         Transforms.select(editor, rangeRef.current)
       }
       setIsLinkBarActiveDerived({
@@ -78,7 +73,7 @@ const LinkBar: React.FC = () => {
         <div onClick={onEditButtonClick} className={linkBarEditIconContainer}>
           <LinkBarEditIcon></LinkBarEditIcon>
         </div>
-        <div onMouseDown={onBreakButtonMouseDown} className={linkBarBreakIconContainer}>
+        <div onClick={onBreakButtonClick} className={linkBarBreakIconContainer}>
           <LinkBarBreakIcon></LinkBarBreakIcon>
         </div>
       </div>
