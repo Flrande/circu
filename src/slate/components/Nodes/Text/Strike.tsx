@@ -1,4 +1,4 @@
-const Strike: React.FC = ({ children }) => {
+const Strike: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
   return (
     <span
       style={{

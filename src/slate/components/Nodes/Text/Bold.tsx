@@ -1,4 +1,6 @@
-const Bold: React.FC = ({ children }) => {
+import type React from "react"
+
+const Bold: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
   return (
     <span
       style={{

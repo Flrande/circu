@@ -1,13 +1,15 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { toolBarButton, toolBarButtonSvg, toolBarItemContainer } from "../../ToolBar.css"
 import { useIconColor } from "./useIconColor"
 
-const ToolBarItem: React.FC<{
-  isStyleActive: boolean
-  onMouseDown?: React.MouseEventHandler<HTMLDivElement>
-  onMouseEnter?: React.MouseEventHandler<HTMLDivElement>
-  onMouseLeave?: React.MouseEventHandler<HTMLDivElement>
-}> = ({ isStyleActive, onMouseDown, onMouseEnter, onMouseLeave, children }) => {
+const ToolBarItem: React.FC<
+  React.PropsWithChildren<{
+    isStyleActive: boolean
+    onMouseDown?: React.MouseEventHandler<HTMLDivElement>
+    onMouseEnter?: React.MouseEventHandler<HTMLDivElement>
+    onMouseLeave?: React.MouseEventHandler<HTMLDivElement>
+  }>
+> = ({ isStyleActive, onMouseDown, onMouseEnter, onMouseLeave, children }) => {
   const [isMouseEnter, setIsMouseEnter] = useState(false)
   const { fillColor, backgroundColor } = useIconColor(isStyleActive, isMouseEnter)
 

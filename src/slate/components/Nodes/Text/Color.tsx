@@ -1,3 +1,4 @@
+import type React from "react"
 import type { KeysUnion } from "../../../types/utils"
 
 // 参考色板 -> https://arco.design/react/docs/palette
@@ -57,10 +58,12 @@ export const backgroundColorMap: IBackgroundColorMap = {
   gray_2: "#5F5F60",
 }
 
-const Color: React.FC<{
-  fontColorKey?: KeysUnion<IFontColorMap>
-  backgroundColorKey?: KeysUnion<IBackgroundColorMap>
-}> = ({ fontColorKey, backgroundColorKey, children }) => {
+const Color: React.FC<
+  React.PropsWithChildren<{
+    fontColorKey?: KeysUnion<IFontColorMap>
+    backgroundColorKey?: KeysUnion<IBackgroundColorMap>
+  }>
+> = ({ fontColorKey, backgroundColorKey, children }) => {
   return (
     <span
       style={{

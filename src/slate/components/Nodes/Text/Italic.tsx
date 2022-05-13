@@ -1,4 +1,4 @@
-const Italic: React.FC = ({ children }) => {
+const Italic: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
   return (
     <span
       style={{
