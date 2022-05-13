@@ -3,6 +3,7 @@ import { useState } from "react"
 import type { Descendant } from "slate"
 import { Slate } from "slate-react"
 import { doc, docContainer } from "./App.css"
+import OrderedListBar from "./slate/components/Nodes/Block/List/ListBar/OrderedListBar"
 import LinkBar from "./slate/components/Nodes/Inline/Link/LinkBar/LinkBar"
 import LinkEditBar from "./slate/components/Nodes/Inline/Link/LinkBar/LinkEditBar"
 import LinkButtonBar from "./slate/components/ToolBar/components/Link/LinkButtonBar"
@@ -267,7 +268,7 @@ if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
     },
   ]
 } else if (import.meta.env.VITE_INITIAL_VALUE_MODE === "huge") {
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 100; i++) {
     for (let p = 0; p < 5; p++) {
       initialValue.push({
         type: "paragraph",
@@ -474,6 +475,7 @@ const App: React.FC = () => {
           <LinkButtonBar></LinkButtonBar>
           <LinkBar></LinkBar>
           <LinkEditBar></LinkEditBar>
+          <OrderedListBar></OrderedListBar>
         </Slate>
       </div>
     </div>

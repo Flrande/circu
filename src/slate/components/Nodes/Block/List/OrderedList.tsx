@@ -1,4 +1,7 @@
+import { useSetAtom } from "jotai"
+import { useRef, useState } from "react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
+import { isOrderedListBarActiveAtom, orderedListBarStateAtom } from "./state"
 import type { IOrderedList } from "./types"
 
 // 对于有序列表有两种模式 (状态):
@@ -14,23 +17,23 @@ import type { IOrderedList } from "./types"
 //
 // 有三种切换行为:
 // 继续之前的编号 - continue
-// 开始新列表 - reStart
-// 切换编号 - change
+// 开始新列表 - restart
+// 切换编号 - modify
 // 切换行为的触发有条件限制
 //
 // head-list:
 // 1. 当且仅当当前 head-list 前有另外的 head-list 时才可触发
 //    continue, 触发相当于当前 head-list 的模式转为 selfIncrement
-// 2. 当且仅当当前 head-list 的 index 不为 1 时才可触发 reStart,
+// 2. 当且仅当当前 head-list 的 index 不为 1 时才可触发 restart,
 //    触发相当于将当前 head-list 的 index 设为 1
-// 3. 任何时候均可触发 change, 若新编号与前一个列表连续, 则当前列表
+// 3. 任何时候均可触发 modify, 若新编号与前一个列表连续, 则当前列表
 //    模式转为 selfIncrement, 否则仍为 head
 //
 // selfIncrement-list:
 // 1. 任何时候均不可触发 continue
-// 2. 任何时候均可触发 reStart, 相当于将当前 selfIncrement-list
+// 2. 任何时候均可触发 restart, 相当于将当前 selfIncrement-list
 //    的模式转为 head, 并设 index 为 1
-// 3. 任何时候均可触发 change, 相当于将当前 selfIncrement-list
+// 3. 任何时候均可触发 modify, 相当于将当前 selfIncrement-list
 //    的模式转为 head
 
 // 阿拉伯数字转罗马数字
@@ -135,7 +138,7 @@ const numberToLetter = (num: number) => {
   }
   return result
 }
-
+//TODO: 提取css
 const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attributes, children, element }) => {
   //TODO: 可能的优化方式:
   // worker 异步建表
@@ -146,6 +149,28 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
       : element.indentLevel % 3 === 2
       ? numberToLetter(element.indexState.index)
       : arabicToRomanNumber(element.indexState.index)
+
+  const setOrderedListBarState = useSetAtom(orderedListBarStateAtom)
+  const setIsOrderedListBarActive = useSetAtom(isOrderedListBarActiveAtom)
+  const spanDom = useRef<HTMLSpanElement | null>(null)
+
+  const onClickSpan: React.MouseEventHandler<HTMLSpanElement> = () => {
+    if (spanDom.current) {
+      // 文档左右两边到视口的距离, 790 为文档宽度
+      const docXPadding = (document.documentElement.clientWidth - 790) / 2
+      const top = window.scrollY + spanDom.current.getBoundingClientRect().top + 24
+      const left =
+        window.scrollX + spanDom.current.getBoundingClientRect().left - docXPadding + spanDom.current.clientWidth
+      setOrderedListBarState({
+        orderedList: element,
+        position: {
+          left,
+          top,
+        },
+      })
+      setIsOrderedListBarActive(true)
+    }
+  }
 
   return (
     <div
@@ -161,11 +186,13 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
         }}
       >
         <span
+          ref={spanDom}
+          onClick={onClickSpan}
           contentEditable={false}
           style={{
             userSelect: "none",
-            height: "100%",
             color: "#5a87f7",
+            paddingLeft: "2px",
           }}
         >
           {`${indexSymbol}.`}

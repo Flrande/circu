@@ -35,6 +35,7 @@ const LinkBar: React.FC = () => {
     // 2022-4-21
     // 使用 onClick 似乎会导致 editor.selection 修改后与 原生 selection 不同步
     // 暂未找到解决办法
+    //FIXME: onClick
     const onBreakButtonMouseDown: React.MouseEventHandler<HTMLDivElement> = (event) => {
       event.preventDefault()
       event.stopPropagation()

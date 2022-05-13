@@ -54,10 +54,10 @@ type linkState = {
 }
 const linkStateAtom = atom<linkState | null>(null)
 const linkEditBarStateAtom = atom<linkState | null>(null)
-
+//TODO: 移除 linkStateDerivedAtom
 export const linkStateDerivedAtom = atom(
   (get) => get(linkStateAtom),
-  (get, set, update: linkState) => {
+  (_, set, update: linkState) => {
     set(linkStateAtom, update)
   }
 )
