@@ -9,7 +9,7 @@ import {
   linkEditBarRowInput,
   linkEditBarSpan,
 } from "../Link.css"
-import { isLinkEditBarActiveAtom, linkEditBarStateDerivedAtom, linkStateDerivedAtom } from "../state"
+import { isLinkEditBarActiveAtom, linkEditBarStateDerivedAtom, linkStateAtom } from "../state"
 import type { ILink } from "../types"
 
 const LinkEditBar: React.FC = () => {
@@ -18,7 +18,7 @@ const LinkEditBar: React.FC = () => {
   const [isLinkEditBarActive, setIsLinkEditBarActive] = useAtom(isLinkEditBarActiveAtom)
 
   const [linkEditBarState, setLinkEditBarStateDerived] = useAtom(linkEditBarStateDerivedAtom)
-  const setLinkStateDerived = useSetAtom(linkStateDerivedAtom)
+  const setLinkState = useSetAtom(linkStateAtom)
 
   const [text, setText] = useState("")
   const [url, setUrl] = useState("")
@@ -51,7 +51,7 @@ const LinkEditBar: React.FC = () => {
       // 同步
       // linkState -> linkEditBar 对应的 link
       // LinkEditBarState -> linkState
-      setLinkStateDerived({
+      setLinkState({
         text: text,
         url: url,
         linkElementPath: linkEditBarState.linkElementPath,

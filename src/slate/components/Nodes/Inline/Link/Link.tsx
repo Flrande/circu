@@ -4,7 +4,7 @@ import { ReactEditor, useSlateStatic } from "slate-react"
 import { SlateNode } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { linkContainer } from "./Link.css"
-import { isLinkBarActiveDerivedAtom, linkStateDerivedAtom } from "./state"
+import { isLinkBarActiveDerivedAtom, linkStateAtom } from "./state"
 import type { ILink } from "./types"
 
 const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children, element }) => {
@@ -12,7 +12,7 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
 
   const setIsLinkBarActiveDerived = useSetAtom(isLinkBarActiveDerivedAtom)
 
-  const setLinkStateDerived = useSetAtom(linkStateDerivedAtom)
+  const setLinkState = useSetAtom(linkStateAtom)
 
   const [linkDom, setLinkDom] = useState<HTMLElement>()
   const timeoutId = useRef<number | null>(null)
@@ -31,7 +31,7 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
       const docXPadding = (document.documentElement.clientWidth - 790) / 2
       const top = window.scrollY + linkDom.getBoundingClientRect().top + 28
       const left = window.scrollX + linkDom.getBoundingClientRect().left - docXPadding
-      setLinkStateDerived({
+      setLinkState({
         text: SlateNode.string(element),
         url: element.url,
         linkElementPath: ReactEditor.findPath(editor, element),
