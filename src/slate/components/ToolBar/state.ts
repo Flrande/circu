@@ -1,7 +1,9 @@
-import { atom, useSetAtom } from "jotai"
+import { useSetAtom } from "jotai"
+import { atomWithProxy } from "jotai/valtio"
 import { useEffect } from "react"
+import { proxy } from "valtio"
 
-export const toolBarStateAtom = atom<{
+export const toolBarStateStore = proxy<{
   isActive: boolean
   position: {
     x: number
@@ -12,6 +14,12 @@ export const toolBarStateAtom = atom<{
   isActive: false,
   position: null,
 })
+export const unActiveToolBar = () => {
+  toolBarStateStore.isActive = false
+  toolBarStateStore.position = null
+}
+
+export const toolBarStateAtom = atomWithProxy(toolBarStateStore)
 
 export const useToolBar = () => {
   const setToolBarState = useSetAtom(toolBarStateAtom)

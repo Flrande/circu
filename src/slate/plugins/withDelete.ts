@@ -1,5 +1,6 @@
 import { Editor, Transforms } from "slate"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
+import { unActiveToolBar } from "../components/ToolBar/state"
 import { SlateElement, SlateRange } from "../types/slate"
 
 //TODO：将各个元素相关的逻辑拆分出来
@@ -108,8 +109,7 @@ const withDeleteFragment = (editor: Editor) => {
 
   editor.deleteFragment = (direction?: "forward" | "backward") => {
     deleteFragment(direction)
-    const sel = window.getSelection()
-    sel?.removeAllRanges()
+    unActiveToolBar()
   }
 
   return editor

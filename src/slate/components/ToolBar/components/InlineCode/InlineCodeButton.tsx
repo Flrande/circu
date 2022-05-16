@@ -7,7 +7,6 @@ const InlineCodeButton: React.FC = () => {
   const editor = useSlateStatic()
   const isActive = isInlineCodeActive(editor)
   const onClick = () => {
-    //FIXME: toggleInlineCode() should not called with collapsed editor.selection
     if (editor.selection) {
       toggleInlineCode(editor)
     }

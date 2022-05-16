@@ -46,8 +46,8 @@ export const useOnKeyDown = () => {
     // --------------------------------------------------
     // for debug and develop
     if (event.altKey && event.key === "q") {
-      // console.log(editor.selection?.anchor)
-      toggleHead(editor, "6")
+      console.log(window.getSelection(), editor.selection)
+      // toggleHead(editor, "6")
       return
     }
     if (event.altKey && event.key === "w") {
