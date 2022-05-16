@@ -269,7 +269,7 @@ if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
   ]
 } else if (import.meta.env.VITE_INITIAL_VALUE_MODE === "huge") {
   for (let i = 0; i < 100; i++) {
-    for (let p = 0; p < 5; p++) {
+    for (let p = 0; p < 50; p++) {
       initialValue.push({
         type: "paragraph",
         indentLevel: 0,

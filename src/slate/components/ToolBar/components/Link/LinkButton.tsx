@@ -1,5 +1,5 @@
 import { useSetAtom } from "jotai"
-import { useSlateStatic } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import { isLinkActive } from "../../../Nodes/Inline/Link/linkHelper"
 import { toolBarStateAtom } from "../../state"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
@@ -13,13 +13,10 @@ const LinkButton: React.FC = () => {
   const setToolBarState = useSetAtom(toolBarStateAtom)
   const setLinkButtonState = useSetAtom(linkButtonBarStateAtom)
 
-  const onMouseDown = (event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-
+  const onClick = () => {
     const sel = window.getSelection()
     if (!sel) {
-      console.error("onMouseDown in LinkButton need dom selection.")
+      console.error("onClick in LinkButton need dom selection.")
       return
     }
     const range = sel.getRangeAt(0)
@@ -40,10 +37,12 @@ const LinkButton: React.FC = () => {
         top,
       },
     })
+
+    ReactEditor.focus(editor)
   }
 
   return (
-    <ToolBarItem isStyleActive={isActive} onMouseDown={onMouseDown}>
+    <ToolBarItem isStyleActive={isActive} onClick={onClick}>
       <LinkIcon></LinkIcon>
     </ToolBarItem>
   )

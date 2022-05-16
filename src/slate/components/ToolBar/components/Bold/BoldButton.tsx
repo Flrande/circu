@@ -1,4 +1,4 @@
-import { useSlateStatic } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import { isMarkActive, toggleMark } from "../../../Nodes/Text/textHelper"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import BoldIcon from "./BoldIcon"
@@ -6,14 +6,13 @@ import BoldIcon from "./BoldIcon"
 const BoldButton: React.FC = () => {
   const editor = useSlateStatic()
   const isBoldActive = isMarkActive(editor, "bold")
-  const onMouseDown = (event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
+  const onClick = () => {
     toggleMark(editor, "bold", true)
+    ReactEditor.focus(editor)
   }
 
   return (
-    <ToolBarItem isStyleActive={isBoldActive} onMouseDown={onMouseDown}>
+    <ToolBarItem isStyleActive={isBoldActive} onClick={onClick}>
       <BoldIcon></BoldIcon>
     </ToolBarItem>
   )

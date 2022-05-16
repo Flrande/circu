@@ -1,4 +1,4 @@
-import { useSlateStatic } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import { isBlockCodeActive, toggleBlockCode } from "../../../Nodes/Block/BlockCode/blockCodeHelper"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import BlockCodeIcon from "./BlockCodeIcon"
@@ -6,9 +6,7 @@ import BlockCodeIcon from "./BlockCodeIcon"
 const BlockCodeButton: React.FC = () => {
   const editor = useSlateStatic()
   const isActive = isBlockCodeActive(editor)
-  const onMouseDown = (event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
+  const onClick = () => {
     if (editor.selection) {
       toggleBlockCode(editor)
       const event = new MouseEvent("mousedown", {
@@ -17,10 +15,11 @@ const BlockCodeButton: React.FC = () => {
       })
       window.getSelection()?.anchorNode?.parentElement?.dispatchEvent(event)
     }
+    ReactEditor.focus(editor)
   }
 
   return (
-    <ToolBarItem isStyleActive={isActive} onMouseDown={onMouseDown}>
+    <ToolBarItem isStyleActive={isActive} onClick={onClick}>
       <BlockCodeIcon></BlockCodeIcon>
     </ToolBarItem>
   )

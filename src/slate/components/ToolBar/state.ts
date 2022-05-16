@@ -20,7 +20,7 @@ export const useToolBar = () => {
     const mouseDownController = new AbortController()
 
     document.addEventListener(
-      "mousedown",
+      "selectstart",
       () => {
         setToolBarState({
           isActive: false,

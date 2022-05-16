@@ -1,4 +1,4 @@
-import { useSlateStatic } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import { isListActive, toggleUnorderedList } from "../../../Nodes/Block/List/listHelper"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import UnorderedListIcon from "./UnorderedListIcon"
@@ -6,16 +6,15 @@ import UnorderedListIcon from "./UnorderedListIcon"
 const UnorderedListButton: React.FC = () => {
   const editor = useSlateStatic()
   const isActive = isListActive(editor, "unorderedList")
-  const onMouseDown = (event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
+  const onClick = () => {
     if (editor.selection) {
       toggleUnorderedList(editor)
     }
+    ReactEditor.focus(editor)
   }
 
   return (
-    <ToolBarItem isStyleActive={isActive} onMouseDown={onMouseDown}>
+    <ToolBarItem isStyleActive={isActive} onClick={onClick}>
       <UnorderedListIcon></UnorderedListIcon>
     </ToolBarItem>
   )

@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from "jotai"
 import { useState } from "react"
-import { useSlateStatic } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import { backgroundColorMap, fontColorMap } from "../../../Nodes/Text/Color"
 import { toggleColorMark } from "../../../Nodes/Text/colorHelper"
 import { toolBarButton, toolBarButtonSvg, toolBarItemContainer } from "../../ToolBar.css"
@@ -16,15 +16,14 @@ const ColorButton: React.FC = () => {
   const selectedColor = useAtomValue(selectedColorAtom)
   const setIsColorBarActive = useSetAtom(isColorBarActiveAtom)
 
-  const onMouseDown = (event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
+  const onClick = () => {
     if (selectedColor.fontColorKey) {
       toggleColorMark(editor, "font", selectedColor.fontColorKey)
     }
     if (selectedColor.backgroundColorKey) {
       toggleColorMark(editor, "background", selectedColor.backgroundColorKey)
     }
+    ReactEditor.focus(editor)
   }
 
   return (
@@ -35,7 +34,7 @@ const ColorButton: React.FC = () => {
       className={toolBarItemContainer}
     >
       <div
-        onMouseDown={onMouseDown}
+        onClick={onClick}
         onMouseEnter={() => {
           setIsMouseEnter(true)
           setIsColorBarActive(true)
