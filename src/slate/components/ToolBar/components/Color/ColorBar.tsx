@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai"
-import { useSlateStatic } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import type { KeysUnion } from "../../../../types/utils"
 import type { IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
 import { cleanColorMark } from "../../../Nodes/Text/colorHelper"
@@ -105,10 +105,9 @@ const ColorBar: React.FC = () => {
   const editor = useSlateStatic()
   const isColorBarActive = useAtomValue(isColorBarActiveAtom)
 
-  const onCleanButtonDown: React.MouseEventHandler<HTMLDivElement> = (event) => {
-    event.preventDefault()
-    event.stopPropagation()
+  const onCleanButtonClick: React.MouseEventHandler<HTMLDivElement> = () => {
     cleanColorMark(editor)
+    ReactEditor.focus(editor)
   }
 
   //TODO: 放大渐变效果?
@@ -132,7 +131,7 @@ const ColorBar: React.FC = () => {
               <ColorBarItem type={type} colorKey={color} key={index}></ColorBarItem>
             ))}
           </div>
-          <div onMouseDown={onCleanButtonDown} className={colorBarCleanButton}>
+          <div onClick={onCleanButtonClick} className={colorBarCleanButton}>
             <span>清除</span>
           </div>
         </div>

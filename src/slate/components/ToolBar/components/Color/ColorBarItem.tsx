@@ -1,6 +1,6 @@
 import { useAtom } from "jotai"
 import { useState } from "react"
-import { useSlateStatic } from "slate-react"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import type { KeysUnion } from "../../../../types/utils"
 import { backgroundColorMap, fontColorMap, IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
 import { isColorMarkActive, toggleColorMark } from "../../../Nodes/Text/colorHelper"
@@ -19,9 +19,7 @@ const ColorBarItem = <T extends "font" | "background">({
   const [selectedColor, setSelectedColor] = useAtom(selectedColorAtom)
   const isActive = isColorMarkActive(editor, type, colorKey)
 
-  const onMouseDown = (event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
+  const onClick = () => {
     if (type === "font") {
       toggleColorMark(editor, "font", colorKey as Exclude<KeysUnion<IFontColorMap>, "initialWhite">)
       setSelectedColor({
@@ -35,11 +33,12 @@ const ColorBarItem = <T extends "font" | "background">({
         backgroundColorKey: colorKey as KeysUnion<IBackgroundColorMap>,
       })
     }
+    ReactEditor.focus(editor)
   }
 
   return (
     <div
-      onMouseDown={onMouseDown}
+      onClick={onClick}
       onMouseEnter={() => {
         setIsMouseEnter(true)
       }}

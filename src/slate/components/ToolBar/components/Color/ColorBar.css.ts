@@ -41,4 +41,7 @@ export const colorBarCleanButton = style({
   ":hover": {
     backgroundColor: "#373737",
   },
+  ":active": {
+    backgroundColor: "#464646",
+  },
 })
