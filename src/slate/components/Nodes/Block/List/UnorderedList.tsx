@@ -1,4 +1,5 @@
 import type { CustomRenderElementProps } from "../../../../types/utils"
+import { unorderedListSymbol } from "./List.css"
 import type { IUnorderedList } from "./types"
 
 const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ attributes, children, element }) => {
@@ -17,15 +18,7 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
           display: "flex",
         }}
       >
-        <span
-          contentEditable={false}
-          style={{
-            userSelect: "none",
-            minWidth: "22px",
-            height: "100%",
-            color: "#5a87f7",
-          }}
-        >
+        <span contentEditable={false} className={unorderedListSymbol}>
           {indexSymbol}
         </span>
         <span

@@ -1,6 +1,7 @@
 import { useSetAtom } from "jotai"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
+import { orderedListSymbol } from "./List.css"
 import { isOrderedListBarActiveAtom, orderedListBarStateAtom } from "./state"
 import type { IOrderedList } from "./types"
 
@@ -138,7 +139,7 @@ const numberToLetter = (num: number) => {
   }
   return result
 }
-//TODO: 提取css
+
 const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attributes, children, element }) => {
   //TODO: 可能的优化方式:
   // worker 异步建表
@@ -185,16 +186,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
           display: "flex",
         }}
       >
-        <span
-          ref={spanDom}
-          onClick={onClickSpan}
-          contentEditable={false}
-          style={{
-            userSelect: "none",
-            color: "#5a87f7",
-            paddingLeft: "2px",
-          }}
-        >
+        <span ref={spanDom} onClick={onClickSpan} contentEditable={false} className={orderedListSymbol}>
           {`${indexSymbol}.`}
         </span>
         <span
