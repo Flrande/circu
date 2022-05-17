@@ -4,6 +4,14 @@ export const orderedListSymbol = style({
   userSelect: "none",
   color: "#5a87f7",
   paddingLeft: "2px",
+  ":hover": {
+    backgroundColor: "#22293a",
+    borderRadius: "4px",
+  },
+  ":active": {
+    backgroundColor: "#272f45",
+    borderRadius: "4px",
+  },
 })
 
 export const unorderedListSymbol = style({
