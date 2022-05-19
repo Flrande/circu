@@ -1,10 +1,10 @@
-import { useAtom, useAtomValue } from "jotai"
+import { useAtom } from "jotai"
 import { ReactElement, useEffect, useRef } from "react"
 import type React from "react"
 import { Editor, NodeEntry, Path, Transforms } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { orderedListBarContainer, orderedListBarItemContainer } from "../List.css"
-import { isOrderedListBarActiveAtom, orderedListBarStateAtom } from "../state"
+import { orderedListBarStateAtom } from "../state"
 import OrderedListBarContinueIcon from "./OrderedListBarContinueIcon"
 import OrderedListBarModifyIcon from "./OrderedListBarModifyIcon"
 import OrderedListBarRestartIcon from "./OrderedListBarRestartIcon"
@@ -35,18 +35,17 @@ const OrderedListBarItem: React.FC<{
 const OrderedListBar: React.FC = () => {
   const editor = useSlateStatic()
 
-  const [isOrderedListBarActive, setIsOrderedListBarActive] = useAtom(isOrderedListBarActiveAtom)
-  const orderedListBarState = useAtomValue(orderedListBarStateAtom)
+  const [orderedListBarState, setOrderedListBarState] = useAtom(orderedListBarStateAtom)
 
   const barDom = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    if (barDom.current && isOrderedListBarActive && orderedListBarState) {
+    if (barDom.current && orderedListBarState) {
       barDom.current.focus()
     }
-  }, [isOrderedListBarActive, orderedListBarState])
+  }, [orderedListBarState])
 
-  if (isOrderedListBarActive && orderedListBarState) {
+  if (orderedListBarState) {
     const orderedListEntryArr = Array.from(
       Editor.nodes(editor, {
         at: [],
@@ -76,7 +75,7 @@ const OrderedListBar: React.FC = () => {
             at: currentListPath,
           }
         )
-        setIsOrderedListBarActive(false)
+        setOrderedListBarState(null)
       }
       const restartHandler: React.MouseEventHandler<HTMLDivElement> = () => {
         Transforms.setNodes(
@@ -91,10 +90,10 @@ const OrderedListBar: React.FC = () => {
             at: currentListPath,
           }
         )
-        setIsOrderedListBarActive(false)
+        setOrderedListBarState(null)
       }
       const modifyHandler: React.MouseEventHandler<HTMLDivElement> = () => {
-        setIsOrderedListBarActive(false)
+        setOrderedListBarState(null)
         //TODO: 修改编号值
       }
 
@@ -131,7 +130,7 @@ const OrderedListBar: React.FC = () => {
       const isModifyActive = true
 
       const continueHandler: React.MouseEventHandler<HTMLDivElement> = () => {
-        setIsOrderedListBarActive(false)
+        setOrderedListBarState(null)
       }
       const restartHandler: React.MouseEventHandler<HTMLDivElement> = () => {
         Transforms.setNodes(
@@ -146,10 +145,10 @@ const OrderedListBar: React.FC = () => {
             at: currentListPath,
           }
         )
-        setIsOrderedListBarActive(false)
+        setOrderedListBarState(null)
       }
       const modifyHandler: React.MouseEventHandler<HTMLDivElement> = () => {
-        setIsOrderedListBarActive(false)
+        setOrderedListBarState(null)
         //TODO: 修改编号值
       }
 
@@ -186,7 +185,7 @@ const OrderedListBar: React.FC = () => {
         ref={barDom}
         onBlur={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget)) {
-            setIsOrderedListBarActive(false)
+            setOrderedListBarState(null)
           }
         }}
         tabIndex={-1}

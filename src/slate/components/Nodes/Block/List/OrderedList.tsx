@@ -2,7 +2,7 @@ import { useSetAtom } from "jotai"
 import { useRef } from "react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { orderedListSymbol } from "./List.css"
-import { isOrderedListBarActiveAtom, orderedListBarStateAtom } from "./state"
+import { orderedListBarStateAtom } from "./state"
 import type { IOrderedList } from "./types"
 
 // 对于有序列表有两种模式 (状态):
@@ -152,7 +152,6 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
       : arabicToRomanNumber(element.indexState.index)
 
   const setOrderedListBarState = useSetAtom(orderedListBarStateAtom)
-  const setIsOrderedListBarActive = useSetAtom(isOrderedListBarActiveAtom)
   const spanDom = useRef<HTMLSpanElement | null>(null)
 
   const onClickSpan: React.MouseEventHandler<HTMLSpanElement> = () => {
@@ -169,7 +168,6 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
           top,
         },
       })
-      setIsOrderedListBarActive(true)
     }
   }
 
