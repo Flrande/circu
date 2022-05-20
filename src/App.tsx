@@ -4,6 +4,7 @@ import type { Descendant } from "slate"
 import { Slate } from "slate-react"
 import { doc, docContainer } from "./App.css"
 import OrderedListBar from "./slate/components/Nodes/Block/List/ListBar/OrderedListBar"
+import OrderedListModifyBar from "./slate/components/Nodes/Block/List/ListBar/OrderedListModifyBar"
 import LinkBar from "./slate/components/Nodes/Inline/Link/LinkBar/LinkBar"
 import LinkEditBar from "./slate/components/Nodes/Inline/Link/LinkBar/LinkEditBar"
 import LinkButtonBar from "./slate/components/ToolBar/components/Link/LinkButtonBar"
@@ -476,6 +477,7 @@ const App: React.FC = () => {
           <LinkBar></LinkBar>
           <LinkEditBar></LinkEditBar>
           <OrderedListBar></OrderedListBar>
+          <OrderedListModifyBar></OrderedListModifyBar>
         </Slate>
       </div>
     </div>

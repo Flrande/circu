@@ -4,5 +4,5 @@ import { vanillaExtractPlugin } from "@vanilla-extract/vite-plugin"
 import vitePluginForArco from "@arco-plugins/vite-react"
 
 export default defineConfig({
-  plugins: [react(), vanillaExtractPlugin(), vitePluginForArco({ style: "css" })],
+  plugins: [react(), vanillaExtractPlugin({ devStyleRuntime: "vanilla-extract" }), vitePluginForArco({ style: "css" })],
 })

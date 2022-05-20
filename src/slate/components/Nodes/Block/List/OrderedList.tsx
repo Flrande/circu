@@ -1,8 +1,10 @@
-import { useSetAtom } from "jotai"
+import { useAtomValue, useSetAtom } from "jotai"
 import { useRef } from "react"
+import { Path } from "slate"
+import { ReactEditor, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { orderedListSymbol } from "./List.css"
-import { orderedListBarStateAtom } from "./state"
+import { orderedListBarStateAtom, orderedListModifyBarStateAtom } from "./state"
 import type { IOrderedList } from "./types"
 
 // 对于有序列表有两种模式 (状态):
@@ -151,8 +153,13 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
       ? numberToLetter(element.indexState.index)
       : arabicToRomanNumber(element.indexState.index)
 
+  const editor = useSlateStatic()
+
   const setOrderedListBarState = useSetAtom(orderedListBarStateAtom)
+  const orderedListModifyBarState = useAtomValue(orderedListModifyBarStateAtom)
   const spanDom = useRef<HTMLSpanElement | null>(null)
+
+  const currentListPath = ReactEditor.findPath(editor, element)
 
   const onClickSpan: React.MouseEventHandler<HTMLSpanElement> = () => {
     if (spanDom.current) {
@@ -162,7 +169,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
       const left =
         window.scrollX + spanDom.current.getBoundingClientRect().left - docXPadding + spanDom.current.clientWidth
       setOrderedListBarState({
-        orderedList: element,
+        orderedListEntry: [element, currentListPath],
         position: {
           left,
           top,
@@ -184,7 +191,20 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
           display: "flex",
         }}
       >
-        <span ref={spanDom} onClick={onClickSpan} contentEditable={false} className={orderedListSymbol}>
+        <span
+          ref={spanDom}
+          onClick={onClickSpan}
+          contentEditable={false}
+          className={orderedListSymbol}
+          style={
+            orderedListModifyBarState && Path.equals(orderedListModifyBarState.orderedListEntry[1], currentListPath)
+              ? {
+                  backgroundColor: "#272f45",
+                  borderRadius: "4px",
+                }
+              : {}
+          }
+        >
           {`${indexSymbol}.`}
         </span>
         <span

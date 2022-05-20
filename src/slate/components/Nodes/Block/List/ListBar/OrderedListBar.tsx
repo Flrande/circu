@@ -1,10 +1,10 @@
-import { useAtom } from "jotai"
+import { useAtom, useSetAtom } from "jotai"
 import { ReactElement, useEffect, useRef } from "react"
 import type React from "react"
 import { Editor, NodeEntry, Path, Transforms } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { orderedListBarContainer, orderedListBarItemContainer } from "../List.css"
-import { orderedListBarStateAtom } from "../state"
+import { orderedListBarStateAtom, orderedListModifyBarStateAtom } from "../state"
 import OrderedListBarContinueIcon from "./OrderedListBarContinueIcon"
 import OrderedListBarModifyIcon from "./OrderedListBarModifyIcon"
 import OrderedListBarRestartIcon from "./OrderedListBarRestartIcon"
@@ -36,6 +36,7 @@ const OrderedListBar: React.FC = () => {
   const editor = useSlateStatic()
 
   const [orderedListBarState, setOrderedListBarState] = useAtom(orderedListBarStateAtom)
+  const setOrderedListModifyBarState = useSetAtom(orderedListModifyBarStateAtom)
 
   const barDom = useRef<HTMLDivElement | null>(null)
 
@@ -52,7 +53,7 @@ const OrderedListBar: React.FC = () => {
         match: (n) => SlateElement.isElement(n) && n.type === "orderedList",
       })
     ) as NodeEntry<IOrderedList>[]
-    const currentList = orderedListBarState.orderedList
+    const currentList = orderedListBarState.orderedListEntry[0]
     const currentListPath = ReactEditor.findPath(editor, currentList)
 
     const items: ReactElement[] = []
@@ -93,8 +94,8 @@ const OrderedListBar: React.FC = () => {
         setOrderedListBarState(null)
       }
       const modifyHandler: React.MouseEventHandler<HTMLDivElement> = () => {
+        setOrderedListModifyBarState(orderedListBarState)
         setOrderedListBarState(null)
-        //TODO: 修改编号值
       }
 
       items.push(
@@ -148,8 +149,8 @@ const OrderedListBar: React.FC = () => {
         setOrderedListBarState(null)
       }
       const modifyHandler: React.MouseEventHandler<HTMLDivElement> = () => {
+        setOrderedListModifyBarState(orderedListBarState)
         setOrderedListBarState(null)
-        //TODO: 修改编号值
       }
 
       items.push(
