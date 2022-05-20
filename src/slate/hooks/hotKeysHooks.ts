@@ -2,8 +2,8 @@ import type React from "react"
 import { useCallback } from "react"
 import { Editor } from "slate"
 import { useSlateStatic } from "slate-react"
-import { toggleHead } from "../components/Nodes/Block/Head/HeadHelper"
-import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
+import { toggleHead } from "../components/Nodes/Block/Head/headHelper"
+import { toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
 import { orderedListLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
 import { switchListLevel } from "../components/Nodes/Block/List/switchListLevel"
 import { switchParagraphLevel } from "../components/Nodes/Block/Paragraph/switchParagraphLevel"
@@ -46,8 +46,8 @@ export const useOnKeyDown = () => {
     // --------------------------------------------------
     // for debug and develop
     if (event.altKey && event.key === "q") {
-      console.log(window.getSelection(), editor.selection)
-      // toggleHead(editor, "6")
+      // console.log(window.getSelection(), editor.selection)
+      toggleHead(editor, "1")
       return
     }
     if (event.altKey && event.key === "w") {
