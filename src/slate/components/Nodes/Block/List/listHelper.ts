@@ -36,8 +36,8 @@ const unToggleList = (editor: Editor) => {
     let level: IParagraphIndentLevel = 0
     if (arrayIncludes(INDENT_TYPE_ELEMENTS, node.type)) {
       const tmpNode = node as IndentTypeElement
-      if (tmpNode.indentLevel >= 0 && tmpNode.indentLevel <= 16) {
-        level = tmpNode.indentLevel
+      if (tmpNode.indentLevel >= 1 && tmpNode.indentLevel <= 16) {
+        level = (tmpNode.indentLevel - 1) as IParagraphIndentLevel
       }
     }
 
@@ -161,7 +161,11 @@ export const toggleOrderedList = (editor: Editor) => {
       at: firstPath,
     })
 
-    Transforms.select(editor, Editor.end(editor, lastPath))
+    const newRange: SlateRange = {
+      anchor: Editor.start(editor, selectedParagraphTypeEntryArr[0][1]),
+      focus: Editor.end(editor, selectedParagraphTypeEntryArr[selectedParagraphTypeEntryArr.length - 1][1]),
+    }
+    Transforms.select(editor, newRange)
   }
 }
 
@@ -216,6 +220,10 @@ export const toggleUnorderedList = (editor: Editor) => {
       at: firstPath,
     })
 
-    Transforms.select(editor, Editor.end(editor, lastPath))
+    const newRange: SlateRange = {
+      anchor: Editor.start(editor, selectedParagraphTypeEntryArr[0][1]),
+      focus: Editor.end(editor, selectedParagraphTypeEntryArr[selectedParagraphTypeEntryArr.length - 1][1]),
+    }
+    Transforms.select(editor, newRange)
   }
 }

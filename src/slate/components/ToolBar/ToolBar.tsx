@@ -11,6 +11,7 @@ import { toolBarStateAtom } from "./state"
 import LinkButton from "./components/Link/LinkButton"
 import OrderedListButton from "./components/OrderedList/OrderedListButton"
 import UnorderedListButton from "./components/UnorderedList/UnorderedListButton"
+import HeadButton from "./components/Head/HeadButton"
 
 //TODO: item 可控拖拽
 const ToolBar: React.FC = () => {
@@ -28,24 +29,27 @@ const ToolBar: React.FC = () => {
       transitionDelay: "0.017s, 0.017s",
       top: `${position.y}px`,
       left: `${position.x}px`,
+      // 防止产生 selectstart 事件往上冒泡, 进而导致 ToolBar 不显示
       userSelect: "none",
     }
 
     return (
       <div className={toolBarContainer} style={toolBarStyle}>
-        <div style={{ display: "inline-block" }}>
-          <ul className={toolBar}>
-            <BoldButton></BoldButton>
-            <StrikeButton></StrikeButton>
-            <ItalicButton></ItalicButton>
-            <ColorButton></ColorButton>
-            <LinkButton></LinkButton>
-            <OrderedListButton></OrderedListButton>
-            <UnorderedListButton></UnorderedListButton>
-            <InlineCodeButton></InlineCodeButton>
-            <BlockCodeButton></BlockCodeButton>
-          </ul>
-        </div>
+        <ul className={toolBar}>
+          <HeadButton headGrade={"1"}></HeadButton>
+          <HeadButton headGrade={"2"}></HeadButton>
+          <HeadButton headGrade={"3"}></HeadButton>
+          <HeadButton headGrade={"no-grade"}></HeadButton>
+          <BoldButton></BoldButton>
+          <StrikeButton></StrikeButton>
+          <ItalicButton></ItalicButton>
+          <ColorButton></ColorButton>
+          <LinkButton></LinkButton>
+          <OrderedListButton></OrderedListButton>
+          <UnorderedListButton></UnorderedListButton>
+          <InlineCodeButton></InlineCodeButton>
+          <BlockCodeButton></BlockCodeButton>
+        </ul>
       </div>
     )
   } else {

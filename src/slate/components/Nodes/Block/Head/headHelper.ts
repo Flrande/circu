@@ -7,13 +7,13 @@ import { spiltBlockCode } from "../BlockCode/spiltBlockCode"
 import type { IParagraphIndentLevel } from "../Paragraph/types"
 import type { IHead, IHeadGrade, IHeadIndentLevel } from "./types"
 
-export const isHeadActive = (editor: Editor) => {
+export const isHeadActive = (editor: Editor, headGrade: IHeadGrade) => {
   const { selection } = editor
   if (!selection) return false
 
   const match = Array.from(
     Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "head",
+      match: (n) => SlateElement.isElement(n) && n.type === "head" && n.headGrade === headGrade,
     })
   )
 
@@ -76,7 +76,7 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade) => {
     })
   ) as Array<NodeEntry<ParagraphTypeElement>>
 
-  if (selectedParagraphTypeEntryArr.every(([node]) => node.type === "head")) {
+  if (selectedParagraphTypeEntryArr.every(([node]) => node.type === "head" && node.headGrade === headGrade)) {
     unToggleHead(editor)
   } else {
     const newNodes: IHead[] = selectedParagraphTypeEntryArr.map(([node]) => {
@@ -113,6 +113,10 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade) => {
       at: firstPath,
     })
 
-    Transforms.select(editor, Editor.end(editor, lastPath))
+    const newRange: SlateRange = {
+      anchor: Editor.start(editor, selectedParagraphTypeEntryArr[0][1]),
+      focus: Editor.end(editor, selectedParagraphTypeEntryArr[selectedParagraphTypeEntryArr.length - 1][1]),
+    }
+    Transforms.select(editor, newRange)
   }
 }

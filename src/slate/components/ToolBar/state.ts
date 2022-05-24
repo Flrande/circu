@@ -1,4 +1,4 @@
-import { useSetAtom } from "jotai"
+import { atom, useSetAtom } from "jotai"
 import { atomWithProxy } from "jotai/valtio"
 import { useEffect } from "react"
 import { proxy } from "valtio"
@@ -23,6 +23,7 @@ export const toolBarStateAtom = atomWithProxy(toolBarStateStore)
 
 export const useToolBar = () => {
   const setToolBarState = useSetAtom(toolBarStateAtom)
+  const setActiveButton = useSetAtom(activeButtonAtom)
 
   useEffect(() => {
     const mouseDownController = new AbortController()
@@ -54,7 +55,7 @@ export const useToolBar = () => {
                 x += 20
               }
               if (event.clientY < 80) {
-                y += 30
+                y += 50
               } else {
                 y -= 80
               }
@@ -67,6 +68,8 @@ export const useToolBar = () => {
                   translateY: event.clientY < 80 ? -10 : 10,
                 },
               })
+              // 重置 activeButtonAtom 状态
+              setActiveButton("no-active")
             }
           },
           {
@@ -85,3 +88,22 @@ export const useToolBar = () => {
     }
   }, [setToolBarState])
 }
+
+// 记录当前主工具栏中"活跃"的按钮, 即用户最近移入的按钮
+// 此 atom 用于控制部分子工具栏的显示, 新的按钮类型需手动添加
+export const activeButtonAtom = atom<
+  | "no-active"
+  | "head-1"
+  | "head-2"
+  | "head-3"
+  | "head-bar"
+  | "bold"
+  | "strike"
+  | "italic"
+  | "color"
+  | "link"
+  | "ordered-list"
+  | "unordered-list"
+  | "inline-code"
+  | "block-code"
+>("no-active")

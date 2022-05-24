@@ -31,7 +31,6 @@ export const toolBarButton = style({
   justifyContent: "center",
   height: "30px",
   width: "30px",
-  overflow: "hidden",
   borderRadius: "6px",
   cursor: "pointer",
 })

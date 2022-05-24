@@ -3,6 +3,7 @@ import { useState } from "react"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { backgroundColorMap, fontColorMap } from "../../../Nodes/Text/Color"
 import { toggleColorMark } from "../../../Nodes/Text/colorHelper"
+import { activeButtonAtom } from "../../state"
 import { toolBarButton, toolBarButtonSvg, toolBarItemContainer } from "../../ToolBar.css"
 import { toolBarIconBackgroundColor } from "../ToolBarItem/useIconColor"
 import ColorBar from "./ColorBar"
@@ -15,6 +16,7 @@ const ColorButton: React.FC = () => {
   const buttonColor = useAtomValue(buttonColorAtom)
   const selectedColor = useAtomValue(selectedColorAtom)
   const setIsColorBarActive = useSetAtom(isColorBarActiveAtom)
+  const setActiveButton = useSetAtom(activeButtonAtom)
 
   const onClick = () => {
     if (selectedColor.fontColorKey) {
@@ -38,6 +40,7 @@ const ColorButton: React.FC = () => {
         onMouseEnter={() => {
           setIsMouseEnter(true)
           setIsColorBarActive(true)
+          setActiveButton("color")
         }}
         onMouseLeave={() => {
           setIsMouseEnter(false)
