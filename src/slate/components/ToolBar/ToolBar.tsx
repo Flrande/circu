@@ -12,6 +12,7 @@ import LinkButton from "./components/Link/LinkButton"
 import OrderedListButton from "./components/OrderedList/OrderedListButton"
 import UnorderedListButton from "./components/UnorderedList/UnorderedListButton"
 import HeadButton from "./components/Head/HeadButton"
+import UnderlineButton from "./components/Underline/UnderlineButton"
 
 //TODO: item 可控拖拽
 const ToolBar: React.FC = () => {
@@ -42,6 +43,7 @@ const ToolBar: React.FC = () => {
           <HeadButton headGrade={"no-grade"}></HeadButton>
           <BoldButton></BoldButton>
           <StrikeButton></StrikeButton>
+          <UnderlineButton></UnderlineButton>
           <ItalicButton></ItalicButton>
           <ColorButton></ColorButton>
           <LinkButton></LinkButton>

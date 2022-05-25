@@ -7,6 +7,7 @@ import { toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
 import { orderedListLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
 import { switchListLevel } from "../components/Nodes/Block/List/switchListLevel"
 import { switchParagraphLevel } from "../components/Nodes/Block/Paragraph/switchParagraphLevel"
+import { toggleMark } from "../components/Nodes/Text/textHelper"
 import { PARAGRAPH_TYPE_ELEMENTS } from "../types/constant"
 import type { ParagraphTypeElement } from "../types/interface"
 import { SlateElement } from "../types/slate"
@@ -47,7 +48,8 @@ export const useOnKeyDown = () => {
     // for debug and develop
     if (event.altKey && event.key === "q") {
       // console.log(window.getSelection(), editor.selection)
-      toggleHead(editor, "1")
+      // toggleHead(editor, "1")
+      toggleMark(editor, "underline", true)
       return
     }
     if (event.altKey && event.key === "w") {

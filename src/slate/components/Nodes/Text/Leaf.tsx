@@ -5,6 +5,7 @@ import Bold from "./Bold"
 import Color from "./Color"
 import Italic from "./Italic"
 import Strike from "./Strike"
+import Underline from "./Underline"
 
 const getTokenColor = (tokenTypes: CustomText["tokenTypes"]) => {
   let color: string | undefined = undefined
@@ -42,6 +43,10 @@ const getTokenColor = (tokenTypes: CustomText["tokenTypes"]) => {
 }
 
 const Leaf: React.FC<React.PropsWithChildren<RenderLeafProps>> = ({ attributes, children, leaf }) => {
+  if (leaf.underline) {
+    children = <Underline>{children}</Underline>
+  }
+
   if (leaf.italic) {
     children = <Italic>{children}</Italic>
   }

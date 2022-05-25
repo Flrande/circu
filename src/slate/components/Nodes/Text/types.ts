@@ -10,6 +10,7 @@ export type ICustomText = {
     backgroundColorKey?: KeysUnion<IBackgroundColorMap> // 背景颜色
   }
   italic?: true // 斜体
+  underline?: true // 下划线
   tokenTypes?: {
     [x: string]: true
   }

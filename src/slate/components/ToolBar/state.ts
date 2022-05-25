@@ -103,6 +103,7 @@ export const activeButtonAtom = atom<
   | "head-bar"
   | "bold"
   | "strike"
+  | "underline"
   | "italic"
   | "color"
   | "link"
