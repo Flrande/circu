@@ -29,7 +29,7 @@ export const useToolBar = () => {
     const mouseDownController = new AbortController()
 
     document.addEventListener(
-      "selectstart",
+      "mousedown",
       () => {
         setToolBarState({
           isActive: false,
@@ -39,38 +39,42 @@ export const useToolBar = () => {
         document.addEventListener(
           "mouseup",
           (event) => {
-            const domSelection = window.getSelection()
-            if (domSelection && !domSelection.isCollapsed) {
-              // 文档左右两边到视口的距离, 790 为文档宽度
-              const docXPadding = (document.documentElement.clientWidth - 790) / 2
-              let x = event.pageX
-              let y = event.pageY
+            // 若不放在宏任务中, 点击蓝区, 执行 mouseup 事件回调时 domSelection 仍未更新 (仍是折叠状态),
+            // 这会导致 ToolBar 无法正常消失 (鼠标按钮放开后再次出现)
+            setTimeout(() => {
+              const domSelection = window.getSelection()
+              if (domSelection && !domSelection.isCollapsed) {
+                // 文档左右两边到视口的距离, 790 为文档宽度
+                const docXPadding = (document.documentElement.clientWidth - 790) / 2
+                let x = event.pageX
+                let y = event.pageY
 
-              if (x <= docXPadding) {
-                x = 0
-              } else if (x >= docXPadding + 790) {
-                x = 790
-              } else {
-                x -= docXPadding
-                x += 20
-              }
-              if (event.clientY < 80) {
-                y += 50
-              } else {
-                y -= 80
-              }
+                if (x <= docXPadding) {
+                  x = 0
+                } else if (x >= docXPadding + 790) {
+                  x = 790
+                } else {
+                  x -= docXPadding
+                  x += 20
+                }
+                if (event.clientY < 80) {
+                  y += 50
+                } else {
+                  y -= 80
+                }
 
-              setToolBarState({
-                isActive: true,
-                position: {
-                  x,
-                  y,
-                  translateY: event.clientY < 80 ? -10 : 10,
-                },
-              })
-              // 重置 activeButtonAtom 状态
-              setActiveButton("no-active")
-            }
+                setToolBarState({
+                  isActive: true,
+                  position: {
+                    x,
+                    y,
+                    translateY: event.clientY < 80 ? -10 : 10,
+                  },
+                })
+                // 重置 activeButtonAtom 状态
+                setActiveButton("no-active")
+              }
+            })
           },
           {
             // 自销毁

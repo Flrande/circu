@@ -472,12 +472,19 @@ const App: React.FC = () => {
       <div className={doc}>
         <Slate editor={editor} value={value} onChange={(newValue) => setValue(newValue)}>
           <SlateEditable></SlateEditable>
-          <ToolBar></ToolBar>
-          <LinkButtonBar></LinkButtonBar>
-          <LinkBar></LinkBar>
-          <LinkEditBar></LinkEditBar>
-          <OrderedListBar></OrderedListBar>
-          <OrderedListModifyBar></OrderedListModifyBar>
+          <div
+            // 拦截冒泡的 mousedown 事件, 防止 ToolBar 工作异常
+            onMouseDown={(event) => {
+              event.stopPropagation()
+            }}
+          >
+            <ToolBar></ToolBar>
+            <LinkButtonBar></LinkButtonBar>
+            <LinkBar></LinkBar>
+            <LinkEditBar></LinkEditBar>
+            <OrderedListBar></OrderedListBar>
+            <OrderedListModifyBar></OrderedListModifyBar>
+          </div>
         </Slate>
       </div>
     </div>
