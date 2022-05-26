@@ -9,6 +9,7 @@ import type {
 import type { IHead } from "../components/Nodes/Block/Head/types"
 import type { IOrderedList, IUnorderedList } from "../components/Nodes/Block/List/types"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
+import type { IQuote, IQuote_Line } from "../components/Nodes/Block/Quote/types"
 import type { IInlineCode } from "../components/Nodes/Inline/InlineCode/types"
 import type { ILink } from "../components/Nodes/Inline/Link/types"
 import type { ICustomText } from "../components/Nodes/Text/types"
@@ -22,12 +23,20 @@ export type BlockElement =
   | IOrderedList
   | IUnorderedList
   | IHead
+  | IQuote
+  | IQuote_Line
 export type InlineElement = IInlineCode | ILink
 export type VoidElement = IBlockCode_VoidArea
 // 段落型元素, 结构上和 Paragraph 相近, 观感上占 "一行"
-export type ParagraphTypeElement = IParagraph | IOrderedList | IUnorderedList | IBlockCode_CodeLine | IHead
+export type ParagraphTypeElement =
+  | IParagraph
+  | IOrderedList
+  | IUnorderedList
+  | IBlockCode_CodeLine
+  | IHead
+  | IQuote_Line
 // 缩进型元素, 段落型元素的子集, 可产生缩进, 各元素支持的缩进级别有区别
-export type IndentTypeElement = IParagraph | IOrderedList | IUnorderedList | IHead
+export type IndentTypeElement = IParagraph | IOrderedList | IUnorderedList | IHead | IQuote_Line
 
 export type CustomElement = BlockElement | InlineElement
 export type CustomText = ICustomText

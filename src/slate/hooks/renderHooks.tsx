@@ -17,6 +17,9 @@ import type { IOrderedList, IUnorderedList } from "../components/Nodes/Block/Lis
 import UnorderedList from "../components/Nodes/Block/List/UnorderedList"
 import Paragraph from "../components/Nodes/Block/Paragraph/Paragraph"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
+import Quote from "../components/Nodes/Block/Quote/Quote"
+import Quote_Line from "../components/Nodes/Block/Quote/Quote_Line"
+import type { IQuote, IQuote_Line } from "../components/Nodes/Block/Quote/types"
 import InlineCode from "../components/Nodes/Inline/InlineCode/InlineCode"
 import type { IInlineCode } from "../components/Nodes/Inline/InlineCode/types"
 import Link from "../components/Nodes/Inline/Link/Link"
@@ -51,6 +54,10 @@ export const useRenderElement = () => {
         return <UnorderedList {...(props as CustomRenderElementProps<IUnorderedList>)}></UnorderedList>
       case "head":
         return <Head {...(props as CustomRenderElementProps<IHead>)}></Head>
+      case "quote":
+        return <Quote {...(props as CustomRenderElementProps<IQuote>)}></Quote>
+      case "quote_line":
+        return <Quote_Line {...(props as CustomRenderElementProps<IQuote_Line>)}></Quote_Line>
     }
   }, [])
 }

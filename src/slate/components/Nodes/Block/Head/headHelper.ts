@@ -3,10 +3,12 @@ import { INDENT_TYPE_ELEMENTS, PARAGRAPH_TYPE_ELEMENTS } from "../../../../types
 import type { IndentTypeElement, ParagraphTypeElement } from "../../../../types/interface"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
-import { spiltBlockCode } from "../BlockCode/spiltBlockCode"
+import { splitBlockCode } from "../BlockCode/splitBlockCode"
 import type { IParagraphIndentLevel } from "../Paragraph/types"
+import { splitQuote } from "../Quote/splitQuote"
 import type { IHead, IHeadGrade, IHeadIndentLevel } from "./types"
 
+//FIXME: 在代码块内触发 toggleHead 时报错, 初步判断原因为最后设置选区时参照的 loaction 过期
 export const isHeadActive = (editor: Editor, headGrade: IHeadGrade) => {
   const { selection } = editor
   if (!selection) return false
@@ -99,8 +101,14 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade) => {
 
     // 选区在代码块内, 先将 codeLine 分离出来
     if (selectedParagraphTypeEntryArr.every(([node]) => node.type.startsWith("blockCode"))) {
-      // spiltBlockCode 执行完成后 editor.selection 仍为对应选区
-      spiltBlockCode(editor, editor.selection)
+      // splitBlockCode 执行完成后 editor.selection 仍为对应选区
+      splitBlockCode(editor, editor.selection)
+    }
+
+    // 选区在引用块内, 先将 quoteLine 分离出来
+    if (selectedParagraphTypeEntryArr.every(([node]) => node.type.startsWith("quote"))) {
+      // splitQuote 执行完成后 editor.selection 仍为对应选区
+      splitQuote(editor, editor.selection)
     }
 
     const firstPath = SlateRange.start(editor.selection).path.slice(0, 1)

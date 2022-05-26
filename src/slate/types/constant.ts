@@ -10,6 +10,7 @@ export const PARAGRAPH_TYPE_ELEMENTS: Array<ParagraphTypeElement["type"]> = [
   "unorderedList",
   "blockCode_codeLine",
   "head",
+  "quote_line",
 ]
 
 export const INDENT_TYPE_ELEMENTS: Array<IndentTypeElement["type"]> = [
@@ -17,4 +18,5 @@ export const INDENT_TYPE_ELEMENTS: Array<IndentTypeElement["type"]> = [
   "orderedList",
   "unorderedList",
   "head",
+  "quote_line",
 ]

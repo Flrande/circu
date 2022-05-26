@@ -106,6 +106,7 @@ export const activeButtonAtom = atom<
   | "underline"
   | "italic"
   | "color"
+  | "quote"
   | "link"
   | "ordered-list"
   | "unordered-list"

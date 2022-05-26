@@ -11,7 +11,7 @@ import type { IBlockCode, IBlockCode_CodeLine } from "./types"
  * @param range 要分割出的范围
  *
  */
-export const spiltBlockCode = (editor: Editor, range: SlateRange) => {
+export const splitBlockCode = (editor: Editor, range: SlateRange) => {
   const blockCodeEntryArr = Array.from(
     Editor.nodes(editor, {
       at: range,
@@ -21,7 +21,7 @@ export const spiltBlockCode = (editor: Editor, range: SlateRange) => {
 
   // 判断是否只相关一个代码块
   if (blockCodeEntryArr.length > 1) {
-    console.error("spiltBlockCode() just work for one blockCode.")
+    console.error("splitBlockCode() just work for one blockCode.")
     return
   }
 
@@ -32,10 +32,10 @@ export const spiltBlockCode = (editor: Editor, range: SlateRange) => {
   }
 
   // 判断 range 是否在代码块内
-  // SlateSlateRange.includes(range_1, range_2) 相当于检查两个 range 有没有交叉部分
+  // SlateRange.includes(range_1, range_2) 相当于检查两个 range 有没有交叉部分
   // 故此处不能直接这样用
   if (!(SlateRange.includes(blockCodeRange, range.anchor) && SlateRange.includes(blockCodeRange, range.focus))) {
-    console.error("spiltBlockCode() just work for range included blockCode.")
+    console.error("splitBlockCode() just work for range included blockCode.")
     return
   }
 

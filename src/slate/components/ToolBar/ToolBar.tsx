@@ -13,6 +13,7 @@ import OrderedListButton from "./components/OrderedList/OrderedListButton"
 import UnorderedListButton from "./components/UnorderedList/UnorderedListButton"
 import HeadButton from "./components/Head/HeadButton"
 import UnderlineButton from "./components/Underline/UnderlineButton"
+import QuoteButton from "./components/Quote/QuoteButton"
 
 //TODO: item 可控拖拽
 const ToolBar: React.FC = () => {
@@ -46,6 +47,7 @@ const ToolBar: React.FC = () => {
           <UnderlineButton></UnderlineButton>
           <ItalicButton></ItalicButton>
           <ColorButton></ColorButton>
+          <QuoteButton></QuoteButton>
           <LinkButton></LinkButton>
           <OrderedListButton></OrderedListButton>
           <UnorderedListButton></UnorderedListButton>

@@ -3,7 +3,7 @@ import { PARAGRAPH_TYPE_ELEMENTS } from "../../../../types/constant"
 import type { ParagraphTypeElement } from "../../../../types/interface"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
-import { spiltBlockCode } from "./spiltBlockCode"
+import { splitBlockCode } from "./splitBlockCode"
 import type { IBlockCode, IBlockCode_CodeLine } from "./types"
 
 export const isBlockCodeActive = (editor: Editor) => {
@@ -35,7 +35,7 @@ const unToggleBlockCode = (editor: Editor) => {
   // 选区在代码块内 -> 将对应 CodeLine 拆分出来, 上下分割出两个代码块
   // --------------------------------------------------
   if (selectedNodeEntryArr.every(([node]) => node.type.startsWith("blockCode"))) {
-    spiltBlockCode(editor, editor.selection)
+    splitBlockCode(editor, editor.selection)
 
     const newPoint = SlateRange.end(editor.selection)
     Transforms.select(editor, newPoint)

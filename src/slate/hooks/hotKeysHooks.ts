@@ -1,12 +1,14 @@
 import type React from "react"
 import { useCallback } from "react"
-import { Editor } from "slate"
+import { Editor, Transforms } from "slate"
 import { useSlateStatic } from "slate-react"
 import { toggleHead } from "../components/Nodes/Block/Head/headHelper"
 import { toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
 import { orderedListLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
 import { switchListLevel } from "../components/Nodes/Block/List/switchListLevel"
 import { switchParagraphLevel } from "../components/Nodes/Block/Paragraph/switchParagraphLevel"
+import { toggleQuote } from "../components/Nodes/Block/Quote/quoteHelper"
+import { splitQuote } from "../components/Nodes/Block/Quote/splitQuote"
 import { toggleMark } from "../components/Nodes/Text/textHelper"
 import { PARAGRAPH_TYPE_ELEMENTS } from "../types/constant"
 import type { ParagraphTypeElement } from "../types/interface"
@@ -48,8 +50,11 @@ export const useOnKeyDown = () => {
     // for debug and develop
     if (event.altKey && event.key === "q") {
       // console.log(window.getSelection(), editor.selection)
-      // toggleHead(editor, "1")
-      toggleMark(editor, "underline", true)
+      // toggleQuote(editor)
+      // Transforms.splitNodes(editor, {
+      //   match: (n) => SlateElement.isElement(n) && n.type === "quote"
+      // })
+      splitQuote(editor, editor.selection!)
       return
     }
     if (event.altKey && event.key === "w") {
