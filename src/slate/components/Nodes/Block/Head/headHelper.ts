@@ -8,6 +8,7 @@ import type { IParagraphIndentLevel } from "../Paragraph/types"
 import { splitQuote } from "../Quote/splitQuote"
 import type { IHead, IHeadGrade, IHeadIndentLevel } from "./types"
 
+//FIXME: 横跨段落块以外的块级元素并触发 toggle 逻辑时会报错, 初步判断是 Transforms.removeNodes 的问题
 export const isHeadActive = (editor: Editor, headGrade: IHeadGrade) => {
   const { selection } = editor
   if (!selection) return false

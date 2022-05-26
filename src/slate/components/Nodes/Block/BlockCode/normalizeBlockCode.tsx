@@ -1,4 +1,5 @@
 import { Editor, NodeEntry, Transforms } from "slate"
+import { SlateElement } from "../../../../types/slate"
 import type { IBlockCode } from "./types"
 
 const verifyBlockCodeChild = (node: IBlockCode) => {
@@ -16,21 +17,25 @@ const verifyBlockCodeChild = (node: IBlockCode) => {
 }
 
 /**
- * 用于规格化代码块的函数, 保证 blockCode 内遵循
- * VoidArea - CodeArea - VoidArea
+ * 用于规格化代码块的函数, 保证 blockCode 内遵循 VoidArea - CodeArea - VoidArea
  *
  * @param editor 当前编辑器实例
- * @param blockCodeEntry 要处理的代码块的 entry
+ * @param entry 当前 entry
+ * @returns 一个布尔值, 若为真, 可提前结束当前规格化
  *
  */
-export const normalizeBlockCode = (editor: Editor, blockCodeEntry: NodeEntry<IBlockCode>) => {
-  const [blockCode, blockCodePath] = blockCodeEntry
+export const normalizeBlockCode = (editor: Editor, entry: NodeEntry) => {
+  const [currentNode, currentNodePath] = entry
 
-  // 若不符合 blockCode 的内建约束, 删除该代码块
-  if (!verifyBlockCodeChild(blockCode)) {
-    Transforms.removeNodes(editor, {
-      at: blockCodePath,
-    })
-    return
+  if (SlateElement.isElement(currentNode) && currentNode.type === "blockCode") {
+    // 若不符合 blockCode 的内建约束, 删除该代码块
+    if (!verifyBlockCodeChild(currentNode)) {
+      Transforms.removeNodes(editor, {
+        at: currentNodePath,
+      })
+      return true
+    }
   }
+
+  return false
 }
