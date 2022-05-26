@@ -8,7 +8,6 @@ import type { IParagraphIndentLevel } from "../Paragraph/types"
 import { splitQuote } from "../Quote/splitQuote"
 import type { IHead, IHeadGrade, IHeadIndentLevel } from "./types"
 
-//FIXME: 在代码块内触发 toggleHead 时报错, 初步判断原因为最后设置选区时参照的 loaction 过期
 export const isHeadActive = (editor: Editor, headGrade: IHeadGrade) => {
   const { selection } = editor
   if (!selection) return false
@@ -122,8 +121,8 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade) => {
     })
 
     const newRange: SlateRange = {
-      anchor: Editor.start(editor, selectedParagraphTypeEntryArr[0][1]),
-      focus: Editor.end(editor, selectedParagraphTypeEntryArr[selectedParagraphTypeEntryArr.length - 1][1]),
+      anchor: Editor.start(editor, firstPath),
+      focus: Editor.end(editor, lastPath),
     }
     Transforms.select(editor, newRange)
   }
