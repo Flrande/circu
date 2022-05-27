@@ -2,6 +2,7 @@ import type React from "react"
 import { useCallback } from "react"
 import { Editor, Transforms } from "slate"
 import { useSlateStatic } from "slate-react"
+import { splitBlockCode } from "../components/Nodes/Block/BlockCode/splitBlockCode"
 import { toggleHead } from "../components/Nodes/Block/Head/headHelper"
 import { toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
 import { orderedListLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
@@ -49,12 +50,13 @@ export const useOnKeyDown = () => {
     // --------------------------------------------------
     // for debug and develop
     if (event.altKey && event.key === "q") {
-      // console.log(window.getSelection(), editor.selection)
+      console.log(window.getSelection(), editor.selection?.focus.path)
+      // splitBlockCode(editor, editor.selection!)
       // toggleQuote(editor)
       // Transforms.splitNodes(editor, {
       //   match: (n) => SlateElement.isElement(n) && n.type === "quote"
       // })
-      splitQuote(editor, editor.selection!)
+      // splitQuote(editor, editor.selection!)
       return
     }
     if (event.altKey && event.key === "w") {
