@@ -50,7 +50,7 @@ export const useOnKeyDown = () => {
     // --------------------------------------------------
     // for debug and develop
     if (event.altKey && event.key === "q") {
-      console.log(window.getSelection(), editor.selection?.focus.path)
+      console.log(window.getSelection(), editor.selection)
       // splitBlockCode(editor, editor.selection!)
       // toggleQuote(editor)
       // Transforms.splitNodes(editor, {

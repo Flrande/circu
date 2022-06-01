@@ -6,7 +6,7 @@ import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import { linkButtonBarStateAtom } from "./LinkButtonBar"
 import LinkIcon from "./LinkIcon"
 
-//FIXME: 点击按钮时应维持蓝区
+//TODO: 点击按钮时维持蓝区
 const LinkButton: React.FC = () => {
   const editor = useSlateStatic()
   const isActive = isLinkActive(editor)
