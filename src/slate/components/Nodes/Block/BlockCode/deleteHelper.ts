@@ -1,4 +1,4 @@
-import type { Editor, NodeEntry } from "slate"
+import { Editor, NodeEntry } from "slate"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 
 /**
@@ -16,15 +16,13 @@ export const blockCodeDeleteBackward = (editor: Editor, currentEntry: NodeEntry)
     return false
   }
 
-  // 当前 BlockNode
-  const [currentBlockNode] = currentEntry
+  const [node, path] = currentEntry
 
-  if (SlateElement.isElement(currentBlockNode) && currentBlockNode.type === "blockCode") {
+  if (SlateElement.isElement(node) && node.type === "block-code") {
     if (
       SlateRange.isCollapsed(selection) &&
-      // 判断是否为首行
-      selection.anchor.path[selection.anchor.path.length - 2] === 0 &&
-      selection.anchor.offset === 0
+      // 判断是否为首行首位
+      Editor.isStart(editor, selection.anchor, path)
     ) {
       return true
     }

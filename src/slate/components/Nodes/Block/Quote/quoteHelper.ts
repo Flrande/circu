@@ -1,23 +1,21 @@
 import { Editor, NodeEntry, Transforms } from "slate"
-import { INDENT_TYPE_ELEMENTS, PARAGRAPH_TYPE_ELEMENTS } from "../../../../types/constant"
-import type { IndentTypeElement, ParagraphTypeElement } from "../../../../types/interface"
-import { SlateElement, SlateRange } from "../../../../types/slate"
+import { BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, BLOCK_ELEMENTS_WITH_CONTENT } from "../../../../types/constant"
+import type { BlockElementWithContent, BlockElementWithoutTextLine } from "../../../../types/interface"
+import { SlateElement } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
-import { splitBlockCode } from "../BlockCode/splitBlockCode"
-import { splitQuote } from "./splitQuote"
-import type { IQuote, IQuote_Line, IQuote_LineIndentLevel } from "./types"
+import type { IQuote } from "./types"
 
 export const isQuoteActive = (editor: Editor) => {
   const { selection } = editor
   if (!selection) return false
 
-  const match = Array.from(
+  const selectedContentBlocksEntry = Array.from(
     Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "quote",
+      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
     })
-  )
+  ) as NodeEntry<BlockElementWithoutTextLine>[]
 
-  return match.length > 0 ? true : false
+  return selectedContentBlocksEntry.every(([node]) => node.type === "quote")
 }
 
 const unToggleQuote = (editor: Editor) => {
@@ -26,7 +24,15 @@ const unToggleQuote = (editor: Editor) => {
     return
   }
 
-  splitQuote(editor, editor.selection)
+  const selectedContentBlocksEntry = Array.from(
+    Editor.nodes(editor, {
+      match: (n) => SlateElement.isElement(n) && n.type === "quote",
+    })
+  ) as NodeEntry<IQuote>[]
+
+  if (selectedContentBlocksEntry.length < 1) {
+    return
+  }
 }
 
 export const toggleQuote = (editor: Editor) => {
@@ -35,72 +41,38 @@ export const toggleQuote = (editor: Editor) => {
     return
   }
 
-  const tmpEntryArr = Array.from(
-    Editor.nodes(editor, {
-      match: (n) =>
-        SlateElement.isElement(n) &&
-        (arrayIncludes(
-          PARAGRAPH_TYPE_ELEMENTS.filter((item) => item !== "quote_line"),
-          n.type
-        ) ||
-          n.type === "quote"),
-    })
-  ) as Array<NodeEntry<Exclude<ParagraphTypeElement, IQuote_Line> | IQuote>>
-
-  if (tmpEntryArr.every(([node]) => node.type === "quote") && tmpEntryArr.length === 1) {
+  if (isQuoteActive(editor)) {
     unToggleQuote(editor)
   } else {
-    const newNode: IQuote = {
-      type: "quote",
-      children: tmpEntryArr.flatMap(([node]) => {
-        if (node.type === "quote") {
-          return node.children
-        }
+    const selectedContentBlocksEntry = Array.from(
+      Editor.nodes(editor, {
+        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITH_CONTENT, n.type),
+      })
+    ) as NodeEntry<BlockElementWithContent>[]
 
-        let level: IQuote_LineIndentLevel = 0
-        if (
-          arrayIncludes(
-            INDENT_TYPE_ELEMENTS.filter((item) => item !== "quote_line") as Array<
-              Exclude<IndentTypeElement["type"], "quote_line">
-            >,
-            node.type
-          )
-        ) {
-          const tmpNode = node as Exclude<IndentTypeElement, IQuote_Line>
-          if (tmpNode.indentLevel >= 0 && tmpNode.indentLevel <= 16) {
-            level = tmpNode.indentLevel as IQuote_LineIndentLevel
-          }
-        }
-
-        const item: IQuote_Line = {
-          type: "quote_line",
-          indentLevel: level,
-          children: node.children,
-        }
-        return item
-      }),
+    if (selectedContentBlocksEntry.length < 1) {
+      return
     }
 
-    // 选区在代码块内, 先将 codeLine 分离出来
-    if (tmpEntryArr.every(([node]) => node.type.startsWith("blockCode"))) {
-      // splitBlockCode 执行完成后 editor.selection 仍为对应选区
-      splitBlockCode(editor, editor.selection)
-    }
-
-    const path = SlateRange.start(editor.selection).path.slice(0, 1)
+    const startPath = selectedContentBlocksEntry[0][1]
+    const endPath = selectedContentBlocksEntry.at(-1)![1]
 
     Transforms.removeNodes(editor, {
-      at: editor.selection,
       mode: "highest",
     })
+    const newNode: IQuote = {
+      type: "quote",
+      children: [
+        {
+          type: "__block-element-children",
+          children: selectedContentBlocksEntry.map(([node]) => node),
+        },
+      ],
+    }
     Transforms.insertNodes(editor, newNode, {
-      at: path,
+      at: startPath,
     })
 
-    const newRange: SlateRange = {
-      anchor: Editor.start(editor, path),
-      focus: Editor.end(editor, path),
-    }
-    Transforms.select(editor, newRange)
+    Transforms.select(editor, Editor.range(editor, startPath, endPath))
   }
 }

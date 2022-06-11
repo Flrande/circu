@@ -1,19 +1,15 @@
-import type { CustomText } from "../../../../types/interface"
-
-export type IListIndentLevel = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16
+import type { CustomText, __IBlockElementChildren, __IBlockElementContent } from "../../../../types/interface"
 
 export type IOrderedList = {
-  type: "orderedList"
-  indentLevel: IListIndentLevel
+  type: "ordered-list"
   indexState: {
     type: "head" | "selfIncrement"
     index: number
   }
-  children: CustomText[]
+  children: [__IBlockElementContent, __IBlockElementChildren] | [__IBlockElementContent]
 }
 
 export type IUnorderedList = {
-  type: "unorderedList"
-  indentLevel: IListIndentLevel
-  children: CustomText[]
+  type: "unordered-list"
+  children: [__IBlockElementContent, __IBlockElementChildren] | [__IBlockElementContent]
 }

@@ -10,9 +10,11 @@ const Paragraph: React.FC<CustomRenderElementProps<IParagraph>> = ({ attributes,
       }}
     >
       <div
-        style={{
-          marginLeft: `${element.indentLevel * 22}px`,
-        }}
+        style={
+          {
+            // marginLeft: `${element.indentLevel * 22}px`,
+          }
+        }
       >
         {children}
       </div>

@@ -13,7 +13,7 @@ export const useOnCopy = () => {
     if (editor.selection) {
       const nodeEntryArr = Array.from(
         Editor.nodes(editor, {
-          match: (n) => SlateElement.isElement(n) && (n.type === "paragraph" || n.type === "blockCode_codeLine"),
+          match: (n) => SlateElement.isElement(n) && n.type === "text-line",
         })
       )
 

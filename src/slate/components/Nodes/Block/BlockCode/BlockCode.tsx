@@ -1,90 +1,39 @@
 import { ReactEditor, useSelected, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps, KeysUnion } from "../../../../types/utils"
-import { blockCodeContainer } from "./BlockCode.css"
-import type { IBlockCode, IBlockCode_CodeArea, ICodeAreaLangMap } from "./types"
+import { blockCodeCodeArea, blockCodeContainer, blockCodeOrderWrapper } from "./BlockCode.css"
+import type { IBlockCode, ICodeAreaLangMap } from "./types"
 import { Select } from "@arco-design/web-react"
-import { SlateNode } from "../../../../types/slate"
 import { Transforms } from "slate"
 import { codeAreaLangMap } from "./constant"
-import { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 //TODO: 代码较长时出现横向滚动条
+//TODO: 在语言选择器部分添加查询功能
+//TODO: 改善被选中时的样式
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
   const editor = useSlateStatic()
 
+  const orderNumbersWrapperDom = useRef<HTMLDivElement | null>(null)
+
   const langOptions: KeysUnion<ICodeAreaLangMap>[] = Object.keys(codeAreaLangMap) as KeysUnion<ICodeAreaLangMap>[]
 
-  const [containerDom, setContainerDom] = useState<HTMLElement>()
-  const [ifEditable, setIfEditable] = useState<false | undefined>(false)
-
-  // 用于将用户选区限制在代码块内
   useEffect(() => {
-    if (containerDom) {
-      const controller = new AbortController()
-
-      containerDom.addEventListener(
-        "mousedown",
-        () => {
-          setIfEditable(undefined)
-
-          containerDom.addEventListener(
-            "mouseleave",
-            () => {
-              setIfEditable(false)
-            },
-            {
-              once: true,
-            }
-          )
-
-          document.addEventListener(
-            "mouseup",
-            () => {
-              // 用于修复一个边界情况:
-              // 当鼠标移进移出代码块时, 浏览器选区有可能会与编辑器选区发生不一致
-              const sel = window.getSelection()
-              if (sel) {
-                const newRange = ReactEditor.toSlateRange(editor, sel, {
-                  exactMatch: true,
-                  suppressThrow: true,
-                })
-                if (newRange) {
-                  Transforms.select(editor, newRange)
-                }
-              }
-
-              setIfEditable(undefined)
-
-              containerDom.addEventListener(
-                "mouseleave",
-                () => {
-                  setIfEditable(false)
-                },
-                {
-                  once: true,
-                }
-              )
-            },
-            {
-              once: true,
-            }
-          )
-        },
-        {
-          signal: controller.signal,
+    const codeLinesWrapperDom = ReactEditor.toDOMNode(editor, element.children[0])
+    if (codeLinesWrapperDom && orderNumbersWrapperDom.current) {
+      for (const [index, codeLineDom] of Array.from(codeLinesWrapperDom.children).entries()) {
+        // 22 是行高
+        const num = Math.floor(codeLineDom.clientHeight / 22)
+        const ord = orderNumbersWrapperDom.current.children.item(index)
+        if (ord) {
+          ord.replaceChildren((index + 1).toString())
+          for (let i = 1; i <= num - 1; i++) {
+            ord.insertAdjacentHTML("beforeend", "<br>&nbsp;")
+          }
         }
-      )
-
-      return () => {
-        controller.abort()
       }
     }
-  }, [containerDom])
-
-  useEffect(() => {
-    setContainerDom(ReactEditor.toDOMNode(editor, element))
-  }, [editor, element])
+  }, [element.children[0]])
 
   return (
     <div
@@ -93,7 +42,6 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
         border: isSelected ? "1px solid #5a87f7" : undefined,
       }}
       className={blockCodeContainer}
-      contentEditable={ifEditable}
     >
       <div
         contentEditable={false}
@@ -102,11 +50,10 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
         }}
       >
         <Select
-          defaultValue={(SlateNode.child(element, 1) as IBlockCode_CodeArea).langKey}
+          defaultValue={element.langKey}
           style={{ width: 154 }}
           onChange={(value) => {
-            const codeArea = SlateNode.child(element, 1)
-            const codeAreaPath = ReactEditor.findPath(editor, codeArea)
+            const codeAreaPath = ReactEditor.findPath(editor, element)
             Transforms.setNodes(
               editor,
               {
@@ -125,12 +72,20 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
           ))}
         </Select>
       </div>
-      <div
-        style={{
-          display: "flex",
-        }}
-      >
-        {children}
+      <div className={blockCodeCodeArea}>
+        <div
+          ref={orderNumbersWrapperDom}
+          contentEditable={false}
+          className={blockCodeOrderWrapper}
+          style={{
+            minWidth: `${element.children[0].children.length.toString().length * 8 + 20}px`,
+          }}
+        >
+          {[...Array(element.children[0].children.length).keys()].map((i) => {
+            return <span key={(i + 1).toString()}>{i + 1}</span>
+          })}
+        </div>
+        <div>{children}</div>
       </div>
     </div>
   )

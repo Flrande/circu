@@ -3,12 +3,26 @@ import { style } from "@vanilla-extract/css"
 export const blockCodeContainer = style({
   backgroundColor: "#292929",
   margin: "8px 0",
+  fontSize: "14px",
+  fontWeight: "400",
 })
 
-export const codeLineSerialNumberContainer = style({
-  display: "inline-block",
-  color: "#a6a6a6",
+export const blockCodeCodeArea = style({
+  display: "flex",
+  minHeight: "49px",
+  // 这个 22px 与行序号的计算相关联, 若修改需一起改动
+  lineHeight: "22px",
+  padding: "8px 20px 20px 20px",
+})
+
+export const blockCodeOrderWrapper = style({
+  display: "flex",
+  flexDirection: "column",
+  position: "sticky",
+  left: "0",
   userSelect: "none",
+  color: "#a6a6a6",
+  paddingRight: "12px",
+  whiteSpace: "nowrap",
   textAlign: "right",
-  paddingRight: "16px",
 })

@@ -17,30 +17,30 @@ export const listDeleteBackward = (editor: Editor, currentEntry: NodeEntry) => {
     return false
   }
 
-  // 当前 BlockNode
-  const [currentBlockNode, currentBlockNodePath] = currentEntry
+  const [node, path] = currentEntry
 
-  if (
-    SlateElement.isElement(currentBlockNode) &&
-    (currentBlockNode.type === "orderedList" || currentBlockNode.type === "unorderedList")
-  ) {
+  if (SlateElement.isElement(node) && (node.type === "ordered-list" || node.type === "unordered-list")) {
     // 判断是否到达列表的首个 Point
-    if (SlateRange.isCollapsed(selection) && Editor.isStart(editor, selection.anchor, currentBlockNodePath)) {
-      // 触发 deleteBackward 相当于将当前列表变为同缩进级别的 paragraph
+    if (SlateRange.isCollapsed(selection) && Editor.isStart(editor, selection.anchor, path)) {
+      // 触发 deleteBackward 相当于将当前列表变为同级别的 paragraph
       Transforms.removeNodes(editor, {
-        at: currentBlockNodePath,
+        at: path,
       })
 
       const newNode: IParagraph = {
         type: "paragraph",
-        indentLevel: currentBlockNode.indentLevel,
-        children: currentBlockNode.children,
+        children: [
+          {
+            type: "__block-element-content",
+            children: node.children[0].children,
+          },
+        ],
       }
 
       Transforms.insertNodes(editor, newNode, {
-        at: currentBlockNodePath,
+        at: path,
       })
-      Transforms.select(editor, Editor.start(editor, currentBlockNodePath))
+      Transforms.select(editor, Editor.start(editor, path))
       return true
     }
   }

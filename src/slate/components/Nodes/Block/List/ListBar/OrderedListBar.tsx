@@ -50,7 +50,7 @@ const OrderedListBar: React.FC = () => {
     const orderedListEntryArr = Array.from(
       Editor.nodes(editor, {
         at: [],
-        match: (n) => SlateElement.isElement(n) && n.type === "orderedList",
+        match: (n) => SlateElement.isElement(n) && n.type === "ordered-list",
       })
     ) as NodeEntry<IOrderedList>[]
     const currentList = orderedListBarState.orderedListEntry[0]

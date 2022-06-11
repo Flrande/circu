@@ -2,7 +2,7 @@ import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { IQuote } from "./types"
 
 //TODO: 提取样式
-const Quote: React.FC<CustomRenderElementProps<IQuote>> = ({ attributes, children, element }) => {
+const Quote: React.FC<CustomRenderElementProps<IQuote>> = ({ attributes, children }) => {
   return (
     <div
       {...attributes}

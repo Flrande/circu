@@ -1,8 +1,11 @@
-import { Editor } from "slate"
+import { Editor, NodeEntry } from "slate"
 import { blockCodeDeleteBackward } from "../components/Nodes/Block/BlockCode/deleteHelper"
 import { listDeleteBackward } from "../components/Nodes/Block/List/deleteHelper"
-import { paragraphDeleteBackward } from "../components/Nodes/Block/Paragraph/deleteHelper"
 import { unActiveToolBar } from "../components/ToolBar/state"
+import { BLOCK_ELEMENTS_WITHOUT_TEXT_LINE } from "../types/constant"
+import type { BlockElementWithContent, BlockElementWithoutTextLine } from "../types/interface"
+import { SlateElement } from "../types/slate"
+import { arrayIncludes } from "../utils/general"
 
 const withDeleteBackward = (editor: Editor) => {
   const { deleteBackward } = editor
@@ -13,15 +16,18 @@ const withDeleteBackward = (editor: Editor) => {
     let flag = false
 
     if (selection) {
-      // 当前 BlockNode
-      const currentEntry = Editor.node(editor, selection, {
-        depth: 1,
-      })
+      const selectedContentBlocksEntry = Array.from(
+        Editor.nodes(editor, {
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+        })
+      ) as NodeEntry<BlockElementWithoutTextLine>[]
 
-      flag =
-        paragraphDeleteBackward(editor, currentEntry) ||
-        blockCodeDeleteBackward(editor, currentEntry) ||
-        listDeleteBackward(editor, currentEntry)
+      if (selectedContentBlocksEntry.length === 1) {
+        flag =
+          // paragraphDeleteBackward(editor, selectedContentBlocksEntry[0]) ||
+          blockCodeDeleteBackward(editor, selectedContentBlocksEntry[0]) ||
+          listDeleteBackward(editor, selectedContentBlocksEntry[0])
+      }
     }
 
     // 默认行为

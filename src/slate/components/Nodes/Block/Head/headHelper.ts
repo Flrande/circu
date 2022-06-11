@@ -1,24 +1,26 @@
 import { Editor, NodeEntry, Transforms } from "slate"
-import { INDENT_TYPE_ELEMENTS, PARAGRAPH_TYPE_ELEMENTS } from "../../../../types/constant"
-import type { IndentTypeElement, ParagraphTypeElement } from "../../../../types/interface"
-import { SlateElement, SlateRange } from "../../../../types/slate"
+import {
+  BLOCK_ELEMENTS_WITHOUT_TEXT_LINE,
+  BLOCK_ELEMENTS_WITH_CONTENT,
+  CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN,
+} from "../../../../types/constant"
+import type { BlockElementWithContent, BlockElementWithoutTextLine } from "../../../../types/interface"
+import { SlateElement } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
-import { splitBlockCode } from "../BlockCode/splitBlockCode"
-import type { IParagraphIndentLevel } from "../Paragraph/types"
-import { splitQuote } from "../Quote/splitQuote"
-import type { IHead, IHeadGrade, IHeadIndentLevel } from "./types"
+import type { IParagraph } from "../Paragraph/types"
+import type { IHead, IHeadGrade } from "./types"
 
 export const isHeadActive = (editor: Editor, headGrade: IHeadGrade) => {
   const { selection } = editor
   if (!selection) return false
 
-  const match = Array.from(
+  const selectedContentBlocksEntry = Array.from(
     Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "head" && n.headGrade === headGrade,
+      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
     })
-  )
+  ) as NodeEntry<BlockElementWithoutTextLine>[]
 
-  return match.length > 0 ? true : false
+  return selectedContentBlocksEntry.every(([node]) => node.type === "head" && node.headGrade === headGrade)
 }
 
 const unToggleHead = (editor: Editor) => {
@@ -27,30 +29,27 @@ const unToggleHead = (editor: Editor) => {
     return
   }
 
-  const selectedParagraphTypeEntryArr = Array.from(
+  const selectedContentBlocksEntry = Array.from(
     Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, n.type),
+      match: (n) => SlateElement.isElement(n) && n.type === "head",
     })
-  ) as Array<NodeEntry<ParagraphTypeElement>>
+  ) as NodeEntry<IHead>[]
 
-  for (const [node, path] of selectedParagraphTypeEntryArr) {
-    let level: IParagraphIndentLevel = 0
-    if (arrayIncludes(INDENT_TYPE_ELEMENTS, node.type)) {
-      const tmpNode = node as IndentTypeElement
-      if (tmpNode.indentLevel >= 0 && tmpNode.indentLevel <= 16) {
-        level = tmpNode.indentLevel
-      }
-    }
+  if (selectedContentBlocksEntry.length < 1) {
+    return
+  }
 
-    Transforms.removeNodes(editor, {
+  const startPath = selectedContentBlocksEntry[0][1]
+  const endPath = selectedContentBlocksEntry.at(-1)![1]
+
+  for (const [, path] of selectedContentBlocksEntry) {
+    Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
       at: path,
     })
-    Transforms.insertNodes(
+    Transforms.setNodes(
       editor,
       {
         type: "paragraph",
-        indentLevel: level,
-        children: node.children,
       },
       {
         at: path,
@@ -58,11 +57,7 @@ const unToggleHead = (editor: Editor) => {
     )
   }
 
-  const newRange: SlateRange = {
-    anchor: Editor.start(editor, selectedParagraphTypeEntryArr[0][1]),
-    focus: Editor.end(editor, selectedParagraphTypeEntryArr[selectedParagraphTypeEntryArr.length - 1][1]),
-  }
-  Transforms.select(editor, newRange)
+  Transforms.select(editor, Editor.range(editor, startPath, endPath))
 }
 
 export const toggleHead = (editor: Editor, headGrade: IHeadGrade) => {
@@ -71,59 +66,38 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade) => {
     return
   }
 
-  const selectedParagraphTypeEntryArr = Array.from(
-    Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, n.type),
-    })
-  ) as Array<NodeEntry<ParagraphTypeElement>>
-
-  if (selectedParagraphTypeEntryArr.every(([node]) => node.type === "head" && node.headGrade === headGrade)) {
+  if (isHeadActive(editor, headGrade)) {
     unToggleHead(editor)
   } else {
-    const newNodes: IHead[] = selectedParagraphTypeEntryArr.map(([node]) => {
-      let level: IHeadIndentLevel = 0
-      if (arrayIncludes(INDENT_TYPE_ELEMENTS, node.type)) {
-        const tmpNode = node as IndentTypeElement
-        if (tmpNode.indentLevel >= 0 && tmpNode.indentLevel <= 16) {
-          level = tmpNode.indentLevel as IHeadIndentLevel
+    const selectedContentBlocksEntry = Array.from(
+      Editor.nodes(editor, {
+        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITH_CONTENT, n.type),
+      })
+    ) as NodeEntry<BlockElementWithContent>[]
+
+    if (selectedContentBlocksEntry.length < 1) {
+      return
+    }
+
+    const startPath = selectedContentBlocksEntry[0][1]
+    const endPath = selectedContentBlocksEntry.at(-1)![1]
+
+    for (const [, path] of selectedContentBlocksEntry) {
+      Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
+        at: path,
+      })
+      Transforms.setNodes(
+        editor,
+        {
+          type: "head",
+          headGrade,
+        },
+        {
+          at: path,
         }
-      }
-
-      const head: IHead = {
-        type: "head",
-        indentLevel: level,
-        headGrade,
-        children: node.children,
-      }
-      return head
-    })
-
-    // 选区在代码块内, 先将 codeLine 分离出来
-    if (selectedParagraphTypeEntryArr.every(([node]) => node.type.startsWith("blockCode"))) {
-      // splitBlockCode 执行完成后 editor.selection 仍为对应选区
-      splitBlockCode(editor, editor.selection)
+      )
     }
 
-    // 选区在引用块内, 先将 quoteLine 分离出来
-    if (selectedParagraphTypeEntryArr.every(([node]) => node.type.startsWith("quote"))) {
-      // splitQuote 执行完成后 editor.selection 仍为对应选区
-      splitQuote(editor, editor.selection)
-    }
-
-    const firstPath = SlateRange.start(editor.selection).path.slice(0, 1)
-    const lastPath = [firstPath[0] + newNodes.length - 1]
-
-    Transforms.removeNodes(editor, {
-      at: editor.selection,
-    })
-    Transforms.insertNodes(editor, newNodes, {
-      at: firstPath,
-    })
-
-    const newRange: SlateRange = {
-      anchor: Editor.start(editor, firstPath),
-      focus: Editor.end(editor, lastPath),
-    }
-    Transforms.select(editor, newRange)
+    Transforms.select(editor, Editor.range(editor, startPath, endPath))
   }
 }

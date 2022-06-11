@@ -12,10 +12,23 @@ export const useEndLine = () => {
     if (lastChild.type !== "paragraph") {
       const blankLineNode: IParagraph = {
         type: "paragraph",
-        indentLevel: 1,
         children: [
           {
-            text: "",
+            type: "__block-element-content",
+            children: [
+              {
+                type: "text-line",
+                children: [
+                  {
+                    text: "",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "__block-element-children",
+            children: [],
           },
         ],
       }

@@ -1,4 +1,4 @@
-import type { CustomText } from "../../../../types/interface"
+import type { __IBlockElementChildren, __IBlockElementContent } from "../../../../types/interface"
 import type { KeysUnion } from "../../../../types/utils"
 
 // [显示格式] - [Prism 对应 key string] (PlainText 为特例)
@@ -24,25 +24,8 @@ export type ICodeAreaLangMap = {
   WebAssembly: "wasm"
 }
 
-//TODO: Tab 缩进 (表现为空格?)
-export type IBlockCode_CodeLine = {
-  type: "blockCode_codeLine"
-  children: CustomText[]
-}
-
-export type IBlockCode_CodeArea = {
-  type: "blockCode_codeArea"
-  langKey: KeysUnion<ICodeAreaLangMap> // 显示格式
-  children: IBlockCode_CodeLine[]
-}
-
-export type IBlockCode_VoidArea = {
-  type: "blockCode_voidArea"
-  children: CustomText[]
-}
-
 export type IBlockCode = {
-  type: "blockCode"
-  // 需遵循 VoidArea - CodeArea - VoidArea
-  children: [IBlockCode_VoidArea, IBlockCode_CodeArea, IBlockCode_VoidArea]
+  type: "block-code"
+  langKey: KeysUnion<ICodeAreaLangMap> // langKey 是显示格式
+  children: [__IBlockElementContent, __IBlockElementChildren] | [__IBlockElementContent]
 }

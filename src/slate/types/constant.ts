@@ -1,22 +1,38 @@
-import type { IndentTypeElement, InlineElement, ParagraphTypeElement, VoidElement } from "./interface"
+import type {
+  BlockElementJustWithChildren,
+  BlockElementWithContent,
+  BlockElementWithoutTextLine,
+  CustomElement,
+  InlineElement,
+} from "./interface"
+import type { KeysUnion } from "./utils"
 
-export const INLINE_ELEMENTS: Array<InlineElement["type"]> = ["inlineCode", "link"]
+export const INLINE_ELEMENTS: Array<InlineElement["type"]> = ["inline-code", "link"]
 
-export const VOID_ELEMENTS: Array<VoidElement["type"]> = ["blockCode_voidArea"]
-
-export const PARAGRAPH_TYPE_ELEMENTS: Array<ParagraphTypeElement["type"]> = [
+export const BLOCK_ELEMENTS_WITH_CONTENT: Array<BlockElementWithContent["type"]> = [
   "paragraph",
-  "orderedList",
-  "unorderedList",
-  "blockCode_codeLine",
+  "block-code",
+  "ordered-list",
+  "unordered-list",
   "head",
-  "quote_line",
 ]
 
-export const INDENT_TYPE_ELEMENTS: Array<IndentTypeElement["type"]> = [
+export const BLOCK_ELEMENTS_JUST_WITH_CHILDREN: Array<BlockElementJustWithChildren["type"]> = ["quote"]
+
+export const BLOCK_ELEMENTS_WITHOUT_TEXT_LINE: Array<BlockElementWithoutTextLine["type"]> = [
   "paragraph",
-  "orderedList",
-  "unorderedList",
+  "block-code",
+  "ordered-list",
+  "unordered-list",
   "head",
-  "quote_line",
+  "quote",
+]
+
+// 用于 unset
+export const CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN: Array<Exclude<KeysUnion<CustomElement>, "children">> = [
+  "headGrade",
+  "indexState",
+  "langKey",
+  "type",
+  "url",
 ]

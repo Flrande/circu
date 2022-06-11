@@ -155,8 +155,7 @@ const OrderedListModifyBar: React.FC = () => {
                   const [node] = Editor.node(editor, [currentPath[0] - 1])
                   if (
                     SlateElement.isElement(node) &&
-                    node.type === "orderedList" &&
-                    node.indentLevel === orderedListModifyBarState.orderedListEntry[0].indentLevel &&
+                    node.type === "ordered-list" &&
                     node.indexState.index === num - 1
                   ) {
                     newHead = "selfIncrement"
