@@ -1,4 +1,4 @@
-import type { __IBlockElementChildren } from "../../../../types/interface"
+import type { __IBlockElementChildren } from "../BlockWrapper/types"
 
 export type IQuote = {
   type: "quote"

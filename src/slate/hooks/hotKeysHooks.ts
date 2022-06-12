@@ -1,9 +1,14 @@
 import type React from "react"
 import { useCallback } from "react"
-import { useSlateStatic } from "slate-react"
+import { Editor, Path } from "slate"
+import { Editable, useSlateStatic } from "slate-react"
 import { toggleBlockCode } from "../components/Nodes/Block/BlockCode/blockCodeHelper"
+import { toggleIndent, unToggleIndent } from "../components/Nodes/Block/BlockWrapper/indentHelper"
 import { toggleHead } from "../components/Nodes/Block/Head/headHelper"
 import { toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
+import { BLOCK_ELEMENTS_WITHOUT_TEXT_LINE } from "../types/constant"
+import { SlateElement } from "../types/slate"
+import { arrayIncludes } from "../utils/general"
 
 export const useOnKeyDown = () => {
   const editor = useSlateStatic()
@@ -40,16 +45,16 @@ export const useOnKeyDown = () => {
     // for debug and develop
     if (event.altKey && event.key === "q") {
       // console.log(window.getSelection(), editor.selection)
-      toggleBlockCode(editor)
+      // toggleBlockCode(editor)
       // toggleHead(editor, "1")
+      toggleIndent(editor)
       return
     }
     if (event.altKey && event.key === "w") {
-      // if (editor.selection) {
-      //   toggleLink(editor, "http://www.baidu.com")
-      // }
-      // console.log(editor.selection?.anchor)
-      toggleUnorderedList(editor)
+      if (!editor.selection) {
+        return
+      }
+      unToggleIndent(editor)
       return
     }
     // --------------------------------------------------

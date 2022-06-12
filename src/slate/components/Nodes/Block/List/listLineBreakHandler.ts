@@ -8,7 +8,7 @@
 // /**
 //  * 处理有序列表中换行行为的函数, 不负责覆盖默认行为
 //  *
-//  * @param editor 当前编辑器实例
+//  * @param editor 编辑器实例
 //  *
 //  */
 // export const orderedListLineBreakHandler = (editor: Editor) => {

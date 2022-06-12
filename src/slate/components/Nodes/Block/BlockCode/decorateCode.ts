@@ -36,7 +36,7 @@ const getTokenLength: (token: string | Prism.Token) => number = (token) => {
 /**
  * 用于在代码块中生成高亮的函数
  *
- * @param editor 当前编辑器实例
+ * @param editor 编辑器实例
  * @param entry decorate 所用的 entry
  * @returns 生成的高亮 range
  *

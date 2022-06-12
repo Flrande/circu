@@ -4,7 +4,7 @@ import { SlateElement } from "../../../../types/slate"
 // /**
 //  * 切换段落缩进级别的函数, 不负责覆盖默认行为
 //  *
-//  * @param editor 当前编辑器实例
+//  * @param editor 编辑器实例
 //  * @param type 切换方向, 减少还是增加
 //  *
 //  */

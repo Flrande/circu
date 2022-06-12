@@ -1,4 +1,4 @@
-import type { __IBlockElementChildren, __IBlockElementContent } from "../../../../types/interface"
+import type { __IBlockElementChildren, __IBlockElementContent } from "../BlockWrapper/types"
 
 export type IHeadGrade = "1" | "2" | "3" | "4" | "5" | "6"
 

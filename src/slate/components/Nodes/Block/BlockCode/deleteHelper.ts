@@ -5,7 +5,7 @@ import { SlateElement, SlateRange } from "../../../../types/slate"
  * 处理代码块中单字符删除相关的逻辑:
  * 1. 若到达当前代码块的首个 Point, 静默, 不删除
  *
- * @param editor 当前编辑器实例
+ * @param editor 编辑器实例
  * @param currentEntry 光标所在的一级节点 Entry
  * @returns 一个布尔值, 为真说明不需要执行默认行为
  *

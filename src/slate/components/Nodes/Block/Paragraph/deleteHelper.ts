@@ -6,7 +6,7 @@ import { SlateElement, SlateRange } from "../../../../types/slate"
  * 1. 如果当前段落带有缩进, 在首个 Point 上触发 deleteBackward 时相当于将当前段落的缩进级别设为 0
  * 2. 若光标前为代码块, 选中该代码块, 不删除
  *
- * @param editor 当前编辑器实例
+ * @param editor 编辑器实例
  * @param currentEntry 光标所在的一级节点 Entry
  * @returns 一个布尔值, 为真说明不需要执行默认行为
  *

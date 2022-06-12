@@ -1,4 +1,4 @@
-import type { CustomText, __IBlockElementChildren, __IBlockElementContent } from "../../../../types/interface"
+import type { __IBlockElementChildren, __IBlockElementContent } from "../BlockWrapper/types"
 
 export type IOrderedList = {
   type: "ordered-list"

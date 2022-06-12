@@ -1,5 +1,5 @@
-import type { __IBlockElementChildren, __IBlockElementContent } from "../../../../types/interface"
 import type { KeysUnion } from "../../../../types/utils"
+import type { __IBlockElementChildren, __IBlockElementContent } from "../BlockWrapper/types"
 
 // [显示格式] - [Prism 对应 key string] (PlainText 为特例)
 export type ICodeAreaLangMap = {
