@@ -1,9 +1,14 @@
+import { ReactEditor, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
+import { calculateIndentLevel } from "../BlockWrapper/indentHelper"
 import { unorderedListSymbol } from "./List.css"
 import type { IUnorderedList } from "./types"
 
 const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ attributes, children, element }) => {
-  // const indexSymbol = element.indentLevel % 3 === 1 ? "\u2022" : element.indentLevel % 3 === 2 ? "\u25E6" : "\u25AA"
+  const editor = useSlateStatic()
+
+  const indentLevel = calculateIndentLevel(editor, ReactEditor.findPath(editor, element))
+  const indexSymbol = indentLevel % 3 === 1 ? "\u2022" : indentLevel % 3 === 2 ? "\u25E6" : "\u25AA"
 
   return (
     <div
@@ -14,13 +19,12 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
     >
       <div
         style={{
-          // marginLeft: `${(element.indentLevel - 1) * 22}px`,
           display: "flex",
         }}
       >
-        {/* <span contentEditable={false} className={unorderedListSymbol}>
+        <span contentEditable={false} className={unorderedListSymbol}>
           {indexSymbol}
-        </span> */}
+        </span>
         <span
           style={{
             minWidth: "0",

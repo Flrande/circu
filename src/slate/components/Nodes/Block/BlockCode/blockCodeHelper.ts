@@ -1,12 +1,9 @@
 import { Editor, NodeEntry, Transforms } from "slate"
-import {
-  BLOCK_ELEMENTS_WITHOUT_TEXT_LINE,
-  BLOCK_ELEMENTS_WITH_CONTENT,
-  CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN,
-} from "../../../../types/constant"
-import type { BlockElementWithContent, BlockElementWithoutTextLine } from "../../../../types/interface"
+import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN } from "../../../../types/constant"
+import type { BlockElementExceptTextLine } from "../../../../types/interface"
 import { SlateElement } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
+import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IBlockCode } from "./types"
 
 export const isBlockCodeActive = (editor: Editor) => {
@@ -15,9 +12,9 @@ export const isBlockCodeActive = (editor: Editor) => {
 
   const selectedContentBlocksEntry = Array.from(
     Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
     })
-  ) as NodeEntry<BlockElementWithoutTextLine>[]
+  ) as NodeEntry<BlockElementExceptTextLine>[]
 
   return selectedContentBlocksEntry.every(([node]) => node.type === "block-code")
 }
@@ -25,6 +22,10 @@ export const isBlockCodeActive = (editor: Editor) => {
 const unToggleBlockCode = (editor: Editor) => {
   if (!editor.selection) {
     console.error("unToggleBlockCode() need editor.selection.")
+    return
+  }
+
+  if (!isBlockCodeActive(editor)) {
     return
   }
 
@@ -68,20 +69,15 @@ export const toggleBlockCode = (editor: Editor) => {
   if (isBlockCodeActive(editor)) {
     unToggleBlockCode(editor)
   } else {
-    const selectedContentBlocksEntry = Array.from(
-      Editor.nodes(editor, {
-        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITH_CONTENT, n.type),
-      })
-    ) as NodeEntry<BlockElementWithContent>[]
-
-    if (selectedContentBlocksEntry.length < 1) {
+    const selectedBlocks = getSelectedBlocks(editor)
+    if (!selectedBlocks) {
       return
     }
 
-    const startPath = selectedContentBlocksEntry[0][1]
-    const endPath = selectedContentBlocksEntry.at(-1)![1]
+    const startPath = selectedBlocks[0][1]
+    const endPath = selectedBlocks.at(-1)![1]
 
-    for (const [, path] of selectedContentBlocksEntry) {
+    for (const [node, path] of selectedBlocks) {
       Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
         at: path,
       })
@@ -95,6 +91,13 @@ export const toggleBlockCode = (editor: Editor) => {
           at: path,
         }
       )
+
+      // 直接删去子节点块
+      if (node.children.length === 2) {
+        Transforms.removeNodes(editor, {
+          at: path.concat([1]),
+        })
+      }
     }
 
     Transforms.select(editor, Editor.range(editor, startPath, endPath))

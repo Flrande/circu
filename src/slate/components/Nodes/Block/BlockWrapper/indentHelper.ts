@@ -1,8 +1,9 @@
 import { Editor, NodeEntry, Path, Transforms } from "slate"
-import { BLOCK_ELEMENTS_JUST_WITH_CHILDREN, BLOCK_ELEMENTS_WITHOUT_TEXT_LINE } from "../../../../types/constant"
-import type { BlockElementJustWithChildren, BlockElementWithoutTextLine } from "../../../../types/interface"
+import { BLOCK_ELEMENTS_COMMON, BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../../../../types/constant"
+import type { BlockElementWithChildren, BlockElementExceptTextLine } from "../../../../types/interface"
 import { SlateElement } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
+import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import { MAX_INDENT_LEVEL } from "./constant"
 import type { __IBlockElementChildren } from "./types"
 
@@ -17,7 +18,7 @@ import type { __IBlockElementChildren } from "./types"
  *
  * indentable  - 是否可缩进
  *
- * type - 0 - 未知情况
+ * type - 0 - 未定义情况
  *
  * type - 1 - 到达最大缩进级别
  *
@@ -44,10 +45,10 @@ export const inspectIncreaseIndentable: (editor: Editor) =>
   const firstBlockEntry = Array.from(
     Editor.nodes(editor, {
       at: Editor.start(editor, selection),
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
       mode: "lowest",
     })
-  )[0] as NodeEntry<BlockElementWithoutTextLine>
+  )[0] as NodeEntry<BlockElementExceptTextLine>
 
   if (!firstBlockEntry) {
     return {
@@ -68,9 +69,12 @@ export const inspectIncreaseIndentable: (editor: Editor) =>
 
   const previousNodeEntry = Editor.previous(editor, {
     at: firstBlockPath,
-    match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+    match: (n, p) =>
+      SlateElement.isElement(n) &&
+      arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
+      p.length <= firstBlockPath.length,
     mode: "lowest",
-  }) as NodeEntry<BlockElementWithoutTextLine> | undefined
+  }) as NodeEntry<BlockElementExceptTextLine> | undefined
 
   if (!previousNodeEntry) {
     return {
@@ -88,7 +92,7 @@ export const inspectIncreaseIndentable: (editor: Editor) =>
     }
   }
 
-  if (arrayIncludes(BLOCK_ELEMENTS_JUST_WITH_CHILDREN, previousNode.type)) {
+  if (!arrayIncludes(BLOCK_ELEMENTS_COMMON, previousNode.type)) {
     return {
       indentable: false,
       type: "3",
@@ -117,46 +121,18 @@ export const increaseIndent = (editor: Editor) => {
     return
   }
 
-  const firstBlockEntry = Array.from(
-    Editor.nodes(editor, {
-      at: Editor.start(editor, selection),
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
-      mode: "lowest",
-    })
-  )[0] as NodeEntry<BlockElementWithoutTextLine>
-
-  if (!firstBlockEntry) {
+  const selectedBlocks = getSelectedBlocks(editor)
+  if (!selectedBlocks) {
     return
   }
-  const [, firstBlockPath] = firstBlockEntry
-
-  if (calculateIndentLevel(editor, firstBlockPath) >= MAX_INDENT_LEVEL) {
-    return
-  }
-
-  const tmpBlocksEntry = Array.from(
-    Editor.nodes(editor, {
-      match: (n, p) =>
-        SlateElement.isElement(n) &&
-        arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
-        p.length <= firstBlockPath.length,
-      mode: "lowest",
-    })
-  ) as NodeEntry<BlockElementWithoutTextLine>[]
-
-  if (tmpBlocksEntry.length < 1) {
-    return
-  }
+  const [firstBlock, firstBlockPath] = selectedBlocks[0]
 
   const previousNodeEntry = Editor.previous(editor, {
-    at: tmpBlocksEntry[0][1],
+    at: firstBlockPath,
     match: (n, p) =>
-      SlateElement.isElement(n) &&
-      arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
-      !arrayIncludes(BLOCK_ELEMENTS_JUST_WITH_CHILDREN, n.type) &&
-      p.length >= firstBlockPath.length,
+      SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_COMMON, n.type) && p.length <= firstBlockPath.length,
     mode: "lowest",
-  }) as NodeEntry<Exclude<BlockElementWithoutTextLine, BlockElementJustWithChildren>> | undefined
+  }) as NodeEntry<BlockElementWithChildren> | undefined
 
   if (!previousNodeEntry) {
     return
@@ -167,13 +143,13 @@ export const increaseIndent = (editor: Editor) => {
     // 若上方块级节点还未有子节点块, 插入子节点块
     const newNode: __IBlockElementChildren = {
       type: "__block-element-children",
-      children: tmpBlocksEntry.map(([node]) => node),
+      children: selectedBlocks.map(([node]) => node),
     }
 
     Transforms.removeNodes(editor, {
       match: (n, p) =>
         SlateElement.isElement(n) &&
-        arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
+        arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
         p.length <= firstBlockPath.length,
       mode: "lowest",
     })
@@ -192,14 +168,14 @@ export const increaseIndent = (editor: Editor) => {
     Transforms.removeNodes(editor, {
       match: (n, p) =>
         SlateElement.isElement(n) &&
-        arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
+        arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
         p.length <= firstBlockPath.length,
       mode: "lowest",
     })
 
     Transforms.insertNodes(
       editor,
-      tmpBlocksEntry.map(([node]) => node),
+      selectedBlocks.map(([node]) => node),
       {
         at: previousNodePath.concat([1, previousNode.children[1].children.length]),
       }
@@ -226,20 +202,14 @@ export const decreaseIndent = (editor: Editor) => {
     return
   }
 
-  const firstBlockEntry = Array.from(
-    Editor.nodes(editor, {
-      at: Editor.start(editor, selection),
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
-      mode: "lowest",
-    })
-  )[0] as NodeEntry<BlockElementWithoutTextLine>
-
-  if (!firstBlockEntry) {
+  const selectedBlocks = getSelectedBlocks(editor)
+  if (!selectedBlocks) {
     return
   }
-  const [, firstBlockPath] = firstBlockEntry
 
+  const [, firstBlockPath] = selectedBlocks[0]
   const [firstBlockParent, firstBlockParentPath] = Editor.node(editor, Path.parent(firstBlockPath))
+
   // 判断是否在某个块级节点的子节点块内
   if (!SlateElement.isElement(firstBlockParent) || firstBlockParent.type !== "__block-element-children") {
     return
@@ -249,11 +219,11 @@ export const decreaseIndent = (editor: Editor) => {
     Editor.nodes(editor, {
       match: (n, p) =>
         SlateElement.isElement(n) &&
-        arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
+        arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
         p.length <= firstBlockPath.length,
       mode: "lowest",
     })
-  ) as NodeEntry<BlockElementWithoutTextLine>[]
+  ) as NodeEntry<BlockElementExceptTextLine>[]
 
   if (tmpBlocksEntry.length < 1) {
     return
@@ -264,7 +234,7 @@ export const decreaseIndent = (editor: Editor) => {
   Transforms.removeNodes(editor, {
     match: (n, p) =>
       SlateElement.isElement(n) &&
-      arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
+      arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
       p.length <= firstBlockPath.length,
     mode: "lowest",
   })
@@ -306,7 +276,7 @@ export const decreaseIndent = (editor: Editor) => {
  */
 export const calculateIndentLevel = (editor: Editor, path: Path) => {
   const [currentNode] = Editor.node(editor, path)
-  if (!SlateElement.isElement(currentNode) || !arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, currentNode.type)) {
+  if (!SlateElement.isElement(currentNode) || !arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, currentNode.type)) {
     throw `calculateIndentLevel() get unexpected path, maybe it is not an element or text-line`
   }
 
@@ -320,7 +290,7 @@ export const calculateIndentLevel = (editor: Editor, path: Path) => {
       return true
     }
 
-    if (SlateElement.isElement(tmpNode) && arrayIncludes(BLOCK_ELEMENTS_JUST_WITH_CHILDREN, tmpNode.type)) {
+    if (SlateElement.isElement(tmpNode) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, tmpNode.type)) {
       return true
     }
 

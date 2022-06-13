@@ -1,6 +1,6 @@
 import type React from "react"
 import { useCallback } from "react"
-import { Editor, Path } from "slate"
+import { Editor, NodeEntry, Path } from "slate"
 import { Editable, useSlateStatic } from "slate-react"
 import { toggleBlockCode } from "../components/Nodes/Block/BlockCode/blockCodeHelper"
 import {
@@ -9,8 +9,11 @@ import {
   increaseIndent,
 } from "../components/Nodes/Block/BlockWrapper/indentHelper"
 import { toggleHead } from "../components/Nodes/Block/Head/headHelper"
-import { toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
-import { BLOCK_ELEMENTS_JUST_WITH_CHILDREN, BLOCK_ELEMENTS_WITHOUT_TEXT_LINE } from "../types/constant"
+import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
+import { toggleQuote } from "../components/Nodes/Block/Quote/quoteHelper"
+import { getSelectedBlocks } from "../components/Nodes/Block/utils/getSelectedBlocks"
+import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../types/constant"
+import type { BlockElementExceptTextLine } from "../types/interface"
 import { SlateElement } from "../types/slate"
 import { arrayIncludes } from "../utils/general"
 
@@ -35,6 +38,11 @@ export const useOnKeyDown = () => {
 
     if (event.key === "Tab") {
       event.preventDefault()
+      if (event.shiftKey) {
+        decreaseIndent(editor)
+      } else {
+        increaseIndent(editor)
+      }
       // if (event.shiftKey) {
       //   switchListLevel(editor, "decrease")
       //   switchParagraphLevel(editor, "decrease")
@@ -55,8 +63,7 @@ export const useOnKeyDown = () => {
 
       // console.log(window.getSelection(), editor.selection)
       // toggleBlockCode(editor)
-      // toggleHead(editor, "1")
-      increaseIndent(editor)
+      toggleUnorderedList(editor)
 
       return
     }
@@ -66,24 +73,9 @@ export const useOnKeyDown = () => {
         return
       }
 
-      decreaseIndent(editor)
+      // toggleOrderedList(editor)
+      toggleQuote(editor)
 
-      return
-    }
-    if (event.altKey && event.key === "e") {
-      const { selection } = editor
-      if (!selection) {
-        return
-      }
-
-      const [firstBlock, firstBlockPath] = Array.from(
-        Editor.nodes(editor, {
-          at: Editor.start(editor, selection),
-          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
-          mode: "lowest",
-        })
-      )[0]
-      console.log(calculateIndentLevel(editor, firstBlockPath))
       return
     }
     // --------------------------------------------------

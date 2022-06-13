@@ -27,5 +27,5 @@ export type ICodeAreaLangMap = {
 export type IBlockCode = {
   type: "block-code"
   langKey: KeysUnion<ICodeAreaLangMap> // langKey 是显示格式
-  children: [__IBlockElementContent, __IBlockElementChildren] | [__IBlockElementContent]
+  children: [__IBlockElementContent]
 }

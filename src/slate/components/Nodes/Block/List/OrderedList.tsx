@@ -3,6 +3,7 @@ import { useRef } from "react"
 import { Path } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
+import { calculateIndentLevel } from "../BlockWrapper/indentHelper"
 import { orderedListSymbol } from "./List.css"
 import { orderedListBarStateAtom, orderedListModifyBarStateAtom } from "./state"
 import type { IOrderedList } from "./types"
@@ -143,17 +144,18 @@ const numberToLetter = (num: number) => {
 }
 
 const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attributes, children, element }) => {
+  const editor = useSlateStatic()
+
   //TODO: 可能的优化方式:
   // worker 异步建表
   // proxy 劫持
-  // const indexSymbol =
-  //   element.indentLevel % 3 === 1
-  //     ? element.indexState.index
-  //     : element.indentLevel % 3 === 2
-  //     ? numberToLetter(element.indexState.index)
-  //     : arabicToRomanNumber(element.indexState.index)
-
-  const editor = useSlateStatic()
+  const indentLevel = calculateIndentLevel(editor, ReactEditor.findPath(editor, element))
+  const indexSymbol =
+    indentLevel % 3 === 0
+      ? element.indexState.index
+      : indentLevel % 3 === 1
+      ? numberToLetter(element.indexState.index)
+      : arabicToRomanNumber(element.indexState.index)
 
   const setOrderedListBarState = useSetAtom(orderedListBarStateAtom)
   const orderedListModifyBarState = useAtomValue(orderedListModifyBarStateAtom)
@@ -187,11 +189,10 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
     >
       <div
         style={{
-          // marginLeft: `${(element.indentLevel - 1) * 22}px`,
           display: "flex",
         }}
       >
-        {/* <span
+        <span
           ref={spanDom}
           onClick={onClickSpan}
           contentEditable={false}
@@ -206,7 +207,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
           }
         >
           {`${indexSymbol}.`}
-        </span> */}
+        </span>
         <span
           style={{
             minWidth: "0",

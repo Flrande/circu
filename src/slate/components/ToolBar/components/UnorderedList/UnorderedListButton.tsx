@@ -5,7 +5,7 @@ import UnorderedListIcon from "./UnorderedListIcon"
 
 const UnorderedListButton: React.FC = () => {
   const editor = useSlateStatic()
-  const isActive = isListActive(editor, "unorderedList")
+  const isActive = isListActive(editor, "unordered-list")
   const onClick = () => {
     if (editor.selection) {
       toggleUnorderedList(editor)

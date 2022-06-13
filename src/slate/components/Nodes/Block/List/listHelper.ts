@@ -1,13 +1,8 @@
 import { Editor, NodeEntry, Transforms } from "slate"
-import {
-  BLOCK_ELEMENTS_WITHOUT_TEXT_LINE,
-  BLOCK_ELEMENTS_WITH_CONTENT,
-  CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN,
-} from "../../../../types/constant"
-import type { BlockElementWithContent, BlockElementWithoutTextLine } from "../../../../types/interface"
+import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN } from "../../../../types/constant"
+import type { BlockElementExceptTextLine } from "../../../../types/interface"
 import { SlateElement } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
-import type { IParagraph } from "../Paragraph/types"
 import type { IOrderedList, IUnorderedList } from "./types"
 
 export const isListActive = (editor: Editor, listType: IOrderedList["type"] | IUnorderedList["type"]) => {
@@ -16,9 +11,9 @@ export const isListActive = (editor: Editor, listType: IOrderedList["type"] | IU
 
   const selectedContentBlocksEntry = Array.from(
     Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
     })
-  ) as NodeEntry<BlockElementWithoutTextLine>[]
+  ) as NodeEntry<BlockElementExceptTextLine>[]
 
   return selectedContentBlocksEntry.every(([node]) => node.type === listType)
 }
@@ -26,6 +21,10 @@ export const isListActive = (editor: Editor, listType: IOrderedList["type"] | IU
 const unToggleList = (editor: Editor) => {
   if (!editor.selection) {
     console.error("unToggleList() need editor.selection.")
+    return
+  }
+
+  if (!isListActive(editor, "ordered-list") || !isListActive(editor, "unordered-list")) {
     return
   }
 
@@ -71,9 +70,9 @@ export const toggleOrderedList = (editor: Editor) => {
   } else {
     const selectedContentBlocksEntry = Array.from(
       Editor.nodes(editor, {
-        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITH_CONTENT, n.type),
+        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
       })
-    ) as NodeEntry<BlockElementWithContent>[]
+    ) as NodeEntry<BlockElementExceptTextLine>[]
 
     if (selectedContentBlocksEntry.length < 1) {
       return
@@ -116,9 +115,9 @@ export const toggleUnorderedList = (editor: Editor) => {
   } else {
     const selectedContentBlocksEntry = Array.from(
       Editor.nodes(editor, {
-        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITH_CONTENT, n.type),
+        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
       })
-    ) as NodeEntry<BlockElementWithContent>[]
+    ) as NodeEntry<BlockElementExceptTextLine>[]
 
     if (selectedContentBlocksEntry.length < 1) {
       return

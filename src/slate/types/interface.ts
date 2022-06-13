@@ -11,36 +11,39 @@ import type { IInlineCode } from "../components/Nodes/Inline/InlineCode/types"
 import type { ILink } from "../components/Nodes/Inline/Link/types"
 import type { ICustomText } from "../components/Nodes/Text/types"
 
-// 有四类块级节点
+// 有3类块级节点
 // 1. 支持包含自身内容和其他块级节点, 如列表, 段落
-// 2. 仅支持包含自身内容, 如代码块
-// 3. 仅支持包含其他块级节点
-// 4. text-line
+// 2. 仅支持包含自身内容, 没有子节点块, 如代码块, 引用
+// 3. 最小单位行, text-line
+// 添加新的块级节点时更改下面三类类型即可
 
-// 1, 2类基础接口, 即实现了该接口的才是1, 2类
-type BaseBlockElementWithContent = {
+// 1类块级节点
+type BaseBlockElementWithChildren = {
   type: string
+  // __IBlockElementContent 中的子项只能为 text-line
   children: [__IBlockElementContent, __IBlockElementChildren] | [__IBlockElementContent]
 }
-// 3类基础接口, 即实现了该接口的才是3类
-type BaseBlockElementJustWithChildren = {
+type BlockElementWithChildrenDetector<T extends BaseBlockElementWithChildren> = T
+export type BlockElementWithChildren = BlockElementWithChildrenDetector<
+  IParagraph | IOrderedList | IUnorderedList | IHead
+>
+
+// 2类块级节点
+type BaseBlockElementWithoutChildren = {
   type: string
-  children: [__IBlockElementChildren]
+  // __IBlockElementContent 中的子项可以自定义
+  children: [__IBlockElementContent<{}>]
 }
+type BlockElementWithoutChildrenDetector<T extends BaseBlockElementWithoutChildren> = T
+export type BlockElementWithoutChildren = BlockElementWithoutChildrenDetector<IBlockCode | IQuote>
 
-// 添加新的块级节点时更改这三个类型即可
 // 1, 2类块级节点
-export type BlockElementWithContent = IParagraph | IBlockCode | IOrderedList | IUnorderedList | IHead
-// 3类块级节点
-export type BlockElementJustWithChildren = IQuote
-// 1, 2, 3类块级节点
-export type BlockElementWithoutTextLine = BlockElementWithContent | BlockElementJustWithChildren
-
-// 一个用于检测块级节点接口是否合乎要求的工具类型
-type BlockElementDetector<T extends BaseBlockElementWithContent | BaseBlockElementJustWithChildren | ITextLine> = T
+export type BlockElementExceptTextLine = BlockElementWithChildren | BlockElementWithoutChildren
 
 export type BlockElement =
-  | BlockElementDetector<BlockElementWithoutTextLine | ITextLine>
+  | BlockElementWithChildren // 1类
+  | BlockElementWithoutChildren // 2类
+  | ITextLine // 3类
   | __IBlockElementContent
   | __IBlockElementChildren
 export type InlineElement = IInlineCode | ILink

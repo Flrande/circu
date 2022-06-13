@@ -8,7 +8,7 @@ import OrderedListIcon from "./OrderedListIcon"
 const OrderedListButton: React.FC = () => {
   const editor = useSlateStatic()
   const setActiveButton = useSetAtom(activeButtonAtom)
-  const isActive = isListActive(editor, "orderedList")
+  const isActive = isListActive(editor, "ordered-list")
 
   const onClick = () => {
     if (editor.selection) {

@@ -2,8 +2,8 @@ import { Editor, NodeEntry } from "slate"
 import { blockCodeDeleteBackward } from "../components/Nodes/Block/BlockCode/deleteHelper"
 import { listDeleteBackward } from "../components/Nodes/Block/List/deleteHelper"
 import { unActiveToolBar } from "../components/ToolBar/state"
-import { BLOCK_ELEMENTS_WITHOUT_TEXT_LINE } from "../types/constant"
-import type { BlockElementWithContent, BlockElementWithoutTextLine } from "../types/interface"
+import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../types/constant"
+import type { BlockElementExceptTextLine } from "../types/interface"
 import { SlateElement } from "../types/slate"
 import { arrayIncludes } from "../utils/general"
 
@@ -18,9 +18,9 @@ const withDeleteBackward = (editor: Editor) => {
     if (selection) {
       const selectedContentBlocksEntry = Array.from(
         Editor.nodes(editor, {
-          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
         })
-      ) as NodeEntry<BlockElementWithoutTextLine>[]
+      ) as NodeEntry<BlockElementExceptTextLine>[]
 
       if (selectedContentBlocksEntry.length === 1) {
         flag =
