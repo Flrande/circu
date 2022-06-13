@@ -1,25 +1,44 @@
 import { Editor, NodeEntry, Path, Transforms } from "slate"
-import { BLOCK_ELEMENTS_WITHOUT_TEXT_LINE } from "../../../../types/constant"
-import type { BlockElementWithoutTextLine } from "../../../../types/interface"
+import { BLOCK_ELEMENTS_JUST_WITH_CHILDREN, BLOCK_ELEMENTS_WITHOUT_TEXT_LINE } from "../../../../types/constant"
+import type { BlockElementJustWithChildren, BlockElementWithoutTextLine } from "../../../../types/interface"
 import { SlateElement } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
-import type { IQuote } from "../Quote/types"
+import { MAX_INDENT_LEVEL } from "./constant"
 import type { __IBlockElementChildren } from "./types"
 
 /**
- * 用于检测选中的内容块能否缩进, 以下情况不可缩进:
- * 1. 选区上方的同级块级元素不支持缩进
- * 2. 选区上方没有同级的块级元素
+ * 用于检测选中的内容块能否增加缩进, 以下情况不可增加缩进:
+ * 1. 到达最大缩进级别
+ * 2. 选区上方的块级节点的缩进级别不支持增加缩进
+ * 3. 选区上方的块级节点本身不支持缩进
  *
  * @param editor 编辑器实例
- * @returns 返回一个布尔值, 指示是否可缩进
+ * @returns 返回一个包含是否可增加缩进以及为何不可增加缩进信息的对象
  *
+ * indentable  - 是否可缩进
+ *
+ * type - 0 - 未知情况
+ *
+ * type - 1 - 到达最大缩进级别
+ *
+ * type - 2 - 选区上方的块级节点的缩进级别不支持缩进
+ *
+ * type - 3 - 选区上方的块级节点本身不支持缩进
  */
-export const inspectIndentable = (editor: Editor) => {
+export const inspectIncreaseIndentable: (editor: Editor) =>
+  | {
+      indentable: false
+      type: "0" | "1" | "2" | "3"
+    }
+  | {
+      indentable: true
+    } = (editor) => {
   const { selection } = editor
   if (!selection) {
-    console.error("inspectIndentable() need editor.selection.")
-    return
+    return {
+      indentable: false,
+      type: "0",
+    }
   }
 
   const firstBlockEntry = Array.from(
@@ -31,37 +50,70 @@ export const inspectIndentable = (editor: Editor) => {
   )[0] as NodeEntry<BlockElementWithoutTextLine>
 
   if (!firstBlockEntry) {
-    return false
+    return {
+      indentable: false,
+      type: "0",
+    }
+  }
+
+  const [, firstBlockPath] = firstBlockEntry
+
+  // 判断是否到达最大缩进级别
+  if (calculateIndentLevel(editor, firstBlockPath) >= MAX_INDENT_LEVEL) {
+    return {
+      indentable: false,
+      type: "1",
+    }
   }
 
   const previousNodeEntry = Editor.previous(editor, {
-    at: firstBlockEntry[1],
-    match: (n, p) =>
-      SlateElement.isElement(n) &&
-      arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
-      // 引用不支持
-      n.type !== "quote" &&
-      p.length >= firstBlockEntry[1].length,
-    mode: "highest",
-  })
+    at: firstBlockPath,
+    match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+    mode: "lowest",
+  }) as NodeEntry<BlockElementWithoutTextLine> | undefined
 
   if (!previousNodeEntry) {
-    return false
+    return {
+      indentable: false,
+      type: "0",
+    }
   }
 
-  return true
+  const [previousNode, previousNodePath] = previousNodeEntry
+
+  if (previousNodePath.length < firstBlockPath.length) {
+    return {
+      indentable: false,
+      type: "2",
+    }
+  }
+
+  if (arrayIncludes(BLOCK_ELEMENTS_JUST_WITH_CHILDREN, previousNode.type)) {
+    return {
+      indentable: false,
+      type: "3",
+    }
+  }
+
+  return {
+    indentable: true,
+  }
 }
 
 /**
- * 用于内容块缩进的函数, 即将选中的块级节点移入前一个块级节点的子节点块
+ * 用于增加内容块缩进的函数, 即将选中的块级节点移入前一个块级节点的子节点块
  *
  * @param editor 编辑器实例
  *
  */
-export const toggleIndent = (editor: Editor) => {
+export const increaseIndent = (editor: Editor) => {
   const { selection } = editor
   if (!selection) {
-    console.error("toggleIndent() need editor.selection.")
+    return
+  }
+
+  // 判断是否可以缩进
+  if (!inspectIncreaseIndentable(editor).indentable) {
     return
   }
 
@@ -77,6 +129,10 @@ export const toggleIndent = (editor: Editor) => {
     return
   }
   const [, firstBlockPath] = firstBlockEntry
+
+  if (calculateIndentLevel(editor, firstBlockPath) >= MAX_INDENT_LEVEL) {
+    return
+  }
 
   const tmpBlocksEntry = Array.from(
     Editor.nodes(editor, {
@@ -97,13 +153,11 @@ export const toggleIndent = (editor: Editor) => {
     match: (n, p) =>
       SlateElement.isElement(n) &&
       arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
-      // 引用不支持
-      n.type !== "quote" &&
+      !arrayIncludes(BLOCK_ELEMENTS_JUST_WITH_CHILDREN, n.type) &&
       p.length >= firstBlockPath.length,
-    mode: "highest",
-  }) as NodeEntry<Exclude<BlockElementWithoutTextLine, IQuote>> | undefined
+    mode: "lowest",
+  }) as NodeEntry<Exclude<BlockElementWithoutTextLine, BlockElementJustWithChildren>> | undefined
 
-  // 判断是否可以缩进
   if (!previousNodeEntry) {
     return
   }
@@ -117,7 +171,11 @@ export const toggleIndent = (editor: Editor) => {
     }
 
     Transforms.removeNodes(editor, {
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+      match: (n, p) =>
+        SlateElement.isElement(n) &&
+        arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
+        p.length <= firstBlockPath.length,
+      mode: "lowest",
     })
 
     Transforms.insertNodes(editor, newNode, {
@@ -132,7 +190,11 @@ export const toggleIndent = (editor: Editor) => {
   } else if (previousNode.children.length === 2) {
     // 若上方块级节点已有节点块, 直接在子节点块中插入节点
     Transforms.removeNodes(editor, {
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+      match: (n, p) =>
+        SlateElement.isElement(n) &&
+        arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
+        p.length <= firstBlockPath.length,
+      mode: "lowest",
     })
 
     Transforms.insertNodes(
@@ -153,15 +215,14 @@ export const toggleIndent = (editor: Editor) => {
 }
 
 /**
- * 用于取消内容块缩进的函数, 即将选中的块级节点移出当前块级节点的子节点块
+ * 用于减少内容块缩进的函数, 即将选中的块级节点移出当前块级节点的子节点块
  *
  * @param editor 编辑器实例
  *
  */
-export const unToggleIndent = (editor: Editor) => {
+export const decreaseIndent = (editor: Editor) => {
   const { selection } = editor
   if (!selection) {
-    console.error("toggleIndent() need editor.selection.")
     return
   }
 
@@ -201,7 +262,11 @@ export const unToggleIndent = (editor: Editor) => {
   const [, firstBlockGrandfatherPath] = Editor.node(editor, firstBlockPath.slice(0, -2))
 
   Transforms.removeNodes(editor, {
-    match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+    match: (n, p) =>
+      SlateElement.isElement(n) &&
+      arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type) &&
+      p.length <= firstBlockPath.length,
+    mode: "lowest",
   })
   // 若子节点块被清空, 删除子节点块
   if (
@@ -229,4 +294,42 @@ export const unToggleIndent = (editor: Editor) => {
       firstBlockGrandfatherPath.slice(0, -1).concat([firstBlockGrandfatherPath.at(-1)! + tmpBlocksEntry.length])
     ),
   })
+}
+
+/**
+ * 计算块级节点嵌套级别的函数
+ *
+ * @param editor 编辑器实例
+ * @param path 块级节点的 Path
+ * @returns 嵌套级别, 最小为0
+ *
+ */
+export const calculateIndentLevel = (editor: Editor, path: Path) => {
+  const [currentNode] = Editor.node(editor, path)
+  if (!SlateElement.isElement(currentNode) || !arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, currentNode.type)) {
+    throw `calculateIndentLevel() get unexpected path, maybe it is not an element or text-line`
+  }
+
+  const ancestorsPath = Path.ancestors(path)
+
+  // 计算方法: 从 Editor 或仅含子节点块的块级节点开始计算 Path 的长度
+  const bottomPath = ancestorsPath.find((path) => {
+    const [tmpNode] = Editor.node(editor, path)
+
+    if (Editor.isEditor(tmpNode)) {
+      return true
+    }
+
+    if (SlateElement.isElement(tmpNode) && arrayIncludes(BLOCK_ELEMENTS_JUST_WITH_CHILDREN, tmpNode.type)) {
+      return true
+    }
+
+    return false
+  })
+
+  if (!bottomPath) {
+    throw `can not find bottom node for node in ${path}}`
+  }
+
+  return Math.floor((path.length - bottomPath.length - 1) / 2)
 }

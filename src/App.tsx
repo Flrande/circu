@@ -25,7 +25,7 @@ if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
               type: "text-line",
               children: [
                 {
-                  text: faker.lorem.paragraph(),
+                  text: `${p + 1} ` + faker.lorem.paragraph(),
                 },
               ],
             },

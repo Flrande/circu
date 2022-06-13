@@ -3,10 +3,14 @@ import { useCallback } from "react"
 import { Editor, Path } from "slate"
 import { Editable, useSlateStatic } from "slate-react"
 import { toggleBlockCode } from "../components/Nodes/Block/BlockCode/blockCodeHelper"
-import { toggleIndent, unToggleIndent } from "../components/Nodes/Block/BlockWrapper/indentHelper"
+import {
+  calculateIndentLevel,
+  decreaseIndent,
+  increaseIndent,
+} from "../components/Nodes/Block/BlockWrapper/indentHelper"
 import { toggleHead } from "../components/Nodes/Block/Head/headHelper"
 import { toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
-import { BLOCK_ELEMENTS_WITHOUT_TEXT_LINE } from "../types/constant"
+import { BLOCK_ELEMENTS_JUST_WITH_CHILDREN, BLOCK_ELEMENTS_WITHOUT_TEXT_LINE } from "../types/constant"
 import { SlateElement } from "../types/slate"
 import { arrayIncludes } from "../utils/general"
 
@@ -44,17 +48,42 @@ export const useOnKeyDown = () => {
     // --------------------------------------------------
     // for debug and develop
     if (event.altKey && event.key === "q") {
+      const { selection } = editor
+      if (!selection) {
+        return
+      }
+
       // console.log(window.getSelection(), editor.selection)
       // toggleBlockCode(editor)
       // toggleHead(editor, "1")
-      toggleIndent(editor)
+      increaseIndent(editor)
+
       return
     }
     if (event.altKey && event.key === "w") {
-      if (!editor.selection) {
+      const { selection } = editor
+      if (!selection) {
         return
       }
-      unToggleIndent(editor)
+
+      decreaseIndent(editor)
+
+      return
+    }
+    if (event.altKey && event.key === "e") {
+      const { selection } = editor
+      if (!selection) {
+        return
+      }
+
+      const [firstBlock, firstBlockPath] = Array.from(
+        Editor.nodes(editor, {
+          at: Editor.start(editor, selection),
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_TEXT_LINE, n.type),
+          mode: "lowest",
+        })
+      )[0]
+      console.log(calculateIndentLevel(editor, firstBlockPath))
       return
     }
     // --------------------------------------------------
