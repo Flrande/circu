@@ -5,7 +5,7 @@ import { SlateElement } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
 import type { IHead, IHeadGrade } from "./types"
 
-export const isHeadActive = (editor: Editor, headGrade: IHeadGrade | "all") => {
+export const isHeadActive = (editor: Editor, headGrade: IHeadGrade | "all"): boolean => {
   const { selection } = editor
   if (!selection) return false
 
@@ -20,61 +20,21 @@ export const isHeadActive = (editor: Editor, headGrade: IHeadGrade | "all") => {
     : selectedContentBlocksEntry.every(([node]) => node.type === "head" && node.headGrade === headGrade)
 }
 
-const unToggleHead = (editor: Editor) => {
-  if (!editor.selection) {
-    console.error("unToggleHead() need editor.selection.")
-    return
-  }
+const unToggleHead = (editor: Editor): void => {
+  Editor.withoutNormalizing(editor, () => {
+    if (!editor.selection) {
+      return
+    }
 
-  if (!isHeadActive(editor, "all")) {
-    return
-  }
+    if (!isHeadActive(editor, "all")) {
+      return
+    }
 
-  const selectedContentBlocksEntry = Array.from(
-    Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && n.type === "head",
-    })
-  ) as NodeEntry<IHead>[]
-
-  if (selectedContentBlocksEntry.length < 1) {
-    return
-  }
-
-  const startPath = selectedContentBlocksEntry[0][1]
-  const endPath = selectedContentBlocksEntry.at(-1)![1]
-
-  for (const [, path] of selectedContentBlocksEntry) {
-    Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
-      at: path,
-    })
-    Transforms.setNodes(
-      editor,
-      {
-        type: "paragraph",
-      },
-      {
-        at: path,
-      }
-    )
-  }
-
-  Transforms.select(editor, Editor.range(editor, startPath, endPath))
-}
-
-export const toggleHead = (editor: Editor, headGrade: IHeadGrade) => {
-  if (!editor.selection) {
-    console.error("toggleHead() need editor.selection.")
-    return
-  }
-
-  if (isHeadActive(editor, headGrade)) {
-    unToggleHead(editor)
-  } else {
     const selectedContentBlocksEntry = Array.from(
       Editor.nodes(editor, {
-        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+        match: (n) => SlateElement.isElement(n) && n.type === "head",
       })
-    ) as NodeEntry<BlockElementExceptTextLine>[]
+    ) as NodeEntry<IHead>[]
 
     if (selectedContentBlocksEntry.length < 1) {
       return
@@ -90,8 +50,7 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade) => {
       Transforms.setNodes(
         editor,
         {
-          type: "head",
-          headGrade,
+          type: "paragraph",
         },
         {
           at: path,
@@ -100,5 +59,48 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade) => {
     }
 
     Transforms.select(editor, Editor.range(editor, startPath, endPath))
-  }
+  })
+}
+
+export const toggleHead = (editor: Editor, headGrade: IHeadGrade): void => {
+  Editor.withoutNormalizing(editor, () => {
+    if (!editor.selection) {
+      return
+    }
+
+    if (isHeadActive(editor, headGrade)) {
+      unToggleHead(editor)
+    } else {
+      const selectedContentBlocksEntry = Array.from(
+        Editor.nodes(editor, {
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+        })
+      ) as NodeEntry<BlockElementExceptTextLine>[]
+
+      if (selectedContentBlocksEntry.length < 1) {
+        return
+      }
+
+      const startPath = selectedContentBlocksEntry[0][1]
+      const endPath = selectedContentBlocksEntry.at(-1)![1]
+
+      for (const [, path] of selectedContentBlocksEntry) {
+        Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
+          at: path,
+        })
+        Transforms.setNodes(
+          editor,
+          {
+            type: "head",
+            headGrade,
+          },
+          {
+            at: path,
+          }
+        )
+      }
+
+      Transforms.select(editor, Editor.range(editor, startPath, endPath))
+    }
+  })
 }

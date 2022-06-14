@@ -18,7 +18,6 @@ const LinkButton: React.FC = () => {
   const onClick = () => {
     const sel = window.getSelection()
     if (!sel) {
-      console.error("onClick in LinkButton need dom selection.")
       return
     }
     const range = sel.getRangeAt(0)

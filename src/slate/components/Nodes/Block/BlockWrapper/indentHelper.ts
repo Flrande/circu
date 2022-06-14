@@ -119,91 +119,91 @@ export const inspectIncreaseIndentable = (
  * @param location 可选, 默认使用 editor.selection
  *
  */
-export const increaseIndent = (editor: Editor, location?: SlateLocation) => {
-  if (location) {
-    Transforms.select(editor, location)
-  }
-
-  const { selection } = editor
-
-  if (!selection) {
-    return
-  }
-
-  // 判断是否可以缩进
-  if (!inspectIncreaseIndentable(editor).indentable) {
-    return
-  }
-
-  const selectedBlocks = getSelectedBlocks(editor)
-  if (!selectedBlocks) {
-    return
-  }
-  const [, firstBlockPath] = selectedBlocks[0]
-
-  const previousNodeEntry = Editor.previous(editor, {
-    at: firstBlockPath,
-    match: (n, p) =>
-      SlateElement.isElement(n) &&
-      arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, n.type) &&
-      p.length <= firstBlockPath.length,
-    mode: "lowest",
-  }) as NodeEntry<BlockElementWithChildren> | undefined
-
-  if (!previousNodeEntry) {
-    return
-  }
-  const [previousNode, previousNodePath] = previousNodeEntry
-
-  if (previousNode.children.length === 1) {
-    // 若上方块级节点还未有子节点块, 插入子节点块
-    const newNode: __IBlockElementChildren = {
-      type: "__block-element-children",
-      children: selectedBlocks.map(([node]) => node),
+export const increaseIndent = (editor: Editor, location?: SlateLocation): void => {
+  Editor.withoutNormalizing(editor, () => {
+    if (location) {
+      Transforms.select(editor, location)
     }
 
-    Transforms.removeNodes(editor, {
+    const { selection } = editor
+
+    if (!selection) {
+      return
+    }
+
+    // 判断是否可以缩进
+    if (!inspectIncreaseIndentable(editor).indentable) {
+      return
+    }
+
+    const selectedBlocks = getSelectedBlocks(editor)
+    if (!selectedBlocks) {
+      return
+    }
+    const [, firstBlockPath] = selectedBlocks[0]
+
+    const previousNodeEntry = Editor.previous(editor, {
+      at: firstBlockPath,
       match: (n, p) =>
         SlateElement.isElement(n) &&
-        arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
+        arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, n.type) &&
         p.length <= firstBlockPath.length,
       mode: "lowest",
-    })
+    }) as NodeEntry<BlockElementWithChildren> | undefined
 
-    Transforms.insertNodes(editor, newNode, {
-      at: previousNodePath.concat([1]),
-      select: true,
-    })
+    if (!previousNodeEntry) {
+      return
+    }
+    const [previousNode, previousNodePath] = previousNodeEntry
 
-    Transforms.select(editor, {
-      anchor: Editor.start(editor, previousNodePath.concat([1])),
-      focus: Editor.end(editor, previousNodePath.concat([1])),
-    })
-  } else if (previousNode.children.length === 2) {
-    // 若上方块级节点已有节点块, 直接在子节点块中插入节点
-    Transforms.removeNodes(editor, {
-      match: (n, p) =>
-        SlateElement.isElement(n) &&
-        arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
-        p.length <= firstBlockPath.length,
-      mode: "lowest",
-    })
-
-    Transforms.insertNodes(
-      editor,
-      selectedBlocks.map(([node]) => node),
-      {
-        at: previousNodePath.concat([1, previousNode.children[1].children.length]),
+    if (previousNode.children.length === 1) {
+      // 若上方块级节点还未有子节点块, 插入子节点块
+      const newNode: __IBlockElementChildren = {
+        type: "__block-element-children",
+        children: selectedBlocks.map(([node]) => node),
       }
-    )
 
-    Transforms.select(editor, {
-      anchor: Editor.start(editor, previousNodePath.concat([1, previousNode.children[1].children.length])),
-      focus: Editor.end(editor, previousNodePath.concat([1])),
-    })
-  } else {
-    console.error(`BlockElement ${previousNode} in ${previousNodePath} has more than two children.`)
-  }
+      Transforms.removeNodes(editor, {
+        match: (n, p) =>
+          SlateElement.isElement(n) &&
+          arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
+          p.length <= firstBlockPath.length,
+        mode: "lowest",
+      })
+
+      Transforms.insertNodes(editor, newNode, {
+        at: previousNodePath.concat([1]),
+        select: true,
+      })
+
+      Transforms.select(editor, {
+        anchor: Editor.start(editor, previousNodePath.concat([1])),
+        focus: Editor.end(editor, previousNodePath.concat([1])),
+      })
+    } else {
+      // 若上方块级节点已有节点块, 直接在子节点块中插入节点
+      Transforms.removeNodes(editor, {
+        match: (n, p) =>
+          SlateElement.isElement(n) &&
+          arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
+          p.length <= firstBlockPath.length,
+        mode: "lowest",
+      })
+
+      Transforms.insertNodes(
+        editor,
+        selectedBlocks.map(([node]) => node),
+        {
+          at: previousNodePath.concat([1, previousNode.children[1].children.length]),
+        }
+      )
+
+      Transforms.select(editor, {
+        anchor: Editor.start(editor, previousNodePath.concat([1, previousNode.children[1].children.length])),
+        focus: Editor.end(editor, previousNodePath.concat([1])),
+      })
+    }
+  })
 }
 
 /**
@@ -213,77 +213,79 @@ export const increaseIndent = (editor: Editor, location?: SlateLocation) => {
  * @param location 可选, 默认使用 editor.selection
  *
  */
-export const decreaseIndent = (editor: Editor, location?: SlateLocation) => {
-  if (location) {
-    Transforms.select(editor, location)
-  }
+export const decreaseIndent = (editor: Editor, location?: SlateLocation): void => {
+  Editor.withoutNormalizing(editor, () => {
+    if (location) {
+      Transforms.select(editor, location)
+    }
 
-  const { selection } = editor
-  if (!selection) {
-    return
-  }
+    const { selection } = editor
+    if (!selection) {
+      return
+    }
 
-  const selectedBlocks = getSelectedBlocks(editor)
-  if (!selectedBlocks) {
-    return
-  }
+    const selectedBlocks = getSelectedBlocks(editor)
+    if (!selectedBlocks) {
+      return
+    }
 
-  const [, firstBlockPath] = selectedBlocks[0]
-  const [firstBlockParent, firstBlockParentPath] = Editor.node(editor, Path.parent(firstBlockPath))
+    const [, firstBlockPath] = selectedBlocks[0]
+    const [firstBlockParent, firstBlockParentPath] = Editor.node(editor, Path.parent(firstBlockPath))
 
-  // 判断是否在某个块级节点的子节点块内
-  if (!SlateElement.isElement(firstBlockParent) || firstBlockParent.type !== "__block-element-children") {
-    return
-  }
+    // 判断是否在某个块级节点的子节点块内
+    if (!SlateElement.isElement(firstBlockParent) || firstBlockParent.type !== "__block-element-children") {
+      return
+    }
 
-  const tmpBlocksEntry = Array.from(
-    Editor.nodes(editor, {
+    const tmpBlocksEntry = Array.from(
+      Editor.nodes(editor, {
+        match: (n, p) =>
+          SlateElement.isElement(n) &&
+          arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
+          p.length <= firstBlockPath.length,
+        mode: "lowest",
+      })
+    ) as NodeEntry<BlockElementExceptTextLine>[]
+
+    if (tmpBlocksEntry.length < 1) {
+      return
+    }
+
+    const [, firstBlockGrandfatherPath] = Editor.node(editor, firstBlockPath.slice(0, -2))
+
+    Transforms.removeNodes(editor, {
       match: (n, p) =>
         SlateElement.isElement(n) &&
         arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
         p.length <= firstBlockPath.length,
       mode: "lowest",
     })
-  ) as NodeEntry<BlockElementExceptTextLine>[]
-
-  if (tmpBlocksEntry.length < 1) {
-    return
-  }
-
-  const [, firstBlockGrandfatherPath] = Editor.node(editor, firstBlockPath.slice(0, -2))
-
-  Transforms.removeNodes(editor, {
-    match: (n, p) =>
-      SlateElement.isElement(n) &&
-      arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
-      p.length <= firstBlockPath.length,
-    mode: "lowest",
-  })
-  // 若子节点块被清空, 删除子节点块
-  if (
-    (firstBlockParent as __IBlockElementChildren).children.length ===
-    tmpBlocksEntry.filter(([, path]) => Path.isSibling(path, firstBlockPath) || Path.equals(path, firstBlockPath))
-      .length
-  ) {
-    Transforms.removeNodes(editor, {
-      at: firstBlockParentPath,
-    })
-  }
-
-  Transforms.insertNodes(
-    editor,
-    tmpBlocksEntry.map(([node]) => node),
-    {
-      at: Path.next(firstBlockGrandfatherPath),
+    // 若子节点块被清空, 删除子节点块
+    if (
+      (firstBlockParent as __IBlockElementChildren).children.length ===
+      tmpBlocksEntry.filter(([, path]) => Path.isSibling(path, firstBlockPath) || Path.equals(path, firstBlockPath))
+        .length
+    ) {
+      Transforms.removeNodes(editor, {
+        at: firstBlockParentPath,
+      })
     }
-  )
 
-  Transforms.select(editor, {
-    anchor: Editor.start(editor, Path.next(firstBlockGrandfatherPath)),
-    focus: Editor.end(
+    Transforms.insertNodes(
       editor,
-      firstBlockGrandfatherPath.slice(0, -1).concat([firstBlockGrandfatherPath.at(-1)! + tmpBlocksEntry.length])
-    ),
+      tmpBlocksEntry.map(([node]) => node),
+      {
+        at: Path.next(firstBlockGrandfatherPath),
+      }
+    )
+
+    Transforms.select(editor, {
+      anchor: Editor.start(editor, Path.next(firstBlockGrandfatherPath)),
+      focus: Editor.end(
+        editor,
+        firstBlockGrandfatherPath.slice(0, -1).concat([firstBlockGrandfatherPath.at(-1)! + tmpBlocksEntry.length])
+      ),
+    })
   })
 }
 
@@ -295,10 +297,10 @@ export const decreaseIndent = (editor: Editor, location?: SlateLocation) => {
  * @returns 嵌套级别, 最小为0
  *
  */
-export const calculateIndentLevel = (editor: Editor, path: Path) => {
+export const calculateIndentLevel = (editor: Editor, path: Path): number => {
   const [currentNode] = Editor.node(editor, path)
   if (!SlateElement.isElement(currentNode) || !arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, currentNode.type)) {
-    throw `calculateIndentLevel() get unexpected path, maybe it is not an element or text-line`
+    throw `calculateIndentLevel() get unexpected path, maybe its node is text-line or not a block element`
   }
 
   const ancestorsPath = Path.ancestors(path)

@@ -44,8 +44,10 @@ const withDeleteFragment = (editor: Editor) => {
   const { deleteFragment } = editor
 
   editor.deleteFragment = (direction?: "forward" | "backward") => {
-    deleteFragment(direction)
-    unActiveToolBar()
+    Editor.withoutNormalizing(editor, () => {
+      deleteFragment(direction)
+      unActiveToolBar()
+    })
   }
 
   return editor

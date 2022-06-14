@@ -11,7 +11,7 @@ import type { IOrderedList } from "./types"
  * @param entry 当前 entry
  *
  */
-export const normalizeOrderedList = (editor: Editor, entry: NodeEntry) => {
+export const normalizeOrderedList = (editor: Editor, entry: NodeEntry): void => {
   Editor.withoutNormalizing(editor, () => {
     const [currentNode] = entry
 

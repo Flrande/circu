@@ -15,7 +15,7 @@ import { calculateIndentLevel, decreaseIndent } from "../BlockWrapper/indentHelp
  * @returns 一个布尔值, 为真说明不需要执行默认行为
  *
  */
-export const paragraphDeleteBackward = (editor: Editor, currentEntry: NodeEntry) => {
+export const paragraphDeleteBackward = (editor: Editor, currentEntry: NodeEntry): boolean => {
   const { selection } = editor
   if (!selection) {
     return false
