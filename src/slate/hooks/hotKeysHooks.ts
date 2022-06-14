@@ -1,6 +1,6 @@
 import type React from "react"
 import { useCallback } from "react"
-import { Editor, NodeEntry, Path } from "slate"
+import { Editor, NodeEntry, Path, Transforms } from "slate"
 import { Editable, useSlateStatic } from "slate-react"
 import { toggleBlockCode } from "../components/Nodes/Block/BlockCode/blockCodeHelper"
 import {
@@ -10,6 +10,7 @@ import {
 } from "../components/Nodes/Block/BlockWrapper/indentHelper"
 import { toggleHead } from "../components/Nodes/Block/Head/headHelper"
 import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
+import type { IOrderedList } from "../components/Nodes/Block/List/types"
 import { toggleQuote } from "../components/Nodes/Block/Quote/quoteHelper"
 import { getSelectedBlocks } from "../components/Nodes/Block/utils/getSelectedBlocks"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../types/constant"
@@ -27,14 +28,6 @@ export const useOnKeyDown = () => {
     //     match: (n) => SlateElement.isElement(n) && arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, n.type),
     //   })
     // ).map(([node]) => node) as ParagraphTypeElement[]
-
-    if (event.key === "Enter") {
-      // if (selectedParagraphTypeNodes.every((node) => node.type === "orderedList")) {
-      //   event.preventDefault()
-      //   orderedListLineBreakHandler(editor)
-      //   return
-      // }
-    }
 
     if (event.key === "Tab") {
       event.preventDefault()
@@ -63,7 +56,10 @@ export const useOnKeyDown = () => {
 
       // console.log(window.getSelection(), editor.selection)
       // toggleBlockCode(editor)
-      toggleUnorderedList(editor)
+      // toggleUnorderedList(editor)
+      Editor.withoutNormalizing(editor, () => {
+        decreaseIndent(editor)
+      })
 
       return
     }
@@ -74,7 +70,10 @@ export const useOnKeyDown = () => {
       }
 
       // toggleOrderedList(editor)
-      toggleQuote(editor)
+      // toggleQuote(editor)
+      Transforms.liftNodes(editor, {
+        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+      })
 
       return
     }

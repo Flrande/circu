@@ -11,7 +11,7 @@ import type { KeysUnion } from "./utils"
 export const INLINE_ELEMENTS: Array<InlineElement["type"]> = ["inline-code", "link"]
 
 // 1类块级节点, 支持包含自身内容和其他块级节点
-export const BLOCK_ELEMENTS_COMMON: Array<BlockElementWithChildren["type"]> = [
+export const BLOCK_ELEMENTS_WITH_CHILDREN: Array<BlockElementWithChildren["type"]> = [
   "paragraph",
   "ordered-list",
   "unordered-list",

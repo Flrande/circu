@@ -1,7 +1,7 @@
 import { Editor, NodeEntry, Path, Transforms } from "slate"
-import { BLOCK_ELEMENTS_COMMON, BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../../../../types/constant"
+import { BLOCK_ELEMENTS_WITH_CHILDREN, BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../../../../types/constant"
 import type { BlockElementWithChildren, BlockElementExceptTextLine } from "../../../../types/interface"
-import { SlateElement } from "../../../../types/slate"
+import { SlateElement, SlateLocation } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import { MAX_INDENT_LEVEL } from "./constant"
@@ -14,6 +14,7 @@ import type { __IBlockElementChildren } from "./types"
  * 3. 选区上方的块级节点本身不支持缩进
  *
  * @param editor 编辑器实例
+ * @param location 可选, 默认使用 editor.selection
  * @returns 返回一个包含是否可增加缩进以及为何不可增加缩进信息的对象
  *
  * indentable  - 是否可缩进
@@ -26,14 +27,21 @@ import type { __IBlockElementChildren } from "./types"
  *
  * type - 3 - 选区上方的块级节点本身不支持缩进
  */
-export const inspectIncreaseIndentable: (editor: Editor) =>
+export const inspectIncreaseIndentable = (
+  editor: Editor,
+  location?: SlateLocation
+):
   | {
       indentable: false
       type: "0" | "1" | "2" | "3"
     }
   | {
       indentable: true
-    } = (editor) => {
+    } => {
+  if (location) {
+    Transforms.select(editor, location)
+  }
+
   const { selection } = editor
   if (!selection) {
     return {
@@ -92,7 +100,7 @@ export const inspectIncreaseIndentable: (editor: Editor) =>
     }
   }
 
-  if (!arrayIncludes(BLOCK_ELEMENTS_COMMON, previousNode.type)) {
+  if (!arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, previousNode.type)) {
     return {
       indentable: false,
       type: "3",
@@ -108,10 +116,16 @@ export const inspectIncreaseIndentable: (editor: Editor) =>
  * 用于增加内容块缩进的函数, 即将选中的块级节点移入前一个块级节点的子节点块
  *
  * @param editor 编辑器实例
+ * @param location 可选, 默认使用 editor.selection
  *
  */
-export const increaseIndent = (editor: Editor) => {
+export const increaseIndent = (editor: Editor, location?: SlateLocation) => {
+  if (location) {
+    Transforms.select(editor, location)
+  }
+
   const { selection } = editor
+
   if (!selection) {
     return
   }
@@ -125,12 +139,14 @@ export const increaseIndent = (editor: Editor) => {
   if (!selectedBlocks) {
     return
   }
-  const [firstBlock, firstBlockPath] = selectedBlocks[0]
+  const [, firstBlockPath] = selectedBlocks[0]
 
   const previousNodeEntry = Editor.previous(editor, {
     at: firstBlockPath,
     match: (n, p) =>
-      SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_COMMON, n.type) && p.length <= firstBlockPath.length,
+      SlateElement.isElement(n) &&
+      arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, n.type) &&
+      p.length <= firstBlockPath.length,
     mode: "lowest",
   }) as NodeEntry<BlockElementWithChildren> | undefined
 
@@ -194,9 +210,14 @@ export const increaseIndent = (editor: Editor) => {
  * 用于减少内容块缩进的函数, 即将选中的块级节点移出当前块级节点的子节点块
  *
  * @param editor 编辑器实例
+ * @param location 可选, 默认使用 editor.selection
  *
  */
-export const decreaseIndent = (editor: Editor) => {
+export const decreaseIndent = (editor: Editor, location?: SlateLocation) => {
+  if (location) {
+    Transforms.select(editor, location)
+  }
+
   const { selection } = editor
   if (!selection) {
     return

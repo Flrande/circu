@@ -21,6 +21,7 @@ import type { ICustomText } from "../components/Nodes/Text/types"
 type BaseBlockElementWithChildren = {
   type: string
   // __IBlockElementContent 中的子项只能为 text-line
+  //TODO: 添加约束, 保证元组形式
   children: [__IBlockElementContent, __IBlockElementChildren] | [__IBlockElementContent]
 }
 type BlockElementWithChildrenDetector<T extends BaseBlockElementWithChildren> = T

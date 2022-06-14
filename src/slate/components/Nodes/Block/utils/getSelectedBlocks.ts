@@ -4,7 +4,7 @@ import type { BlockElementExceptTextLine } from "../../../../types/interface"
 import { SlateElement } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
 
-export const getSelectedBlocks: (editor: Editor) => Array<NodeEntry<BlockElementExceptTextLine>> | null = (editor) => {
+export const getSelectedBlocks = (editor: Editor): Array<NodeEntry<BlockElementExceptTextLine>> | null => {
   const { selection } = editor
   if (!selection) {
     return null

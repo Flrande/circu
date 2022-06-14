@@ -12,6 +12,7 @@ import ToolBar from "./slate/components/ToolBar/ToolBar"
 import { useCreateEditor } from "./slate/hooks/useCreateEditor"
 import SlateEditable from "./slate/SlateEditable"
 
+//TODO: add Editor.withoutNormalizing for all helper
 let initialValue: Descendant[] = []
 if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
   for (let p = 0; p < 50; p++) {
@@ -95,12 +96,12 @@ const App: React.FC = () => {
               event.stopPropagation()
             }}
           >
-            {/* <ToolBar></ToolBar>
+            <ToolBar></ToolBar>
             <LinkButtonBar></LinkButtonBar>
             <LinkBar></LinkBar>
             <LinkEditBar></LinkEditBar>
             <OrderedListBar></OrderedListBar>
-            <OrderedListModifyBar></OrderedListModifyBar> */}
+            <OrderedListModifyBar></OrderedListModifyBar>
           </div>
         </Slate>
       </div>

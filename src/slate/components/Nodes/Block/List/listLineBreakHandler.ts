@@ -1,86 +1,107 @@
-// import { Editor, NodeEntry, Transforms } from "slate"
-// import { PARAGRAPH_TYPE_ELEMENTS } from "../../../../types/constant"
-// import type { ParagraphTypeElement } from "../../../../types/interface"
-// import { SlateElement, SlateNode, SlateRange } from "../../../../types/slate"
-// import { arrayIncludes } from "../../../../utils/general"
-// import type { IListIndentLevel } from "./types"
+import { Editor, NodeEntry, Path, Transforms } from "slate"
+import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../../../../types/constant"
+import type { BlockElementWithChildren } from "../../../../types/interface"
+import { SlateElement, SlateNode, SlateRange } from "../../../../types/slate"
+import { arrayIncludes } from "../../../../utils/general"
+import { decreaseIndent, increaseIndent } from "../BlockWrapper/indentHelper"
 
-// /**
-//  * 处理有序列表中换行行为的函数, 不负责覆盖默认行为
-//  *
-//  * @param editor 编辑器实例
-//  *
-//  */
-// export const orderedListLineBreakHandler = (editor: Editor) => {
-//   // 选中的段落型元素
-//   const selectedParagraphEntryArr = Array.from(
-//     Editor.nodes(editor, {
-//       match: (n) => SlateElement.isElement(n) && arrayIncludes(PARAGRAPH_TYPE_ELEMENTS, n.type),
-//     })
-//   ) as NodeEntry<ParagraphTypeElement>[]
+/**
+ * 处理列表中换行行为的函数
+ *
+ * @param editor 编辑器实例
+ * @returns 返回一个布尔值, 决定是否覆盖默认行为, 若为真, 则覆盖
+ *
+ */
+export const listLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<BlockElementWithChildren>): boolean => {
+  const { selection } = editor
+  if (!selection) {
+    return false
+  }
 
-//   // 判断是否为光标状态且选中元素为有序列表
-//   if (
-//     editor.selection &&
-//     SlateRange.isCollapsed(editor.selection) &&
-//     selectedParagraphEntryArr.length === 1 &&
-//     SlateElement.isElement(selectedParagraphEntryArr[0][0]) &&
-//     selectedParagraphEntryArr[0][0].type === "orderedList"
-//   ) {
-//     // 当前光标所在的有序列表
-//     const [selectedList, selectedListPath] = selectedParagraphEntryArr[0]
+  const [currentBlock, currentBlockPath] = currentEntry
 
-//     // 若列表内容为空, 触发换行时进行缩进前移
-//     if (SlateNode.string(selectedList).length === 0) {
-//       if (selectedList.indentLevel - 1 >= 1 && selectedList.indentLevel - 1 <= 16) {
-//         Transforms.setNodes(editor, {
-//           indentLevel: (selectedList.indentLevel - 1) as IListIndentLevel,
-//         })
-//       } else {
-//         Transforms.removeNodes(editor, {
-//           at: selectedListPath,
-//         })
-//         Transforms.insertNodes(
-//           editor,
-//           {
-//             type: "paragraph",
-//             indentLevel: 0,
-//             children: [
-//               {
-//                 text: "",
-//               },
-//             ],
-//           },
-//           {
-//             at: selectedListPath,
-//           }
-//         )
-//         Transforms.select(editor, Editor.start(editor, selectedListPath))
-//       }
-//       return
-//     }
+  // 判断是否为光标状态且选中元素为列表
+  if (
+    SlateRange.isCollapsed(selection) &&
+    (currentBlock.type === "ordered-list" || currentBlock.type === "unordered-list")
+  ) {
+    // 若列表内容块为空, 触发换行时减少缩进
+    if (SlateNode.string(currentBlock.children[0]).length === 0) {
+      decreaseIndent(editor, currentBlockPath)
+      if (editor.selection) {
+        Transforms.select(editor, Editor.start(editor, editor.selection))
+      }
+      return true
+    }
 
-//     // 若当前有序列表为列表头, 换行后新产生的列表应为自增
-//     if (selectedList.indexState.type === "head") {
-//       Transforms.splitNodes(editor, { always: true })
+    if (currentBlock.type === "ordered-list") {
+      // 若当前列表为有序列表, 且有子节点, 换行后新产生的列表应为列表头, 且原来子节点块中的列表头应该为自增
+      if (currentBlock.children.length === 2) {
+        // 若 currentBlock 首个子项不是有序列表, 不用对其处理
+        if (currentBlock.children[1].children[0].type === "ordered-list") {
+          Transforms.setNodes(
+            editor,
+            {
+              indexState: {
+                type: "selfIncrement",
+                index: 1,
+              },
+            },
+            {
+              at: currentBlockPath.concat([1, 0]),
+            }
+          )
+        }
 
-//       const newListPath = editor.selection.anchor.path.slice(0, 1)
-//       Transforms.setNodes(
-//         editor,
-//         {
-//           indexState: {
-//             type: "selfIncrement",
-//             index: 1,
-//           },
-//         },
-//         {
-//           at: newListPath,
-//         }
-//       )
-//       return
-//     }
-//   }
-//   // 默认行为
-//   Transforms.splitNodes(editor, { always: true })
-// }
-export {}
+        // 将换行拆出的部分移到子节点块中
+        Transforms.splitNodes(editor, {
+          at: selection.anchor,
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+          always: true,
+        })
+        Transforms.setNodes(
+          editor,
+          {
+            indexState: {
+              type: "head",
+              index: 1,
+            },
+          },
+          {
+            at: Path.next(currentBlockPath),
+          }
+        )
+        increaseIndent(editor, Path.next(currentBlockPath))
+        decreaseIndent(editor, currentBlockPath.concat([1, 0, 1]))
+        Transforms.select(editor, Editor.start(editor, currentBlockPath.concat([1])))
+
+        return true
+      }
+
+      // 若当前列表为有序列表头, 且无子节点, 换行后新产生的列表应为自增
+      if (currentBlock.indexState.type === "head" && currentBlock.children.length === 1) {
+        Transforms.splitNodes(editor, {
+          at: selection.anchor,
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+          always: true,
+        })
+        Transforms.setNodes(
+          editor,
+          {
+            indexState: {
+              type: "selfIncrement",
+              index: 1,
+            },
+          },
+          {
+            at: Path.next(currentBlockPath),
+          }
+        )
+
+        return true
+      }
+    }
+  }
+
+  return false
+}

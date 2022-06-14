@@ -1,6 +1,6 @@
 import { Editor, NodeEntry, Transforms } from "slate"
+import { CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN } from "../../../../types/constant"
 import { SlateElement, SlateRange } from "../../../../types/slate"
-import type { IParagraph } from "../Paragraph/types"
 
 /**
  * 处理列表中单字符删除相关的逻辑:
@@ -23,24 +23,19 @@ export const listDeleteBackward = (editor: Editor, currentEntry: NodeEntry) => {
     // 判断是否到达列表的首个 Point
     if (SlateRange.isCollapsed(selection) && Editor.isStart(editor, selection.anchor, path)) {
       // 触发 deleteBackward 相当于将当前列表变为同级别的 paragraph
-      Transforms.removeNodes(editor, {
+      Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
         at: path,
       })
+      Transforms.setNodes(
+        editor,
+        {
+          type: "paragraph",
+        },
+        {
+          at: path,
+        }
+      )
 
-      const newNode: IParagraph = {
-        type: "paragraph",
-        children: [
-          {
-            type: "__block-element-content",
-            children: node.children[0].children,
-          },
-        ],
-      }
-
-      Transforms.insertNodes(editor, newNode, {
-        at: path,
-      })
-      Transforms.select(editor, Editor.start(editor, path))
       return true
     }
   }

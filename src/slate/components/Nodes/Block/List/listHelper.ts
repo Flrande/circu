@@ -24,7 +24,7 @@ const unToggleList = (editor: Editor) => {
     return
   }
 
-  if (!isListActive(editor, "ordered-list") || !isListActive(editor, "unordered-list")) {
+  if (!isListActive(editor, "ordered-list") && !isListActive(editor, "unordered-list")) {
     return
   }
 
@@ -60,7 +60,8 @@ const unToggleList = (editor: Editor) => {
 }
 
 export const toggleOrderedList = (editor: Editor) => {
-  if (!editor.selection) {
+  const { selection } = editor
+  if (!selection) {
     console.error("toggleOrderedList() need editor.selection.")
     return
   }
@@ -71,6 +72,8 @@ export const toggleOrderedList = (editor: Editor) => {
     const selectedContentBlocksEntry = Array.from(
       Editor.nodes(editor, {
         match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+        //TODO: 寻找更好的匹配规则
+        mode: "lowest",
       })
     ) as NodeEntry<BlockElementExceptTextLine>[]
 
@@ -81,7 +84,7 @@ export const toggleOrderedList = (editor: Editor) => {
     const startPath = selectedContentBlocksEntry[0][1]
     const endPath = selectedContentBlocksEntry.at(-1)![1]
 
-    for (const [, path] of selectedContentBlocksEntry) {
+    for (const [index, [, path]] of selectedContentBlocksEntry.entries()) {
       Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
         at: path,
       })
@@ -90,7 +93,7 @@ export const toggleOrderedList = (editor: Editor) => {
         {
           type: "ordered-list",
           indexState: {
-            type: "head",
+            type: index === 0 ? "head" : "selfIncrement",
             index: 1,
           },
         },
