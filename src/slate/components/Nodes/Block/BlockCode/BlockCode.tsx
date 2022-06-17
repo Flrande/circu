@@ -51,6 +51,7 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
       >
         <Select
           defaultValue={element.langKey}
+          showSearch={true}
           style={{ width: 154 }}
           onChange={(value) => {
             const codeAreaPath = ReactEditor.findPath(editor, element)
