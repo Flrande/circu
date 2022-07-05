@@ -110,7 +110,6 @@ const ColorBar: React.FC = () => {
     ReactEditor.focus(editor)
   }
 
-  //TODO: 放大渐变效果?
   if (isColorBarActive) {
     return (
       <div className={colorBarContainer}>

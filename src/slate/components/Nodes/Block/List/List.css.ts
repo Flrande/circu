@@ -1,9 +1,12 @@
 import { style } from "@vanilla-extract/css"
 
-export const orderedListSymbol = style({
+export const orderedListSymbolContainer = style({
   userSelect: "none",
   color: "#5a87f7",
   paddingLeft: "2px",
+})
+
+export const orderedListSymbol = style({
   ":hover": {
     backgroundColor: "#22293a",
     borderRadius: "4px",

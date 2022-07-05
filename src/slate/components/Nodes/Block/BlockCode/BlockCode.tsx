@@ -8,8 +8,6 @@ import { codeAreaLangMap } from "./constant"
 import React, { useEffect, useRef, useState } from "react"
 
 //TODO: 代码较长时出现横向滚动条
-//TODO: 在语言选择器部分添加查询功能
-//TODO: 改善被选中时的样式
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
   const editor = useSlateStatic()

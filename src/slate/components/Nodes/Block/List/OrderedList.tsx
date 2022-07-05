@@ -4,7 +4,7 @@ import { Path } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { calculateIndentLevel } from "../BlockWrapper/indentHelper"
-import { orderedListSymbol } from "./List.css"
+import { orderedListSymbol, orderedListSymbolContainer } from "./List.css"
 import { orderedListBarStateAtom, orderedListModifyBarStateAtom } from "./state"
 import type { IOrderedList } from "./types"
 
@@ -192,21 +192,18 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
           display: "flex",
         }}
       >
-        <span
-          ref={spanDom}
-          onClick={onClickSpan}
-          contentEditable={false}
-          className={orderedListSymbol}
-          style={
-            orderedListModifyBarState && Path.equals(orderedListModifyBarState.orderedListEntry[1], currentListPath)
-              ? {
-                  backgroundColor: "#272f45",
-                  borderRadius: "4px",
-                }
-              : {}
-          }
-        >
-          {`${indexSymbol}.`}
+        <span ref={spanDom} onClick={onClickSpan} contentEditable={false} className={orderedListSymbolContainer}>
+          <span
+            className={orderedListSymbol}
+            style={
+              orderedListModifyBarState && Path.equals(orderedListModifyBarState.orderedListEntry[1], currentListPath)
+                ? {
+                    backgroundColor: "#272f45",
+                    borderRadius: "4px",
+                  }
+                : {}
+            }
+          >{`${indexSymbol}.`}</span>
         </span>
         <span
           style={{
