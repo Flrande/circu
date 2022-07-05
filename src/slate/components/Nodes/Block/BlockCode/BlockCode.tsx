@@ -5,8 +5,11 @@ import type { IBlockCode, ICodeAreaLangMap } from "./types"
 import { Select } from "@arco-design/web-react"
 import { Transforms } from "slate"
 import { codeAreaLangMap } from "./constant"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef } from "react"
+import Scrollbar from "smooth-scrollbar"
 
+//FIXME: 代码块内无法正常换行
+//FIXME: 代码块无法正常删除
 //TODO: 代码较长时出现横向滚动条
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
@@ -33,6 +36,15 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
     }
   }, [element.children[0]])
 
+  useEffect(() => {
+    return () => {
+      const dom = document.querySelector<HTMLElement>(`.block-code-selector-${ReactEditor.findKey(editor, element).id}`)
+      if (dom) {
+        Scrollbar.destroy(dom)
+      }
+    }
+  }, [])
+
   return (
     <div
       {...attributes}
@@ -50,6 +62,7 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
         <Select
           defaultValue={element.langKey}
           showSearch={true}
+          dropdownMenuClassName={`block-code-selector-${ReactEditor.findKey(editor, element).id}`}
           style={{ width: 154 }}
           onChange={(value) => {
             const codeAreaPath = ReactEditor.findPath(editor, element)
@@ -62,6 +75,24 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
                 at: codeAreaPath,
               }
             )
+          }}
+          onVisibleChange={(visible) => {
+            // 下拉菜单的 dom 更新是异步的, 因此需要一个定时器延后执行回调
+            setTimeout(() => {
+              const dom = document.querySelector<HTMLElement>(
+                `.block-code-selector-${ReactEditor.findKey(editor, element).id}`
+              )
+              if (visible && dom) {
+                Scrollbar.init(dom)
+              }
+            })
+
+            const dom = document.querySelector<HTMLElement>(
+              `.block-code-selector-${ReactEditor.findKey(editor, element).id}`
+            )
+            if (!visible && dom) {
+              Scrollbar.destroy(dom)
+            }
           }}
         >
           {langOptions.map((option) => (
