@@ -5,14 +5,15 @@ export const blockCodeContainer = style({
   margin: "8px 0",
   fontSize: "14px",
   fontWeight: "400",
+  borderRadius: "4px",
 })
 
 export const blockCodeCodeArea = style({
   display: "flex",
   minHeight: "49px",
-  // 这个 22px 与行序号的计算相关联, 若修改需一起改动
+  // 这个 22px 与行序号高度的计算相关联, 若修改需一起改动
   lineHeight: "22px",
-  padding: "8px 20px 20px 20px",
+  padding: "8px 20px 8px 20px",
 })
 
 export const blockCodeOrderWrapper = style({

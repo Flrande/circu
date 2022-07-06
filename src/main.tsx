@@ -3,6 +3,7 @@ import * as ReactDOMClient from "react-dom/client"
 import App from "./App"
 
 import "./normalize.css"
+import "./scrollbar.css"
 
 document.body.setAttribute("arco-theme", "dark")
 

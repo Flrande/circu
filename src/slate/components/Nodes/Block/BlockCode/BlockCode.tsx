@@ -2,18 +2,21 @@ import { ReactEditor, useSelected, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps, KeysUnion } from "../../../../types/utils"
 import { blockCodeCodeArea, blockCodeContainer, blockCodeOrderWrapper } from "./BlockCode.css"
 import type { IBlockCode, ICodeAreaLangMap } from "./types"
-import { Select } from "@arco-design/web-react"
+import { Button, Select } from "@arco-design/web-react"
 import { Transforms } from "slate"
 import { codeAreaLangMap } from "./constant"
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import Scrollbar from "smooth-scrollbar"
+import { useScrollbar } from "../../../../hooks/useScrollbar"
 
-//TODO: 代码较长时出现横向滚动条
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
   const editor = useSlateStatic()
 
   const orderNumbersWrapperDom = useRef<HTMLDivElement | null>(null)
+  // TODO: 云端保留用户设置, 根据服务器响应赋初始值
+  const [isWrap, setIsWrap] = useState(true)
+  const [isWrapMessage, setIsWrapMessage] = useState("取消自动换行")
 
   const langOptions: KeysUnion<ICodeAreaLangMap>[] = Object.keys(codeAreaLangMap) as KeysUnion<ICodeAreaLangMap>[]
 
@@ -26,14 +29,17 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
         const ord = orderNumbersWrapperDom.current.children.item(index)
         if (ord) {
           ord.replaceChildren((index + 1).toString())
-          for (let i = 1; i <= num - 1; i++) {
-            ord.insertAdjacentHTML("beforeend", "<br>&nbsp;")
+          if (isWrap) {
+            for (let i = 1; i <= num - 1; i++) {
+              ord.insertAdjacentHTML("beforeend", "<br>&nbsp;")
+            }
           }
         }
       }
     }
-  }, [element.children[0]])
+  }, [element.children[0], isWrap])
 
+  // 卸载组件时删除语言选择器的滚动条实例
   useEffect(() => {
     return () => {
       const dom = document.querySelector<HTMLElement>(`.block-code-selector-${ReactEditor.findKey(editor, element).id}`)
@@ -42,6 +48,20 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
       }
     }
   }, [])
+
+  // 设置代码区域的滚动条
+  useEffect(() => {
+    const dom = document.querySelector<HTMLElement>(`.block-code-area-${ReactEditor.findKey(editor, element).id}`)
+    if (dom && !isWrap) {
+      Scrollbar.init(dom)
+
+      return () => {
+        Scrollbar.destroy(dom)
+      }
+    }
+  }, [])
+
+  useScrollbar()
 
   return (
     <div
@@ -55,6 +75,8 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
         contentEditable={false}
         style={{
           userSelect: "none",
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
         <Select
@@ -99,6 +121,32 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
             </Select.Option>
           ))}
         </Select>
+        <Button
+          style={{
+            borderRadius: "4px",
+          }}
+          onClick={() => {
+            const dom = document.querySelector<HTMLElement>(
+              `.block-code-area-${ReactEditor.findKey(editor, element).id}`
+            )
+            if (dom) {
+              if (isWrap) {
+                // 取消换行, 初始化滚动条
+                setIsWrap(false)
+                setIsWrapMessage("启用自动换行")
+                Scrollbar.init(dom)
+              } else {
+                // 启动换行, 卸载滚动条
+                setIsWrap(true)
+                setIsWrapMessage("取消自动换行")
+                Scrollbar.destroy(dom)
+              }
+            }
+          }}
+          type="secondary"
+        >
+          {isWrapMessage}
+        </Button>
       </div>
       <div className={blockCodeCodeArea}>
         <div
@@ -113,7 +161,16 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
             return <span key={(i + 1).toString()}>{i + 1}</span>
           })}
         </div>
-        <div>{children}</div>
+        <div className={`block-code-area-${ReactEditor.findKey(editor, element).id}`}>
+          <div
+            style={{
+              whiteSpace: !isWrap ? "nowrap" : undefined,
+              marginBottom: "16px",
+            }}
+          >
+            {children}
+          </div>
+        </div>
       </div>
     </div>
   )

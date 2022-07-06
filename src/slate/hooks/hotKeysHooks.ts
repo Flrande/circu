@@ -71,9 +71,11 @@ export const useOnKeyDown = () => {
 
       // toggleOrderedList(editor)
       // toggleQuote(editor)
-      Transforms.liftNodes(editor, {
-        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
-      })
+      // Transforms.liftNodes(editor, {
+      //   match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+      // })
+      // debugger
+      Transforms.splitNodes(editor, { always: true })
 
       return
     }
