@@ -112,6 +112,7 @@ export const inspectIncreaseIndentable = (
   }
 }
 
+//TODO: 若前方块级节点的子节点折叠, 将其展开
 /**
  * 用于增加内容块缩进的函数, 即将选中的块级节点移入前一个块级节点的子节点块
  *

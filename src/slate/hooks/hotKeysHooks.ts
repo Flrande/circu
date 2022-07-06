@@ -13,8 +13,8 @@ import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Bloc
 import type { IOrderedList } from "../components/Nodes/Block/List/types"
 import { toggleQuote } from "../components/Nodes/Block/Quote/quoteHelper"
 import { getSelectedBlocks } from "../components/Nodes/Block/utils/getSelectedBlocks"
-import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../types/constant"
-import type { BlockElementExceptTextLine } from "../types/interface"
+import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, BLOCK_ELEMENTS_WITH_CHILDREN } from "../types/constant"
+import type { BlockElementExceptTextLine, BlockElementWithChildren } from "../types/interface"
 import { SlateElement } from "../types/slate"
 import { arrayIncludes } from "../utils/general"
 
@@ -54,12 +54,28 @@ export const useOnKeyDown = () => {
         return
       }
 
-      console.log(window.getSelection(), editor.selection)
+      // console.log(window.getSelection(), editor.selection)
       // toggleBlockCode(editor)
       // toggleUnorderedList(editor)
-      Editor.withoutNormalizing(editor, () => {
-        decreaseIndent(editor)
-      })
+      // Editor.withoutNormalizing(editor, () => {
+      //   decreaseIndent(editor)
+      // })
+      const selectedBlocksEntry = Array.from(
+        Editor.nodes(editor, {
+          at: selection.anchor,
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, n.type),
+          mode: "lowest",
+        })
+      ) as NodeEntry<BlockElementWithChildren>[]
+      Transforms.setNodes(
+        editor,
+        {
+          collapsed: true,
+        },
+        {
+          at: selectedBlocksEntry[0][1].concat([1]),
+        }
+      )
 
       return
     }
@@ -75,7 +91,16 @@ export const useOnKeyDown = () => {
       //   match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
       // })
       // debugger
-      Transforms.splitNodes(editor, { always: true })
+      const selectedBlocksEntry = Array.from(
+        Editor.nodes(editor, {
+          at: selection.anchor,
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, n.type),
+          mode: "lowest",
+        })
+      ) as NodeEntry<BlockElementWithChildren>[]
+      Transforms.unsetNodes(editor, ["collapsed"], {
+        at: selectedBlocksEntry[0][1].concat([1]),
+      })
 
       return
     }
