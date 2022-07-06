@@ -8,8 +8,6 @@ import { codeAreaLangMap } from "./constant"
 import React, { useEffect, useRef } from "react"
 import Scrollbar from "smooth-scrollbar"
 
-//FIXME: 代码块内无法正常换行
-//FIXME: 代码块无法正常删除
 //TODO: 代码较长时出现横向滚动条
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()

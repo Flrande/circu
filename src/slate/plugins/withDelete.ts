@@ -24,6 +24,7 @@ const withDeleteBackward = (editor: Editor) => {
       ) as NodeEntry<BlockElementExceptTextLine>[]
 
       if (selectedContentBlocksEntry.length === 1) {
+        // 注意, 此处某个函数返回值为真会导致后面的函数不执行
         flag =
           paragraphDeleteBackward(editor, selectedContentBlocksEntry[0]) ||
           blockCodeDeleteBackward(editor, selectedContentBlocksEntry[0]) ||

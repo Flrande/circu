@@ -18,6 +18,8 @@ const deleteRange = (editor: Editor, range: SlateRange): Point | null => {
 }
 
 export const withLineBreak = (editor: Editor) => {
+  const { insertBreak } = editor
+
   editor.insertBreak = () => {
     Editor.withoutNormalizing(editor, () => {
       const { selection } = editor
@@ -36,12 +38,11 @@ export const withLineBreak = (editor: Editor) => {
         ) as NodeEntry<BlockElementWithChildren>[]
 
         if (selectedBlocksEntry.length >= 1) {
-          // 在这里添加特定类型节点的处理函数, 通过返回值判断是否需要执行下方的默认换行行为
+          // 在这里添加特定类型节点的处理函数, 通过返回值判断是否需要执行下方的针对含子节点的节点的默认换行行为
           if (listLineBreakHandler(editor, selectedBlocksEntry[0])) {
             return
           }
 
-          // 默认换行行为
           const [selectedBlock, selectedBlockPath] = selectedBlocksEntry[0]
 
           if (selectedBlock.children.length === 2) {
@@ -61,6 +62,8 @@ export const withLineBreak = (editor: Editor) => {
               always: true,
             })
           }
+        } else {
+          insertBreak()
         }
       }
     })

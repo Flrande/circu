@@ -39,7 +39,17 @@ export const paragraphDeleteBackward = (editor: Editor, currentEntry: NodeEntry)
 
     // 若光标前为 blockCode, 选中该 blockCode, 不删除
     if (previousNodeEntry && previousNodeEntry[0].type === "block-code") {
-      Transforms.select(editor, previousNodeEntry[1])
+      const newAnchor = Editor.before(editor, previousNodeEntry[1])
+      if (newAnchor) {
+        const newRange: SlateRange = {
+          anchor: newAnchor,
+          focus: Editor.end(editor, previousNodeEntry[1]),
+        }
+        Transforms.select(editor, newRange)
+      } else {
+        Transforms.select(editor, previousNodeEntry[1])
+      }
+
       return true
     }
 

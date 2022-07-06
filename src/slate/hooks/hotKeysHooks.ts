@@ -54,7 +54,7 @@ export const useOnKeyDown = () => {
         return
       }
 
-      // console.log(window.getSelection(), editor.selection)
+      console.log(window.getSelection(), editor.selection)
       // toggleBlockCode(editor)
       // toggleUnorderedList(editor)
       Editor.withoutNormalizing(editor, () => {
