@@ -46,21 +46,23 @@ export const useToolBar = () => {
               if (domSelection && !domSelection.isCollapsed) {
                 // 文档左右两边到视口的距离, 790 为文档宽度
                 const docXPadding = (document.documentElement.clientWidth - 790) / 2
-                let x = event.pageX
-                let y = event.pageY
+                let x = event.clientX
+                let y = event.clientY
 
                 if (x <= docXPadding) {
                   x = 0
                 } else if (x >= docXPadding + 790) {
-                  x = 790
+                  x = 650
                 } else {
                   x -= docXPadding
                   x += 20
+                  x = x >= 650 ? 650 : x
                 }
-                if (event.clientY < 80) {
-                  y += 50
+                if (y < 80) {
+                  y += 50 + window.scrollY
                 } else {
                   y -= 80
+                  y += window.scrollY
                 }
 
                 setToolBarState({
