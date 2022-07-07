@@ -2,7 +2,7 @@ import { ReactEditor } from "../../plugin/react-editor"
 import { Editor, Range, Transforms, Text } from "slate"
 import { IS_ON_COMPOSITION_END, EDITOR_ON_COMPOSITION_TEXT } from "../../utils/weak-maps"
 
-import { DOMNode } from "../../utils/dom"
+import type { DOMNode } from "../../utils/dom"
 
 import { normalizeTextInsertionRange, combineInsertedText, TextInsertion } from "./diff-text"
 import {

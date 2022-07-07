@@ -1,7 +1,14 @@
 import { Range } from "slate"
 import { PLACEHOLDER_SYMBOL } from "./weak-maps"
 
-export const shallowCompare = (obj1: {}, obj2: {}) =>
+export const shallowCompare = (
+  obj1: {
+    [key: string | symbol]: any
+  },
+  obj2: {
+    [key: string | symbol]: any
+  }
+) =>
   Object.keys(obj1).length === Object.keys(obj2).length &&
   Object.keys(obj1).every((key) => obj2.hasOwnProperty(key) && obj1[key] === obj2[key])
 

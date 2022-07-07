@@ -3,7 +3,7 @@ import { Range, Element, Text as SlateText } from "slate"
 
 import Leaf from "./leaf"
 import { ReactEditor, useSlateStatic } from ".."
-import { RenderLeafProps, RenderPlaceholderProps } from "./editable"
+import type { RenderLeafProps, RenderPlaceholderProps } from "./editable"
 import { useIsomorphicLayoutEffect } from "../hooks/use-isomorphic-layout-effect"
 import { NODE_TO_ELEMENT, ELEMENT_TO_NODE, EDITOR_TO_KEY_TO_ELEMENT } from "../utils/weak-maps"
 import { isDecoratorRangeListEqual } from "../utils/range-list"

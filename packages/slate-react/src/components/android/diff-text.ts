@@ -1,7 +1,7 @@
 import { Editor, Path, Range, Text } from "slate"
 
 import { ReactEditor } from "../../"
-import { DOMNode } from "../../utils/dom"
+import type { DOMNode } from "../../utils/dom"
 
 export type Diff = {
   start: number

@@ -1,6 +1,6 @@
 import { Editor, Node, Path, Range } from "slate"
 
-import { DOMNode } from "../../utils/dom"
+import type { DOMNode } from "../../utils/dom"
 import { ReactEditor } from "../.."
 import { TextInsertion, getTextInsertion } from "./diff-text"
 

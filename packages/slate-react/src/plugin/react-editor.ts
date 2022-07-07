@@ -201,6 +201,7 @@ export const ReactEditor = {
     try {
       targetEl = (isDOMElement(target) ? target : target.parentElement) as HTMLElement
     } catch (err) {
+      // @ts-ignore
       if (!err.message.includes('Permission denied to access property "nodeType"')) {
         throw err
       }
@@ -419,6 +420,7 @@ export const ReactEditor = {
     if (document.caretRangeFromPoint) {
       domRange = document.caretRangeFromPoint(x, y)
     } else {
+      // @ts-ignore
       const position = document.caretPositionFromPoint(x, y)
 
       if (position) {

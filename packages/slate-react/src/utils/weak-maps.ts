@@ -1,6 +1,6 @@
-import { Ancestor, Editor, Node, RangeRef } from "slate"
-import { Key } from "./key"
-import { TextInsertion } from "../components/android/diff-text"
+import type { Ancestor, Editor, Node, RangeRef } from "slate"
+import type { Key } from "./key"
+import type { TextInsertion } from "../components/android/diff-text"
 
 /**
  * Two weak maps that allow us rebuild a path given a node. They are populated
@@ -53,4 +53,4 @@ export const NODE_TO_RESTORE_DOM = new WeakMap<Node, () => void>()
  * Symbols.
  */
 
-export const PLACEHOLDER_SYMBOL = Symbol("placeholder") as unknown as string
+export const PLACEHOLDER_SYMBOL = Symbol("placeholder")

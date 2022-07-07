@@ -7,7 +7,7 @@ import { ReactEditor } from ".."
 import { useSlateStatic } from "./use-slate-static"
 import { useDecorate } from "./use-decorate"
 import { NODE_TO_INDEX, NODE_TO_PARENT } from "../utils/weak-maps"
-import { RenderElementProps, RenderLeafProps, RenderPlaceholderProps } from "../components/editable"
+import type { RenderElementProps, RenderLeafProps, RenderPlaceholderProps } from "../components/editable"
 import { SelectedContext } from "./use-selected"
 
 /**

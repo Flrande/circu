@@ -14,7 +14,7 @@ import {
   EDITOR_TO_KEY_TO_ELEMENT,
 } from "../utils/weak-maps"
 import { isDecoratorRangeListEqual } from "../utils/range-list"
-import { RenderElementProps, RenderLeafProps, RenderPlaceholderProps } from "./editable"
+import type { RenderElementProps, RenderLeafProps, RenderPlaceholderProps } from "./editable"
 import { useContentKey } from "../hooks/use-content-key"
 import { IS_ANDROID } from "../utils/environment"
 

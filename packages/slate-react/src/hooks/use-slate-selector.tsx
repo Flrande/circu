@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useReducer, useRef } from "react"
-import { Editor } from "slate"
+import type { Editor } from "slate"
 import { useIsomorphicLayoutEffect } from "./use-isomorphic-layout-effect"
 
 function isError(error: any): error is Error {
@@ -78,6 +78,7 @@ export function useSlateSelector<T>(
           // is re-rendered, the selectors are called again, and
           // will throw again, if neither props nor store state
           // changed
+          // @ts-ignore
           latestSubscriptionCallbackError.current = err
         }
 

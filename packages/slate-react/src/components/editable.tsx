@@ -1310,6 +1310,9 @@ const defaultScrollSelectionIntoView = (editor: ReactEditor, domRange: DOMRange)
     scrollIntoView(leafEl, {
       scrollMode: "if-needed",
     })
+    // 用于恢复前面的覆盖
+    // https://github.com/ianstormtaylor/slate/pull/3746/files#r618385927
+    // @ts-ignore
     delete leafEl.getBoundingClientRect
   }
 }

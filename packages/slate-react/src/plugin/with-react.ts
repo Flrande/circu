@@ -2,7 +2,7 @@ import ReactDOM from "react-dom"
 import { Editor, Node, Path, Operation, Transforms, Range } from "slate"
 
 import { ReactEditor } from "./react-editor"
-import { Key } from "../utils/key"
+import type { Key } from "../utils/key"
 import {
   EDITOR_TO_KEY_TO_ELEMENT,
   EDITOR_TO_ON_CHANGE,

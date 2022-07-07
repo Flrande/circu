@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react"
-import { Node as SlateNode } from "slate"
+import type { Node as SlateNode } from "slate"
 import { NODE_TO_RESTORE_DOM } from "../utils/weak-maps"
 
 export function useContentKey(node: SlateNode) {

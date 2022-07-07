@@ -5,7 +5,9 @@ import { IS_APPLE } from "./environment"
  * Hotkey mappings for each platform.
  */
 
-const HOTKEYS = {
+const HOTKEYS: {
+  [key: string]: string | string[]
+} = {
   bold: "mod+b",
   compose: ["down", "left", "right", "up", "backspace", "enter"],
   moveBackward: "left",
@@ -22,7 +24,9 @@ const HOTKEYS = {
   undo: "mod+z",
 }
 
-const APPLE_HOTKEYS = {
+const APPLE_HOTKEYS: {
+  [key: string]: string | string[]
+} = {
   moveLineBackward: "opt+up",
   moveLineForward: "opt+down",
   moveWordBackward: "opt+left",
@@ -39,7 +43,9 @@ const APPLE_HOTKEYS = {
   transposeCharacter: "ctrl+t",
 }
 
-const WINDOWS_HOTKEYS = {
+const WINDOWS_HOTKEYS: {
+  [key: string]: string | string[]
+} = {
   deleteWordBackward: "ctrl+shift?+backspace",
   deleteWordForward: "ctrl+shift?+delete",
   redo: ["ctrl+y", "ctrl+shift+z"],
