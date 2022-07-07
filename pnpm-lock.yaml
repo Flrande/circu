@@ -1,50 +1,85 @@
 lockfileVersion: 5.4
 
-specifiers:
-  "@arco-design/web-react": ^2.32.2
-  "@arco-plugins/vite-react": ^1.1.0
-  "@faker-js/faker": ^6.3.1
-  "@types/prismjs": ^1.26.0
-  "@types/react": ^18.0.9
-  "@types/react-dom": ^18.0.3
-  "@vanilla-extract/css": ^1.7.0
-  "@vanilla-extract/vite-plugin": 2.1.3
-  "@vitejs/plugin-react": ^1.3.2
-  jotai: ^1.6.6
-  prettier: ^2.6.2
-  prismjs: ^1.28.0
-  react: ^18.1.0
-  react-dom: ^18.1.0
-  slate: ^0.78.0
-  slate-react: ^0.79.0
-  smooth-scrollbar: ^8.7.4
-  typescript: ^4.6.4
-  valtio: ^1.6.0
-  vite: ^2.9.9
+importers:
+  .:
+    specifiers:
+      prettier: ^2.6.2
+      typescript: ^4.6.4
+    devDependencies:
+      prettier: 2.6.2
+      typescript: 4.6.4
 
-dependencies:
-  "@arco-design/web-react": 2.33.0_ohobp6rpsmerwlq5ipwfh5yigy
-  "@vanilla-extract/css": 1.7.0
-  "@vanilla-extract/vite-plugin": 2.1.3_vite@2.9.9
-  jotai: 1.6.6_react@18.1.0+valtio@1.6.0
-  prismjs: 1.28.0
-  react: 18.1.0
-  react-dom: 18.1.0_react@18.1.0
-  slate: 0.78.0
-  slate-react: 0.79.0_f2wd3brsyncbqb5a2vzjxmzjby
-  smooth-scrollbar: 8.7.4
-  valtio: 1.6.0_react@18.1.0+vite@2.9.9
+  packages/circu-editor:
+    specifiers:
+      "@arco-design/web-react": ^2.32.2
+      "@arco-plugins/vite-react": ^1.1.0
+      "@faker-js/faker": ^6.3.1
+      "@types/prismjs": ^1.26.0
+      "@types/react": ^18.0.9
+      "@types/react-dom": ^18.0.3
+      "@vanilla-extract/css": ^1.7.0
+      "@vanilla-extract/vite-plugin": 2.1.3
+      "@vitejs/plugin-react": ^1.3.2
+      jotai: ^1.6.6
+      prismjs: ^1.28.0
+      react: ^18.1.0
+      react-dom: ^18.1.0
+      slate: ^0.81.0
+      slate-react: workspace:0.0.1
+      smooth-scrollbar: ^8.7.4
+      valtio: ^1.6.0
+      vite: ^2.9.9
+    dependencies:
+      "@arco-design/web-react": 2.33.0_ohobp6rpsmerwlq5ipwfh5yigy
+      "@vanilla-extract/css": 1.7.0
+      "@vanilla-extract/vite-plugin": 2.1.3_vite@2.9.9
+      jotai: 1.6.6_react@18.1.0+valtio@1.6.0
+      prismjs: 1.28.0
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+      slate: 0.81.1
+      slate-react: link:../slate-react
+      smooth-scrollbar: 8.7.4
+      valtio: 1.6.0_react@18.1.0+vite@2.9.9
+    devDependencies:
+      "@arco-plugins/vite-react": 1.1.0
+      "@faker-js/faker": 6.3.1
+      "@types/prismjs": 1.26.0
+      "@types/react": 18.0.9
+      "@types/react-dom": 18.0.4
+      "@vitejs/plugin-react": 1.3.2
+      vite: 2.9.9
 
-devDependencies:
-  "@arco-plugins/vite-react": 1.1.0
-  "@faker-js/faker": 6.3.1
-  "@types/prismjs": 1.26.0
-  "@types/react": 18.0.9
-  "@types/react-dom": 18.0.4
-  "@vitejs/plugin-react": 1.3.2
-  prettier: 2.6.2
-  typescript: 4.6.4
-  vite: 2.9.9
+  packages/slate-react:
+    specifiers:
+      "@types/is-hotkey": ^0.1.1
+      "@types/lodash": ^4.14.149
+      "@types/react": ^16.9.13
+      "@types/react-dom": ^16.9.4
+      direction: ^1.0.3
+      is-hotkey: ^0.1.6
+      is-plain-object: ^5.0.0
+      lodash: ^4.17.4
+      react: ">=16.8.0"
+      react-dom: ">=16.8.0"
+      scroll-into-view-if-needed: ^2.2.20
+      slate: ^0.81.0
+      tiny-invariant: 1.0.6
+    dependencies:
+      "@types/is-hotkey": 0.1.7
+      "@types/lodash": 4.14.182
+      direction: 1.0.4
+      is-hotkey: 0.1.8
+      is-plain-object: 5.0.0
+      lodash: 4.17.21
+      scroll-into-view-if-needed: 2.2.29
+      tiny-invariant: 1.0.6
+    devDependencies:
+      "@types/react": 16.14.28
+      "@types/react-dom": 16.9.16
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
+      slate: 0.81.1
 
 packages:
   /@ampproject/remapping/2.2.0:
@@ -481,11 +516,27 @@ packages:
     resolution:
       { integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w== }
 
+  /@types/react-dom/16.9.16:
+    resolution:
+      { integrity: sha512-Oqc0RY4fggGA3ltEgyPLc3IV9T73IGoWjkONbsyJ3ZBn+UPPCYpU2ec0i3cEbJuEdZtkqcCF2l1zf2pBdgUGSg== }
+    dependencies:
+      "@types/react": 16.14.28
+    dev: true
+
   /@types/react-dom/18.0.4:
     resolution:
       { integrity: sha512-FgTtbqPOCI3dzZPZoC2T/sx3L34qxy99ITWn4eoSA95qPyXDMH0ALoAqUp49ITniiJFsXUVBtalh/KffMpg21Q== }
     dependencies:
       "@types/react": 18.0.9
+    dev: true
+
+  /@types/react/16.14.28:
+    resolution:
+      { integrity: sha512-83zBE6+XUVXsdL3iFzOyUewdauaU+KviKCHEGOgSW52coAuqW7tEKQM0E9+ZC0Zk6TELQ2/JgogPvp7FavzFwg== }
+    dependencies:
+      "@types/prop-types": 15.7.5
+      "@types/scheduler": 0.16.2
+      csstype: 3.1.0
     dev: true
 
   /@types/react/18.0.9:
@@ -642,7 +693,8 @@ packages:
     dev: false
 
   /color-name/1.1.3:
-    resolution: { integrity: sha1-p9BVi9icQveV3UIyj3QIMcpTvCU= }
+    resolution:
+      { integrity: sha512-72fSenhMw2HZMTVHeCA9KCmpEIbzWiQsjN+BHcBbS9vr1mtt+vJjPdksIBNUmKAW8TFUDPJK5SUU3QhE9NEXDw== }
 
   /color-name/1.1.4:
     resolution:
@@ -689,7 +741,8 @@ packages:
     dev: false
 
   /css-mediaquery/0.1.2:
-    resolution: { integrity: sha1-aiw3NEkoYYYxxUvTPO3TAdoYvqA= }
+    resolution:
+      { integrity: sha512-COtn4EROW5dBGlE/4PiKnh6rZpAPxDeFLaEEwt4i10jpDMFt2EhQGS79QmmrO+iKCHv0PU/HrOWEhijFd1x99Q== }
     dev: false
 
   /css-what/5.1.0:
@@ -984,7 +1037,8 @@ packages:
     dev: true
 
   /escape-string-regexp/1.0.5:
-    resolution: { integrity: sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ= }
+    resolution:
+      { integrity: sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg== }
     engines: { node: ">=0.8.0" }
     dev: true
 
@@ -1049,7 +1103,8 @@ packages:
     dev: true
 
   /has-flag/3.0.0:
-    resolution: { integrity: sha1-tdRU3CGZriJWmfNGfloH87lVuv0= }
+    resolution:
+      { integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw== }
     engines: { node: ">=4" }
     dev: true
 
@@ -1069,7 +1124,6 @@ packages:
   /immer/9.0.14:
     resolution:
       { integrity: sha512-ubBeqQutOSLIFCUBN03jGeOS6a3DoYlSYwYJTa+gSKEZKU5redJIqkIdZ3JVv/4RZpfcXdAWH5zCNLWPRv2WDw== }
-    dev: false
 
   /is-arrayish/0.3.2:
     resolution:
@@ -1091,7 +1145,6 @@ packages:
     resolution:
       { integrity: sha512-VRSzKkbMm5jMDoKLbltAkFQ5Qr7VDiTFGXxYFXXowVj387GeGNOCsOH6Msy00SGZ3Fp84b1Naa1psqgcCIEP5Q== }
     engines: { node: ">=0.10.0" }
-    dev: false
 
   /javascript-stringify/2.1.0:
     resolution:
@@ -1179,7 +1232,6 @@ packages:
     hasBin: true
     dependencies:
       js-tokens: 4.0.0
-    dev: false
 
   /ms/2.1.2:
     resolution:
@@ -1304,7 +1356,6 @@ packages:
       loose-envify: 1.4.0
       react: 18.1.0
       scheduler: 0.22.0
-    dev: false
 
   /react-focus-lock/2.9.1_7cpxmzzodpxnolj5zcc5cr63ji:
     resolution:
@@ -1358,7 +1409,6 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /regenerator-runtime/0.13.9:
     resolution:
@@ -1366,7 +1416,8 @@ packages:
     dev: false
 
   /require-like/0.1.2:
-    resolution: { integrity: sha1-rW8wwTvs15cBDEaK+ndcDAprR/o= }
+    resolution:
+      { integrity: sha512-oyrU88skkMtDdauHDuKVrgR+zuItqr6/c//FXzvmxRGMexSDc6hNvJInGW3LL46n+8b50RykrvwSUIIQH2LQ5A== }
     dev: false
 
   /resize-observer-polyfill/1.5.1:
@@ -1401,7 +1452,6 @@ packages:
       { integrity: sha512-6QAm1BgQI88NPYymgGQLCZgvep4FyePDWFpXVK+zNSUgHwlqpJy8VEh8Et0KxTACS4VWwMousBElAZOH9nkkoQ== }
     dependencies:
       loose-envify: 1.4.0
-    dev: false
 
   /scroll-into-view-if-needed/2.2.20:
     resolution:
@@ -1429,40 +1479,19 @@ packages:
     dev: false
 
   /simple-swizzle/0.2.2:
-    resolution: { integrity: sha1-pNprY1/8zMoz9w0Xy5JZLeleVXo= }
+    resolution:
+      { integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg== }
     dependencies:
       is-arrayish: 0.3.2
     dev: false
 
-  /slate-react/0.79.0_f2wd3brsyncbqb5a2vzjxmzjby:
+  /slate/0.81.1:
     resolution:
-      { integrity: sha512-uPzYArGwHKq4QvpzRvP/DVvsDgB2Zw6x9Som/hJWaydu18r0Vp2vmgHL0Dbc4EU6pUNV6o83XbBJLLEwISzBHQ== }
-    peerDependencies:
-      react: ">=16.8.0"
-      react-dom: ">=16.8.0"
-      slate: ">=0.65.3"
-    dependencies:
-      "@types/is-hotkey": 0.1.7
-      "@types/lodash": 4.14.182
-      direction: 1.0.4
-      is-hotkey: 0.1.8
-      is-plain-object: 5.0.0
-      lodash: 4.17.21
-      react: 18.1.0
-      react-dom: 18.1.0_react@18.1.0
-      scroll-into-view-if-needed: 2.2.29
-      slate: 0.78.0
-      tiny-invariant: 1.0.6
-    dev: false
-
-  /slate/0.78.0:
-    resolution:
-      { integrity: sha512-VwQ0RafT3JPf9SFrXI02Dh3S4Iz9en7d1nn50C/LJjjqjfgv+a2ORbgWMdYjhycPYldaxJwcI3OpP9D1g4SXEg== }
+      { integrity: sha512-nmqphQb2qnlJpPMKsoxeWShpa+pOlKfy6XVdmlTuOtgWeGethM6SMPSRTrhh5UF/G+3/IoXhfbKF7o3iDZCbWw== }
     dependencies:
       immer: 9.0.14
       is-plain-object: 5.0.0
       tiny-warning: 1.0.3
-    dev: false
 
   /smooth-scrollbar/8.7.4:
     resolution:
@@ -1507,10 +1536,10 @@ packages:
   /tiny-warning/1.0.3:
     resolution:
       { integrity: sha512-lBN9zLN/oAf68o3zNXYrdCt1kP8WsiGW8Oo2ka41b2IM5JL/S1CTyX1rW0mb/zSuJun0ZUrDxx4sqvYS2FWzPA== }
-    dev: false
 
   /to-fast-properties/2.0.0:
-    resolution: { integrity: sha1-3F5pjL0HkmW8c+A3doGk5Og/YW4= }
+    resolution:
+      { integrity: sha512-/OaKK0xYrs3DmxRYqL/yDc+FxFUVYhDlXMhRmv3z915w2HF1tnN1omB354j8VUGO/hbRzyD6Y3sA7v7GS/ceog== }
     engines: { node: ">=4" }
     dev: true
 
