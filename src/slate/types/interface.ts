@@ -29,6 +29,7 @@ export type BlockElementWithChildren = BlockElementWithChildrenDetector<
   IParagraph | IOrderedList | IUnorderedList | IHead
 >
 
+//TODO: 点击两个相邻的2类块级节点的中间区域, 插入一个空行
 // 2类块级节点
 type BaseBlockElementWithoutChildren = {
   type: string
