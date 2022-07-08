@@ -1,5 +1,6 @@
 import { Editor, NodeEntry, Path, Point, Transforms } from "slate"
 import { decreaseIndent, increaseIndent } from "../components/Nodes/Block/BlockWrapper/indentHelper"
+import { headLineBreakHandler } from "../components/Nodes/Block/Head/headLineBreakHandler"
 import { listLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, BLOCK_ELEMENTS_WITH_CHILDREN } from "../types/constant"
 import type { BlockElementWithChildren } from "../types/interface"
@@ -17,7 +18,6 @@ const deleteRange = (editor: Editor, range: SlateRange): Point | null => {
   }
 }
 
-//TODO: 标题的换行行为: 末尾换行时新行为段落块, 折叠后的新行为标题, 且位置在折叠区域之后
 export const withLineBreak = (editor: Editor) => {
   const { insertBreak } = editor
 
@@ -41,6 +41,9 @@ export const withLineBreak = (editor: Editor) => {
         if (selectedBlocksEntry.length >= 1) {
           // 在这里添加特定类型节点的处理函数, 通过返回值判断是否需要执行下方的针对含子节点的节点的默认换行行为
           if (listLineBreakHandler(editor, selectedBlocksEntry[0])) {
+            return
+          }
+          if (headLineBreakHandler(editor, selectedBlocksEntry[0])) {
             return
           }
 

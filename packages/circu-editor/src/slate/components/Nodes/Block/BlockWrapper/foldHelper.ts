@@ -29,6 +29,15 @@ const handleFold = (editor: Editor, path: Path, action: "toggle" | "unToggle"): 
           Transforms.setNodes(
             editor,
             {
+              isFold: true,
+            },
+            {
+              at: nodePath,
+            }
+          )
+          Transforms.setNodes(
+            editor,
+            {
               collapsed: true,
             },
             {
@@ -42,6 +51,9 @@ const handleFold = (editor: Editor, path: Path, action: "toggle" | "unToggle"): 
             }
           )
         } else {
+          Transforms.unsetNodes(editor, ["isFold"], {
+            at: nodePath,
+          })
           Transforms.unsetNodes(editor, ["collapsed"], {
             at: nodePath.slice(0, -1),
             match: (n, p) =>

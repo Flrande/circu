@@ -26,10 +26,6 @@ export const useEndLine = () => {
               },
             ],
           },
-          {
-            type: "__block-element-children",
-            children: [],
-          },
         ],
       }
       Transforms.insertNodes(editor, blankLineNode, {
