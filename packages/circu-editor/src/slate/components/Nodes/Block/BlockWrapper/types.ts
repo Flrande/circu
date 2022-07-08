@@ -10,6 +10,5 @@ export type __IBlockElementContent<T = ITextLine> = {
 // 子节点块, 容纳其他块级节点, 用于实现排版缩进
 export type __IBlockElementChildren = {
   type: "__block-element-children"
-  collapsed?: true
   children: BlockElementExceptTextLine[]
 }

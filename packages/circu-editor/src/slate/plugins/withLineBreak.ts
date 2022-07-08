@@ -17,6 +17,7 @@ const deleteRange = (editor: Editor, range: SlateRange): Point | null => {
   }
 }
 
+//TODO: 标题的换行行为: 末尾换行时新行为段落块, 折叠后的新行为标题, 且位置在折叠区域之后
 export const withLineBreak = (editor: Editor) => {
   const { insertBreak } = editor
 

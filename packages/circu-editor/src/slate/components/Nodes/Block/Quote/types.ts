@@ -3,5 +3,6 @@ import type { __IBlockElementChildren, __IBlockElementContent } from "../BlockWr
 
 export type IQuote = {
   type: "quote"
+  collapsed?: true
   children: [__IBlockElementContent<Exclude<BlockElementExceptTextLine, IQuote>>]
 }

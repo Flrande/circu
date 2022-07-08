@@ -8,6 +8,7 @@ import {
   decreaseIndent,
   increaseIndent,
 } from "../components/Nodes/Block/BlockWrapper/indentHelper"
+import { toggleFold, unToggleFold } from "../components/Nodes/Block/BlockWrapper/foldHelper"
 import { toggleHead } from "../components/Nodes/Block/Head/headHelper"
 import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
 import type { IOrderedList } from "../components/Nodes/Block/List/types"
@@ -63,19 +64,11 @@ export const useOnKeyDown = () => {
       const selectedBlocksEntry = Array.from(
         Editor.nodes(editor, {
           at: selection.anchor,
-          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, n.type),
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
           mode: "lowest",
         })
       ) as NodeEntry<BlockElementWithChildren>[]
-      Transforms.setNodes(
-        editor,
-        {
-          collapsed: true,
-        },
-        {
-          at: selectedBlocksEntry[0][1].concat([1]),
-        }
-      )
+      toggleFold(editor, selectedBlocksEntry[0][1])
 
       return
     }
@@ -94,13 +87,11 @@ export const useOnKeyDown = () => {
       const selectedBlocksEntry = Array.from(
         Editor.nodes(editor, {
           at: selection.anchor,
-          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, n.type),
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
           mode: "lowest",
         })
       ) as NodeEntry<BlockElementWithChildren>[]
-      Transforms.unsetNodes(editor, ["collapsed"], {
-        at: selectedBlocksEntry[0][1].concat([1]),
-      })
+      unToggleFold(editor, selectedBlocksEntry[0][1])
 
       return
     }

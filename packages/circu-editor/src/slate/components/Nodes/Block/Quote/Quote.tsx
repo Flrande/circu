@@ -2,7 +2,7 @@ import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { IQuote } from "./types"
 
 //TODO: 提取样式
-const Quote: React.FC<CustomRenderElementProps<IQuote>> = ({ attributes, children }) => {
+const Quote: React.FC<CustomRenderElementProps<IQuote>> = ({ attributes, children, element }) => {
   return (
     <div
       {...attributes}
@@ -11,6 +11,7 @@ const Quote: React.FC<CustomRenderElementProps<IQuote>> = ({ attributes, childre
         paddingLeft: "14px",
         position: "relative",
         color: "#ebebeb",
+        display: element.collapsed ? "none" : undefined,
       }}
     >
       <div

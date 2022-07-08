@@ -7,17 +7,10 @@ const Paragraph: React.FC<CustomRenderElementProps<IParagraph>> = ({ attributes,
       {...attributes}
       style={{
         margin: "8px 0",
+        display: element.collapsed ? "none" : undefined,
       }}
     >
-      <div
-        style={
-          {
-            // marginLeft: `${element.indentLevel * 22}px`,
-          }
-        }
-      >
-        {children}
-      </div>
+      <div>{children}</div>
     </div>
   )
 }
