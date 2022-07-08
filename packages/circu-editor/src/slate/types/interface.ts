@@ -20,7 +20,7 @@ import type { ICustomText } from "../components/Nodes/Text/types"
 // 1类块级节点
 type BaseBlockElementWithChildren = {
   type: string
-  collapsed?: true
+  isHidden?: true
   // __IBlockElementContent 中的子项只能为 text-line
   //TODO: 添加约束, 保证元组形式
   children: [__IBlockElementContent, __IBlockElementChildren] | [__IBlockElementContent]
@@ -34,7 +34,7 @@ export type BlockElementWithChildren = BlockElementWithChildrenDetector<
 // 2类块级节点
 type BaseBlockElementWithoutChildren = {
   type: string
-  collapsed?: true
+  isHidden?: true
   // __IBlockElementContent 中的子项可以自定义
   children: [__IBlockElementContent<{}>]
 }

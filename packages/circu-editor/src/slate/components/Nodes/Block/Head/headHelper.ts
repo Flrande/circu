@@ -62,6 +62,7 @@ const unToggleHead = (editor: Editor): void => {
   })
 }
 
+//FIXME: 对于有子节点的块级节点应只作用与其内容区部分
 export const toggleHead = (editor: Editor, headGrade: IHeadGrade): void => {
   Editor.withoutNormalizing(editor, () => {
     if (!editor.selection) {

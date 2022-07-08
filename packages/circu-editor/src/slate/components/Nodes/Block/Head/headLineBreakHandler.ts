@@ -21,7 +21,7 @@ export const headLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
 
   const [currentBlock, currentBlockPath] = currentEntry
   if (SlateRange.isCollapsed(selection) && currentBlock.type === "head") {
-    if (currentBlock.isFold) {
+    if (currentBlock.isFolded) {
       // 若标题处于折叠状态, 换行时产生同类节点, 且新节点位置在折叠区域后
 
       // 找到当前标题后同级且标题级别高于等于当前标题的标题节点
@@ -46,6 +46,7 @@ export const headLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
         at: Path.next(currentBlockPath),
         to: afterHeads[0][1],
       })
+      //TODO: 分裂后的标题节点应为非折叠的
 
       return true
     } else {

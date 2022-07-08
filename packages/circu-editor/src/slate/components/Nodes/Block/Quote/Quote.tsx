@@ -11,7 +11,7 @@ const Quote: React.FC<CustomRenderElementProps<IQuote>> = ({ attributes, childre
         paddingLeft: "14px",
         position: "relative",
         color: "#ebebeb",
-        display: element.collapsed ? "none" : undefined,
+        display: element.isHidden ? "none" : undefined,
       }}
     >
       <div

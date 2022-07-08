@@ -15,7 +15,7 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
       {...attributes}
       style={{
         margin: "8px 0",
-        display: element.collapsed ? "none" : undefined,
+        display: element.isHidden ? "none" : undefined,
       }}
     >
       <div

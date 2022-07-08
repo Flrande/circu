@@ -9,7 +9,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
         <div
           {...attributes}
           style={{
-            display: element.collapsed ? "none" : undefined,
+            display: element.isHidden ? "none" : undefined,
           }}
           className={head_1}
         >
@@ -21,7 +21,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
         <div
           {...attributes}
           style={{
-            display: element.collapsed ? "none" : undefined,
+            display: element.isHidden ? "none" : undefined,
           }}
           className={head_2}
         >
@@ -33,7 +33,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
         <div
           {...attributes}
           style={{
-            display: element.collapsed ? "none" : undefined,
+            display: element.isHidden ? "none" : undefined,
           }}
           className={head_3}
         >
@@ -45,7 +45,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
         <div
           {...attributes}
           style={{
-            display: element.collapsed ? "none" : undefined,
+            display: element.isHidden ? "none" : undefined,
           }}
           className={head_4}
         >
@@ -57,7 +57,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
         <div
           {...attributes}
           style={{
-            display: element.collapsed ? "none" : undefined,
+            display: element.isHidden ? "none" : undefined,
           }}
           className={head_5}
         >
@@ -69,7 +69,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
         <div
           {...attributes}
           style={{
-            display: element.collapsed ? "none" : undefined,
+            display: element.isHidden ? "none" : undefined,
           }}
           className={head_6}
         >

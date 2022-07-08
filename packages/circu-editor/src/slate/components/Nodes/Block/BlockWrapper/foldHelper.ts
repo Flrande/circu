@@ -11,7 +11,7 @@ const handleFold = (editor: Editor, path: Path, action: "toggle" | "unToggle"): 
 
     if (SlateElement.isElement(node) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, node.type)) {
       if (node.type === "head") {
-        // 找到当前标题后同级且标题级别高于等于当前标题的标题节点
+        // 找到当前标题后同深度且标题级别大于或等于当前标题的标题节点
         const afterHeads = Array.from(
           Editor.nodes(editor, {
             at: nodePath.slice(0, -1),
@@ -26,19 +26,21 @@ const handleFold = (editor: Editor, path: Path, action: "toggle" | "unToggle"): 
         ).sort(([nodeA, pathA], [nodeB, pathB]) => (Path.isBefore(pathA, pathB) ? -1 : 1)) as NodeEntry<IHead>[]
 
         if (action === "toggle") {
+          // 设置标题
           Transforms.setNodes(
             editor,
             {
-              isFold: true,
+              isFolded: true,
             },
             {
               at: nodePath,
             }
           )
+          // 设置折叠区域内的块级节点
           Transforms.setNodes(
             editor,
             {
-              collapsed: true,
+              isHidden: true,
             },
             {
               at: nodePath.slice(0, -1),
@@ -51,10 +53,12 @@ const handleFold = (editor: Editor, path: Path, action: "toggle" | "unToggle"): 
             }
           )
         } else {
-          Transforms.unsetNodes(editor, ["isFold"], {
+          // 设置标题
+          Transforms.unsetNodes(editor, ["isFolded"], {
             at: nodePath,
           })
-          Transforms.unsetNodes(editor, ["collapsed"], {
+          // 设置折叠区域内的块级节点
+          Transforms.unsetNodes(editor, ["isHidden"], {
             at: nodePath.slice(0, -1),
             match: (n, p) =>
               SlateElement.isElement(n) &&
@@ -70,7 +74,7 @@ const handleFold = (editor: Editor, path: Path, action: "toggle" | "unToggle"): 
             Transforms.setNodes(
               editor,
               {
-                collapsed: true,
+                isHidden: true,
               },
               {
                 at: nodePath.concat([1]),
@@ -81,7 +85,7 @@ const handleFold = (editor: Editor, path: Path, action: "toggle" | "unToggle"): 
               }
             )
           } else {
-            Transforms.unsetNodes(editor, ["collapsed"], {
+            Transforms.unsetNodes(editor, ["isHidden"], {
               at: nodePath.concat([1]),
               match: (n, p) =>
                 SlateElement.isElement(n) &&

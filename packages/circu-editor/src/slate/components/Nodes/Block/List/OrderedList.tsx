@@ -185,7 +185,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
       {...attributes}
       style={{
         margin: "8px 0",
-        display: element.collapsed ? "none" : undefined,
+        display: element.isHidden ? "none" : undefined,
       }}
     >
       <div

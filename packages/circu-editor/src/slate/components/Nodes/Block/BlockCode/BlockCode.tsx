@@ -68,7 +68,7 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
       {...attributes}
       style={{
         border: isSelected ? "1px solid #5a87f7" : undefined,
-        display: element.collapsed ? "none" : undefined,
+        display: element.isHidden ? "none" : undefined,
       }}
       className={blockCodeContainer}
     >
