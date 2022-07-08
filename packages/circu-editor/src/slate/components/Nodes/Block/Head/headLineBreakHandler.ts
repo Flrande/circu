@@ -46,7 +46,9 @@ export const headLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
         at: Path.next(currentBlockPath),
         to: afterHeads[0][1],
       })
-      //TODO: 分裂后的标题节点应为非折叠的
+      Transforms.unsetNodes(editor, ["isFolded"], {
+        at: afterHeads[0][1],
+      })
 
       return true
     } else {
