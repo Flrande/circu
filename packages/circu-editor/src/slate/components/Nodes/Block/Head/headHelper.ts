@@ -1,23 +1,21 @@
 import { Editor, NodeEntry, Transforms } from "slate"
-import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN } from "../../../../types/constant"
+import { CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN } from "../../../../types/constant"
 import type { BlockElementExceptTextLine } from "../../../../types/interface"
-import { SlateElement } from "../../../../types/slate"
-import { arrayIncludes } from "../../../../utils/general"
+import type { IQuote } from "../Quote/types"
+import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IHead, IHeadGrade } from "./types"
 
 export const isHeadActive = (editor: Editor, headGrade: IHeadGrade | "all"): boolean => {
   const { selection } = editor
   if (!selection) return false
 
-  const selectedContentBlocksEntry = Array.from(
-    Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
-    })
-  ) as NodeEntry<BlockElementExceptTextLine>[]
+  const selectedBlocks = getSelectedBlocks<Exclude<BlockElementExceptTextLine, IQuote>>(editor, {
+    except: ["quote"],
+  })
 
   return headGrade === "all"
-    ? selectedContentBlocksEntry.every(([node]) => node.type === "head")
-    : selectedContentBlocksEntry.every(([node]) => node.type === "head" && node.headGrade === headGrade)
+    ? selectedBlocks.every(([node]) => node.type === "head")
+    : selectedBlocks.every(([node]) => node.type === "head" && node.headGrade === headGrade)
 }
 
 const unToggleHead = (editor: Editor): void => {
@@ -30,20 +28,18 @@ const unToggleHead = (editor: Editor): void => {
       return
     }
 
-    const selectedContentBlocksEntry = Array.from(
-      Editor.nodes(editor, {
-        match: (n) => SlateElement.isElement(n) && n.type === "head",
-      })
-    ) as NodeEntry<IHead>[]
+    const selectedHeads = getSelectedBlocks<Exclude<BlockElementExceptTextLine, IQuote>>(editor, {
+      except: ["quote"],
+    }).filter(([node]) => node.type === "head") as NodeEntry<IHead>[]
 
-    if (selectedContentBlocksEntry.length < 1) {
+    if (selectedHeads.length === 0) {
       return
     }
 
-    const startPath = selectedContentBlocksEntry[0][1]
-    const endPath = selectedContentBlocksEntry.at(-1)![1]
+    const startPath = selectedHeads[0][1]
+    const endPath = selectedHeads.at(-1)![1]
 
-    for (const [, path] of selectedContentBlocksEntry) {
+    for (const [, path] of selectedHeads) {
       Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
         at: path,
       })
@@ -62,7 +58,6 @@ const unToggleHead = (editor: Editor): void => {
   })
 }
 
-//FIXME: 对于有子节点的块级节点应只作用与其内容区部分
 export const toggleHead = (editor: Editor, headGrade: IHeadGrade): void => {
   Editor.withoutNormalizing(editor, () => {
     if (!editor.selection) {
@@ -72,20 +67,18 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade): void => {
     if (isHeadActive(editor, headGrade)) {
       unToggleHead(editor)
     } else {
-      const selectedContentBlocksEntry = Array.from(
-        Editor.nodes(editor, {
-          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
-        })
-      ) as NodeEntry<BlockElementExceptTextLine>[]
+      const selectedBlocks = getSelectedBlocks<Exclude<BlockElementExceptTextLine, IQuote>>(editor, {
+        except: ["quote"],
+      })
 
-      if (selectedContentBlocksEntry.length < 1) {
+      if (selectedBlocks.length === 0) {
         return
       }
 
-      const startPath = selectedContentBlocksEntry[0][1]
-      const endPath = selectedContentBlocksEntry.at(-1)![1]
+      const startPath = selectedBlocks[0][1]
+      const endPath = selectedBlocks.at(-1)![1]
 
-      for (const [, path] of selectedContentBlocksEntry) {
+      for (const [, path] of selectedBlocks) {
         Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
           at: path,
         })

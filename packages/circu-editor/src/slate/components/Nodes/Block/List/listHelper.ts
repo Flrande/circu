@@ -1,21 +1,19 @@
 import { Editor, NodeEntry, Transforms } from "slate"
-import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN } from "../../../../types/constant"
+import { CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN } from "../../../../types/constant"
 import type { BlockElementExceptTextLine } from "../../../../types/interface"
-import { SlateElement } from "../../../../types/slate"
-import { arrayIncludes } from "../../../../utils/general"
+import type { IQuote } from "../Quote/types"
+import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IOrderedList, IUnorderedList } from "./types"
 
 export const isListActive = (editor: Editor, listType: IOrderedList["type"] | IUnorderedList["type"]): boolean => {
   const { selection } = editor
   if (!selection) return false
 
-  const selectedContentBlocksEntry = Array.from(
-    Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
-    })
-  ) as NodeEntry<BlockElementExceptTextLine>[]
+  const selectedBlocks = getSelectedBlocks<Exclude<BlockElementExceptTextLine, IQuote>>(editor, {
+    except: ["quote"],
+  })
 
-  return selectedContentBlocksEntry.every(([node]) => node.type === listType)
+  return selectedBlocks.every(([node]) => node.type === listType)
 }
 
 const unToggleList = (editor: Editor): void => {
@@ -28,20 +26,20 @@ const unToggleList = (editor: Editor): void => {
       return
     }
 
-    const selectedContentBlocksEntry = Array.from(
-      Editor.nodes(editor, {
-        match: (n) => SlateElement.isElement(n) && (n.type === "ordered-list" || n.type === "unordered-list"),
-      })
-    ) as NodeEntry<IOrderedList | IUnorderedList>[]
+    const selectedLists = getSelectedBlocks<Exclude<BlockElementExceptTextLine, IQuote>>(editor, {
+      except: ["quote"],
+    }).filter(([node]) => node.type === "ordered-list" || node.type === "unordered-list") as NodeEntry<
+      IOrderedList | IUnorderedList
+    >[]
 
-    if (selectedContentBlocksEntry.length < 1) {
+    if (selectedLists.length === 0) {
       return
     }
 
-    const startPath = selectedContentBlocksEntry[0][1]
-    const endPath = selectedContentBlocksEntry.at(-1)![1]
+    const startPath = selectedLists[0][1]
+    const endPath = selectedLists.at(-1)![1]
 
-    for (const [, path] of selectedContentBlocksEntry) {
+    for (const [, path] of selectedLists) {
       Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
         at: path,
       })
@@ -70,22 +68,18 @@ export const toggleOrderedList = (editor: Editor): void => {
     if (isListActive(editor, "ordered-list")) {
       unToggleList(editor)
     } else {
-      const selectedContentBlocksEntry = Array.from(
-        Editor.nodes(editor, {
-          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
-          //TODO: 寻找更好的匹配规则
-          mode: "lowest",
-        })
-      ) as NodeEntry<BlockElementExceptTextLine>[]
+      const selectedBlocks = getSelectedBlocks<Exclude<BlockElementExceptTextLine, IQuote>>(editor, {
+        except: ["quote"],
+      })
 
-      if (selectedContentBlocksEntry.length < 1) {
+      if (selectedBlocks.length === 0) {
         return
       }
 
-      const startPath = selectedContentBlocksEntry[0][1]
-      const endPath = selectedContentBlocksEntry.at(-1)![1]
+      const startPath = selectedBlocks[0][1]
+      const endPath = selectedBlocks.at(-1)![1]
 
-      for (const [index, [, path]] of selectedContentBlocksEntry.entries()) {
+      for (const [index, [, path]] of selectedBlocks.entries()) {
         Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
           at: path,
         })
@@ -118,20 +112,18 @@ export const toggleUnorderedList = (editor: Editor): void => {
     if (isListActive(editor, "unordered-list")) {
       unToggleList(editor)
     } else {
-      const selectedContentBlocksEntry = Array.from(
-        Editor.nodes(editor, {
-          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
-        })
-      ) as NodeEntry<BlockElementExceptTextLine>[]
+      const selectedBlocks = getSelectedBlocks<Exclude<BlockElementExceptTextLine, IQuote>>(editor, {
+        except: ["quote"],
+      })
 
-      if (selectedContentBlocksEntry.length < 1) {
+      if (selectedBlocks.length === 0) {
         return
       }
 
-      const startPath = selectedContentBlocksEntry[0][1]
-      const endPath = selectedContentBlocksEntry.at(-1)![1]
+      const startPath = selectedBlocks[0][1]
+      const endPath = selectedBlocks.at(-1)![1]
 
-      for (const [, path] of selectedContentBlocksEntry) {
+      for (const [, path] of selectedBlocks) {
         Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
           at: path,
         })

@@ -1,20 +1,20 @@
-import { Editor, NodeEntry, Path, Transforms } from "slate"
+import { Editor, NodeEntry, Path, Point, Transforms } from "slate"
 import { BLOCK_ELEMENTS_WITH_CHILDREN, BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../../../../types/constant"
 import type { BlockElementWithChildren, BlockElementExceptTextLine } from "../../../../types/interface"
-import { SlateElement, SlateLocation } from "../../../../types/slate"
+import { SlateElement, SlateRange } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import { MAX_INDENT_LEVEL } from "./constant"
 import type { __IBlockElementChildren } from "./types"
 
 /**
- * 用于检测选中的内容块能否增加缩进, 以下情况不可增加缩进:
+ * 用于检测 path 对应的块级节点能否增加缩进, 以下情况不可增加缩进:
  * 1. 到达最大缩进级别
- * 2. 选区上方的块级节点的缩进级别不支持增加缩进
- * 3. 选区上方的块级节点本身不支持缩进
+ * 2. 上方的块级节点的缩进级别不支持增加缩进
+ * 3. 上方的块级节点本身不支持缩进
  *
  * @param editor 编辑器实例
- * @param location 可选, 默认使用 editor.selection
+ * @param path 块级节点的位置
  * @returns 返回一个包含是否可增加缩进以及为何不可增加缩进信息的对象
  *
  * indentable  - 是否可缩进
@@ -25,11 +25,11 @@ import type { __IBlockElementChildren } from "./types"
  *
  * type - 2 - 选区上方的块级节点的缩进级别不支持缩进
  *
- * type - 3 - 选区上方的块级节点本身不支持缩进
+ * type - 3 - 选区上方的块级节点不支持接受子节点
  */
 export const inspectIncreaseIndentable = (
   editor: Editor,
-  location?: SlateLocation
+  path: Path
 ):
   | {
       indentable: false
@@ -38,37 +38,24 @@ export const inspectIncreaseIndentable = (
   | {
       indentable: true
     } => {
-  if (location) {
-    Transforms.select(editor, location)
-  }
+  const [node, nodePath] = Editor.node(editor, path)
 
-  const { selection } = editor
-  if (!selection) {
+  // 判断 path 对应的节点是否支持缩进
+  if (!SlateElement.isElement(node)) {
     return {
       indentable: false,
       type: "0",
     }
   }
-
-  const firstBlockEntry = Array.from(
-    Editor.nodes(editor, {
-      at: Editor.start(editor, selection),
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
-      mode: "lowest",
-    })
-  )[0] as NodeEntry<BlockElementExceptTextLine>
-
-  if (!firstBlockEntry) {
+  if (!arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, node.type)) {
     return {
       indentable: false,
       type: "0",
     }
   }
-
-  const [, firstBlockPath] = firstBlockEntry
 
   // 判断是否到达最大缩进级别
-  if (calculateIndentLevel(editor, firstBlockPath) >= MAX_INDENT_LEVEL) {
+  if (calculateIndentLevel(editor, nodePath) >= MAX_INDENT_LEVEL) {
     return {
       indentable: false,
       type: "1",
@@ -76,11 +63,11 @@ export const inspectIncreaseIndentable = (
   }
 
   const previousNodeEntry = Editor.previous(editor, {
-    at: firstBlockPath,
+    at: nodePath,
     match: (n, p) =>
       SlateElement.isElement(n) &&
       arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
-      p.length <= firstBlockPath.length,
+      p.length <= nodePath.length,
     mode: "lowest",
   }) as NodeEntry<BlockElementExceptTextLine> | undefined
 
@@ -93,7 +80,7 @@ export const inspectIncreaseIndentable = (
 
   const [previousNode, previousNodePath] = previousNodeEntry
 
-  if (previousNodePath.length < firstBlockPath.length) {
+  if (previousNodePath.length < nodePath.length) {
     return {
       indentable: false,
       type: "2",
@@ -114,179 +101,280 @@ export const inspectIncreaseIndentable = (
 
 //TODO: 若前方块级节点的子节点折叠, 将其展开
 /**
- * 用于增加内容块缩进的函数, 即将选中的块级节点移入前一个块级节点的子节点块
+ * 用于增加内容块缩进的函数
  *
  * @param editor 编辑器实例
- * @param location 可选, 默认使用 editor.selection
+ * @param range 要处理的选区, 默认为 editor.selection
  *
  */
-export const increaseIndent = (editor: Editor, location?: SlateLocation): void => {
+export const increaseIndent = (editor: Editor, range?: SlateRange): void => {
   Editor.withoutNormalizing(editor, () => {
-    if (location) {
-      Transforms.select(editor, location)
+    let goalRange: SlateRange | null = null
+    if (!range) {
+      goalRange = editor.selection
+    } else {
+      goalRange = range
     }
 
-    const { selection } = editor
-
-    if (!selection) {
+    if (!goalRange) {
       return
     }
 
+    const selectedBlocks = getSelectedBlocks(editor, {
+      range: goalRange,
+    })
+
+    if (selectedBlocks.length === 0) {
+      return
+    }
+
+    let goalBlocks: NodeEntry<BlockElementExceptTextLine>[] = []
+    let tmpIndex = 0
+    while (true) {
+      goalBlocks.push(selectedBlocks[tmpIndex])
+      tmpIndex = selectedBlocks.findIndex(
+        ([, path], index) => index >= tmpIndex && !Path.isCommon(selectedBlocks[tmpIndex][1], path)
+      )
+      if (tmpIndex === -1) {
+        break
+      }
+    }
+
+    if (goalBlocks.length === 0) {
+      return
+    }
+
+    //TODO: 首个节点不能缩进时也能让其余可缩进的缩进
     // 判断是否可以缩进
-    if (!inspectIncreaseIndentable(editor).indentable) {
+    if (!inspectIncreaseIndentable(editor, goalBlocks[0][1]).indentable) {
       return
     }
 
-    const selectedBlocks = getSelectedBlocks(editor)
-    if (!selectedBlocks) {
-      return
-    }
-    const [, firstBlockPath] = selectedBlocks[0]
-
+    const [, firstNodePath] = goalBlocks[0]
     const previousNodeEntry = Editor.previous(editor, {
-      at: firstBlockPath,
+      at: firstNodePath,
       match: (n, p) =>
         SlateElement.isElement(n) &&
         arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, n.type) &&
-        p.length <= firstBlockPath.length,
+        p.length <= firstNodePath.length,
       mode: "lowest",
     }) as NodeEntry<BlockElementWithChildren> | undefined
 
     if (!previousNodeEntry) {
       return
     }
+
     const [previousNode, previousNodePath] = previousNodeEntry
 
     if (previousNode.children.length === 1) {
-      // 若上方块级节点还未有子节点块, 插入子节点块
+      // 若上方块级节点还未有子节点块
       const newNode: __IBlockElementChildren = {
         type: "__block-element-children",
-        children: selectedBlocks.map(([node]) => node),
+        children: goalBlocks.map(([node]) => node),
       }
 
       Transforms.removeNodes(editor, {
-        match: (n, p) =>
-          SlateElement.isElement(n) &&
-          arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
-          p.length <= firstBlockPath.length,
-        mode: "lowest",
+        at: goalRange,
+        match: (n, p) => goalBlocks.some(([, path]) => Path.equals(path, p)),
       })
 
       Transforms.insertNodes(editor, newNode, {
         at: previousNodePath.concat([1]),
-        select: true,
       })
 
+      // 还原选区
+      const [start, end] = Editor.edges(editor, goalRange)
+
+      const newAnchor: Point = {
+        path: previousNodePath.concat([1, 0], start.path.slice(goalBlocks[0][1].length)),
+        offset: start.offset,
+      }
+      const newFocus: Point = {
+        path: previousNodePath.concat([1, goalBlocks.length - 1], end.path.slice(goalBlocks.at(-1)![1].length)),
+        offset: end.offset,
+      }
+
       Transforms.select(editor, {
-        anchor: Editor.start(editor, previousNodePath.concat([1])),
-        focus: Editor.end(editor, previousNodePath.concat([1])),
+        anchor: newAnchor,
+        focus: newFocus,
       })
     } else {
-      // 若上方块级节点已有节点块, 直接在子节点块中插入节点
+      // 若上方块级节点已有节点块
       Transforms.removeNodes(editor, {
-        match: (n, p) =>
-          SlateElement.isElement(n) &&
-          arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
-          p.length <= firstBlockPath.length,
-        mode: "lowest",
+        at: goalRange,
+        match: (n, p) => goalBlocks.some(([, path]) => Path.equals(path, p)),
       })
 
       Transforms.insertNodes(
         editor,
-        selectedBlocks.map(([node]) => node),
+        goalBlocks.map(([node]) => node),
         {
           at: previousNodePath.concat([1, previousNode.children[1].children.length]),
         }
       )
 
+      // 还原选区
+      const [start, end] = Editor.edges(editor, goalRange)
+
+      const newAnchor: Point = {
+        path: previousNodePath.concat(
+          [1, previousNode.children[1].children.length],
+          start.path.slice(goalBlocks[0][1].length)
+        ),
+        offset: start.offset,
+      }
+      const newFocus: Point = {
+        path: previousNodePath.concat(
+          [1, previousNode.children[1].children.length + goalBlocks.length - 1],
+          end.path.slice(goalBlocks.at(-1)![1].length)
+        ),
+        offset: end.offset,
+      }
+
       Transforms.select(editor, {
-        anchor: Editor.start(editor, previousNodePath.concat([1, previousNode.children[1].children.length])),
-        focus: Editor.end(editor, previousNodePath.concat([1])),
+        anchor: newAnchor,
+        focus: newFocus,
       })
     }
   })
 }
 
 /**
- * 用于减少内容块缩进的函数, 即将选中的块级节点移出当前块级节点的子节点块
+ * 用于减少内容块缩进的函数
  *
  * @param editor 编辑器实例
- * @param location 可选, 默认使用 editor.selection
+ * @param range 要处理的选区, 默认为 editor.selection
  *
  */
-export const decreaseIndent = (editor: Editor, location?: SlateLocation): void => {
+export const decreaseIndent = (editor: Editor, range?: SlateRange): void => {
   Editor.withoutNormalizing(editor, () => {
-    if (location) {
-      Transforms.select(editor, location)
+    let goalRange: SlateRange | null = null
+    if (!range) {
+      goalRange = editor.selection
+    } else {
+      goalRange = range
     }
 
-    const { selection } = editor
-    if (!selection) {
+    if (!goalRange) {
       return
     }
 
-    const selectedBlocks = getSelectedBlocks(editor)
-    if (!selectedBlocks) {
+    const selectedBlocks = getSelectedBlocks(editor, {
+      range: goalRange,
+    })
+
+    if (selectedBlocks.length === 0) {
       return
     }
 
-    const [, firstBlockPath] = selectedBlocks[0]
-    const [firstBlockParent, firstBlockParentPath] = Editor.node(editor, Path.parent(firstBlockPath))
+    let goalBlocks: NodeEntry<BlockElementExceptTextLine>[] = []
+    let tmpIndex = 0
+    while (true) {
+      goalBlocks.push(selectedBlocks[tmpIndex])
+      tmpIndex = selectedBlocks.findIndex(
+        ([, path], index) => index >= tmpIndex && !Path.isCommon(selectedBlocks[tmpIndex][1], path)
+      )
+      if (tmpIndex === -1) {
+        break
+      }
+    }
+
+    if (goalBlocks.length === 0) {
+      return
+    }
+
+    const [, firstNodePath] = goalBlocks[0]
+    const [firstNodeParent, firstNodeParentPath] = Editor.node(editor, Path.parent(firstNodePath))
 
     // 判断是否在某个块级节点的子节点块内
-    if (!SlateElement.isElement(firstBlockParent) || firstBlockParent.type !== "__block-element-children") {
-      return
-    }
+    if (SlateElement.isElement(firstNodeParent) && firstNodeParent.type === "__block-element-children") {
+      // 待处理的块级节点的移动目的地, 即父块级节点之后的第一个位置
+      const newFirstNodePath = Path.next(Path.parent(firstNodeParentPath))
 
-    const tmpBlocksEntry = Array.from(
-      Editor.nodes(editor, {
-        match: (n, p) =>
-          SlateElement.isElement(n) &&
-          arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
-          p.length <= firstBlockPath.length,
-        mode: "lowest",
-      })
-    ) as NodeEntry<BlockElementExceptTextLine>[]
+      // 如果要处理的块级节点都在同一层, 将这些块级节点上浮一层
+      if (goalBlocks.every(([, path]) => Path.isSibling(path, firstNodePath) || Path.equals(path, firstNodePath))) {
+        // 待处理区域后仍有同级节点的, 将这些同级节点移入最后一个待处理块级节点的子节点块中
+        const rearBlocks = firstNodeParent.children.slice(firstNodePath.at(-1)! + goalBlocks.length)
 
-    if (tmpBlocksEntry.length < 1) {
-      return
-    }
+        Transforms.removeNodes(editor, {
+          at: firstNodeParentPath,
+          match: (n, p) =>
+            (Path.isSibling(p, firstNodePath) && Path.isAfter(p, firstNodePath)) || Path.equals(p, firstNodePath),
+        })
 
-    const [, firstBlockGrandfatherPath] = Editor.node(editor, firstBlockPath.slice(0, -2))
+        if (Path.equals(firstNodePath, firstNodeParentPath.concat([0]))) {
+          // 要处理的首个块级节点为子节点块的首个子节点时, 子节点块会被清空
+          Transforms.removeNodes(editor, {
+            at: firstNodeParentPath,
+          })
+        }
 
-    Transforms.removeNodes(editor, {
-      match: (n, p) =>
-        SlateElement.isElement(n) &&
-        arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type) &&
-        p.length <= firstBlockPath.length,
-      mode: "lowest",
-    })
-    // 若子节点块被清空, 删除子节点块
-    if (
-      (firstBlockParent as __IBlockElementChildren).children.length ===
-      tmpBlocksEntry.filter(([, path]) => Path.isSibling(path, firstBlockPath) || Path.equals(path, firstBlockPath))
-        .length
-    ) {
-      Transforms.removeNodes(editor, {
-        at: firstBlockParentPath,
-      })
-    }
+        // 将选中的块级节点上浮
+        Transforms.insertNodes(
+          editor,
+          goalBlocks.map(([node]) => node),
+          {
+            at: newFirstNodePath,
+          }
+        )
+        // 将处理区域后的同级节点移入最后一个待处理块级节点的子节点块中
+        if (rearBlocks.length > 0) {
+          Transforms.insertNodes(
+            editor,
+            {
+              type: "__block-element-children",
+              children: rearBlocks,
+            },
+            {
+              at: newFirstNodePath.slice(0, -1).concat([firstNodeParentPath.at(-1)! + goalBlocks.length - 1, 1]),
+            }
+          )
+        }
+      } else {
+        Transforms.removeNodes(editor, {
+          at: goalRange,
+          match: (n, p) => goalBlocks.some(([, path]) => Path.equals(path, p)),
+        })
 
-    Transforms.insertNodes(
-      editor,
-      tmpBlocksEntry.map(([node]) => node),
-      {
-        at: Path.next(firstBlockGrandfatherPath),
+        // 若子节点块将被清空, 删除子节点块
+        if (
+          firstNodeParent.children.length ===
+          goalBlocks.filter(([, path]) => Path.isSibling(path, firstNodePath) || Path.equals(path, firstNodePath))
+            .length
+        ) {
+          Transforms.removeNodes(editor, {
+            at: firstNodeParentPath,
+          })
+        }
+
+        Transforms.insertNodes(
+          editor,
+          goalBlocks.map(([node]) => node),
+          {
+            at: newFirstNodePath,
+          }
+        )
       }
-    )
 
-    Transforms.select(editor, {
-      anchor: Editor.start(editor, Path.next(firstBlockGrandfatherPath)),
-      focus: Editor.end(
-        editor,
-        firstBlockGrandfatherPath.slice(0, -1).concat([firstBlockGrandfatherPath.at(-1)! + tmpBlocksEntry.length])
-      ),
-    })
+      // 还原选区
+      const [start, end] = Editor.edges(editor, goalRange)
+
+      const newAnchor: Point = {
+        path: newFirstNodePath.concat(start.path.slice(goalBlocks[0][1].length)),
+        offset: start.offset,
+      }
+      const newFocus: Point = {
+        path: newFirstNodePath
+          .slice(0, -1)
+          .concat([newFirstNodePath.at(-1)! + goalBlocks.length - 1], end.path.slice(goalBlocks.at(-1)![1].length)),
+        offset: end.offset,
+      }
+
+      Transforms.select(editor, {
+        anchor: newAnchor,
+        focus: newFocus,
+      })
+    }
   })
 }
 

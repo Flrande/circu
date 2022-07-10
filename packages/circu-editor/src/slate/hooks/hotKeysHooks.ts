@@ -13,11 +13,11 @@ import { toggleHead } from "../components/Nodes/Block/Head/headHelper"
 import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Block/List/listHelper"
 import type { IOrderedList } from "../components/Nodes/Block/List/types"
 import { toggleQuote } from "../components/Nodes/Block/Quote/quoteHelper"
-import { getSelectedBlocks } from "../components/Nodes/Block/utils/getSelectedBlocks"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, BLOCK_ELEMENTS_WITH_CHILDREN } from "../types/constant"
 import type { BlockElementExceptTextLine, BlockElementWithChildren } from "../types/interface"
 import { SlateElement } from "../types/slate"
 import { arrayIncludes } from "../utils/general"
+import { getSelectedBlocks } from "../components/Nodes/Block/utils/getSelectedBlocks"
 
 export const useOnKeyDown = () => {
   const editor = useSlateStatic()
@@ -68,7 +68,14 @@ export const useOnKeyDown = () => {
           mode: "lowest",
         })
       ) as NodeEntry<BlockElementWithChildren>[]
-      toggleFold(editor, selectedBlocksEntry[0][1])
+      console.log(
+        Array.from(
+          Editor.nodes(editor, {
+            match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+            universal: true,
+          })
+        ).map(([, path]) => path)
+      )
 
       return
     }
@@ -91,7 +98,15 @@ export const useOnKeyDown = () => {
           mode: "lowest",
         })
       ) as NodeEntry<BlockElementWithChildren>[]
-      unToggleFold(editor, selectedBlocksEntry[0][1])
+      // unToggleFold(editor, selectedBlocksEntry[0][1])
+      console.log(
+        Array.from(
+          Editor.nodes(editor, {
+            match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+          })
+        ).map(([node, path]) => path)
+      )
+      console.log(getSelectedBlocks(editor).map(([node, path]) => path))
 
       return
     }

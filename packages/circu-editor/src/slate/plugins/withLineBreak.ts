@@ -56,8 +56,8 @@ export const withLineBreak = (editor: Editor) => {
               match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
               always: true,
             })
-            increaseIndent(editor, Path.next(selectedBlockPath))
-            decreaseIndent(editor, selectedBlockPath.concat([1, 0, 1]))
+            increaseIndent(editor, Editor.range(editor, Path.next(selectedBlockPath)))
+            decreaseIndent(editor, Editor.range(editor, selectedBlockPath.concat([1, 0, 1])))
             Transforms.select(editor, Editor.start(editor, selectedBlockPath.concat([1])))
           } else {
             Transforms.splitNodes(editor, {

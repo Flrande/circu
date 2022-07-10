@@ -16,6 +16,7 @@ import type { ICustomText } from "../components/Nodes/Text/types"
 // 2. 仅支持包含自身内容, 没有子节点块, 如代码块, 引用
 // 3. 最小单位行, text-line
 // 添加新的块级节点时更改下面三类类型即可
+// 对于 __IBlockElementContent 和 __IBlockElementChildren, 表述上不将其归为块级节点
 
 // 1类块级节点
 type BaseBlockElementWithChildren = {

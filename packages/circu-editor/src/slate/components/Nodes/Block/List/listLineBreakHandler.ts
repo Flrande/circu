@@ -27,7 +27,7 @@ export const listLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
   ) {
     // 若列表内容块为空, 触发换行时减少缩进
     if (SlateNode.string(currentBlock.children[0]).length === 0) {
-      decreaseIndent(editor, currentBlockPath)
+      decreaseIndent(editor)
       if (editor.selection) {
         Transforms.select(editor, Editor.start(editor, editor.selection))
       }
@@ -71,8 +71,8 @@ export const listLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
             at: Path.next(currentBlockPath),
           }
         )
-        increaseIndent(editor, Path.next(currentBlockPath))
-        decreaseIndent(editor, currentBlockPath.concat([1, 0, 1]))
+        increaseIndent(editor, Editor.range(editor, Path.next(currentBlockPath)))
+        decreaseIndent(editor, Editor.range(editor, currentBlockPath.concat([1, 0, 1])))
         Transforms.select(editor, Editor.start(editor, currentBlockPath.concat([1])))
 
         return true
