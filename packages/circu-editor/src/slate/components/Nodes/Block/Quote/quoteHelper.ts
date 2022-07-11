@@ -5,6 +5,7 @@ import { SlateElement } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
 import type { IQuote } from "./types"
 
+//TODO: 重构
 export const isQuoteActive = (editor: Editor): boolean => {
   const { selection } = editor
   if (!selection) return false

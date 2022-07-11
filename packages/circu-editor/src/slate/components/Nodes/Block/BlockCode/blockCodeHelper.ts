@@ -114,7 +114,7 @@ export const toggleBlockCode = (editor: Editor): void => {
 
         // 先将原本的块级节点删去
         Transforms.removeNodes(editor, {
-          at: goalBlockPath,
+          at: Path.parent(goalBlockPath),
           match: (n, p) => tmpBlocks.some(([, path]) => Path.equals(p, path)),
           mode: "highest",
         })
