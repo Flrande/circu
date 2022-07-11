@@ -5,6 +5,7 @@ import type { IQuote } from "../Quote/types"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IHead, IHeadGrade } from "./types"
 
+//TODO: 优化选区
 export const isHeadActive = (editor: Editor, headGrade: IHeadGrade | "all"): boolean => {
   const { selection } = editor
   if (!selection) return false

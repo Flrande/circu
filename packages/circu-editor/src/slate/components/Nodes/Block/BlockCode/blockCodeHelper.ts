@@ -5,6 +5,7 @@ import type { IQuote } from "../Quote/types"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IBlockCode } from "./types"
 
+//TODO: 优化选区
 export const isBlockCodeActive = (editor: Editor): boolean => {
   const { selection } = editor
   if (!selection) return false
@@ -56,7 +57,6 @@ const unToggleBlockCode = (editor: Editor): void => {
   })
 }
 
-//TODO: 选区优化
 export const toggleBlockCode = (editor: Editor): void => {
   Editor.withoutNormalizing(editor, () => {
     if (!editor.selection) {

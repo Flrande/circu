@@ -5,6 +5,7 @@ import type { IQuote } from "../Quote/types"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IOrderedList, IUnorderedList } from "./types"
 
+//TODO: 优化选区
 export const isListActive = (editor: Editor, listType: IOrderedList["type"] | IUnorderedList["type"]): boolean => {
   const { selection } = editor
   if (!selection) return false

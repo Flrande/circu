@@ -1,23 +1,22 @@
 import { Editor, NodeEntry, Path, Transforms } from "slate"
-import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../../../../types/constant"
 import type { BlockElementExceptTextLine } from "../../../../types/interface"
 import { SlateElement } from "../../../../types/slate"
-import { arrayIncludes } from "../../../../utils/general"
+import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IQuote } from "./types"
 
-//TODO: 重构
+//TODO: 优化选区
 export const isQuoteActive = (editor: Editor): boolean => {
   const { selection } = editor
   if (!selection) return false
 
-  const selectedContentBlocksEntry = Array.from(
+  const selectedQuotes = Array.from(
     Editor.nodes(editor, {
-      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
-      mode: "highest",
+      match: (n) => SlateElement.isElement(n) && n.type === "quote",
+      mode: "lowest",
     })
-  ) as NodeEntry<BlockElementExceptTextLine>[]
+  ) as NodeEntry<IQuote>[]
 
-  return selectedContentBlocksEntry.every(([node]) => node.type === "quote")
+  return selectedQuotes.length !== 0
 }
 
 const unToggleQuote = (editor: Editor): void => {
@@ -30,34 +29,26 @@ const unToggleQuote = (editor: Editor): void => {
       return
     }
 
-    const selectedContentBlocksEntry = Array.from(
+    const selectedQuotes = Array.from(
       Editor.nodes(editor, {
         match: (n) => SlateElement.isElement(n) && n.type === "quote",
+        mode: "lowest",
       })
     ) as NodeEntry<IQuote>[]
 
-    if (selectedContentBlocksEntry.length < 1) {
+    if (selectedQuotes.length === 0) {
       return
     }
 
-    const startPath = selectedContentBlocksEntry[0][1]
-    let tmpLength = 0
+    const [goalQuote, goalQuotePath] = selectedQuotes[0]
 
-    for (const [node, path] of selectedContentBlocksEntry) {
-      tmpLength += node.children[0].children.length
-
-      Transforms.removeNodes(editor, {
-        at: path,
-      })
-      Transforms.insertNodes(editor, node.children[0].children, {
-        at: path,
-      })
-    }
-
-    Transforms.select(
-      editor,
-      Editor.range(editor, startPath, startPath.slice(0, -1).concat([startPath.at(-1)! + tmpLength - 1]))
-    )
+    const newNodes: Exclude<BlockElementExceptTextLine, IQuote>[] = goalQuote.children[0].children
+    Transforms.removeNodes(editor, {
+      at: goalQuotePath,
+    })
+    Transforms.insertNodes(editor, newNodes, {
+      at: goalQuotePath,
+    })
   })
 }
 
@@ -70,39 +61,47 @@ export const toggleQuote = (editor: Editor): void => {
     if (isQuoteActive(editor)) {
       unToggleQuote(editor)
     } else {
-      const selectedContentBlocksEntry = Array.from(
-        Editor.nodes(editor, {
-          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
-          mode: "highest",
-        })
-      ) as NodeEntry<BlockElementExceptTextLine>[]
+      const selectedBlocks = getSelectedBlocks<Exclude<BlockElementExceptTextLine, IQuote>>(editor, {
+        except: ["quote"],
+      })
 
-      if (selectedContentBlocksEntry.length < 1) {
+      if (selectedBlocks.length === 0) {
         return
       }
 
-      const blocksWithoutQuote = selectedContentBlocksEntry.filter(([node]) => node.type !== "quote") as NodeEntry<
-        Exclude<BlockElementExceptTextLine, IQuote>
-      >[]
-      const startPath = blocksWithoutQuote[0][1]
+      let goalBlocks: NodeEntry<Exclude<BlockElementExceptTextLine, IQuote>>[] = []
+      let tmpIndex = 0
+      while (true) {
+        goalBlocks.push(selectedBlocks[tmpIndex])
+        tmpIndex = selectedBlocks.findIndex(
+          ([, path], index) => index >= tmpIndex && !Path.isCommon(selectedBlocks[tmpIndex][1], path)
+        )
+        if (tmpIndex === -1) {
+          break
+        }
+      }
 
+      if (goalBlocks.length === 0) {
+        return
+      }
+
+      const [, firstNodePath] = goalBlocks[0]
       Transforms.removeNodes(editor, {
-        match: (_, p) => blocksWithoutQuote.map(([, p]) => p).some((tp) => Path.equals(p, tp)),
+        match: (n, p) => goalBlocks.some(([, path]) => Path.equals(path, p)),
       })
+
       const newNode: IQuote = {
         type: "quote",
         children: [
           {
             type: "__block-element-content",
-            children: blocksWithoutQuote.map(([node]) => node),
+            children: goalBlocks.map(([node]) => node),
           },
         ],
       }
       Transforms.insertNodes(editor, newNode, {
-        at: startPath,
+        at: firstNodePath,
       })
-
-      Transforms.select(editor, Editor.range(editor, Editor.start(editor, startPath), Editor.end(editor, startPath)))
     }
   })
 }
