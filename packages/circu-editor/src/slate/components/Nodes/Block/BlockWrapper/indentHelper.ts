@@ -133,7 +133,7 @@ export const increaseIndent = (editor: Editor, range?: SlateRange): void => {
     while (true) {
       goalBlocks.push(selectedBlocks[tmpIndex])
       tmpIndex = selectedBlocks.findIndex(
-        ([, path], index) => index >= tmpIndex && !Path.isCommon(selectedBlocks[tmpIndex][1], path)
+        ([, path], index) => index > tmpIndex && !Path.isCommon(selectedBlocks[tmpIndex][1], path)
       )
       if (tmpIndex === -1) {
         break
@@ -272,7 +272,7 @@ export const decreaseIndent = (editor: Editor, range?: SlateRange): void => {
     while (true) {
       goalBlocks.push(selectedBlocks[tmpIndex])
       tmpIndex = selectedBlocks.findIndex(
-        ([, path], index) => index >= tmpIndex && !Path.isCommon(selectedBlocks[tmpIndex][1], path)
+        ([, path], index) => index > tmpIndex && !Path.isCommon(selectedBlocks[tmpIndex][1], path)
       )
       if (tmpIndex === -1) {
         break

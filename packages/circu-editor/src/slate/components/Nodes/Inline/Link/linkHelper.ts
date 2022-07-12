@@ -16,7 +16,8 @@ export const isLinkActive = (editor: Editor): boolean => {
 
 const unToggleLink = (editor: Editor): void => {
   Editor.withoutNormalizing(editor, () => {
-    if (!editor.selection) {
+    const { selection } = editor
+    if (!selection) {
       return
     }
 
@@ -26,7 +27,6 @@ const unToggleLink = (editor: Editor): void => {
 
     const selectedLinkEntryArr = Array.from(
       Editor.nodes(editor, {
-        at: editor.selection,
         match: (n) => SlateElement.isElement(n) && n.type === "link",
       })
     )
@@ -51,15 +51,16 @@ export const toggleLink = (editor: Editor, url: string): void => {
       unToggleLink(editor)
     }
 
-    if (!editor.selection) {
+    const { selection } = editor
+    if (!selection) {
       return
     }
 
-    if (SlateRange.isCollapsed(editor.selection)) {
+    if (SlateRange.isCollapsed(selection)) {
       return
     }
 
-    const [selectStart, selectEnd] = Editor.edges(editor, editor.selection)
+    const [selectStart, selectEnd] = Editor.edges(editor, selection)
     const unToggleRangeRef = Editor.rangeRef(
       editor,
       Editor.unhangRange(editor, {

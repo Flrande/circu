@@ -18,7 +18,8 @@ export const isBlockCodeActive = (editor: Editor): boolean => {
 
 const unToggleBlockCode = (editor: Editor): void => {
   Editor.withoutNormalizing(editor, () => {
-    if (!editor.selection) {
+    const { selection } = editor
+    if (!selection) {
       return
     }
 
@@ -58,7 +59,8 @@ const unToggleBlockCode = (editor: Editor): void => {
 
 export const toggleBlockCode = (editor: Editor): void => {
   Editor.withoutNormalizing(editor, () => {
-    if (!editor.selection) {
+    const { selection } = editor
+    if (!selection) {
       return
     }
 
@@ -78,7 +80,7 @@ export const toggleBlockCode = (editor: Editor): void => {
         goalBlocksIndex.push(tmpIndex)
         tmpIndex = selectedBlocks.findIndex(
           ([, path], index) =>
-            index >= tmpIndex &&
+            index > tmpIndex &&
             !Path.isCommon(selectedBlocks[tmpIndex][1], path) &&
             // 兄弟节点也分为一组
             !Path.isSibling(path, selectedBlocks[tmpIndex][1]) &&
@@ -95,6 +97,10 @@ export const toggleBlockCode = (editor: Editor): void => {
 
       for (const [i, blockIndex] of goalBlocksIndex.entries()) {
         const [goalBlock, goalBlockPath] = selectedBlocks[blockIndex]
+
+        if (goalBlock.type === "block-code") {
+          continue
+        }
 
         // 当前循环要处理的块级节点
         const tmpBlocks =

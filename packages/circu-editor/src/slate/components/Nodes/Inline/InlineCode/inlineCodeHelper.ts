@@ -16,7 +16,8 @@ export const isInlineCodeActive = (editor: Editor): boolean => {
 
 const unToggleInlineCode = (editor: Editor): void => {
   Editor.withoutNormalizing(editor, () => {
-    if (!editor.selection) {
+    const { selection } = editor
+    if (!selection) {
       return
     }
 
@@ -24,7 +25,7 @@ const unToggleInlineCode = (editor: Editor): void => {
       return
     }
 
-    const [selectStart, selectEnd] = Editor.edges(editor, editor.selection)
+    const [selectStart, selectEnd] = Editor.edges(editor, selection)
     const selectStartRef = Editor.pointRef(editor, selectStart)
     const selectEndRef = Editor.pointRef(editor, selectEnd)
 
@@ -66,15 +67,16 @@ export const toggleInlineCode = (editor: Editor): void => {
       return
     }
 
-    if (!editor.selection) {
+    const { selection } = editor
+    if (!selection) {
       return
     }
 
-    if (SlateRange.isCollapsed(editor.selection)) {
+    if (SlateRange.isCollapsed(selection)) {
       return
     }
 
-    const [selectStart, selectEnd] = Editor.edges(editor, editor.selection)
+    const [selectStart, selectEnd] = Editor.edges(editor, selection)
     const unToggleRangeRef = Editor.rangeRef(
       editor,
       Editor.unhangRange(editor, {

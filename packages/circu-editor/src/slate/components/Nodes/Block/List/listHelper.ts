@@ -5,7 +5,6 @@ import type { IQuote } from "../Quote/types"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IOrderedList, IUnorderedList } from "./types"
 
-//TODO: 优化选区
 export const isListActive = (editor: Editor, listType: IOrderedList["type"] | IUnorderedList["type"]): boolean => {
   const { selection } = editor
   if (!selection) return false
@@ -19,7 +18,8 @@ export const isListActive = (editor: Editor, listType: IOrderedList["type"] | IU
 
 const unToggleList = (editor: Editor): void => {
   Editor.withoutNormalizing(editor, () => {
-    if (!editor.selection) {
+    const { selection } = editor
+    if (!selection) {
       return
     }
 
@@ -37,9 +37,6 @@ const unToggleList = (editor: Editor): void => {
       return
     }
 
-    const startPath = selectedLists[0][1]
-    const endPath = selectedLists.at(-1)![1]
-
     for (const [, path] of selectedLists) {
       Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
         at: path,
@@ -54,8 +51,6 @@ const unToggleList = (editor: Editor): void => {
         }
       )
     }
-
-    Transforms.select(editor, Editor.range(editor, startPath, endPath))
   })
 }
 
@@ -77,9 +72,6 @@ export const toggleOrderedList = (editor: Editor): void => {
         return
       }
 
-      const startPath = selectedBlocks[0][1]
-      const endPath = selectedBlocks.at(-1)![1]
-
       for (const [index, [, path]] of selectedBlocks.entries()) {
         Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
           at: path,
@@ -98,15 +90,14 @@ export const toggleOrderedList = (editor: Editor): void => {
           }
         )
       }
-
-      Transforms.select(editor, Editor.range(editor, startPath, endPath))
     }
   })
 }
 
 export const toggleUnorderedList = (editor: Editor): void => {
   Editor.withoutNormalizing(editor, () => {
-    if (!editor.selection) {
+    const { selection } = editor
+    if (!selection) {
       return
     }
 
@@ -120,9 +111,6 @@ export const toggleUnorderedList = (editor: Editor): void => {
       if (selectedBlocks.length === 0) {
         return
       }
-
-      const startPath = selectedBlocks[0][1]
-      const endPath = selectedBlocks.at(-1)![1]
 
       for (const [, path] of selectedBlocks) {
         Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
@@ -138,8 +126,6 @@ export const toggleUnorderedList = (editor: Editor): void => {
           }
         )
       }
-
-      Transforms.select(editor, Editor.range(editor, startPath, endPath))
     }
   })
 }

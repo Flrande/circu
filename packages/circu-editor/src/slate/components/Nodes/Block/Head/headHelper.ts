@@ -5,7 +5,6 @@ import type { IQuote } from "../Quote/types"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IHead, IHeadGrade } from "./types"
 
-//TODO: 优化选区
 export const isHeadActive = (editor: Editor, headGrade: IHeadGrade | "all"): boolean => {
   const { selection } = editor
   if (!selection) return false
@@ -21,7 +20,8 @@ export const isHeadActive = (editor: Editor, headGrade: IHeadGrade | "all"): boo
 
 const unToggleHead = (editor: Editor): void => {
   Editor.withoutNormalizing(editor, () => {
-    if (!editor.selection) {
+    const { selection } = editor
+    if (!selection) {
       return
     }
 
@@ -37,9 +37,6 @@ const unToggleHead = (editor: Editor): void => {
       return
     }
 
-    const startPath = selectedHeads[0][1]
-    const endPath = selectedHeads.at(-1)![1]
-
     for (const [, path] of selectedHeads) {
       Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
         at: path,
@@ -54,14 +51,13 @@ const unToggleHead = (editor: Editor): void => {
         }
       )
     }
-
-    Transforms.select(editor, Editor.range(editor, startPath, endPath))
   })
 }
 
 export const toggleHead = (editor: Editor, headGrade: IHeadGrade): void => {
   Editor.withoutNormalizing(editor, () => {
-    if (!editor.selection) {
+    const { selection } = editor
+    if (!selection) {
       return
     }
 
@@ -75,9 +71,6 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade): void => {
       if (selectedBlocks.length === 0) {
         return
       }
-
-      const startPath = selectedBlocks[0][1]
-      const endPath = selectedBlocks.at(-1)![1]
 
       for (const [, path] of selectedBlocks) {
         Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
@@ -94,8 +87,6 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade): void => {
           }
         )
       }
-
-      Transforms.select(editor, Editor.range(editor, startPath, endPath))
     }
   })
 }
