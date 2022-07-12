@@ -5,7 +5,6 @@ import type { IQuote } from "../Quote/types"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IBlockCode } from "./types"
 
-//TODO: 优化选区
 export const isBlockCodeActive = (editor: Editor): boolean => {
   const { selection } = editor
   if (!selection) return false
@@ -82,7 +81,8 @@ export const toggleBlockCode = (editor: Editor): void => {
             index >= tmpIndex &&
             !Path.isCommon(selectedBlocks[tmpIndex][1], path) &&
             // 兄弟节点也分为一组
-            !Path.isSibling(path, selectedBlocks[tmpIndex][1])
+            !Path.isSibling(path, selectedBlocks[tmpIndex][1]) &&
+            path.length < selectedBlocks[tmpIndex][1].length
         )
         if (tmpIndex === -1) {
           break
@@ -141,6 +141,15 @@ export const toggleBlockCode = (editor: Editor): void => {
           at: goalBlockPath,
         })
       }
+
+      const startPath: Path = selectedBlocks[0][1]
+
+      const endGoalBlockPath: Path = selectedBlocks[goalBlocksIndex.at(-1)!][1]
+      const endPath = endGoalBlockPath
+        .slice(0, -1)
+        .concat([endGoalBlockPath.at(-1)! + selectedBlocks.length - 1 - goalBlocksIndex.at(-1)!])
+
+      Transforms.select(editor, Editor.range(editor, startPath, endPath))
     }
   })
 }
