@@ -1,6 +1,6 @@
 import { Editor, NodeEntry, Path, Point, Transforms } from "slate"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../../../../types/constant"
-import type { BlockElementWithChildren } from "../../../../types/interface"
+import type { BlockElementExceptTextLine } from "../../../../types/interface"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
 import type { IParagraph } from "../Paragraph/types"
@@ -10,10 +10,11 @@ import type { IHead } from "./types"
  * 处理标题中换行行为的函数
  *
  * @param editor 编辑器实例
+ * @param currentEntry 要处理的块级节点
  * @returns 返回一个布尔值, 决定是否覆盖默认行为, 若为真, 则覆盖
  *
  */
-export const headLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<BlockElementWithChildren>): boolean => {
+export const headLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<BlockElementExceptTextLine>): boolean => {
   const { selection } = editor
   if (!selection) {
     return false

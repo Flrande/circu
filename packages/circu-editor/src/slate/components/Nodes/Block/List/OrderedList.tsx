@@ -180,6 +180,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
     }
   }
 
+  //FIXME: 索引工具栏触发位置异常
   return (
     <div
       {...attributes}
