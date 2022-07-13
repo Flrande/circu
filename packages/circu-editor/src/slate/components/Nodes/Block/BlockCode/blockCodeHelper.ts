@@ -75,7 +75,11 @@ export const toggleBlockCode = (editor: Editor): void => {
       }
 
       let goalBlocksIndex: number[] = []
-      let tmpIndex = 0
+      // 从非代码块的块级节点开始
+      let tmpIndex = selectedBlocks.findIndex(([node]) => node.type !== "block-code")
+      if (tmpIndex === -1) {
+        return
+      }
       while (true) {
         goalBlocksIndex.push(tmpIndex)
         tmpIndex = selectedBlocks.findIndex(
