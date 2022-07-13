@@ -1,6 +1,8 @@
 import { Editor, NodeEntry, Path, Transforms } from "slate"
-import { CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN } from "../../../../types/constant"
+import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN } from "../../../../types/constant"
 import type { BlockElementExceptTextLine } from "../../../../types/interface"
+import { SlateElement, SlateNode } from "../../../../types/slate"
+import { arrayIncludes } from "../../../../utils/general"
 import type { IQuote } from "../Quote/types"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IBlockCode } from "./types"
@@ -129,20 +131,19 @@ export const toggleBlockCode = (editor: Editor): void => {
           mode: "highest",
         })
 
+        // 对于最后一个 goalBlock, 要作特殊处理
         if (i === goalBlocksIndex.length - 1) {
-          if (selectedBlocks.at(-1)![0].children.length > 1) {
-            newNodes = newNodes.concat(selectedBlocks.at(-1)![0].children[1]!.children)
-          }
-          if (
-            goalBlock.children.length > 1 &&
-            goalBlock.children[1]!.children.length >
-              selectedBlocks.filter(([, path]) => Path.isChild(path, goalBlockPath.concat([1]))).length
-          ) {
-            newNodes = newNodes.concat(
-              goalBlock.children[1]!.children.slice(
-                selectedBlocks.filter(([, path]) => Path.isChild(path, goalBlockPath.concat([1]))).length
+          if (goalBlock.children.length > 1) {
+            const goalBlockChildren: BlockElementExceptTextLine[] = Array.from(SlateNode.nodes(goalBlock.children[1]!))
+              .filter(
+                ([node, path]) =>
+                  SlateElement.isElement(node) &&
+                  arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, node.type) &&
+                  !tmpBlocks.some(([, p]) => Path.equals(goalBlockPath.concat([1], path), p))
               )
-            )
+              .map(([node]) => node) as BlockElementExceptTextLine[]
+
+            newNodes = newNodes.concat(goalBlockChildren)
           }
         }
 
