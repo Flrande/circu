@@ -194,8 +194,10 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
           display: "flex",
         }}
       >
-        <span ref={spanDom} onClick={onClickSpan} contentEditable={false} className={orderedListSymbolContainer}>
+        <span contentEditable={false} className={orderedListSymbolContainer}>
           <span
+            ref={spanDom}
+            onClick={onClickSpan}
             className={orderedListSymbol}
             style={
               orderedListModifyBarState && Path.equals(orderedListModifyBarState.orderedListEntry[1], currentListPath)
