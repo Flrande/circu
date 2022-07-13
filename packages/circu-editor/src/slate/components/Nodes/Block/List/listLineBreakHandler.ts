@@ -35,8 +35,9 @@ export const listLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
       return true
     }
 
+    // 若当前列表为有序列表
     if (currentBlock.type === "ordered-list") {
-      // 若当前列表为有序列表, 且有子节点, 换行后新产生的列表应为列表头, 且原来子节点块中的列表头应该为自增
+      // 若当前列表为有序列表, 且有子节点, 换行后新产生的列表应为列表头, 放入子节点块中, 且原来子节点块中的列表头应该为自增
       if (currentBlock.children.length === 2) {
         // 若 currentBlock 首个子项不是有序列表, 不用对其处理
         if (currentBlock.children[1].children[0].type === "ordered-list") {
@@ -54,7 +55,6 @@ export const listLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
           )
         }
 
-        // 将换行拆出的部分移到子节点块中
         Transforms.splitNodes(editor, {
           at: selection.anchor,
           match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
@@ -72,6 +72,8 @@ export const listLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
             at: Path.next(currentBlockPath),
           }
         )
+
+        // 将换行拆出的部分移到子节点块中
         increaseIndent(editor, Editor.range(editor, Path.next(currentBlockPath)))
         decreaseIndent(editor, Editor.range(editor, currentBlockPath.concat([1, 0, 1])))
         Transforms.select(editor, Editor.start(editor, currentBlockPath.concat([1])))
@@ -102,6 +104,33 @@ export const listLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
         return true
       }
     }
+
+    // 若当前列表为无序列表
+    if (currentBlock.type === "unordered-list") {
+      // 若当前列表为无序列表, 且有子节点, 换行后新产生的列表应放入子节点块中
+      if (currentBlock.children.length === 2) {
+        Transforms.splitNodes(editor, {
+          at: selection.anchor,
+          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+          always: true,
+        })
+
+        // 将换行拆出的部分移到子节点块中
+        increaseIndent(editor, Editor.range(editor, Path.next(currentBlockPath)))
+        decreaseIndent(editor, Editor.range(editor, currentBlockPath.concat([1, 0, 1])))
+        Transforms.select(editor, Editor.start(editor, currentBlockPath.concat([1])))
+
+        return true
+      }
+    }
+
+    Transforms.splitNodes(editor, {
+      at: selection.anchor,
+      match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+      always: true,
+    })
+
+    return true
   }
 
   return false

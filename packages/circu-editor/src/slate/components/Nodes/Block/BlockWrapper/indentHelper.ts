@@ -326,7 +326,7 @@ export const decreaseIndent = (editor: Editor, range?: SlateRange): void => {
               children: rearBlocks,
             },
             {
-              at: newFirstNodePath.slice(0, -1).concat([firstNodeParentPath.at(-1)! + goalBlocks.length - 1, 1]),
+              at: newFirstNodePath.concat([1]),
             }
           )
         }
