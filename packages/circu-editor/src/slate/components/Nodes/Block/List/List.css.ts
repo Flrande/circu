@@ -4,6 +4,7 @@ export const orderedListSymbolContainer = style({
   userSelect: "none",
   color: "#5a87f7",
   paddingLeft: "2px",
+  position: "absolute",
 })
 
 export const orderedListSymbol = style({
@@ -22,6 +23,7 @@ export const unorderedListSymbol = style({
   minWidth: "22px",
   height: "100%",
   color: "#5a87f7",
+  position: "absolute",
 })
 
 export const orderedListBarContainer = style({

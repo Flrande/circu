@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from "jotai"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Path } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
@@ -160,6 +160,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
   const setOrderedListBarState = useSetAtom(orderedListBarStateAtom)
   const orderedListModifyBarState = useAtomValue(orderedListModifyBarStateAtom)
   const spanDom = useRef<HTMLSpanElement | null>(null)
+  const [spanWidth, setSpanWidth] = useState(20)
 
   const currentListPath = ReactEditor.findPath(editor, element)
 
@@ -180,6 +181,12 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
     }
   }
 
+  useEffect(() => {
+    if (spanDom.current) {
+      setSpanWidth(spanDom.current.offsetWidth + 2)
+    }
+  })
+
   return (
     <div
       {...attributes}
@@ -188,11 +195,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
         display: element.isHidden ? "none" : undefined,
       }}
     >
-      <div
-        style={{
-          display: "flex",
-        }}
-      >
+      <div>
         <span contentEditable={false} className={orderedListSymbolContainer}>
           <span
             ref={spanDom}
@@ -208,13 +211,13 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
             }
           >{`${indexSymbol}.`}</span>
         </span>
-        <span
+        <div
           style={{
-            minWidth: "0",
+            paddingLeft: `${spanWidth}px`,
           }}
         >
           {children}
-        </span>
+        </div>
       </div>
     </div>
   )

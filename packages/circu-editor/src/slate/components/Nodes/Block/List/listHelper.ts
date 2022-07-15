@@ -54,6 +54,7 @@ const unToggleList = (editor: Editor): void => {
   })
 }
 
+//TODO: 优化交互
 export const toggleOrderedList = (editor: Editor): void => {
   Editor.withoutNormalizing(editor, () => {
     const { selection } = editor

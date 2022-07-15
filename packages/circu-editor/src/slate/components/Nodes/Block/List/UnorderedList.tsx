@@ -18,21 +18,17 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
         display: element.isHidden ? "none" : undefined,
       }}
     >
-      <div
-        style={{
-          display: "flex",
-        }}
-      >
+      <div>
         <span contentEditable={false} className={unorderedListSymbol}>
           {indexSymbol}
         </span>
-        <span
+        <div
           style={{
-            minWidth: "0",
+            paddingLeft: "22px",
           }}
         >
           {children}
-        </span>
+        </div>
       </div>
     </div>
   )
