@@ -1,15 +1,15 @@
 import { Editor, NodeEntry, Path, Transforms } from "slate"
-import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../../../../types/constant"
-import type { BlockElementExceptTextLine } from "../../../../types/interface"
-import { SlateElement } from "../../../../types/slate"
-import { arrayIncludes } from "../../../../utils/general"
-import type { IHead } from "../Head/types"
+import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, BLOCK_ELEMENTS_WITH_CHILDREN } from "../../types/constant"
+import type { BlockElementWithChildren } from "../../types/interface"
+import { SlateElement } from "../../types/slate"
+import { arrayIncludes } from "../../utils/general"
+import type { IHead } from "../Nodes/Block/Head/types"
 
 const handleFold = (editor: Editor, path: Path, action: "toggle" | "unToggle"): void => {
   Editor.withoutNormalizing(editor, () => {
     const [node, nodePath] = Editor.node(editor, path)
 
-    if (SlateElement.isElement(node) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, node.type)) {
+    if (SlateElement.isElement(node) && arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, node.type)) {
       if (node.type === "head") {
         // 找到当前标题后同深度且标题级别大于或等于当前标题的标题节点
         const afterHeads = Array.from(
@@ -69,8 +69,17 @@ const handleFold = (editor: Editor, path: Path, action: "toggle" | "unToggle"): 
           })
         }
       } else {
-        if ((node as Exclude<BlockElementExceptTextLine, IHead>).children.length > 1) {
+        if ((node as Exclude<BlockElementWithChildren, IHead>).children.length > 1) {
           if (action === "toggle") {
+            Transforms.setNodes(
+              editor,
+              {
+                isFolded: true,
+              },
+              {
+                at: nodePath,
+              }
+            )
             Transforms.setNodes(
               editor,
               {
@@ -85,6 +94,9 @@ const handleFold = (editor: Editor, path: Path, action: "toggle" | "unToggle"): 
               }
             )
           } else {
+            Transforms.unsetNodes(editor, ["isFolded"], {
+              at: nodePath,
+            })
             Transforms.unsetNodes(editor, ["isHidden"], {
               at: nodePath.concat([1]),
               match: (n, p) =>

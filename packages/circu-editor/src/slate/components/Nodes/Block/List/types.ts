@@ -2,6 +2,7 @@ import type { __IBlockElementChildren, __IBlockElementContent } from "../BlockWr
 
 export type IOrderedList = {
   type: "ordered-list"
+  isFolded?: true
   isHidden?: true
   indexState: {
     type: "head" | "selfIncrement"
@@ -12,6 +13,7 @@ export type IOrderedList = {
 
 export type IUnorderedList = {
   type: "unordered-list"
+  isFolded?: true
   isHidden?: true
   children: [__IBlockElementContent, __IBlockElementChildren] | [__IBlockElementContent]
 }
