@@ -21,7 +21,6 @@ export const orderedListSymbol = style({
 export const unorderedListSymbol = style({
   userSelect: "none",
   minWidth: "22px",
-  height: "100%",
   color: "#5a87f7",
   position: "absolute",
 })

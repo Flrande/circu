@@ -108,21 +108,27 @@ const App: React.FC = () => {
           }
 
           const elements = document.elementsFromPoint(x, y)
-          const goalDomElement = elements.find(
+          const blockContentIndex = elements.findIndex(
             (ele) => ele instanceof HTMLElement && (ele as HTMLElement).dataset["circuNode"] === "block-content"
           )
 
-          if (goalDomElement) {
-            const goalNode = ReactEditor.toSlateNode(editor, goalDomElement)
-            const goalPath = ReactEditor.findPath(editor, goalNode)
+          if (blockContentIndex !== -1) {
+            const goalDomElement = elements
+              .slice(blockContentIndex + 1)
+              .find((ele) => ele instanceof HTMLElement && (ele as HTMLElement).dataset["slateNode"] === "element")
 
-            if (SlateElement.isElement(goalNode)) {
-              const rect = goalDomElement.getBoundingClientRect()
-              setFoldState({
-                path: goalPath.slice(0, -1),
-                left: rect.left - docXPadding - 20,
-                top: rect.top + window.scrollY + 1,
-              })
+            if (goalDomElement) {
+              const goalNode = ReactEditor.toSlateNode(editor, goalDomElement)
+              const goalPath = ReactEditor.findPath(editor, goalNode)
+
+              if (SlateElement.isElement(goalNode)) {
+                const rect = goalDomElement.getBoundingClientRect()
+                setFoldState({
+                  path: goalPath,
+                  left: rect.left - docXPadding - 20,
+                  top: rect.top + window.scrollY + 1,
+                })
+              }
             }
           }
         }}
