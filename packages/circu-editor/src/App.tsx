@@ -107,10 +107,11 @@ const App: React.FC = () => {
             x = docXPadding + 790 - 60
           }
 
-          const elements = document.elementsFromPoint(x, y).reverse()
+          const elements = document.elementsFromPoint(x, y)
           const goalDomElement = elements.find(
             (ele) => ele instanceof HTMLElement && (ele as HTMLElement).dataset["circuNode"] === "block-content"
           )
+
           if (goalDomElement) {
             const goalNode = ReactEditor.toSlateNode(editor, goalDomElement)
             const goalPath = ReactEditor.findPath(editor, goalNode)
@@ -120,7 +121,7 @@ const App: React.FC = () => {
               setFoldState({
                 path: goalPath.slice(0, -1),
                 left: rect.left - docXPadding - 20,
-                top: rect.top + window.scrollY + 2,
+                top: rect.top + window.scrollY + 1,
               })
             }
           }

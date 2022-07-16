@@ -23,6 +23,19 @@ const FoldButton: React.FC = () => {
         const element = node as BlockElementWithChildren
 
         if (element.type === "head" || element.children.length > 1) {
+          // 判断父块级节点是不是引用, 若是, 要调整按钮的位置
+          let quoteFlag = false
+          if (path.length >= 3) {
+            const parentBlockPath = path.slice(0, -2)
+
+            try {
+              const [parentNode] = Editor.node(editor, parentBlockPath)
+              if (SlateElement.isElement(parentNode) && parentNode.type === "quote") {
+                quoteFlag = true
+              }
+            } catch (error) {}
+          }
+
           const onClick: React.MouseEventHandler = () => {
             if (element.isFolded) {
               unToggleFold(editor, path)
@@ -35,7 +48,7 @@ const FoldButton: React.FC = () => {
             <div
               style={{
                 position: "absolute",
-                left: `${foldState.left}px`,
+                left: `${quoteFlag ? foldState.left - 14 : foldState.left}px`,
                 top: `${foldState.top}px`,
               }}
             >
