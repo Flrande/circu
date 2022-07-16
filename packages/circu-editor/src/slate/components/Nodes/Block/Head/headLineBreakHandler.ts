@@ -53,8 +53,8 @@ export const headLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
 
       return true
     } else {
+      // 若标题不处于折叠状态, 标题结尾换行时产生段落块
       if (Point.equals(selection.anchor, Editor.end(editor, currentBlockPath))) {
-        // 若标题不处于折叠状态, 标题结尾换行时产生段落块
         const newNode: IParagraph = {
           type: "paragraph",
           children: [
@@ -80,6 +80,14 @@ export const headLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
 
         return true
       }
+
+      Transforms.splitNodes(editor, {
+        at: selection.anchor,
+        match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+        always: true,
+      })
+
+      return true
     }
   }
 
