@@ -10,7 +10,6 @@ import { toggleFold, unToggleFold } from "./foldHelper"
 import { foldStateAtom } from "./state"
 
 const FoldButton: React.FC = () => {
-  //TODO: 这里可能需要用 useSlate, 因为某些情况下节点的折叠状态会突变
   const editor = useSlateStatic()
   const foldState = useAtomValue(foldStateAtom)
 

@@ -1,6 +1,8 @@
-import { Editor, NodeEntry, Transforms } from "slate"
+import { Editor, NodeEntry, Path, Transforms } from "slate"
 import { CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN } from "../../../../types/constant"
 import type { BlockElementExceptTextLine } from "../../../../types/interface"
+import { SlateElement } from "../../../../types/slate"
+import { unToggleFold } from "../../../FoldButton/foldHelper"
 import type { IQuote } from "../Quote/types"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import type { IHead, IHeadGrade } from "./types"
@@ -38,6 +40,9 @@ const unToggleHead = (editor: Editor): void => {
     }
 
     for (const [, path] of selectedHeads) {
+      // 先取消折叠
+      unToggleFold(editor, path)
+
       Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
         at: path,
       })
@@ -50,6 +55,17 @@ const unToggleHead = (editor: Editor): void => {
           at: path,
         }
       )
+
+      // 如果当前标题前最近的同深度标题为折叠状态, 取消其折叠
+      const previousHeads = Array.from(
+        Editor.nodes(editor, {
+          at: Path.parent(path),
+          match: (n, p) => SlateElement.isElement(n) && n.type === "head" && Path.isSibling(path, p),
+        })
+      ) as NodeEntry<IHead>[]
+      if (previousHeads.length > 0 && previousHeads.at(-1)![0].isFolded) {
+        unToggleFold(editor, previousHeads.at(-1)![1])
+      }
     }
   })
 }
@@ -73,6 +89,9 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade): void => {
       }
 
       for (const [, path] of selectedBlocks) {
+        // 先取消折叠
+        unToggleFold(editor, path)
+
         Transforms.unsetNodes(editor, CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN, {
           at: path,
         })
@@ -86,6 +105,21 @@ export const toggleHead = (editor: Editor, headGrade: IHeadGrade): void => {
             at: path,
           }
         )
+
+        // 如果当前标题前最近的同深度标题为折叠状态, 且新的标题级别低于其级别, 取消其折叠
+        const previousHeads = Array.from(
+          Editor.nodes(editor, {
+            at: Path.parent(path),
+            match: (n, p) => SlateElement.isElement(n) && n.type === "head" && Path.isSibling(path, p),
+          })
+        ) as NodeEntry<IHead>[]
+        if (
+          previousHeads.length > 0 &&
+          previousHeads.at(-1)![0].isFolded &&
+          parseInt(headGrade) > parseInt(previousHeads.at(-1)![0].headGrade)
+        ) {
+          unToggleFold(editor, previousHeads.at(-1)![1])
+        }
       }
     }
   })

@@ -15,7 +15,6 @@ import HeadButton from "./components/Head/HeadButton"
 import UnderlineButton from "./components/Underline/UnderlineButton"
 import QuoteButton from "./components/Quote/QuoteButton"
 
-//TODO: item 可控拖拽
 const ToolBar: React.FC = () => {
   const toolBarState = useAtomValue(toolBarStateAtom)
 

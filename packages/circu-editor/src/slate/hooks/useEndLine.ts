@@ -1,16 +1,27 @@
 import { useEffect } from "react"
-import { Transforms } from "slate"
+import { Editor, NodeEntry, Transforms } from "slate"
 import { useSlateStatic } from "slate-react"
+import type { IHead } from "../components/Nodes/Block/Head/types"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
-import type { SlateElement } from "../types/slate"
+import { SlateElement } from "../types/slate"
 
-//TODO: 如果第一深度下最后一个标题处于折叠状态, 不添加新空行
 export const useEndLine = () => {
   const editor = useSlateStatic()
   const lastChild = editor.children[editor.children.length - 1] as SlateElement
 
   useEffect(() => {
     if (lastChild.type !== "paragraph") {
+      // 如果最后一个标题为折叠状态, 不添加新行
+      const previousHeads = Array.from(
+        Editor.nodes(editor, {
+          at: [],
+          match: (n, p) => SlateElement.isElement(n) && n.type === "head" && p.length === 1,
+        })
+      ) as NodeEntry<IHead>[]
+      if (previousHeads.length > 0 && previousHeads.at(-1)![0].isFolded) {
+        return
+      }
+
       const blankLineNode: IParagraph = {
         type: "paragraph",
         children: [

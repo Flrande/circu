@@ -61,7 +61,6 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
     <span onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} {...attributes}>
       <a
         onClick={() => {
-          //TODO: 加个跳转失败的弹窗?
           const newTab = window.open(element.url, "_blank")
         }}
         href={element.url}

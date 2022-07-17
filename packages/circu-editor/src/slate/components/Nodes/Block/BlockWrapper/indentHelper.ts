@@ -144,7 +144,6 @@ export const increaseIndent = (editor: Editor, range?: SlateRange): void => {
       return
     }
 
-    //TODO: 首个节点不能缩进时也能让其余可缩进的缩进
     // 判断是否可以缩进
     if (!inspectIncreaseIndentable(editor, goalBlocks[0][1]).indentable) {
       return
