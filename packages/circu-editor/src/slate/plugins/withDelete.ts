@@ -8,6 +8,7 @@ import type { BlockElementExceptTextLine } from "../types/interface"
 import { SlateElement } from "../types/slate"
 import { arrayIncludes } from "../utils/general"
 
+//TODO: 删除标题最后一个字符时, 将标题转化为段落块
 const withDeleteBackward = (editor: Editor) => {
   const { deleteBackward } = editor
 

@@ -5,12 +5,13 @@ import { withDelete } from "../plugins/withDelete"
 import { withInlines } from "../plugins/withInlines"
 import { withLineBreak } from "../plugins/withLineBreak"
 import { withNormalize } from "../plugins/withNormalize"
+import { withShortcut } from "../plugins/withShortcut"
 import { withVoid } from "../plugins/withVoid"
 
 export const useCreateEditor = () => {
   // 保证单一实例
   const [editor] = useState(() =>
-    withLineBreak(withNormalize(withVoid(withDelete(withInlines(withReact(createEditor()))))))
+    withShortcut(withLineBreak(withNormalize(withVoid(withDelete(withInlines(withReact(createEditor())))))))
   )
 
   return editor
