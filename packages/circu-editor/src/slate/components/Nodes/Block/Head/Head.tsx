@@ -1,5 +1,4 @@
 import type { CustomRenderElementProps } from "../../../../types/utils"
-import { head_1, head_2, head_3, head_4, head_5, head_6 } from "./Head.css"
 import type { IHead } from "./types"
 
 const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children, element }) => {
@@ -11,7 +10,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
           style={{
             display: element.isHidden ? "none" : undefined,
           }}
-          className={head_1}
+          className={"head-1"}
         >
           {children}
         </div>
@@ -23,7 +22,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
           style={{
             display: element.isHidden ? "none" : undefined,
           }}
-          className={head_2}
+          className={"head-2"}
         >
           {children}
         </div>
@@ -35,7 +34,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
           style={{
             display: element.isHidden ? "none" : undefined,
           }}
-          className={head_3}
+          className={"head-3"}
         >
           {children}
         </div>
@@ -47,7 +46,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
           style={{
             display: element.isHidden ? "none" : undefined,
           }}
-          className={head_4}
+          className={"head-4"}
         >
           {children}
         </div>
@@ -59,7 +58,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
           style={{
             display: element.isHidden ? "none" : undefined,
           }}
-          className={head_5}
+          className={"head-5"}
         >
           {children}
         </div>
@@ -71,7 +70,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
           style={{
             display: element.isHidden ? "none" : undefined,
           }}
-          className={head_6}
+          className={"head-6"}
         >
           {children}
         </div>

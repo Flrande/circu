@@ -123,6 +123,7 @@ const App: React.FC = () => {
 
               if (SlateElement.isElement(goalNode)) {
                 const rect = goalDomElement.getBoundingClientRect()
+                //TODO: 只传递 path, 以拿到最新的 dom 及位置
                 setFoldState({
                   path: goalPath,
                   left: rect.left - docXPadding - 20,

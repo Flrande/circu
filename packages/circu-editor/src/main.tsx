@@ -4,6 +4,7 @@ import App from "./App"
 
 import "./normalize.css"
 import "./scrollbar.css"
+import "./index.css"
 
 document.body.setAttribute("arco-theme", "dark")
 
