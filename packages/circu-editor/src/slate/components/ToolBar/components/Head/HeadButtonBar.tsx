@@ -1,6 +1,5 @@
 import { useAtomValue } from "jotai"
 import { activeButtonAtom } from "../../state"
-import { headButtonBarContainer, headButtonBarList } from "./Head.css"
 import HeadButton from "./HeadButton"
 
 const HeadButtonBar: React.FC = () => {
@@ -8,8 +7,8 @@ const HeadButtonBar: React.FC = () => {
 
   if (activeButton === "head-bar") {
     return (
-      <div className={headButtonBarContainer}>
-        <ul className={headButtonBarList}>
+      <div className={"absolute translate-x-[-46px] -translate-y-16 opacity-100 transition z-50 select-none"}>
+        <ul className={"px-2 flex rounded-md border border-solid border-gray-300/20 shadow-lg bg-neutral-800"}>
           <HeadButton headGrade={"4"}></HeadButton>
           <HeadButton headGrade={"5"}></HeadButton>
           <HeadButton headGrade={"6"}></HeadButton>

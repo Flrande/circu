@@ -3,7 +3,6 @@ import { useSetAtom } from "jotai"
 import { useState } from "react"
 import type { Descendant } from "slate"
 import { ReactEditor, Slate } from "slate-react"
-import { doc, docContainer } from "./App.css"
 import FoldButton from "./slate/components/FoldButton/FoldButton"
 import { foldStateAtom } from "./slate/components/FoldButton/state"
 import OrderedListBar from "./slate/components/Nodes/Block/List/ListBar/OrderedListBar"
@@ -91,7 +90,7 @@ const App: React.FC = () => {
   const [value, setValue] = useState<Descendant[]>(initialValue)
 
   return (
-    <div className={docContainer}>
+    <div className={"flex justify-center bg-neutral-900"}>
       <div
         onMouseMove={(event) => {
           // 文档左右两边到视口的距离, 790 为文档宽度
@@ -140,7 +139,7 @@ const App: React.FC = () => {
           padding: "0 96px 0 96px",
         }}
       >
-        <div className={doc}>
+        <div className={"relative w-[790px] text-base text-slate-50 tracking-wide p-4"}>
           <Slate editor={editor} value={value} onChange={(newValue) => setValue(newValue)}>
             <SlateEditable></SlateEditable>
             <div

@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    font-family: "Source Code Pro", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", "Microsoft Yahei";
+  }
+}
+
 @layer components {
   .head-1 > :first-child {
     @apply text-3xl mb-3 mt-4 font-semibold tracking-wide;

@@ -4,7 +4,6 @@ import { ReactEditor, useSlateStatic } from "slate-react"
 import { backgroundColorMap, fontColorMap } from "../../../Nodes/Text/Color"
 import { toggleColorMark } from "../../../Nodes/Text/colorHelper"
 import { activeButtonAtom } from "../../state"
-import { toolBarButton, toolBarButtonSvg, toolBarItemContainer } from "../../ToolBar.css"
 import { toolBarIconBackgroundColor } from "../ToolBarItem/useIconColor"
 import ColorBar from "./ColorBar"
 import ColorIcon from "./ColorIcon"
@@ -33,7 +32,7 @@ const ColorButton: React.FC = () => {
       onMouseLeave={() => {
         setIsColorBarActive(false)
       }}
-      className={toolBarItemContainer}
+      className={"py-2 px-1"}
     >
       <div
         onClick={onClick}
@@ -45,13 +44,13 @@ const ColorButton: React.FC = () => {
         onMouseLeave={() => {
           setIsMouseEnter(false)
         }}
-        className={toolBarButton}
+        className={"flex items-center justify-center h-8 w-8 rounded-md cursor-pointer"}
         style={{
           backgroundColor: isMouseEnter ? toolBarIconBackgroundColor.focusStatic : undefined,
         }}
       >
         <div
-          className={toolBarButtonSvg}
+          className={"h-6 w-6"}
           style={{
             backgroundColor: backgroundColorMap[buttonColor.backgroundColorKey],
             // 设计上这应该是离 icon svg 最近的一个 color,

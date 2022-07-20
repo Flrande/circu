@@ -3,7 +3,6 @@ import { ReactEditor, useSlateStatic } from "slate-react"
 import type { KeysUnion } from "../../../../types/utils"
 import type { IBackgroundColorMap, IFontColorMap } from "../../../Nodes/Text/Color"
 import { cleanColorMark } from "../../../Nodes/Text/colorHelper"
-import { colorBar, colorBarCleanButton, colorBarContainer, colorBarItemContainer, colorBarText } from "./ColorBar.css"
 import ColorBarItem from "./ColorBarItem"
 import { isColorBarActiveAtom } from "./state"
 
@@ -112,25 +111,30 @@ const ColorBar: React.FC = () => {
 
   if (isColorBarActive) {
     return (
-      <div className={colorBarContainer}>
-        <div className={colorBar}>
-          <div className={colorBarText}>
+      <div className={"absolute py-3 opacity-100 translate-x-[-103px] transition"}>
+        <div className={"bg-neutral-800 border border-solid border-gray-900 rounded-md p-3 w-[236px] shadow-lg"}>
+          <div className={"text-sm mt-[6px] mb-1"}>
             <span>字体颜色</span>
           </div>
-          <div className={colorBarItemContainer}>
+          <div className={"flex flex-wrap"}>
             {fontList.map(({ type, color }, index) => (
               <ColorBarItem type={type} colorKey={color} key={index}></ColorBarItem>
             ))}
           </div>
-          <div className={colorBarText}>
+          <div className={"text-sm mt-[6px] mb-1"}>
             <span>背景颜色</span>
           </div>
-          <div className={colorBarItemContainer}>
+          <div className={"flex flex-wrap"}>
             {backgroundList.map(({ type, color }, index) => (
               <ColorBarItem type={type} colorKey={color} key={index}></ColorBarItem>
             ))}
           </div>
-          <div onClick={onCleanButtonClick} className={colorBarCleanButton}>
+          <div
+            onClick={onCleanButtonClick}
+            className={
+              "flex items-center justify-center mt-[6px] mb-1 py-1 text-sm border border-solid border-neutral-600 rounded-md hover:bg-zinc-900 active:bg-zinc-800"
+            }
+          >
             <span>清除</span>
           </div>
         </div>

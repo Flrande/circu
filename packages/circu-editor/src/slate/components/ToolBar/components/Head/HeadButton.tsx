@@ -4,10 +4,8 @@ import { ReactEditor, useSlateStatic } from "slate-react"
 import { isHeadActive, toggleHead } from "../../../Nodes/Block/Head/headHelper"
 import type { IHeadGrade } from "../../../Nodes/Block/Head/types"
 import { activeButtonAtom } from "../../state"
-import { toolBarButton, toolBarButtonSvg, toolBarItemContainer } from "../../ToolBar.css"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import { useIconColor } from "../ToolBarItem/useIconColor"
-import { headButtonArrow } from "./Head.css"
 import HeadButtonBar from "./HeadButtonBar"
 import HeadIcon from "./HeadIcon"
 
@@ -21,7 +19,7 @@ const HeadButton: React.FC<{
   if (headGrade === "no-grade") {
     // 大部分逻辑来自 ToolBarItem
     return (
-      <div className={toolBarItemContainer}>
+      <div className={"py-2 px-1"}>
         <div
           onMouseEnter={() => {
             setIsMouseEnter(true)
@@ -30,7 +28,7 @@ const HeadButton: React.FC<{
           onMouseLeave={() => {
             setIsMouseEnter(false)
           }}
-          className={toolBarButton}
+          className={"flex items-center justify-center h-8 w-8 rounded-md cursor-pointer"}
           style={{
             backgroundColor: backgroundColor,
             position: "relative",
@@ -40,7 +38,7 @@ const HeadButton: React.FC<{
           }}
         >
           <div
-            className={toolBarButtonSvg}
+            className={"h-6 w-6"}
             style={{
               // 设计上这应该是离 icon svg 最近的一个 color,
               // 否则 svg 中的 currentColor 会导致颜色与预期不符
@@ -51,7 +49,7 @@ const HeadButton: React.FC<{
             <HeadIcon headGrade={headGrade}></HeadIcon>
           </div>
           <svg
-            className={headButtonArrow}
+            className={"absolute left-5 top-[10px] w-3 h-3 transition-transform"}
             style={{
               transform: activeButton === "head-bar" ? "rotate(180deg)" : undefined,
             }}

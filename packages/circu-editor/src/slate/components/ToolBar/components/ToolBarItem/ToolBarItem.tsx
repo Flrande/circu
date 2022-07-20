@@ -1,5 +1,4 @@
 import React, { useState } from "react"
-import { toolBarButton, toolBarButtonSvg, toolBarItemContainer } from "../../ToolBar.css"
 import { useIconColor } from "./useIconColor"
 
 const ToolBarItem: React.FC<
@@ -14,7 +13,7 @@ const ToolBarItem: React.FC<
   const { fillColor, backgroundColor } = useIconColor(isStyleActive, isMouseEnter)
 
   return (
-    <div className={toolBarItemContainer}>
+    <div className={"py-2 px-1"}>
       <div
         onClick={onClick}
         onMouseEnter={(event) => {
@@ -29,13 +28,13 @@ const ToolBarItem: React.FC<
             onMouseLeave(event)
           }
         }}
-        className={toolBarButton}
+        className={"flex items-center justify-center h-[30px] w-[30px] rounded-md cursor-pointer"}
         style={{
           backgroundColor: backgroundColor,
         }}
       >
         <div
-          className={toolBarButtonSvg}
+          className={"h-6 w-6"}
           style={{
             // 设计上这应该是离 icon svg 最近的一个 color,
             // 否则 svg 中的 currentColor 会导致颜色与预期不符

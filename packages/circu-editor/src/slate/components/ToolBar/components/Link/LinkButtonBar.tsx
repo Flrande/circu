@@ -2,7 +2,6 @@ import { atom, useAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { useSlateStatic } from "slate-react"
 import { toggleLink } from "../../../Nodes/Inline/Link/linkHelper"
-import { linkButtonBarButton, linkButtonBarContainer, linkButtonBarInput, linkButtonBarSpan } from "./LinkButtonBar.css"
 
 export const linkButtonBarStateAtom = atom<{
   isActive: boolean
@@ -52,13 +51,15 @@ const LinkButtonBar: React.FC = () => {
           }
         }}
         tabIndex={-1}
-        className={linkButtonBarContainer}
+        className={
+          "absolute z-[5] bg-zinc-800 border border-solid border-gray-900 rounded-md py-3 px-4 shadow-lg flex items-center"
+        }
         style={{
           left: linkButtonBarState.position.left,
           top: linkButtonBarState.position.top,
         }}
       >
-        <span className={linkButtonBarSpan}>链接</span>
+        <span className={"text-right mr-3 w-9"}>链接</span>
         <input
           ref={linkInputDom}
           value={url}
@@ -66,9 +67,11 @@ const LinkButtonBar: React.FC = () => {
           onChange={(event) => {
             setUrl(event.target.value)
           }}
-          className={linkButtonBarInput}
+          className={
+            "h-8 w-[250px] leading-8 pl-3 rounded-md border border-solid border-blue-500 bg-zinc-900 text-sm mr-3 placeholder:text-gray-700"
+          }
         />
-        <button onClick={onClick} className={linkButtonBarButton}>
+        <button onClick={onClick} className={"w-[68px] h-8 rounded-md bg-blue-500 text-sm cursor-pointer"}>
           确定
         </button>
       </div>

@@ -1,6 +1,5 @@
 import { useAtomValue } from "jotai"
 import type React from "react"
-import { toolBar, toolBarContainer } from "./ToolBar.css"
 import BoldButton from "./components/Bold/BoldButton"
 import StrikeButton from "./components/Strike/StrikeButton"
 import InlineCodeButton from "./components/InlineCode/InlineCodeButton"
@@ -35,8 +34,11 @@ const ToolBar: React.FC = () => {
     }
 
     return (
-      <div className={toolBarContainer} style={toolBarStyle}>
-        <ul className={toolBar}>
+      <div
+        className={"bg-neutral-800 absolute px-2 border border-solid border-zinc-700 rounded-md drop-shadow-lg"}
+        style={toolBarStyle}
+      >
+        <ul className={"list-none min-w-0 relative flex items-center"}>
           <HeadButton headGrade={"1"}></HeadButton>
           <HeadButton headGrade={"2"}></HeadButton>
           <HeadButton headGrade={"3"}></HeadButton>
