@@ -1,6 +1,5 @@
 import { ReactEditor, useSelected, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps, KeysUnion } from "../../../../types/utils"
-import { blockCodeCodeArea, blockCodeContainer, blockCodeOrderWrapper } from "./BlockCode.css"
 import type { IBlockCode, ICodeAreaLangMap } from "./types"
 import { Button, Select } from "@arco-design/web-react"
 import { Transforms } from "slate"
@@ -70,7 +69,7 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
         border: isSelected ? "1px solid #5a87f7" : undefined,
         display: element.isHidden ? "none" : undefined,
       }}
-      className={blockCodeContainer}
+      className={"bg-zinc-800 my-2 text-sm font-normal rounded"}
     >
       <div
         contentEditable={false}
@@ -149,11 +148,11 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
           {isWrapMessage}
         </Button>
       </div>
-      <div className={blockCodeCodeArea}>
+      <div className={"flex min-h-[49px] leading-[22px] py-2 px-5"}>
         <div
           ref={orderNumbersWrapperDom}
           contentEditable={false}
-          className={blockCodeOrderWrapper}
+          className={"flex flex-col sticky left-0 select-none text-gray-400 pr-3 whitespace-nowrap text-right"}
           style={{
             minWidth: `${element.children[0].children.length.toString().length * 8 + 20}px`,
           }}

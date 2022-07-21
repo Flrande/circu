@@ -4,7 +4,6 @@ import { Path } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { calculateIndentLevel } from "../BlockWrapper/indentHelper"
-import { orderedListSymbol, orderedListSymbolContainer } from "./List.css"
 import { orderedListBarStateAtom, orderedListModifyBarStateAtom } from "./state"
 import type { IOrderedList } from "./types"
 
@@ -196,11 +195,11 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
       }}
     >
       <div>
-        <span contentEditable={false} className={orderedListSymbolContainer}>
+        <span contentEditable={false} className={"select-none text-blue-500 pl-[2px] absolute"}>
           <span
             ref={spanDom}
             onClick={onClickSpan}
-            className={orderedListSymbol}
+            className={"hover:bg-blue-800/50 hover:rounded active:bg-blue-600/50 active:rounded"}
             style={
               orderedListModifyBarState && Path.equals(orderedListModifyBarState.orderedListEntry[1], currentListPath)
                 ? {

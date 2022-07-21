@@ -1,7 +1,6 @@
 import { ReactEditor, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { calculateIndentLevel } from "../BlockWrapper/indentHelper"
-import { unorderedListSymbol } from "./List.css"
 import type { IUnorderedList } from "./types"
 
 const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ attributes, children, element }) => {
@@ -19,7 +18,7 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
       }}
     >
       <div>
-        <span contentEditable={false} className={unorderedListSymbol}>
+        <span contentEditable={false} className={"select-none text-blue-500 min-w-[22px] absolute"}>
           {indexSymbol}
         </span>
         <div

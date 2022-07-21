@@ -3,7 +3,6 @@ import { ReactElement, useEffect, useRef } from "react"
 import type React from "react"
 import { Editor, NodeEntry, Path, Transforms } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
-import { orderedListBarContainer, orderedListBarItemContainer } from "../List.css"
 import { orderedListBarStateAtom, orderedListModifyBarStateAtom } from "../state"
 import OrderedListBarContinueIcon from "./OrderedListBarContinueIcon"
 import OrderedListBarModifyIcon from "./OrderedListBarModifyIcon"
@@ -24,7 +23,7 @@ const OrderedListBarItem: React.FC<{
         color: isActive ? "#ffffff" : "#5f5f5f",
         cursor: isActive ? "pointer" : "not-allowed",
       }}
-      className={orderedListBarItemContainer}
+      className={"flex items-center h-[20px] py-[6px] px-4 my-1 mx-2 box-content hover:bg-zinc-700/40 hover:rounded-md"}
     >
       {icon}
       <span>{message}</span>
@@ -190,7 +189,7 @@ const OrderedListBar: React.FC = () => {
           }
         }}
         tabIndex={-1}
-        className={orderedListBarContainer}
+        className={"absolute bg-neutral-800 border border-solid border-zinc-700/20 shadow-lg py-3 rounded-md"}
         style={{
           left: orderedListBarState.position.left,
           top: orderedListBarState.position.top,

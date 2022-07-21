@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { SlateNode } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
-import { linkContainer } from "./Link.css"
 import { isLinkBarActiveDerivedAtom, linkStateAtom } from "./state"
 import type { ILink } from "./types"
 
@@ -64,7 +63,7 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
           const newTab = window.open(element.url, "_blank")
         }}
         href={element.url}
-        className={linkContainer}
+        className={"cursor-pointer text-blue-500 no-underline hover:underline"}
       >
         {children}
       </a>

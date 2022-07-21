@@ -2,13 +2,6 @@ import { useAtom, useSetAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { Transforms } from "slate"
 import { useSlateStatic } from "slate-react"
-import {
-  linkEditBarButton,
-  linkEditBarContainer,
-  linkEditBarRow,
-  linkEditBarRowInput,
-  linkEditBarSpan,
-} from "../Link.css"
 import { isLinkEditBarActiveAtom, linkEditBarStateDerivedAtom, linkStateAtom } from "../state"
 import type { ILink } from "../types"
 
@@ -69,42 +62,49 @@ const LinkEditBar: React.FC = () => {
           }
         }}
         tabIndex={-1}
-        className={linkEditBarContainer}
+        className={"absolute z-[5] bg-neutral-800 border border-solid border-zinc-700 rounded-md px-4 py-2 shadow-lg"}
         style={{
           left: linkEditBarState.position.left,
           top: linkEditBarState.position.top,
         }}
       >
         <div
-          className={linkEditBarRow}
+          className={"text-slate-50 text-sm"}
           style={{
             marginBottom: "6px",
           }}
         >
-          <span className={linkEditBarSpan}>文本</span>
+          <span className={"text-right mr-3"}>文本</span>
           <input
             value={text}
             onChange={(event) => {
               setText(event.target.value)
             }}
-            className={linkEditBarRowInput}
+            className={
+              "h-8 w-[250px] leading-8 pl-3 rounded-md border border-solid border-zinc-700 bg-neutral-800 text-slate-50 text-sm"
+            }
           ></input>
         </div>
 
-        <div className={linkEditBarRow}>
-          <span className={linkEditBarSpan}>链接</span>
+        <div className={"text-slate-50 text-sm"}>
+          <span className={"text-right mr-3"}>链接</span>
           <input
             ref={linkInputDom}
             value={url}
             onChange={(event) => {
               setUrl(event.target.value)
             }}
-            className={linkEditBarRowInput}
+            className={
+              "h-8 w-[250px] leading-8 pl-3 rounded-md border border-solid border-zinc-700 bg-neutral-800 text-slate-50 text-sm"
+            }
             style={{
               marginRight: "16px",
             }}
           ></input>
-          <button onClick={onButtonClick} className={linkEditBarButton}>
+          <button
+            onClick={onButtonClick}
+            className={"w-[68px] h-8 text-slate-50 border-none bg-blue-500 rounded-md text-sm cursor-pointer"}
+          >
             确定
           </button>
         </div>

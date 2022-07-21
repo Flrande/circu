@@ -3,17 +3,6 @@ import { useEffect, useRef, useState } from "react"
 import { Editor, Transforms } from "slate"
 import { useSlateStatic } from "slate-react"
 import { SlateElement } from "../../../../../types/slate"
-import {
-  orderedListModifyBarButton,
-  orderedListModifyBarButtonContainer,
-  orderedListModifyBarContainer,
-  orderedListModifyBarInput,
-  orderedListModifyBarInputBottomButton,
-  orderedListModifyBarInputButtonContainer,
-  orderedListModifyBarInputContainer,
-  orderedListModifyBarInputTopButton,
-  orderedListModifyBarSpan,
-} from "../List.css"
 import { orderedListModifyBarStateAtom } from "../state"
 
 const OrderedListModifyBar: React.FC = () => {
@@ -48,15 +37,21 @@ const OrderedListModifyBar: React.FC = () => {
           }
         }}
         tabIndex={-1}
-        className={orderedListModifyBarContainer}
+        className={
+          "absolute min-w-[284px] h-14 flex items-center p-3 border border-solid border-zinc-700 shadow-lg rounded-md bg-neutral-900"
+        }
         style={{
           left: orderedListModifyBarState.position.left,
           top: orderedListModifyBarState.position.top,
         }}
       >
-        <span className={orderedListModifyBarSpan}>新编号为</span>
-        <div className={orderedListModifyBarInputContainer}>
-          <div className={orderedListModifyBarInputButtonContainer}>
+        <span className={"text-stone-200 text-sm"}>新编号为</span>
+        <div
+          className={
+            "w-[88px] border border-solid border-neutral-700 rounded relative mx-2 bg-transparent focus-within:border-blue-500 hover:border-blue-500"
+          }
+        >
+          <div className={"w-[34px] h-full flex flex-col justify-between absolute right-0"}>
             <button
               onClick={() => {
                 let num = parseInt(inputValue)
@@ -72,7 +67,9 @@ const OrderedListModifyBar: React.FC = () => {
                   inputDom.current.focus()
                 }
               }}
-              className={orderedListModifyBarInputTopButton}
+              className={
+                "h-[18px] flex justify-center items-center mb-[-1px] border-solid border-b border-l border-b-black/0 border-l-zinc-600 rounded-tr text-zinc-500 cursor-pointer z-[5] hover:z-10 hover:border-blue-500 hover:text-blue-500"
+              }
             >
               <svg width="12" height="12" viewBox="0 0 12 12" fill="currentcolor">
                 <path
@@ -96,7 +93,9 @@ const OrderedListModifyBar: React.FC = () => {
                   inputDom.current.focus()
                 }
               }}
-              className={orderedListModifyBarInputBottomButton}
+              className={
+                "h-[18px] flex justify-center items-center border-solid border-t border-l border-t-zinc-600 border-l-zinc-600 rounded-br text-zinc-500 cursor-pointer z-[5] hover:z-10 hover:border-blue-500 hover:text-blue-500"
+              }
               style={
                 inputValue === "1"
                   ? {
@@ -139,11 +138,13 @@ const OrderedListModifyBar: React.FC = () => {
                   return
                 }
               }}
-              className={orderedListModifyBarInput}
+              className={
+                "w-full h-[30px] text-sm text-slate-50 bg-transparent rounded border-none py-[6px] pr-[44px] pl-[10px]"
+              }
             />
           </div>
         </div>
-        <div className={orderedListModifyBarButtonContainer}>
+        <div className={"flex justify-end ml-3"}>
           <button
             onClick={() => {
               const num = parseInt(inputValue)
@@ -176,7 +177,9 @@ const OrderedListModifyBar: React.FC = () => {
               }
               setOrderedListModifyBarState(null)
             }}
-            className={orderedListModifyBarButton}
+            className={
+              "h-8 text-center py-1 px-[11px] text-sm rounded-md box-border w-20 text-stone-200 bg-blue-500 border border-solid border-blue-500 hover:bg-blue-700 active:bg-blue-600"
+            }
           >
             确定
           </button>

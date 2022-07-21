@@ -5,7 +5,6 @@ import { BLOCK_ELEMENTS_WITH_CHILDREN } from "../../types/constant"
 import type { BlockElementWithChildren } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
 import { arrayIncludes } from "../../utils/general"
-import { FoldButtonSvg } from "./FoldButton.css"
 import { toggleFold, unToggleFold } from "./foldHelper"
 import { foldStateAtom } from "./state"
 
@@ -56,7 +55,7 @@ const FoldButton: React.FC = () => {
                   style={{
                     transform: element.isFolded ? "rotate(-0.25turn)" : undefined,
                   }}
-                  className={FoldButtonSvg}
+                  className={"text-white hover:text-blue-500"}
                   width="16"
                   height="16"
                   viewBox="0 0 48 48"
