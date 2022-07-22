@@ -21,7 +21,8 @@
     "server:test:watch": "cd ./packages/circu-server && jest --watch",
     "server:test:cov": "cd ./packages/circu-server && jest --coverage",
     "server:test:debug": "cd ./packages/circu-server && node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "server:test:e2e": "cd ./packages/circu-server && jest --config ./test/jest-e2e.json"
+    "server:test:e2e": "cd ./packages/circu-server && jest --config ./test/jest-e2e.json",
+    "format": "pnpm prettier --write ."
   },
   "devDependencies": {
     "prettier": "^2.6.2",
