@@ -4,7 +4,6 @@ import { useState } from "react"
 import type { Descendant } from "slate"
 import { ReactEditor, Slate } from "slate-react"
 import FoldButton from "./slate/components/FoldButton/FoldButton"
-import { foldStateAtom } from "./slate/components/FoldButton/state"
 import OrderedListBar from "./slate/components/Nodes/Block/List/ListBar/OrderedListBar"
 import OrderedListModifyBar from "./slate/components/Nodes/Block/List/ListBar/OrderedListModifyBar"
 import LinkBar from "./slate/components/Nodes/Inline/Link/LinkBar/LinkBar"
@@ -13,6 +12,8 @@ import LinkButtonBar from "./slate/components/ToolBar/components/Link/LinkButton
 import ToolBar from "./slate/components/ToolBar/ToolBar"
 import { useCreateEditor } from "./slate/hooks/useCreateEditor"
 import SlateEditable from "./slate/SlateEditable"
+import { mouseXBlockPathAtom } from "./slate/state/mouse"
+import { DOC_WIDTH } from "./slate/types/constant"
 import { SlateElement } from "./slate/types/slate"
 
 let initialValue: Descendant[] = []
@@ -85,7 +86,7 @@ if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
 
 const App: React.FC = () => {
   const editor = useCreateEditor()
-  const setFoldState = useSetAtom(foldStateAtom)
+  const setMouseXBlockPath = useSetAtom(mouseXBlockPathAtom)
 
   const [value, setValue] = useState<Descendant[]>(initialValue)
 
@@ -93,8 +94,8 @@ const App: React.FC = () => {
     <div className={"flex justify-center bg-neutral-900"}>
       <div
         onMouseMove={(event) => {
-          // 文档左右两边到视口的距离, 790 为文档宽度
-          const docXPadding = (document.documentElement.clientWidth - 790) / 2
+          // 文档左右两边到视口的距离
+          const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
           let x = event.clientX
           const y = event.clientY
 
@@ -102,8 +103,8 @@ const App: React.FC = () => {
           if (x <= docXPadding) {
             x = docXPadding + 60
           }
-          if (x >= docXPadding + 790) {
-            x = docXPadding + 790 - 60
+          if (x >= docXPadding + DOC_WIDTH) {
+            x = docXPadding + DOC_WIDTH - 60
           }
 
           const elements = document.elementsFromPoint(x, y)
@@ -112,34 +113,35 @@ const App: React.FC = () => {
           )
 
           if (blockContentIndex !== -1) {
+            // 鼠标水平方向对应的块级节点的 dom 元素
             const goalDomElement = elements
               .slice(blockContentIndex + 1)
               .find((ele) => ele instanceof HTMLElement && (ele as HTMLElement).dataset["slateNode"] === "element")
 
             if (goalDomElement) {
               const goalNode = ReactEditor.toSlateNode(editor, goalDomElement)
-              const goalPath = ReactEditor.findPath(editor, goalNode)
 
               if (SlateElement.isElement(goalNode)) {
-                const rect = goalDomElement.getBoundingClientRect()
-                //TODO: 只传递 path, 以拿到最新的 dom 及位置
-                setFoldState({
-                  path: goalPath,
-                  left: rect.left - docXPadding - 20,
-                  top: rect.top + window.scrollY + 1,
-                })
+                const goalPath = ReactEditor.findPath(editor, goalNode)
+
+                setMouseXBlockPath(goalPath)
               }
             }
           }
         }}
         onMouseLeave={() => {
-          setFoldState(null)
+          setMouseXBlockPath(null)
         }}
         style={{
           padding: "0 96px 0 96px",
         }}
       >
-        <div className={"relative w-[790px] text-base text-slate-50 tracking-wide p-4"}>
+        <div
+          className={"relative text-base text-slate-50 tracking-wide p-4"}
+          style={{
+            width: `${DOC_WIDTH}px`,
+          }}
+        >
           <Slate editor={editor} value={value} onChange={(newValue) => setValue(newValue)}>
             <SlateEditable></SlateEditable>
             <div

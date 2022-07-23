@@ -1,30 +1,30 @@
 import { useAtomValue } from "jotai"
 import { Editor } from "slate"
-import { useSlateStatic } from "slate-react"
-import { BLOCK_ELEMENTS_WITH_CHILDREN } from "../../types/constant"
+import { ReactEditor, useSlateStatic } from "slate-react"
+import { mouseXBlockPathAtom } from "../../state/mouse"
+import { BLOCK_ELEMENTS_WITH_CHILDREN, DOC_WIDTH } from "../../types/constant"
 import type { BlockElementWithChildren } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
 import { arrayIncludes } from "../../utils/general"
 import { toggleFold, unToggleFold } from "./foldHelper"
-import { foldStateAtom } from "./state"
 
 const FoldButton: React.FC = () => {
   const editor = useSlateStatic()
-  const foldState = useAtomValue(foldStateAtom)
+  const xBlockPath = useAtomValue(mouseXBlockPathAtom)
 
-  if (foldState) {
+  if (xBlockPath) {
     try {
-      const path = foldState.path
-      const [node] = Editor.node(editor, path)
+      const [node] = Editor.node(editor, xBlockPath)
 
       if (SlateElement.isElement(node) && arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, node.type)) {
         const element = node as BlockElementWithChildren
+        const dom = ReactEditor.toDOMNode(editor, element)
 
-        if (element.type === "head" || element.children.length > 1) {
+        if (element.type === "head" || (element.children.length > 1 && dom)) {
           // 判断父块级节点是不是引用, 若是, 要调整按钮的位置
           let quoteFlag = false
-          if (path.length >= 3) {
-            const parentBlockPath = path.slice(0, -2)
+          if (xBlockPath.length >= 3) {
+            const parentBlockPath = xBlockPath.slice(0, -2)
 
             try {
               const [parentNode] = Editor.node(editor, parentBlockPath)
@@ -36,18 +36,23 @@ const FoldButton: React.FC = () => {
 
           const onClick: React.MouseEventHandler = () => {
             if (element.isFolded) {
-              unToggleFold(editor, path)
+              unToggleFold(editor, xBlockPath)
             } else {
-              toggleFold(editor, path)
+              toggleFold(editor, xBlockPath)
             }
           }
+
+          // 计算位置
+          const rect = dom.getBoundingClientRect()
+          // 文档左右两边到视口的距离
+          const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
 
           return (
             <div
               style={{
                 position: "absolute",
-                left: `${quoteFlag ? foldState.left - 14 : foldState.left}px`,
-                top: `${foldState.top}px`,
+                left: `${quoteFlag ? rect.left - docXPadding - 34 : rect.left - docXPadding - 20}px`,
+                top: `${rect.top + window.scrollY + 1}px`,
               }}
             >
               <div contentEditable={false} onClick={onClick}>

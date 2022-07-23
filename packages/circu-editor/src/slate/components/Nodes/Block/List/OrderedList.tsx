@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { Path } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
+import { DOC_WIDTH } from "../../../../types/constant"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { calculateIndentLevel } from "../BlockWrapper/indentHelper"
 import { orderedListBarStateAtom, orderedListModifyBarStateAtom } from "./state"
@@ -165,8 +166,8 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
 
   const onClickSpan: React.MouseEventHandler<HTMLSpanElement> = () => {
     if (spanDom.current) {
-      // 文档左右两边到视口的距离, 790 为文档宽度
-      const docXPadding = (document.documentElement.clientWidth - 790) / 2
+      // 文档左右两边到视口的距离
+      const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
       const top = window.scrollY + spanDom.current.getBoundingClientRect().top + 24
       const left =
         window.scrollX + spanDom.current.getBoundingClientRect().left - docXPadding + spanDom.current.clientWidth

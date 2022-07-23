@@ -1,6 +1,7 @@
 import { useSetAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { ReactEditor, useSlateStatic } from "slate-react"
+import { DOC_WIDTH } from "../../../../types/constant"
 import { SlateNode } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { isLinkBarActiveDerivedAtom, linkStateAtom } from "./state"
@@ -26,8 +27,8 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
         })
       }, 800)
 
-      // 文档左右两边到视口的距离, 790 为文档宽度
-      const docXPadding = (document.documentElement.clientWidth - 790) / 2
+      // 文档左右两边到视口的距离
+      const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
       const top = window.scrollY + linkDom.getBoundingClientRect().top + 28
       const left = window.scrollX + linkDom.getBoundingClientRect().left - docXPadding
       setLinkState({

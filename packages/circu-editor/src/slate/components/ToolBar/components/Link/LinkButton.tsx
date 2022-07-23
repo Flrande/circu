@@ -1,5 +1,6 @@
 import { useSetAtom } from "jotai"
 import { ReactEditor, useSlateStatic } from "slate-react"
+import { DOC_WIDTH } from "../../../../types/constant"
 import { isLinkActive } from "../../../Nodes/Inline/Link/linkHelper"
 import { activeButtonAtom, toolBarStateAtom } from "../../state"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
@@ -22,8 +23,8 @@ const LinkButton: React.FC = () => {
     }
     const range = sel.getRangeAt(0)
     const rect = range.getBoundingClientRect()
-    // 文档左右两边到视口的距离, 790 为文档宽度
-    const docXPadding = (document.documentElement.clientWidth - 790) / 2
+    // 文档左右两边到视口的距离
+    const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
     const left = rect.left - docXPadding
     const top = rect.top + 30 + window.scrollY
 

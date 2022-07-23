@@ -7,6 +7,9 @@ import type {
 } from "./interface"
 import type { KeysUnion } from "./utils"
 
+// 文档宽度
+export const DOC_WIDTH = 790
+
 // 行内节点
 export const INLINE_ELEMENTS: Array<InlineElement["type"]> = ["inline-code", "link"]
 

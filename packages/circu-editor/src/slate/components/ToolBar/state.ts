@@ -2,6 +2,7 @@ import { atom, useSetAtom } from "jotai"
 import { atomWithProxy } from "jotai/valtio"
 import { useEffect } from "react"
 import { proxy } from "valtio"
+import { DOC_WIDTH } from "../../types/constant"
 
 export const toolBarStateStore = proxy<{
   isActive: boolean
@@ -44,14 +45,14 @@ export const useToolBar = () => {
             setTimeout(() => {
               const domSelection = window.getSelection()
               if (domSelection && !domSelection.isCollapsed) {
-                // 文档左右两边到视口的距离, 790 为文档宽度
-                const docXPadding = (document.documentElement.clientWidth - 790) / 2
+                // 文档左右两边到视口的距离
+                const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
                 let x = event.clientX
                 let y = event.clientY
 
                 if (x <= docXPadding) {
                   x = 0
-                } else if (x >= docXPadding + 790) {
+                } else if (x >= docXPadding + DOC_WIDTH) {
                   x = 650
                 } else {
                   x -= docXPadding
