@@ -1,4 +1,5 @@
-import { useAtomValue } from "jotai"
+import { useAtomValue, useSetAtom } from "jotai"
+import { useEffect, useRef } from "react"
 import { Editor } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { mouseXBlockPathAtom } from "../../state/mouse"
@@ -7,10 +8,19 @@ import type { BlockElementWithChildren } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
 import { arrayIncludes } from "../../utils/general"
 import { toggleFold, unToggleFold } from "./foldHelper"
+import { isFoldButtonActiveAtom } from "./state"
 
 const FoldButton: React.FC = () => {
   const editor = useSlateStatic()
+
   const xBlockPath = useAtomValue(mouseXBlockPathAtom)
+  const setIsFoldButtonActive = useSetAtom(isFoldButtonActiveAtom)
+  // 标记折叠按钮是否显示
+  const setActiveFlag = useRef(false)
+
+  useEffect(() => {
+    setIsFoldButtonActive(setActiveFlag.current)
+  })
 
   if (xBlockPath) {
     try {
@@ -47,6 +57,8 @@ const FoldButton: React.FC = () => {
           // 文档左右两边到视口的距离
           const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
 
+          setActiveFlag.current = true
+
           return (
             <div
               style={{
@@ -54,8 +66,9 @@ const FoldButton: React.FC = () => {
                 left: `${quoteFlag ? rect.left - docXPadding - 34 : rect.left - docXPadding - 20}px`,
                 top: `${rect.top + window.scrollY + 1}px`,
               }}
+              contentEditable={false}
             >
-              <div contentEditable={false} onClick={onClick}>
+              <div onClick={onClick}>
                 <svg
                   style={{
                     transform: element.isFolded ? "rotate(-0.25turn)" : undefined,
@@ -82,6 +95,8 @@ const FoldButton: React.FC = () => {
       }
     } catch (error) {}
   }
+
+  setActiveFlag.current = false
 
   return <div></div>
 }

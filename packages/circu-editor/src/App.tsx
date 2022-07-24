@@ -3,6 +3,7 @@ import { useSetAtom } from "jotai"
 import { useState } from "react"
 import type { Descendant } from "slate"
 import { ReactEditor, Slate } from "slate-react"
+import Draggable from "./slate/components/Draggable/Draggable"
 import FoldButton from "./slate/components/FoldButton/FoldButton"
 import OrderedListBar from "./slate/components/Nodes/Block/List/ListBar/OrderedListBar"
 import OrderedListModifyBar from "./slate/components/Nodes/Block/List/ListBar/OrderedListModifyBar"
@@ -96,36 +97,21 @@ const App: React.FC = () => {
         onMouseMove={(event) => {
           // 文档左右两边到视口的距离
           const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
-          let x = event.clientX
           const y = event.clientY
 
-          // 60 的取值随意, 能在文档内就行
-          if (x <= docXPadding) {
-            x = docXPadding + 60
-          }
-          if (x >= docXPadding + DOC_WIDTH) {
-            x = docXPadding + DOC_WIDTH - 60
-          }
-
-          const elements = document.elementsFromPoint(x, y)
-          const blockContentIndex = elements.findIndex(
-            (ele) => ele instanceof HTMLElement && (ele as HTMLElement).dataset["circuNode"] === "block-content"
+          // 60 的取值随意, 确保水平位置不受缩进影响即可
+          const elements = document.elementsFromPoint(docXPadding + DOC_WIDTH - 60, y)
+          // 鼠标水平方向对应的块级节点的 dom 元素
+          const blockDom = elements.find(
+            (ele) => ele instanceof HTMLElement && (ele as HTMLElement).dataset["circuNode"] === "block"
           )
+          if (blockDom) {
+            const blockNode = ReactEditor.toSlateNode(editor, blockDom)
 
-          if (blockContentIndex !== -1) {
-            // 鼠标水平方向对应的块级节点的 dom 元素
-            const goalDomElement = elements
-              .slice(blockContentIndex + 1)
-              .find((ele) => ele instanceof HTMLElement && (ele as HTMLElement).dataset["slateNode"] === "element")
+            if (SlateElement.isElement(blockNode)) {
+              const blockPath = ReactEditor.findPath(editor, blockNode)
 
-            if (goalDomElement) {
-              const goalNode = ReactEditor.toSlateNode(editor, goalDomElement)
-
-              if (SlateElement.isElement(goalNode)) {
-                const goalPath = ReactEditor.findPath(editor, goalNode)
-
-                setMouseXBlockPath(goalPath)
-              }
+              setMouseXBlockPath(blockPath)
             }
           }
         }}
@@ -157,6 +143,7 @@ const App: React.FC = () => {
               <OrderedListBar></OrderedListBar>
               <OrderedListModifyBar></OrderedListModifyBar>
               <FoldButton></FoldButton>
+              <Draggable></Draggable>
             </div>
           </Slate>
         </div>

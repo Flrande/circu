@@ -64,6 +64,7 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
 
   return (
     <div
+      data-circu-node="block"
       {...attributes}
       style={{
         border: isSelected ? "1px solid #5a87f7" : undefined,

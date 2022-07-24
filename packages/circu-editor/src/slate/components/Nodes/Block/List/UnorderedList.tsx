@@ -11,9 +11,10 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
 
   return (
     <div
+      data-circu-node="block"
       {...attributes}
+      className={"my-2"}
       style={{
-        margin: "8px 0",
         display: element.isHidden ? "none" : undefined,
       }}
     >

@@ -6,6 +6,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
     case "1":
       return (
         <div
+          data-circu-node="block"
           {...attributes}
           style={{
             display: element.isHidden ? "none" : undefined,
@@ -18,6 +19,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
     case "2":
       return (
         <div
+          data-circu-node="block"
           {...attributes}
           style={{
             display: element.isHidden ? "none" : undefined,
@@ -30,6 +32,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
     case "3":
       return (
         <div
+          data-circu-node="block"
           {...attributes}
           style={{
             display: element.isHidden ? "none" : undefined,
@@ -42,6 +45,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
     case "4":
       return (
         <div
+          data-circu-node="block"
           {...attributes}
           style={{
             display: element.isHidden ? "none" : undefined,
@@ -54,6 +58,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
     case "5":
       return (
         <div
+          data-circu-node="block"
           {...attributes}
           style={{
             display: element.isHidden ? "none" : undefined,
@@ -66,6 +71,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
     case "6":
       return (
         <div
+          data-circu-node="block"
           {...attributes}
           style={{
             display: element.isHidden ? "none" : undefined,

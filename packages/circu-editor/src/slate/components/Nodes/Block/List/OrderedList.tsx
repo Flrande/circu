@@ -189,9 +189,10 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
 
   return (
     <div
+      data-circu-node="block"
       {...attributes}
+      className={"my-2"}
       style={{
-        margin: "8px 0",
         display: element.isHidden ? "none" : undefined,
       }}
     >

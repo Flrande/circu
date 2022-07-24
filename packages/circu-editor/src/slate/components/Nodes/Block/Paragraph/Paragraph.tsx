@@ -4,9 +4,10 @@ import type { IParagraph } from "./types"
 const Paragraph: React.FC<CustomRenderElementProps<IParagraph>> = ({ attributes, children, element }) => {
   return (
     <div
+      data-circu-node="block"
       {...attributes}
+      className={"my-2"}
       style={{
-        margin: "8px 0",
         display: element.isHidden ? "none" : undefined,
       }}
     >
