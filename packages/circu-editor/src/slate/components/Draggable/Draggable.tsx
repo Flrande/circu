@@ -54,12 +54,11 @@ const Draggable: React.FC = () => {
                 console.log(xBlockPath, node)
               }}
               className={
-                "absolute bg-neutral-800 border border-solid border-zinc-700 rounded w-[18px] h-6 flex items-center justify-center text-gray-400 transition-transform ease-in duration-75"
+                "absolute bg-neutral-800/50 hover:bg-neutral-800 hover:border border-solid border-zinc-700 rounded w-[18px] h-6 flex items-center justify-center text-gray-400/50 hover:text-gray-400"
               }
               style={{
-                left: 0,
-                top: 0,
-                transform: `translate(${left}px, ${rect.top + window.scrollY + 1}px)`,
+                left: `${left}px`,
+                top: `${rect.top + window.scrollY + 1}px`,
               }}
               contentEditable={false}
             >
