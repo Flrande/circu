@@ -105,6 +105,23 @@ const App: React.FC = () => {
           const blockDom = elements.find(
             (ele) => ele instanceof HTMLElement && (ele as HTMLElement).dataset["circuNode"] === "block"
           )
+
+          const spaceDom = elements.find(
+            (ele) => ele instanceof HTMLElement && (ele as HTMLElement).dataset["circuNode"] === "block-space"
+          )
+
+          if (spaceDom && spaceDom.parentElement) {
+            const blockNode = ReactEditor.toSlateNode(editor, spaceDom.parentElement)
+
+            if (SlateElement.isElement(blockNode)) {
+              const blockPath = ReactEditor.findPath(editor, blockNode)
+
+              setMouseXBlockPath(blockPath)
+            }
+
+            return
+          }
+
           if (blockDom) {
             const blockNode = ReactEditor.toSlateNode(editor, blockDom)
 

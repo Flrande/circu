@@ -13,11 +13,12 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
     <div
       data-circu-node="block"
       {...attributes}
-      className={"my-2"}
+      className={"my-2 relative"}
       style={{
         display: element.isHidden ? "none" : undefined,
       }}
     >
+      <div data-circu-node="block-space" contentEditable={false} className={"absolute left-0 -top-2 w-full h-2"}></div>
       <div>
         <span contentEditable={false} className={"select-none text-blue-500 min-w-[22px] absolute"}>
           {indexSymbol}

@@ -9,27 +9,39 @@
 }
 
 @layer components {
-  .head-1 > :first-child {
+  .head-1 > :nth-child(1) {
+    @apply -top-4 h-4;
+  }
+
+  .head-2 > :nth-child(1),
+  .head-3 > :nth-child(1),
+  .head-4 > :nth-child(1),
+  .head-5 > :nth-child(1),
+  .head-6 > :nth-child(1) {
+    @apply -top-3 h-3;
+  }
+
+  .head-1 > :nth-child(2) {
     @apply text-3xl mb-3 mt-4 font-semibold tracking-wide;
   }
 
-  .head-2 > :first-child {
+  .head-2 > :nth-child(2) {
     @apply text-2xl mb-2 mt-3 font-semibold tracking-wide;
   }
 
-  .head-3 > :first-child {
+  .head-3 > :nth-child(2) {
     @apply text-xl mb-2 mt-3 font-semibold tracking-wide;
   }
 
-  .head-4 > :first-child {
+  .head-4 > :nth-child(2) {
     @apply text-lg mb-2 mt-3 font-semibold tracking-wide;
   }
 
-  .head-5 > :first-child {
+  .head-5 > :nth-child(2) {
     @apply text-base mb-2 mt-3 font-semibold tracking-wide;
   }
 
-  .head-6 > :first-child {
+  .head-6 > :nth-child(2) {
     @apply text-base mb-2 mt-3 font-semibold tracking-wide;
   }
 }

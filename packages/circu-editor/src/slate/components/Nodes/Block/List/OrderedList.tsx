@@ -191,11 +191,12 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
     <div
       data-circu-node="block"
       {...attributes}
-      className={"my-2"}
+      className={"my-2 relative"}
       style={{
         display: element.isHidden ? "none" : undefined,
       }}
     >
+      <div data-circu-node="block-space" contentEditable={false} className={"absolute left-0 -top-2 w-full h-2"}></div>
       <div>
         <span contentEditable={false} className={"select-none text-blue-500 pl-[2px] absolute"}>
           <span

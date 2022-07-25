@@ -70,8 +70,9 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
         border: isSelected ? "1px solid #5a87f7" : undefined,
         display: element.isHidden ? "none" : undefined,
       }}
-      className={"bg-zinc-800 my-2 text-sm font-normal rounded"}
+      className={"bg-zinc-800 my-2 text-sm font-normal rounded relative"}
     >
+      <div data-circu-node="block-space" contentEditable={false} className={"absolute left-0 -top-2 w-full h-2"}></div>
       <div
         contentEditable={false}
         style={{
