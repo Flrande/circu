@@ -1,3 +1,4 @@
+import { useCallback } from "react"
 import { Editable } from "slate-react"
 import { useToolBar } from "./components/ToolBar/state"
 import { useOnKeyDown } from "./hooks/hotKeysHooks"
@@ -24,6 +25,11 @@ const SlateEditable: React.FC = () => {
       onKeyDown={onKeyDown}
       spellCheck={false}
       onCopy={onCopy}
+      // 2022-7-28
+      // 拖拽块级节点时默认的 onDrop 行为某些情况下会报错崩溃, 尚未找到稳定复现的方式
+      onDrop={useCallback<React.DragEventHandler>((event) => {
+        event.preventDefault()
+      }, [])}
     ></Editable>
   )
 }

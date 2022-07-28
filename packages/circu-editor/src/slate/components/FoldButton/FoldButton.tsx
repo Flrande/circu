@@ -7,6 +7,7 @@ import { BLOCK_ELEMENTS_WITH_CHILDREN, DOC_WIDTH } from "../../types/constant"
 import type { BlockElementWithChildren } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
 import { arrayIncludes } from "../../utils/general"
+import { isDraggingAtom } from "../Draggable/state"
 import { toggleFold, unToggleFold } from "./foldHelper"
 import { isFoldButtonActiveAtom } from "./state"
 
@@ -15,6 +16,8 @@ const FoldButton: React.FC = () => {
 
   const xBlockPath = useAtomValue(mouseXBlockPathAtom)
   const setIsFoldButtonActive = useSetAtom(isFoldButtonActiveAtom)
+  const isDragging = useAtomValue(isDraggingAtom)
+
   // 标记折叠按钮是否显示
   const setActiveFlag = useRef(false)
 
@@ -22,7 +25,7 @@ const FoldButton: React.FC = () => {
     setIsFoldButtonActive(setActiveFlag.current)
   })
 
-  if (xBlockPath) {
+  if (xBlockPath && !isDragging) {
     try {
       const [node] = Editor.node(editor, xBlockPath)
 
@@ -36,12 +39,10 @@ const FoldButton: React.FC = () => {
           if (xBlockPath.length >= 3) {
             const parentBlockPath = xBlockPath.slice(0, -2)
 
-            try {
-              const [parentNode] = Editor.node(editor, parentBlockPath)
-              if (SlateElement.isElement(parentNode) && parentNode.type === "quote") {
-                quoteFlag = true
-              }
-            } catch (error) {}
+            const [parentNode] = Editor.node(editor, parentBlockPath)
+            if (SlateElement.isElement(parentNode) && parentNode.type === "quote") {
+              quoteFlag = true
+            }
           }
 
           const onClick: React.MouseEventHandler = () => {
