@@ -29,36 +29,38 @@ export const useDropBlock = (
       accept: DND_ITEM_TYPES.DRAGGABLE,
       drop: (_, monitor) => {
         if (dropPosition && xBlockPath && !monitor.didDrop()) {
-          const { path, direction } = dropPosition
+          Editor.withoutNormalizing(editor, () => {
+            const { path, direction } = dropPosition
 
-          if (direction === "top") {
-            Transforms.moveNodes(editor, {
-              at: xBlockPath,
-              to: path,
-            })
-          } else {
-            Transforms.moveNodes(editor, {
-              at: xBlockPath,
-              to: Path.next(path),
-            })
-          }
-
-          // 判断 xBlockPath 是否是父块级节点唯一子节点, 若是, 删除该子节点块
-          if (xBlockPath.length >= 3) {
-            const parentBlockPath = xBlockPath.slice(0, -2)
-
-            const [parentNode] = Editor.node(editor, parentBlockPath)
-            if (
-              SlateElement.isElement(parentNode) &&
-              arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, parentNode.type) &&
-              (parentNode as BlockElementWithChildren).children.length > 1 &&
-              (parentNode as BlockElementWithChildren).children[1]?.children.length === 1
-            ) {
-              Transforms.removeNodes(editor, {
-                at: parentBlockPath.concat([1]),
+            if (direction === "top") {
+              Transforms.moveNodes(editor, {
+                at: xBlockPath,
+                to: path,
+              })
+            } else {
+              Transforms.moveNodes(editor, {
+                at: xBlockPath,
+                to: Path.next(path),
               })
             }
-          }
+
+            // 判断 xBlockPath 是否是父块级节点唯一子节点, 若是, 删除该子节点块
+            if (xBlockPath.length >= 3) {
+              const parentBlockPath = xBlockPath.slice(0, -2)
+
+              const [parentNode] = Editor.node(editor, parentBlockPath)
+              if (
+                SlateElement.isElement(parentNode) &&
+                arrayIncludes(BLOCK_ELEMENTS_WITH_CHILDREN, parentNode.type) &&
+                (parentNode as BlockElementWithChildren).children.length > 1 &&
+                (parentNode as BlockElementWithChildren).children[1]?.children.length === 0
+              ) {
+                Transforms.removeNodes(editor, {
+                  at: parentBlockPath.concat([1]),
+                })
+              }
+            }
+          })
         }
       },
     }),
