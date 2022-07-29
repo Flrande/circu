@@ -69,13 +69,7 @@ export const useDropBlock = (
 
   const onDragOver: React.DragEventHandler = (event) => {
     try {
-      // 文档左右两边到视口的距离
-      const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
-      const y = event.clientY
-
-      // 60 的取值随意, 确保水平位置不受缩进影响即可
-      const elements = document.elementsFromPoint(docXPadding + DOC_WIDTH - 60, y)
-      // 鼠标水平方向对应的块级节点的 dom 元素
+      const elements = document.elementsFromPoint(event.clientX, event.clientY)
       const blockDom = elements.find(
         (ele) => ele instanceof HTMLElement && (ele as HTMLElement).dataset["circuNode"] === "block"
       )
