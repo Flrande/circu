@@ -7,6 +7,8 @@ import { codeAreaLangMap } from "./constant"
 import React, { useEffect, useRef, useState } from "react"
 import Scrollbar from "smooth-scrollbar"
 import { useScrollbar } from "../../../../hooks/useScrollbar"
+import { useDropBlock } from "../../../Draggable/useDropBlock"
+import DragMarkLine from "../../../Draggable/DragMarkLine"
 
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
@@ -16,6 +18,8 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
   // TODO: 云端保留用户设置, 根据服务器响应赋初始值
   const [isWrap, setIsWrap] = useState(true)
   const [isWrapMessage, setIsWrapMessage] = useState("取消自动换行")
+
+  const { newAttributes, onDragOver, dragActiveLine } = useDropBlock(element, attributes)
 
   const langOptions: KeysUnion<ICodeAreaLangMap>[] = Object.keys(codeAreaLangMap) as KeysUnion<ICodeAreaLangMap>[]
 
@@ -65,7 +69,8 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
   return (
     <div
       data-circu-node="block"
-      {...attributes}
+      {...newAttributes}
+      onDragOver={onDragOver}
       style={{
         border: isSelected ? "1px solid #5a87f7" : undefined,
         display: element.isHidden ? "none" : undefined,
@@ -174,6 +179,7 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
           </div>
         </div>
       </div>
+      <DragMarkLine activeDirection={dragActiveLine}></DragMarkLine>
     </div>
   )
 }

@@ -4,6 +4,8 @@ import { Path } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { DOC_WIDTH } from "../../../../types/constant"
 import type { CustomRenderElementProps } from "../../../../types/utils"
+import DragMarkLine from "../../../Draggable/DragMarkLine"
+import { useDropBlock } from "../../../Draggable/useDropBlock"
 import { calculateIndentLevel } from "../BlockWrapper/indentHelper"
 import { orderedListBarStateAtom, orderedListModifyBarStateAtom } from "./state"
 import type { IOrderedList } from "./types"
@@ -162,6 +164,8 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
   const spanDom = useRef<HTMLSpanElement | null>(null)
   const [spanWidth, setSpanWidth] = useState(20)
 
+  const { newAttributes, onDragOver, dragActiveLine } = useDropBlock(element, attributes)
+
   const currentListPath = ReactEditor.findPath(editor, element)
 
   const onClickSpan: React.MouseEventHandler<HTMLSpanElement> = () => {
@@ -190,7 +194,8 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
   return (
     <div
       data-circu-node="block"
-      {...attributes}
+      {...newAttributes}
+      onDragOver={onDragOver}
       className={"my-2 relative"}
       style={{
         display: element.isHidden ? "none" : undefined,
@@ -221,6 +226,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
           {children}
         </div>
       </div>
+      <DragMarkLine activeDirection={dragActiveLine}></DragMarkLine>
     </div>
   )
 }

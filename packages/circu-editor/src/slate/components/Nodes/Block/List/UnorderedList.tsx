@@ -1,10 +1,14 @@
 import { ReactEditor, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps } from "../../../../types/utils"
+import DragMarkLine from "../../../Draggable/DragMarkLine"
+import { useDropBlock } from "../../../Draggable/useDropBlock"
 import { calculateIndentLevel } from "../BlockWrapper/indentHelper"
 import type { IUnorderedList } from "./types"
 
 const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ attributes, children, element }) => {
   const editor = useSlateStatic()
+
+  const { newAttributes, onDragOver, dragActiveLine } = useDropBlock(element, attributes)
 
   const indentLevel = calculateIndentLevel(editor, ReactEditor.findPath(editor, element))
   const indexSymbol = indentLevel % 3 === 1 ? "\u2022" : indentLevel % 3 === 2 ? "\u25E6" : "\u25AA"
@@ -12,7 +16,8 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
   return (
     <div
       data-circu-node="block"
-      {...attributes}
+      {...newAttributes}
+      onDragOver={onDragOver}
       className={"my-2 relative"}
       style={{
         display: element.isHidden ? "none" : undefined,
@@ -31,6 +36,7 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
           {children}
         </div>
       </div>
+      <DragMarkLine activeDirection={dragActiveLine}></DragMarkLine>
     </div>
   )
 }

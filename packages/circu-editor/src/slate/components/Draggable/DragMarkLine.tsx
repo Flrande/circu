@@ -3,6 +3,7 @@ const DragMarkLine: React.FC<{
 }> = ({ activeDirection }) => {
   return (
     <div
+      contentEditable={false}
       style={{
         position: "absolute",
         borderTop: activeDirection ? "2px solid #0034ae" : undefined,
