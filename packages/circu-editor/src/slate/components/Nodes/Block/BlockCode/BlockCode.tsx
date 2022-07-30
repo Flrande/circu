@@ -13,6 +13,7 @@ import DragMarkLine from "../../../Draggable/DragMarkLine"
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
   const editor = useSlateStatic()
+  const blockCodePath = ReactEditor.findPath(editor, element)
 
   const orderNumbersWrapperDom = useRef<HTMLDivElement | null>(null)
   // TODO: 云端保留用户设置, 根据服务器响应赋初始值
@@ -77,7 +78,40 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
       }}
       className={"bg-zinc-800 my-2 text-sm font-normal rounded relative"}
     >
-      <div data-circu-node="block-space" contentEditable={false} className={"absolute left-0 -top-2 w-full h-2"}></div>
+      {blockCodePath.at(-1) !== 0 && (
+        <div
+          // 点击两个相邻代码块的中间区域, 插入一个空行
+          onClick={() => {
+            Transforms.insertNodes(
+              editor,
+              {
+                type: "paragraph",
+                children: [
+                  {
+                    type: "__block-element-content",
+                    children: [
+                      {
+                        type: "text-line",
+                        children: [
+                          {
+                            text: "",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+              {
+                at: blockCodePath,
+              }
+            )
+          }}
+          data-circu-node="block-space"
+          contentEditable={false}
+          className={"absolute left-0 -top-2 w-full h-2"}
+        ></div>
+      )}
       <div
         contentEditable={false}
         style={{

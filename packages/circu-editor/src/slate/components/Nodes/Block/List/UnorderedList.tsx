@@ -7,10 +7,11 @@ import type { IUnorderedList } from "./types"
 
 const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ attributes, children, element }) => {
   const editor = useSlateStatic()
+  const listPath = ReactEditor.findPath(editor, element)
 
   const { newAttributes, onDragOver, dragActiveLine } = useDropBlock(element, attributes)
 
-  const indentLevel = calculateIndentLevel(editor, ReactEditor.findPath(editor, element))
+  const indentLevel = calculateIndentLevel(editor, listPath)
   const indexSymbol = indentLevel % 3 === 1 ? "\u2022" : indentLevel % 3 === 2 ? "\u25E6" : "\u25AA"
 
   return (
@@ -23,7 +24,13 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
         display: element.isHidden ? "none" : undefined,
       }}
     >
-      <div data-circu-node="block-space" contentEditable={false} className={"absolute left-0 -top-2 w-full h-2"}></div>
+      {listPath.at(-1) !== 0 && (
+        <div
+          data-circu-node="block-space"
+          contentEditable={false}
+          className={"absolute left-0 -top-2 w-full h-2"}
+        ></div>
+      )}
       <div>
         <span contentEditable={false} className={"select-none text-blue-500 min-w-[22px] absolute"}>
           {indexSymbol}

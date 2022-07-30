@@ -201,7 +201,13 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
         display: element.isHidden ? "none" : undefined,
       }}
     >
-      <div data-circu-node="block-space" contentEditable={false} className={"absolute left-0 -top-2 w-full h-2"}></div>
+      {currentListPath.at(-1) !== 0 && (
+        <div
+          data-circu-node="block-space"
+          contentEditable={false}
+          className={"absolute left-0 -top-2 w-full h-2"}
+        ></div>
+      )}
       <div>
         <span contentEditable={false} className={"select-none text-blue-500 pl-[2px] absolute"}>
           <span
