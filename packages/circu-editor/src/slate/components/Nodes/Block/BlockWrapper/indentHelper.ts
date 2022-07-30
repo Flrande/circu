@@ -3,6 +3,7 @@ import { BLOCK_ELEMENTS_WITH_CHILDREN, BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from ".
 import type { BlockElementWithChildren, BlockElementExceptTextLine } from "../../../../types/interface"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
+import { unToggleFold } from "../../../FoldButton/foldHelper"
 import { getSelectedBlocks } from "../utils/getSelectedBlocks"
 import { MAX_INDENT_LEVEL } from "./constant"
 import type { __IBlockElementChildren } from "./types"
@@ -99,7 +100,6 @@ export const inspectIncreaseIndentable = (
   }
 }
 
-//TODO: 若前方块级节点的子节点折叠, 将其展开
 /**
  * 用于增加内容块缩进的函数
  *
@@ -164,6 +164,11 @@ export const increaseIndent = (editor: Editor, range?: SlateRange): void => {
     }
 
     const [previousNode, previousNodePath] = previousNodeEntry
+
+    // 若上方块级节点为折叠状态, 取消其折叠
+    if (previousNode.isFolded) {
+      unToggleFold(editor, previousNodePath)
+    }
 
     if (previousNode.children.length === 1) {
       // 若上方块级节点还未有子节点块
