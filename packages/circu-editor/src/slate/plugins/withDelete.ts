@@ -1,5 +1,6 @@
 import { Editor, NodeEntry } from "slate"
 import { blockCodeDeleteBackward } from "../components/Nodes/Block/BlockCode/deleteHelper"
+import { headDeleteBackward } from "../components/Nodes/Block/Head/deleteHelper"
 import { listDeleteBackward } from "../components/Nodes/Block/List/deleteHelper"
 import { paragraphDeleteBackward } from "../components/Nodes/Block/Paragraph/deleteHelper"
 import { unActiveToolBar } from "../components/ToolBar/state"
@@ -8,7 +9,6 @@ import type { BlockElementExceptTextLine } from "../types/interface"
 import { SlateElement } from "../types/slate"
 import { arrayIncludes } from "../utils/general"
 
-//TODO: 删除标题最后一个字符时, 将标题转化为段落块
 const withDeleteBackward = (editor: Editor) => {
   const { deleteBackward } = editor
 
@@ -29,7 +29,8 @@ const withDeleteBackward = (editor: Editor) => {
         flag =
           paragraphDeleteBackward(editor, selectedContentBlocksEntry[0]) ||
           blockCodeDeleteBackward(editor, selectedContentBlocksEntry[0]) ||
-          listDeleteBackward(editor, selectedContentBlocksEntry[0])
+          listDeleteBackward(editor, selectedContentBlocksEntry[0]) ||
+          headDeleteBackward(editor, selectedContentBlocksEntry[0])
       }
 
       // 默认行为
