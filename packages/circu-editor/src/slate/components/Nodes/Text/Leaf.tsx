@@ -1,4 +1,5 @@
 import type React from "react"
+import { useCallback } from "react"
 import type { RenderLeafProps } from "slate-react"
 import type { CustomText } from "../../../types/interface"
 import Bold from "./Bold"
@@ -71,6 +72,9 @@ const Leaf: React.FC<React.PropsWithChildren<RenderLeafProps>> = ({ attributes, 
     // 用于解决行内元素在行尾(后面实际还有一个空的 text)时光标无法选择至 text 的问题
     <span
       {...attributes}
+      onDragStart={useCallback<React.DragEventHandler>((event) => {
+        event.preventDefault()
+      }, [])}
       style={{ paddingLeft: leaf.text === "" ? "0.1px" : undefined, color: getTokenColor(leaf.tokenTypes) }}
     >
       {children}
