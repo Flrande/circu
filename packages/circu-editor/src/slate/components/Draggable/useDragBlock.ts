@@ -27,10 +27,14 @@ export const useDragBlock = (): {
 
   useEffect(() => {
     if (xBlockPath) {
-      const [xBlock] = Editor.node(editor, xBlockPath)
-      const xBlockDom = ReactEditor.toDOMNode(editor, xBlock)
+      // 2022-7-30
+      // 某些情况下这里会报错, 暂未找到稳定复现的方法
+      try {
+        const [xBlock] = Editor.node(editor, xBlockPath)
+        const xBlockDom = ReactEditor.toDOMNode(editor, xBlock)
 
-      preview(xBlockDom)
+        preview(xBlockDom)
+      } catch (error) {}
     }
   }, [xBlockPath, preview, editor])
 
