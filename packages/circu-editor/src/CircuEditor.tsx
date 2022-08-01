@@ -32,7 +32,7 @@ const CircuEditor: React.FC = () => {
     <DndProvider backend={HTML5Backend}>
       <div
         id={editorId}
-        className={"flex justify-center bg-neutral-900"}
+        className={"flex justify-center bg-neutral-900 h-full"}
         style={{
           fontFamily: '"Source Code Pro", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", "Microsoft Yahei"',
         }}
