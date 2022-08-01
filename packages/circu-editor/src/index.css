@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    font-family: "Source Code Pro", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", "Microsoft Yahei";
-  }
 }
 
 @layer components {

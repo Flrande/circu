@@ -1,7 +1,8 @@
-import { atom, useSetAtom } from "jotai"
+import { atom, useAtomValue, useSetAtom } from "jotai"
 import { atomWithProxy } from "jotai/valtio"
 import { useEffect } from "react"
 import { proxy } from "valtio"
+import { editorRootIdAtom } from "../../../CircuProvider"
 import { DOC_WIDTH } from "../../types/constant"
 
 export const toolBarStateStore = proxy<{
@@ -23,6 +24,8 @@ export const unActiveToolBar = () => {
 export const toolBarStateAtom = atomWithProxy(toolBarStateStore)
 
 export const useToolBar = () => {
+  const editorId = useAtomValue(editorRootIdAtom)
+
   const setToolBarState = useSetAtom(toolBarStateAtom)
   const setActiveButton = useSetAtom(activeButtonAtom)
 
@@ -46,7 +49,7 @@ export const useToolBar = () => {
               const domSelection = window.getSelection()
               if (domSelection && !domSelection.isCollapsed) {
                 // 文档左右两边到视口的距离
-                const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
+                const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
                 let x = event.clientX
                 let y = event.clientY
 

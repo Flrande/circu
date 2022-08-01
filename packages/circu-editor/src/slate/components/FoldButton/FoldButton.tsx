@@ -2,6 +2,7 @@ import { useAtomValue, useSetAtom } from "jotai"
 import { useEffect, useRef } from "react"
 import { Editor } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
+import { editorRootIdAtom } from "../../../CircuProvider"
 import { mouseXBlockPathAtom } from "../../state/mouse"
 import { BLOCK_ELEMENTS_WITH_CHILDREN, DOC_WIDTH } from "../../types/constant"
 import type { BlockElementWithChildren } from "../../types/interface"
@@ -12,6 +13,7 @@ import { toggleFold, unToggleFold } from "./foldHelper"
 import { isFoldButtonActiveAtom } from "./state"
 
 const FoldButton: React.FC = () => {
+  const editorId = useAtomValue(editorRootIdAtom)
   const editor = useSlateStatic()
 
   const xBlockPath = useAtomValue(mouseXBlockPathAtom)
@@ -56,7 +58,7 @@ const FoldButton: React.FC = () => {
           // 计算位置
           const rect = dom.getBoundingClientRect()
           // 文档左右两边到视口的距离
-          const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
+          const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
 
           setActiveFlag.current = true
 

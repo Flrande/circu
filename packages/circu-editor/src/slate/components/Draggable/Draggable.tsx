@@ -1,6 +1,7 @@
 import { useAtomValue } from "jotai"
 import { Editor } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
+import { editorRootIdAtom } from "../../../CircuProvider"
 import { mouseXBlockPathAtom } from "../../state/mouse"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, DOC_WIDTH } from "../../types/constant"
 import type { BlockElementExceptTextLine } from "../../types/interface"
@@ -11,6 +12,7 @@ import { toolBarStateAtom } from "../ToolBar/state"
 import { useDragBlock } from "./useDragBlock"
 
 const Draggable: React.FC = () => {
+  const editorId = useAtomValue(editorRootIdAtom)
   const editor = useSlateStatic()
 
   const xBlockPath = useAtomValue(mouseXBlockPathAtom)
@@ -41,7 +43,7 @@ const Draggable: React.FC = () => {
         // 计算位置
         const rect = dom.getBoundingClientRect()
         // 文档左右两边到视口的距离
-        const docXPadding = (document.documentElement.clientWidth - DOC_WIDTH) / 2
+        const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
 
         let left = rect.left - docXPadding - 22
         if (isFoldButtonActive) {
