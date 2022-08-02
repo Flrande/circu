@@ -66,7 +66,11 @@ const FoldButton: React.FC = () => {
             <div
               style={{
                 position: "absolute",
-                left: `${quoteFlag ? rect.left - docXPadding - 34 : rect.left - docXPadding - 20}px`,
+                left: `${
+                  quoteFlag
+                    ? rect.left - docXPadding - 34 - document.getElementById(editorId)!.getBoundingClientRect().left
+                    : rect.left - docXPadding - 20 - document.getElementById(editorId)!.getBoundingClientRect().left
+                }px`,
                 top: `${rect.top + window.scrollY + 1}px`,
               }}
               contentEditable={false}

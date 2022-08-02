@@ -45,7 +45,7 @@ const Draggable: React.FC = () => {
         // 文档左右两边到视口的距离
         const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
 
-        let left = rect.left - docXPadding - 22
+        let left = rect.left - docXPadding - 22 - document.getElementById(editorId)!.getBoundingClientRect().left
         if (isFoldButtonActive) {
           left -= 18
         }

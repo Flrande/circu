@@ -27,7 +27,7 @@ const LinkButton: React.FC = () => {
     const rect = range.getBoundingClientRect()
     // 文档左右两边到视口的距离
     const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
-    const left = rect.left - docXPadding
+    const left = rect.left - docXPadding - document.getElementById(editorId)!.getBoundingClientRect().left
     const top = rect.top + 30 + window.scrollY
 
     setToolBarState({

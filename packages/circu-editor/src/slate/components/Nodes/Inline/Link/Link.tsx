@@ -32,7 +32,11 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
       // 文档左右两边到视口的距离
       const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
       const top = window.scrollY + linkDom.getBoundingClientRect().top + 28
-      const left = window.scrollX + linkDom.getBoundingClientRect().left - docXPadding
+      const left =
+        window.scrollX +
+        linkDom.getBoundingClientRect().left -
+        docXPadding -
+        document.getElementById(editorId)!.getBoundingClientRect().left
       setLinkState({
         text: SlateNode.string(element),
         url: element.url,

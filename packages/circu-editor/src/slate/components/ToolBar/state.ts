@@ -72,7 +72,7 @@ export const useToolBar = () => {
                 setToolBarState({
                   isActive: true,
                   position: {
-                    x,
+                    x: x - document.getElementById(editorId)!.getBoundingClientRect().left,
                     y,
                     translateY: event.clientY < 80 ? -10 : 10,
                   },

@@ -176,7 +176,11 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
       const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
       const top = window.scrollY + spanDom.current.getBoundingClientRect().top + 24
       const left =
-        window.scrollX + spanDom.current.getBoundingClientRect().left - docXPadding + spanDom.current.clientWidth
+        window.scrollX +
+        spanDom.current.getBoundingClientRect().left -
+        docXPadding +
+        spanDom.current.clientWidth -
+        document.getElementById(editorId)!.getBoundingClientRect().left
       setOrderedListBarState({
         orderedListEntry: [element, currentListPath],
         position: {
