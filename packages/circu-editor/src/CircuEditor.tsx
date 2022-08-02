@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from "jotai"
+import { useAtomValue } from "jotai"
 import { useState } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
@@ -15,7 +15,7 @@ import LinkButtonBar from "./slate/components/ToolBar/components/Link/LinkButton
 import ToolBar from "./slate/components/ToolBar/ToolBar"
 import { useCreateEditor } from "./slate/hooks/useCreateEditor"
 import SlateEditable from "./slate/SlateEditable"
-import { mouseXBlockPathAtom } from "./slate/state/mouse"
+import { mouseXStateStore } from "./slate/state/mouse"
 import { DOC_WIDTH } from "./slate/types/constant"
 import { SlateElement } from "./slate/types/slate"
 
@@ -24,7 +24,6 @@ const CircuEditor: React.FC = () => {
   const initialState = useAtomValue(initialStateAtom)
 
   const editor = useCreateEditor()
-  const setMouseXBlockPath = useSetAtom(mouseXBlockPathAtom)
 
   const [value, setValue] = useState<Descendant[]>(initialState.editorValue)
 
@@ -59,7 +58,7 @@ const CircuEditor: React.FC = () => {
               if (SlateElement.isElement(blockNode)) {
                 const blockPath = ReactEditor.findPath(editor, blockNode)
 
-                setMouseXBlockPath(blockPath)
+                mouseXStateStore.xBlockPath = blockPath
               }
 
               return
@@ -71,12 +70,12 @@ const CircuEditor: React.FC = () => {
               if (SlateElement.isElement(blockNode)) {
                 const blockPath = ReactEditor.findPath(editor, blockNode)
 
-                setMouseXBlockPath(blockPath)
+                mouseXStateStore.xBlockPath = blockPath
               }
             }
           }}
           onMouseLeave={() => {
-            setMouseXBlockPath(null)
+            mouseXStateStore.xBlockPath = null
           }}
           style={{
             padding: "0 96px 0 96px",

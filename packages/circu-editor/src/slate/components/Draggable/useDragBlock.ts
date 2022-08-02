@@ -1,9 +1,9 @@
-import { useAtomValue, useSetAtom } from "jotai"
+import { useSetAtom } from "jotai"
 import { useEffect } from "react"
 import { ConnectDragSource, useDrag } from "react-dnd"
 import { Editor } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
-import { mouseXBlockPathAtom } from "../../state/mouse"
+import { mouseXStateStore } from "../../state/mouse"
 import { DND_ITEM_TYPES } from "./constant"
 import { dropPositionAtom, isDraggingAtom } from "./state"
 
@@ -13,7 +13,6 @@ export const useDragBlock = (): {
 } => {
   const editor = useSlateStatic()
 
-  const xBlockPath = useAtomValue(mouseXBlockPathAtom)
   const setIsDragging = useSetAtom(isDraggingAtom)
   const setDropPosition = useSetAtom(dropPositionAtom)
 
@@ -26,17 +25,17 @@ export const useDragBlock = (): {
   }))
 
   useEffect(() => {
-    if (xBlockPath) {
+    if (mouseXStateStore.xBlockPath) {
       // 2022-7-30
       // 某些情况下这里会报错, 暂未找到稳定复现的方法
       try {
-        const [xBlock] = Editor.node(editor, xBlockPath)
+        const [xBlock] = Editor.node(editor, mouseXStateStore.xBlockPath)
         const xBlockDom = ReactEditor.toDOMNode(editor, xBlock)
 
         preview(xBlockDom)
       } catch (error) {}
     }
-  }, [xBlockPath, preview, editor])
+  }, [preview, editor])
 
   const onDragStart: React.DragEventHandler = (event) => {
     setIsDragging(true)

@@ -1,8 +1,8 @@
-import { useAtom, useAtomValue } from "jotai"
+import { useAtom } from "jotai"
 import { useDrop } from "react-dnd"
 import { Editor, Path, Transforms } from "slate"
 import { ReactEditor, RenderElementProps, useSlateStatic } from "slate-react"
-import { mouseXBlockPathAtom } from "../../state/mouse"
+import { mouseXStateStore } from "../../state/mouse"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, BLOCK_ELEMENTS_WITH_CHILDREN, DOC_WIDTH } from "../../types/constant"
 import type { BlockElementExceptTextLine, BlockElementWithChildren } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
@@ -22,13 +22,13 @@ export const useDropBlock = (
 } => {
   const editor = useSlateStatic()
   const [dropPosition, setDropPosition] = useAtom(dropPositionAtom)
-  const xBlockPath = useAtomValue(mouseXBlockPathAtom)
 
   const [, dropRef] = useDrop(
     () => ({
       accept: DND_ITEM_TYPES.DRAGGABLE,
       drop: (_, monitor) => {
-        if (dropPosition && xBlockPath && !monitor.didDrop()) {
+        if (dropPosition && mouseXStateStore.xBlockPath && !monitor.didDrop()) {
+          const xBlockPath = mouseXStateStore.xBlockPath
           Editor.withoutNormalizing(editor, () => {
             const { path, direction } = dropPosition
 
@@ -64,7 +64,7 @@ export const useDropBlock = (
         }
       },
     }),
-    [element, dropPosition, xBlockPath]
+    [element, dropPosition]
   )
 
   const onDragOver: React.DragEventHandler = (event) => {

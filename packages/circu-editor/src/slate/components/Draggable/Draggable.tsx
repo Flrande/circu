@@ -2,7 +2,7 @@ import { useAtomValue } from "jotai"
 import { Editor } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { editorRootIdAtom } from "../../../CircuProvider"
-import { mouseXBlockPathAtom } from "../../state/mouse"
+import { mouseXStateAtom } from "../../state/mouse"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, DOC_WIDTH } from "../../types/constant"
 import type { BlockElementExceptTextLine } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
@@ -15,14 +15,15 @@ const Draggable: React.FC = () => {
   const editorId = useAtomValue(editorRootIdAtom)
   const editor = useSlateStatic()
 
-  const xBlockPath = useAtomValue(mouseXBlockPathAtom)
+  const mouseXState = useAtomValue(mouseXStateAtom)
   const isFoldButtonActive = useAtomValue(isFoldButtonActiveAtom)
   const toolBarState = useAtomValue(toolBarStateAtom)
 
   const { dragRef, onDragStart } = useDragBlock()
 
-  if (xBlockPath && (!toolBarState || !toolBarState.isActive)) {
+  if (mouseXState.xBlockPath && (!toolBarState || !toolBarState.isActive)) {
     try {
+      const xBlockPath = mouseXState.xBlockPath
       const [node] = Editor.node(editor, xBlockPath)
 
       if (SlateElement.isElement(node) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, node.type)) {

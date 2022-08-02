@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react"
 import { Editor } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { editorRootIdAtom } from "../../../CircuProvider"
-import { mouseXBlockPathAtom } from "../../state/mouse"
+import { mouseXStateAtom } from "../../state/mouse"
 import { BLOCK_ELEMENTS_WITH_CHILDREN, DOC_WIDTH } from "../../types/constant"
 import type { BlockElementWithChildren } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
@@ -16,7 +16,7 @@ const FoldButton: React.FC = () => {
   const editorId = useAtomValue(editorRootIdAtom)
   const editor = useSlateStatic()
 
-  const xBlockPath = useAtomValue(mouseXBlockPathAtom)
+  const mouseXState = useAtomValue(mouseXStateAtom)
   const setIsFoldButtonActive = useSetAtom(isFoldButtonActiveAtom)
   const isDragging = useAtomValue(isDraggingAtom)
 
@@ -27,7 +27,8 @@ const FoldButton: React.FC = () => {
     setIsFoldButtonActive(setActiveFlag.current)
   })
 
-  if (xBlockPath && !isDragging) {
+  if (mouseXState.xBlockPath && !isDragging) {
+    const xBlockPath = mouseXState.xBlockPath
     try {
       const [node] = Editor.node(editor, xBlockPath)
 

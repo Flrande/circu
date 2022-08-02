@@ -5,7 +5,9 @@ import CircuProvider from "./CircuProvider"
 
 let initialValue: Descendant[] = []
 if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
+  let k = 0
   for (let p = 0; p < 50; p++) {
+    k++
     initialValue.push({
       type: "paragraph",
       children: [
@@ -16,7 +18,7 @@ if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
               type: "text-line",
               children: [
                 {
-                  text: `${p + 1} ` + faker.lorem.paragraph(),
+                  text: `${k} ` + faker.lorem.sentence(),
                 },
               ],
             },
@@ -26,8 +28,10 @@ if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
     })
   }
 } else if (import.meta.env.VITE_INITIAL_VALUE_MODE === "huge") {
+  let k = 0
   for (let i = 0; i < 100; i++) {
     for (let p = 0; p < 50; p++) {
+      k++
       initialValue.push({
         type: "paragraph",
         children: [
@@ -38,7 +42,7 @@ if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
                 type: "text-line",
                 children: [
                   {
-                    text: faker.lorem.paragraph(),
+                    text: `${k} ` + faker.lorem.sentence(),
                   },
                 ],
               },
