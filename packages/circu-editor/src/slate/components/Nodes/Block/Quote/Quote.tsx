@@ -45,7 +45,7 @@ const Quote: React.FC<CustomRenderElementProps<IQuote>> = ({ attributes, childre
             )
           }}
           contentEditable={false}
-          className={"absolute left-0 -top-2 w-full h-2"}
+          className={"absolute left-0 -top-2 w-full h-2 select-none"}
         ></div>
       )}
       <div className={"h-full absolute border-l-2 border-solid border-zinc-500 rounded-[1px] left-0"}></div>

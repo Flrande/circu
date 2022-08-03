@@ -59,7 +59,7 @@ const Draggable: React.FC = () => {
             ref={dragRef}
             onDragStart={onDragStart}
             className={
-              "absolute bg-neutral-800/50 hover:bg-neutral-800 hover:border border-solid border-zinc-700 rounded w-[18px] h-6 flex items-center justify-center text-gray-400/50 hover:text-gray-400"
+              "absolute bg-neutral-800/50 hover:bg-neutral-800 hover:border border-solid border-zinc-700 rounded w-[18px] h-6 flex items-center justify-center text-gray-400/50 hover:text-gray-400 select-none"
             }
             style={{
               left: `${left}px`,

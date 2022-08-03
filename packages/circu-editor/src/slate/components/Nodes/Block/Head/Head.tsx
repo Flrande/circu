@@ -47,7 +47,7 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
       <div
         data-circu-node={headPath.at(-1) !== 0 ? "block-space" : ""}
         contentEditable={false}
-        className={"absolute left-0 w-full"}
+        className={"absolute left-0 w-full select-none"}
         style={{
           // 标题样式需要 :nth-child, 故其占位块不能像其他块级节点一样直接使用与运算符条件渲染
           display: headPath.at(-1) !== 0 ? undefined : "none",

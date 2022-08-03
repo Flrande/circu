@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 @layer base {
+  body {
+    @apply bg-neutral-900;
+  }
 }
 
 @layer components {
@@ -40,5 +43,19 @@
 
   .head-6 > :nth-child(2) {
     @apply text-base mb-2 mt-3 font-semibold tracking-wide;
+  }
+
+  .empty-paragraph:after {
+    content: "在此输入文本";
+    color: #373737;
+    position: absolute;
+    top: 0;
+  }
+
+  .empty-title:after {
+    content: "请输入标题";
+    color: #373737;
+    position: absolute;
+    top: 0;
   }
 }

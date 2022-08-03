@@ -28,7 +28,7 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
         <div
           data-circu-node="block-space"
           contentEditable={false}
-          className={"absolute left-0 -top-2 w-full h-2"}
+          className={"absolute left-0 -top-2 w-full h-2 select-none"}
         ></div>
       )}
       <div>

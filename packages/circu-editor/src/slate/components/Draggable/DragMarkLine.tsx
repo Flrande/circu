@@ -10,6 +10,7 @@ const DragMarkLine: React.FC<{
         width: "100%",
         top: activeDirection === "top" ? "-2px" : undefined,
         bottom: activeDirection === "bottom" ? "0px" : undefined,
+        userSelect: "none",
       }}
     ></div>
   )
