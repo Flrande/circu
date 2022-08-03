@@ -1,9 +1,12 @@
 import { atom, useAtomValue, useSetAtom } from "jotai"
 import { atomWithProxy } from "jotai/valtio"
 import { useEffect } from "react"
+import { Editor } from "slate"
+import { useSlateStatic } from "slate-react"
 import { proxy } from "valtio"
 import { editorRootIdAtom } from "../../../CircuProvider"
 import { DOC_WIDTH } from "../../types/constant"
+import { SlateRange } from "../../types/slate"
 
 export const toolBarStateStore = proxy<{
   isActive: boolean
@@ -24,6 +27,7 @@ export const unActiveToolBar = () => {
 export const toolBarStateAtom = atomWithProxy(toolBarStateStore)
 
 export const useToolBar = () => {
+  const editor = useSlateStatic()
   const editorId = useAtomValue(editorRootIdAtom)
 
   const setToolBarState = useSetAtom(toolBarStateAtom)
@@ -46,6 +50,12 @@ export const useToolBar = () => {
             // 若不放在宏任务中, 点击蓝区, 执行 mouseup 事件回调时 domSelection 仍未更新 (仍是折叠状态),
             // 这会导致 ToolBar 无法正常消失 (鼠标按钮放开后再次出现)
             setTimeout(() => {
+              // 若选中标题, 不显示
+              const titleRange = Editor.range(editor, [0])
+              if (editor.selection && SlateRange.intersection(titleRange, editor.selection)) {
+                return
+              }
+
               const domSelection = window.getSelection()
               if (domSelection && !domSelection.isCollapsed) {
                 // 文档左右两边到视口的距离

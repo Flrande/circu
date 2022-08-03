@@ -3,7 +3,26 @@ import type { Descendant } from "slate"
 import CircuEditor from "./CircuEditor"
 import CircuProvider from "./CircuProvider"
 
-let initialValue: Descendant[] = []
+let initialValue: Descendant[] = [
+  {
+    type: "title",
+    children: [
+      {
+        type: "__block-element-content",
+        children: [
+          {
+            type: "text-line",
+            children: [
+              {
+                text: "Demo",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+]
 if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
   let k = 0
   for (let p = 0; p < 50; p++) {

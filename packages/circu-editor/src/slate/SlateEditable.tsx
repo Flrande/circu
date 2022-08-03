@@ -19,7 +19,6 @@ const SlateEditable: React.FC = () => {
 
   return (
     <Editable
-      placeholder="在此输入文本..."
       decorate={decorate}
       renderElement={renderElement}
       renderLeaf={renderLeaf}

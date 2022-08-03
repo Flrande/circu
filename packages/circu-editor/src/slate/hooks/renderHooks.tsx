@@ -16,6 +16,8 @@ import Quote from "../components/Nodes/Block/Quote/Quote"
 import type { IQuote } from "../components/Nodes/Block/Quote/types"
 import TextLine from "../components/Nodes/Block/TextLine/TextLine"
 import type { ITextLine } from "../components/Nodes/Block/TextLine/types"
+import Title from "../components/Nodes/Block/Title/Title"
+import type { ITitle } from "../components/Nodes/Block/Title/types"
 import InlineCode from "../components/Nodes/Inline/InlineCode/InlineCode"
 import type { IInlineCode } from "../components/Nodes/Inline/InlineCode/types"
 import Link from "../components/Nodes/Inline/Link/Link"
@@ -34,6 +36,8 @@ export const useRenderElement = () => {
         return <BlockContent {...(props as CustomRenderElementProps<__IBlockElementContent>)}></BlockContent>
       case "__block-element-children":
         return <BlockChildren {...(props as CustomRenderElementProps<__IBlockElementChildren>)}></BlockChildren>
+      case "title":
+        return <Title {...(props as CustomRenderElementProps<ITitle>)}></Title>
       case "text-line":
         return <TextLine {...(props as CustomRenderElementProps<ITextLine>)}></TextLine>
       case "paragraph":

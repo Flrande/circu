@@ -2,6 +2,7 @@ import { Editor, NodeEntry, Point, Transforms } from "slate"
 import { headLineBreakHandler } from "../components/Nodes/Block/Head/headLineBreakHandler"
 import { listLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
 import { paragraphLineBreakHandler } from "../components/Nodes/Block/Paragraph/paragraphLineBreakHandler"
+import { titleLineBreakHandler } from "../components/Nodes/Block/Title/titleLineBreakHandler"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../types/constant"
 import type { BlockElementExceptTextLine } from "../types/interface"
 import { SlateElement, SlateRange } from "../types/slate"
@@ -31,6 +32,10 @@ export const withLineBreak = (editor: Editor) => {
         }
 
         Transforms.select(editor, currentPoint)
+
+        if (titleLineBreakHandler(editor)) {
+          return
+        }
 
         const [selectedBlock] = Array.from(
           Editor.nodes(editor, {

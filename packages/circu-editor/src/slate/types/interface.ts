@@ -7,14 +7,16 @@ import type { IOrderedList, IUnorderedList } from "../components/Nodes/Block/Lis
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import type { IQuote } from "../components/Nodes/Block/Quote/types"
 import type { ITextLine } from "../components/Nodes/Block/TextLine/types"
+import type { ITitle } from "../components/Nodes/Block/Title/types"
 import type { IInlineCode } from "../components/Nodes/Inline/InlineCode/types"
 import type { ILink } from "../components/Nodes/Inline/Link/types"
 import type { ICustomText } from "../components/Nodes/Text/types"
 
-// 有3类块级节点
+// 有4类块级节点
 // 1. 支持包含自身内容和其他块级节点, 如列表, 段落
 // 2. 仅支持包含自身内容, 没有子节点块, 如代码块, 引用
 // 3. 最小单位行, text-line
+// 4. 标题, title
 // 添加新的块级节点时更改下面三类类型即可
 // 对于 __IBlockElementContent 和 __IBlockElementChildren, 表述上不将其归为块级节点
 
@@ -49,6 +51,7 @@ export type BlockElement =
   | BlockElementWithChildren // 1类
   | BlockElementWithoutChildren // 2类
   | ITextLine // 3类
+  | ITitle // 4类
   | __IBlockElementContent
   | __IBlockElementChildren
 export type InlineElement = IInlineCode | ILink
