@@ -6,7 +6,7 @@ const DragMarkLine: React.FC<{
       contentEditable={false}
       style={{
         position: "absolute",
-        borderTop: activeDirection ? "2px solid #0034ae" : undefined,
+        borderTop: activeDirection ? "4px solid #052F78" : undefined,
         width: "100%",
         top: activeDirection === "top" ? "-2px" : undefined,
         bottom: activeDirection === "bottom" ? "0px" : undefined,
