@@ -1,10 +1,7 @@
-import { useAtomValue } from "jotai"
-import { useState } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
-import type { Descendant } from "slate"
+import type { Descendant, Editor } from "slate"
 import { ReactEditor, Slate } from "slate-react"
-import { editorRootIdAtom, initialStateAtom } from "./CircuProvider"
 import Draggable from "./slate/components/Draggable/Draggable"
 import FoldButton from "./slate/components/FoldButton/FoldButton"
 import OrderedListBar from "./slate/components/Nodes/Block/List/ListBar/OrderedListBar"
@@ -13,24 +10,20 @@ import LinkBar from "./slate/components/Nodes/Inline/Link/LinkBar/LinkBar"
 import LinkEditBar from "./slate/components/Nodes/Inline/Link/LinkBar/LinkEditBar"
 import LinkButtonBar from "./slate/components/ToolBar/components/Link/LinkButtonBar"
 import ToolBar from "./slate/components/ToolBar/ToolBar"
-import { useCreateEditor } from "./slate/hooks/useCreateEditor"
 import SlateEditable from "./slate/SlateEditable"
 import { mouseXStateStore } from "./slate/state/mouse"
-import { DOC_WIDTH } from "./slate/types/constant"
+import { DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "./slate/types/constant"
 import { SlateElement } from "./slate/types/slate"
 
-const CircuEditor: React.FC = () => {
-  const editorId = useAtomValue(editorRootIdAtom)
-  const initialState = useAtomValue(initialStateAtom)
-
-  const editor = useCreateEditor()
-
-  const [value, setValue] = useState<Descendant[]>(initialState.editorValue)
-
+const CircuEditor: React.FC<{
+  editor: Editor
+  value: Descendant[]
+  onChange: (value: Descendant[]) => void
+}> = ({ editor, value, onChange }) => {
   return (
     <DndProvider backend={HTML5Backend}>
       <div
-        id={editorId}
+        id={EDITOR_ROOT_DOM_ID}
         className={"flex justify-center bg-neutral-900 h-full"}
         style={{
           fontFamily: '"Source Code Pro", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", "Microsoft Yahei"',
@@ -38,7 +31,7 @@ const CircuEditor: React.FC = () => {
       >
         <div
           onMouseMove={(event) => {
-            const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
+            const docXPadding = (document.getElementById(EDITOR_ROOT_DOM_ID)!.clientWidth - DOC_WIDTH) / 2
             const y = event.clientY
 
             // 60 的取值随意, 确保水平位置不受缩进影响即可
@@ -87,7 +80,7 @@ const CircuEditor: React.FC = () => {
               width: `${DOC_WIDTH}px`,
             }}
           >
-            <Slate editor={editor} value={value} onChange={(newValue) => setValue(newValue)}>
+            <Slate editor={editor} value={value} onChange={onChange}>
               <SlateEditable></SlateEditable>
               <div
                 // 拦截冒泡的 mousedown 事件, 防止 ToolBar 工作异常

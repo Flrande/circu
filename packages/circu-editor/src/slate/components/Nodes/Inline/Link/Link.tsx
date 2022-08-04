@@ -1,15 +1,13 @@
-import { useAtomValue, useSetAtom } from "jotai"
+import { useSetAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { ReactEditor, useSlateStatic } from "slate-react"
-import { editorRootIdAtom } from "../../../../../CircuProvider"
-import { DOC_WIDTH } from "../../../../types/constant"
+import { DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "../../../../types/constant"
 import { SlateNode } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import { isLinkBarActiveDerivedAtom, linkStateAtom } from "./state"
 import type { ILink } from "./types"
 
 const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children, element }) => {
-  const editorId = useAtomValue(editorRootIdAtom)
   const editor = useSlateStatic()
 
   const setIsLinkBarActiveDerived = useSetAtom(isLinkBarActiveDerivedAtom)
@@ -30,13 +28,13 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
       }, 800)
 
       // 文档左右两边到视口的距离
-      const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
+      const docXPadding = (document.getElementById(EDITOR_ROOT_DOM_ID)!.clientWidth - DOC_WIDTH) / 2
       const top = window.scrollY + linkDom.getBoundingClientRect().top + 28
       const left =
         window.scrollX +
         linkDom.getBoundingClientRect().left -
         docXPadding -
-        document.getElementById(editorId)!.getBoundingClientRect().left
+        document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left
       setLinkState({
         text: SlateNode.string(element),
         url: element.url,

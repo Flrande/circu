@@ -2,9 +2,8 @@ import { useAtomValue, useSetAtom } from "jotai"
 import { useEffect, useRef } from "react"
 import { Editor } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
-import { editorRootIdAtom } from "../../../CircuProvider"
 import { mouseXStateAtom } from "../../state/mouse"
-import { BLOCK_ELEMENTS_WITH_CHILDREN, DOC_WIDTH } from "../../types/constant"
+import { BLOCK_ELEMENTS_WITH_CHILDREN, DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "../../types/constant"
 import type { BlockElementWithChildren } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
 import { arrayIncludes } from "../../utils/general"
@@ -13,7 +12,6 @@ import { toggleFold, unToggleFold } from "./foldHelper"
 import { isFoldButtonActiveAtom } from "./state"
 
 const FoldButton: React.FC = () => {
-  const editorId = useAtomValue(editorRootIdAtom)
   const editor = useSlateStatic()
 
   const mouseXState = useAtomValue(mouseXStateAtom)
@@ -59,7 +57,7 @@ const FoldButton: React.FC = () => {
           // 计算位置
           const rect = dom.getBoundingClientRect()
           // 文档左右两边到视口的距离
-          const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
+          const docXPadding = (document.getElementById(EDITOR_ROOT_DOM_ID)!.clientWidth - DOC_WIDTH) / 2
 
           setActiveFlag.current = true
 
@@ -69,8 +67,14 @@ const FoldButton: React.FC = () => {
                 position: "absolute",
                 left: `${
                   quoteFlag
-                    ? rect.left - docXPadding - 34 - document.getElementById(editorId)!.getBoundingClientRect().left
-                    : rect.left - docXPadding - 20 - document.getElementById(editorId)!.getBoundingClientRect().left
+                    ? rect.left -
+                      docXPadding -
+                      34 -
+                      document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left
+                    : rect.left -
+                      docXPadding -
+                      20 -
+                      document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left
                 }px`,
                 top: `${rect.top + window.scrollY + 1}px`,
                 userSelect: "none",

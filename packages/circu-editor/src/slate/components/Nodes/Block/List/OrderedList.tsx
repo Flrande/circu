@@ -2,8 +2,7 @@ import { useAtomValue, useSetAtom } from "jotai"
 import { useEffect, useRef, useState } from "react"
 import { Path } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
-import { editorRootIdAtom } from "../../../../../CircuProvider"
-import { DOC_WIDTH } from "../../../../types/constant"
+import { DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "../../../../types/constant"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import DragMarkLine from "../../../Draggable/DragMarkLine"
 import { useDropBlock } from "../../../Draggable/useDropBlock"
@@ -147,7 +146,6 @@ const numberToLetter = (num: number) => {
 }
 
 const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attributes, children, element }) => {
-  const editorId = useAtomValue(editorRootIdAtom)
   const editor = useSlateStatic()
 
   //TODO: 可能的优化方式:
@@ -173,14 +171,14 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
   const onClickSpan: React.MouseEventHandler<HTMLSpanElement> = () => {
     if (spanDom.current) {
       // 文档左右两边到视口的距离
-      const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
+      const docXPadding = (document.getElementById(EDITOR_ROOT_DOM_ID)!.clientWidth - DOC_WIDTH) / 2
       const top = window.scrollY + spanDom.current.getBoundingClientRect().top + 24
       const left =
         window.scrollX +
         spanDom.current.getBoundingClientRect().left -
         docXPadding +
         spanDom.current.clientWidth -
-        document.getElementById(editorId)!.getBoundingClientRect().left
+        document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left
       setOrderedListBarState({
         orderedListEntry: [element, currentListPath],
         position: {

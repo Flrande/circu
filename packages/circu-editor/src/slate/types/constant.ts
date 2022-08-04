@@ -7,6 +7,8 @@ import type {
 } from "./interface"
 import type { KeysUnion } from "./utils"
 
+export const EDITOR_ROOT_DOM_ID = "circu-editor-root"
+
 // 文档宽度
 export const DOC_WIDTH = 790
 

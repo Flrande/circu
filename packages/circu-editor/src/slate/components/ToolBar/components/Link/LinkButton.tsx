@@ -1,7 +1,6 @@
-import { useAtomValue, useSetAtom } from "jotai"
+import { useSetAtom } from "jotai"
 import { ReactEditor, useSlateStatic } from "slate-react"
-import { editorRootIdAtom } from "../../../../../CircuProvider"
-import { DOC_WIDTH } from "../../../../types/constant"
+import { DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "../../../../types/constant"
 import { isLinkActive } from "../../../Nodes/Inline/Link/linkHelper"
 import { activeButtonAtom, toolBarStateAtom } from "../../state"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
@@ -10,7 +9,6 @@ import LinkIcon from "./LinkIcon"
 
 //TODO: 点击按钮时维持蓝区
 const LinkButton: React.FC = () => {
-  const editorId = useAtomValue(editorRootIdAtom)
   const editor = useSlateStatic()
   const isActive = isLinkActive(editor)
 
@@ -26,8 +24,8 @@ const LinkButton: React.FC = () => {
     const range = sel.getRangeAt(0)
     const rect = range.getBoundingClientRect()
     // 文档左右两边到视口的距离
-    const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
-    const left = rect.left - docXPadding - document.getElementById(editorId)!.getBoundingClientRect().left
+    const docXPadding = (document.getElementById(EDITOR_ROOT_DOM_ID)!.clientWidth - DOC_WIDTH) / 2
+    const left = rect.left - docXPadding - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left
     const top = rect.top + 30 + window.scrollY
 
     setToolBarState({

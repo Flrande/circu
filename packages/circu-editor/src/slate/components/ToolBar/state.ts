@@ -1,11 +1,10 @@
-import { atom, useAtomValue, useSetAtom } from "jotai"
+import { atom, useSetAtom } from "jotai"
 import { atomWithProxy } from "jotai/valtio"
 import { useEffect } from "react"
 import { Editor } from "slate"
 import { useSlateStatic } from "slate-react"
 import { proxy } from "valtio"
-import { editorRootIdAtom } from "../../../CircuProvider"
-import { DOC_WIDTH } from "../../types/constant"
+import { DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "../../types/constant"
 import { SlateRange } from "../../types/slate"
 
 export const toolBarStateStore = proxy<{
@@ -28,7 +27,6 @@ export const toolBarStateAtom = atomWithProxy(toolBarStateStore)
 
 export const useToolBar = () => {
   const editor = useSlateStatic()
-  const editorId = useAtomValue(editorRootIdAtom)
 
   const setToolBarState = useSetAtom(toolBarStateAtom)
   const setActiveButton = useSetAtom(activeButtonAtom)
@@ -59,7 +57,7 @@ export const useToolBar = () => {
               const domSelection = window.getSelection()
               if (domSelection && !domSelection.isCollapsed) {
                 // 文档左右两边到视口的距离
-                const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
+                const docXPadding = (document.getElementById(EDITOR_ROOT_DOM_ID)!.clientWidth - DOC_WIDTH) / 2
                 let x = event.clientX
                 let y = event.clientY
 
@@ -82,7 +80,7 @@ export const useToolBar = () => {
                 setToolBarState({
                   isActive: true,
                   position: {
-                    x: x - document.getElementById(editorId)!.getBoundingClientRect().left,
+                    x: x - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left,
                     y,
                     translateY: event.clientY < 80 ? -10 : 10,
                   },

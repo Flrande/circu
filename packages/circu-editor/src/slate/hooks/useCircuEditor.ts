@@ -8,7 +8,7 @@ import { withNormalize } from "../plugins/withNormalize"
 import { withShortcut } from "../plugins/withShortcut"
 import { withVoid } from "../plugins/withVoid"
 
-export const useCreateEditor = () => {
+export const useCircuEditor = () => {
   // 保证单一实例
   const [editor] = useState(() =>
     withShortcut(withLineBreak(withNormalize(withVoid(withDelete(withInlines(withReact(createEditor())))))))

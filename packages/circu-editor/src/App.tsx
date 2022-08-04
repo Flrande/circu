@@ -1,7 +1,8 @@
 import { faker } from "@faker-js/faker"
+import { useState } from "react"
 import type { Descendant } from "slate"
 import CircuEditor from "./CircuEditor"
-import CircuProvider from "./CircuProvider"
+import { useCircuEditor } from "./slate/hooks/useCircuEditor"
 
 let initialValue: Descendant[] = [
   {
@@ -95,11 +96,10 @@ if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
 }
 
 const App: React.FC = () => {
-  return (
-    <CircuProvider id="1" initialState={{ editorValue: initialValue }}>
-      <CircuEditor></CircuEditor>
-    </CircuProvider>
-  )
+  const editor = useCircuEditor()
+  const [value, setValue] = useState<Descendant[]>(initialValue)
+
+  return <CircuEditor editor={editor} value={value} onChange={(newValue) => setValue(newValue)}></CircuEditor>
 }
 
 export default App

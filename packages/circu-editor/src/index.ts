@@ -1,5 +1,4 @@
 import CircuEditor from "./CircuEditor"
-import CircuProvider from "./CircuProvider"
+import { useCircuEditor } from "./slate/hooks/useCircuEditor"
 
-export { CircuEditor }
-export { CircuProvider }
+export { CircuEditor, useCircuEditor }

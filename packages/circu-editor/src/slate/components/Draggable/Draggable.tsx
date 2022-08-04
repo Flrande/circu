@@ -1,9 +1,8 @@
 import { useAtomValue } from "jotai"
 import { Editor } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
-import { editorRootIdAtom } from "../../../CircuProvider"
 import { mouseXStateAtom } from "../../state/mouse"
-import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, DOC_WIDTH } from "../../types/constant"
+import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "../../types/constant"
 import type { BlockElementExceptTextLine } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
 import { arrayIncludes } from "../../utils/general"
@@ -12,7 +11,6 @@ import { toolBarStateAtom } from "../ToolBar/state"
 import { useDragBlock } from "./useDragBlock"
 
 const Draggable: React.FC = () => {
-  const editorId = useAtomValue(editorRootIdAtom)
   const editor = useSlateStatic()
 
   const mouseXState = useAtomValue(mouseXStateAtom)
@@ -44,9 +42,10 @@ const Draggable: React.FC = () => {
         // 计算位置
         const rect = dom.getBoundingClientRect()
         // 文档左右两边到视口的距离
-        const docXPadding = (document.getElementById(editorId)!.clientWidth - DOC_WIDTH) / 2
+        const docXPadding = (document.getElementById(EDITOR_ROOT_DOM_ID)!.clientWidth - DOC_WIDTH) / 2
 
-        let left = rect.left - docXPadding - 22 - document.getElementById(editorId)!.getBoundingClientRect().left
+        let left =
+          rect.left - docXPadding - 22 - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left
         if (isFoldButtonActive) {
           left -= 18
         }
