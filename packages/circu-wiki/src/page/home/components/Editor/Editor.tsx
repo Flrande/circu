@@ -1,11 +1,10 @@
-import { CircuEditor, useCircuEditor } from "circu-editor"
+import { CircuEditor, CustomElement, CustomText, useCircuEditor } from "circu-editor"
 import { useEffect, useState } from "react"
-import type { Descendant } from "slate"
 import ScrollBar from "smooth-scrollbar"
 
 const Editor: React.FC = () => {
   const editor = useCircuEditor()
-  const [value, setValue] = useState<Descendant[]>([
+  const [value, setValue] = useState<(CustomElement | CustomText)[]>([
     {
       type: "title",
       children: [

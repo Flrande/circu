@@ -15,7 +15,7 @@ import { mouseXStateStore } from "./slate/state/mouse"
 import { DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "./slate/types/constant"
 import { SlateElement } from "./slate/types/slate"
 
-const CircuEditor: React.FC<{
+export const CircuEditor: React.FC<{
   editor: Editor
   value: Descendant[]
   onChange: (value: Descendant[]) => void
@@ -104,5 +104,3 @@ const CircuEditor: React.FC<{
     </DndProvider>
   )
 }
-
-export default CircuEditor

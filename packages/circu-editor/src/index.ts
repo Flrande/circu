@@ -1,4 +1,5 @@
-import CircuEditor from "./CircuEditor"
-import { useCircuEditor } from "./slate/hooks/useCircuEditor"
+export * from "./slate/hooks/useCircuEditor"
+export * from "./CircuEditor"
 
-export { CircuEditor, useCircuEditor }
+export * from "./slate/types/interface"
+export * from "./slate/types/slate"

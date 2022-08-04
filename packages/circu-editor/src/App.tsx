@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker"
 import { useState } from "react"
 import type { Descendant } from "slate"
-import CircuEditor from "./CircuEditor"
+import { CircuEditor } from "./CircuEditor"
 import { useCircuEditor } from "./slate/hooks/useCircuEditor"
 
 let initialValue: Descendant[] = [
