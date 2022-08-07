@@ -1,12 +1,13 @@
 import useSWR from "swr"
 import type { IFolder, IFolderId } from "./interface"
 
-//TODO： mock 数据, 联调时删去
+//TODO: mock 数据, 联调时删去
 const mockFoldersData: IFolder[] = [
   {
     id: "fld_1",
     parent: null,
     name: "测试文件夹-1",
+    description: null,
     childrenId: ["fld_2", "doc_1", "doc_2", "doc_3"],
     authorId: "usr_1",
     administratorsId: ["usr_1"],
@@ -17,6 +18,7 @@ const mockFoldersData: IFolder[] = [
     id: "fld_2",
     parent: "fld_1",
     name: "测试文件夹-2",
+    description: null,
     childrenId: ["doc_4", "doc_5"],
     authorId: "usr_1",
     administratorsId: ["usr_1"],
@@ -27,6 +29,7 @@ const mockFoldersData: IFolder[] = [
     id: "fld_3",
     parent: null,
     name: "测试文件夹-3",
+    description: null,
     childrenId: [],
     authorId: "usr_1",
     administratorsId: ["usr_1"],

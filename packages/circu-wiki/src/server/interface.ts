@@ -27,6 +27,7 @@ export interface IFolder {
   id: IFolderId
   parent: IFolderId | null
   name: string
+  description: string | null
   childrenId: (IFolderId | IDocId)[]
   authorId: IUserId
   administratorsId: IUserId[]

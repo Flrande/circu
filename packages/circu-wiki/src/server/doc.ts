@@ -1,7 +1,7 @@
 import useSWR from "swr"
 import type { IDoc, IDocId } from "./interface"
 
-//TODO： mock 数据, 联调时删去
+//TODO: mock 数据, 联调时删去
 const mockDocData: IDoc[] = [
   {
     id: "doc_1",
