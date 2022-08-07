@@ -13,7 +13,7 @@ const Folder: React.FC<{
   const [isFolded, setIsFolded] = useState(true)
 
   return (
-    <div className={"my-2 px-3"}>
+    <div className={"my-2 pl-3"}>
       {folder ? (
         <div>
           <div
@@ -23,17 +23,17 @@ const Folder: React.FC<{
             className={"flex items-center h-10 bg-transparent text-gray-400 hover:bg-[#383838] rounded cursor-pointer"}
           >
             <span
-              className={"mx-2 w-4"}
+              className={"mx-2 w-4 shrink-0"}
               style={{
                 transform: isFolded ? "rotate(-0.25turn)" : undefined,
               }}
             >
               <IconDown></IconDown>
             </span>
-            <span className={"mx-2 w-5"}>
+            <span className={"mx-2 w-5 shrink-0"}>
               <IconFolderClose></IconFolderClose>
             </span>
-            <span className={"text-base font-medium"}>{folder.name}</span>
+            <span className={"text-base font-medium truncate select-none"}>{folder.name}</span>
           </div>
           {!isFolded && (
             <ul>

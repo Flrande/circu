@@ -9,16 +9,16 @@ const Doc: React.FC<{
   const { doc, errorGetDoc } = useDoc(docId)
 
   return (
-    <div className={"my-2 px-3"}>
+    <div className={"my-2 pl-3"}>
       {doc ? (
         <div
           className={"flex items-center h-10 bg-transparent text-gray-400 hover:bg-[#383838] rounded cursor-pointer"}
         >
-          <span className={"mx-2 w-4"}></span>
-          <span className={"mx-2 w-5"}>
+          <span className={"mx-2 w-4 shrink-0"}></span>
+          <span className={"mx-2 w-5 shrink-0"}>
             <IconDoc></IconDoc>
           </span>
-          <span className={"text-base font-medium"}>{doc.title}</span>
+          <span className={"text-base font-medium truncate select-none"}>{doc.title}</span>
         </div>
       ) : (
         <div className={"h-10 cursor-not-allowed"}>
