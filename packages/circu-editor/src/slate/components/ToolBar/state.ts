@@ -34,7 +34,7 @@ export const useToolBar = () => {
   useEffect(() => {
     const mouseDownController = new AbortController()
 
-    document.addEventListener(
+    document.getElementById(EDITOR_ROOT_DOM_ID)!.addEventListener(
       "mousedown",
       () => {
         setToolBarState({
@@ -42,7 +42,7 @@ export const useToolBar = () => {
           position: null,
         })
 
-        document.addEventListener(
+        document.getElementById(EDITOR_ROOT_DOM_ID)!.addEventListener(
           "mouseup",
           (event) => {
             // 若不放在宏任务中, 点击蓝区, 执行 mouseup 事件回调时 domSelection 仍未更新 (仍是折叠状态),
