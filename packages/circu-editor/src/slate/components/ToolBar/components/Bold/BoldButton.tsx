@@ -19,7 +19,13 @@ const BoldButton: React.FC = () => {
   }
 
   return (
-    <ToolBarItem isStyleActive={isBoldActive} onClick={onClick} onMouseEnter={onMouseEnter}>
+    <ToolBarItem
+      styleMessage={"粗体"}
+      shortcutMessage={"Markdown: **文字** 空格"}
+      isStyleActive={isBoldActive}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+    >
       <BoldIcon></BoldIcon>
     </ToolBarItem>
   )

@@ -19,7 +19,13 @@ const UnderlineButton: React.FC = () => {
   }
 
   return (
-    <ToolBarItem isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
+    <ToolBarItem
+      styleMessage={"下划线"}
+      shortcutMessage={"Markdown: ~文字~ 空格"}
+      isStyleActive={isActive}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+    >
       <UnderlineIcon></UnderlineIcon>
     </ToolBarItem>
   )

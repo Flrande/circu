@@ -19,7 +19,13 @@ const StrikeButton: React.FC = () => {
   }
 
   return (
-    <ToolBarItem isStyleActive={isStrikeActive} onClick={onClick} onMouseEnter={onMouseEnter}>
+    <ToolBarItem
+      styleMessage={"删除线"}
+      shortcutMessage={"Markdown: ~~文字~~ 空格"}
+      isStyleActive={isStrikeActive}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+    >
       <StrikeIcon></StrikeIcon>
     </ToolBarItem>
   )

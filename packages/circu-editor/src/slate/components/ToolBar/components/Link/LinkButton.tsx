@@ -47,7 +47,7 @@ const LinkButton: React.FC = () => {
   }
 
   return (
-    <ToolBarItem isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
+    <ToolBarItem styleMessage={"链接"} isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
       <LinkIcon></LinkIcon>
     </ToolBarItem>
   )

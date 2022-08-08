@@ -16,6 +16,39 @@ const HeadButton: React.FC<{
   const { fillColor, backgroundColor } = useIconColor(false, isMouseEnter)
   const [activeButton, setActiveButton] = useAtom(activeButtonAtom)
 
+  let styleMessage: string
+  let shortcutMessage: string
+  switch (headGrade) {
+    case "1":
+      styleMessage = "一级标题"
+      shortcutMessage = "Markdown: # 空格"
+      break
+    case "2":
+      styleMessage = "二级标题"
+      shortcutMessage = "Markdown: ## 空格"
+      break
+    case "3":
+      styleMessage = "三级标题"
+      shortcutMessage = "Markdown: ### 空格"
+      break
+    case "4":
+      styleMessage = "四级标题"
+      shortcutMessage = "Markdown: #### 空格"
+      break
+    case "5":
+      styleMessage = "五级标题"
+      shortcutMessage = "Markdown: ##### 空格"
+      break
+    case "6":
+      styleMessage = "六级标题"
+      shortcutMessage = "Markdown: ###### 空格"
+      break
+    default:
+      styleMessage = "一级标题"
+      shortcutMessage = "Markdown: # 空格"
+      break
+  }
+
   if (headGrade === "no-grade") {
     // 大部分逻辑来自 ToolBarItem
     return (
@@ -80,7 +113,13 @@ const HeadButton: React.FC<{
     }
 
     return (
-      <ToolBarItem isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
+      <ToolBarItem
+        styleMessage={styleMessage}
+        shortcutMessage={shortcutMessage}
+        isStyleActive={isActive}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+      >
         <HeadIcon headGrade={headGrade}></HeadIcon>
       </ToolBarItem>
     )

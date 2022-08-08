@@ -21,7 +21,7 @@ const InlineCodeButton: React.FC = () => {
   }
 
   return (
-    <ToolBarItem isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
+    <ToolBarItem styleMessage={"代码"} isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
       <InlineCodeIcon></InlineCodeIcon>
     </ToolBarItem>
   )

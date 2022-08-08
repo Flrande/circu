@@ -14,7 +14,12 @@ const UnorderedListButton: React.FC = () => {
   }
 
   return (
-    <ToolBarItem isStyleActive={isActive} onClick={onClick}>
+    <ToolBarItem
+      styleMessage={"无序列表"}
+      shortcutMessage={"Markdown: - 空格"}
+      isStyleActive={isActive}
+      onClick={onClick}
+    >
       <UnorderedListIcon></UnorderedListIcon>
     </ToolBarItem>
   )

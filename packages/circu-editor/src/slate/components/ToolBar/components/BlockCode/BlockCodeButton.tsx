@@ -26,7 +26,7 @@ const BlockCodeButton: React.FC = () => {
   }
 
   return (
-    <ToolBarItem isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
+    <ToolBarItem styleMessage={"代码块"} isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
       <BlockCodeIcon></BlockCodeIcon>
     </ToolBarItem>
   )

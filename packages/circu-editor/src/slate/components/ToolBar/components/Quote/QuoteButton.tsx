@@ -19,7 +19,7 @@ const QuoteButton: React.FC = () => {
   }
 
   return (
-    <ToolBarItem isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
+    <ToolBarItem styleMessage={"引用"} isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
       <QuoteIcon></QuoteIcon>
     </ToolBarItem>
   )

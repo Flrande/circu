@@ -19,7 +19,13 @@ const ItalicButton: React.FC = () => {
   }
 
   return (
-    <ToolBarItem isStyleActive={isItalicActive} onClick={onClick} onMouseEnter={onMouseEnter}>
+    <ToolBarItem
+      styleMessage={"斜体"}
+      shortcutMessage={"Markdown: *文字* 空格"}
+      isStyleActive={isItalicActive}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+    >
       <ItalicIcon></ItalicIcon>
     </ToolBarItem>
   )

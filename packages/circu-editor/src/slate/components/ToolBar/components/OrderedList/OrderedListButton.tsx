@@ -21,7 +21,13 @@ const OrderedListButton: React.FC = () => {
   }
 
   return (
-    <ToolBarItem isStyleActive={isActive} onClick={onClick} onMouseEnter={onMouseEnter}>
+    <ToolBarItem
+      styleMessage={"有序列表"}
+      shortcutMessage={"Markdown: 1. 空格"}
+      isStyleActive={isActive}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+    >
       <OrderedListIcon></OrderedListIcon>
     </ToolBarItem>
   )
