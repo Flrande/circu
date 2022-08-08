@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import type { Descendant, Editor } from "slate"
@@ -20,6 +21,32 @@ export const CircuEditor: React.FC<{
   value: Descendant[]
   onChange: (value: Descendant[]) => void
 }> = ({ editor, value, onChange }) => {
+  const barContainerDom = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    // 拦截冒泡的 mousedown 事件, 防止 ToolBar 工作异常
+    if (barContainerDom.current) {
+      const controller = new AbortController()
+
+      // 不能使用 onMouseDown
+      // https://github.com/facebook/react/issues/4335
+      // https://github.com/wayou/wayou.github.io/issues/51
+      barContainerDom.current.addEventListener(
+        "mousedown",
+        (event) => {
+          event.stopPropagation()
+        },
+        {
+          signal: controller.signal,
+        }
+      )
+
+      return () => {
+        controller.abort()
+      }
+    }
+  }, [])
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div
@@ -82,12 +109,7 @@ export const CircuEditor: React.FC<{
           >
             <Slate editor={editor} value={value} onChange={onChange}>
               <SlateEditable></SlateEditable>
-              <div
-                // 拦截冒泡的 mousedown 事件, 防止 ToolBar 工作异常
-                onMouseDown={(event) => {
-                  event.stopPropagation()
-                }}
-              >
+              <div ref={barContainerDom}>
                 <ToolBar></ToolBar>
                 <LinkButtonBar></LinkButtonBar>
                 <LinkBar></LinkBar>
