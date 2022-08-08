@@ -4,4 +4,7 @@ import vitePluginForArco from "@arco-plugins/vite-react"
 
 export default defineConfig({
   plugins: [react(), vitePluginForArco({ style: "css" })],
+  server: {
+    port: 3000,
+  },
 })

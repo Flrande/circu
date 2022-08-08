@@ -2,6 +2,7 @@ import type { BaseEditor } from "slate"
 import type { ReactEditor } from "slate-react"
 import type { IBlockCode } from "../components/Nodes/Block/BlockCode/types"
 import type { __IBlockElementChildren, __IBlockElementContent } from "../components/Nodes/Block/BlockWrapper/types"
+import type { IDivider } from "../components/Nodes/Block/Divider/types"
 import type { IHead } from "../components/Nodes/Block/Head/types"
 import type { IOrderedList, IUnorderedList } from "../components/Nodes/Block/List/types"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
@@ -55,8 +56,9 @@ export type BlockElement =
   | __IBlockElementContent
   | __IBlockElementChildren
 export type InlineElement = IInlineCode | ILink
+export type VoidElement = IDivider
 
-export type CustomElement = BlockElement | InlineElement
+export type CustomElement = BlockElement | InlineElement | VoidElement
 export type CustomText = ICustomText
 
 declare module "slate" {

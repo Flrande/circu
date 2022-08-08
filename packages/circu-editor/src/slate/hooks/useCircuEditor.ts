@@ -11,7 +11,7 @@ import { withVoid } from "../plugins/withVoid"
 export const useCircuEditor = () => {
   // 保证单一实例
   const [editor] = useState(() =>
-    withShortcut(withLineBreak(withNormalize(withVoid(withDelete(withInlines(withReact(createEditor())))))))
+    withVoid(withShortcut(withLineBreak(withNormalize(withVoid(withDelete(withInlines(withReact(createEditor()))))))))
   )
 
   return editor

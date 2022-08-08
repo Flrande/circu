@@ -4,9 +4,11 @@ import type {
   BlockElementWithoutChildren,
   CustomElement,
   InlineElement,
+  VoidElement,
 } from "./interface"
 import type { KeysUnion } from "./utils"
 
+// 文档根部 dom 元素的 id
 export const EDITOR_ROOT_DOM_ID = "circu-editor-root"
 
 // 文档宽度
@@ -44,3 +46,5 @@ export const CUSTOM_ELEMENT_PROPS_EXCEPT_CHILDREN: Array<Exclude<KeysUnion<Custo
   "headGrade",
   "langKey",
 ]
+
+export const VOID_ELEMENTS: Array<VoidElement["type"]> = ["divider"]

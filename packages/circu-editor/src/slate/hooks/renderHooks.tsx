@@ -5,6 +5,8 @@ import type { IBlockCode } from "../components/Nodes/Block/BlockCode/types"
 import BlockChildren from "../components/Nodes/Block/BlockWrapper/BlockChildren"
 import BlockContent from "../components/Nodes/Block/BlockWrapper/BlockContent"
 import type { __IBlockElementChildren, __IBlockElementContent } from "../components/Nodes/Block/BlockWrapper/types"
+import Divider from "../components/Nodes/Block/Divider/Divider"
+import type { IDivider } from "../components/Nodes/Block/Divider/types"
 import Head from "../components/Nodes/Block/Head/Head"
 import type { IHead } from "../components/Nodes/Block/Head/types"
 import OrderedList from "../components/Nodes/Block/List/OrderedList"
@@ -56,6 +58,8 @@ export const useRenderElement = () => {
         return <Head {...(props as CustomRenderElementProps<IHead>)}></Head>
       case "quote":
         return <Quote {...(props as CustomRenderElementProps<IQuote>)}></Quote>
+      case "divider":
+        return <Divider {...(props as CustomRenderElementProps<IDivider>)}></Divider>
     }
   }, [])
 }
