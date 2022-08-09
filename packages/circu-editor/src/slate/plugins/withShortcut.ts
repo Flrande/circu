@@ -4,7 +4,24 @@ import { toggleOrderedList, toggleUnorderedList } from "../components/Nodes/Bloc
 import { toggleMark } from "../components/Nodes/Text/textHelper"
 import { SlateElement, SlateRange, SlateText } from "../types/slate"
 
+/**
+ * # 一级标题
+ * ## 二级标题
+ * ### 三级标题
+ * #### 四级标题
+ * ##### 五级标题
+ * ###### 六级标题
+ * 1. 有序列表
+ * - 无序列表
+ * * 无序列表
+ */
 const singleBlockShortcuts = ["#", "##", "###", "####", "#####", "######", "1.", "-", "*"]
+/**
+ * ** 粗体
+ * * 斜体
+ * ~ 下划线
+ * ~~ 删除线
+ */
 const inlineShortcuts = ["**", "*", "~", "~~"]
 
 export const withShortcut = (editor: Editor) => {
