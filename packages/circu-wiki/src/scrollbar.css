@@ -1,3 +1,8 @@
-.scrollbar-track {
-  border-radius: 4px;
+.scrollbar-track-y {
+  background-color: rgba(39, 39, 39, 0.75) !important;
+}
+
+.scrollbar-thumb-y {
+  border-radius: 0px !important;
+  background-color: rgb(71, 76, 80) !important;
 }
