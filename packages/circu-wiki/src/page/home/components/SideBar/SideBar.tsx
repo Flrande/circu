@@ -18,8 +18,8 @@ const SideBar: React.FC = () => {
       document.addEventListener(
         "mousemove",
         (event) => {
-          if (isResizeColDrag && event.screenX >= 220 && event.screenX <= 480) {
-            setSideBarWidth(event.screenX)
+          if (isResizeColDrag && event.clientX >= 220 && event.clientX <= 480) {
+            setSideBarWidth(event.clientX)
           }
         },
         {
