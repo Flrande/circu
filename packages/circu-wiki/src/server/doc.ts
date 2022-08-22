@@ -5,7 +5,6 @@ import type { IDoc, IDocId } from "./interface"
 const mockDocData: IDoc[] = [
   {
     id: "doc_1",
-    parent: "fld_1",
     lastModify: "2021-10-10T14:48:00",
     title: "测试文档-1",
     value: [
@@ -28,6 +27,8 @@ const mockDocData: IDoc[] = [
         ],
       },
     ],
+    parentId: null,
+    childrenId: ["doc_2", "doc_3"],
     authorId: "usr_1",
     administratorsId: ["usr_1"],
     collaboratorsId: ["usr_1"],
@@ -35,7 +36,6 @@ const mockDocData: IDoc[] = [
   },
   {
     id: "doc_2",
-    parent: "fld_1",
     lastModify: "2021-10-10T14:48:00",
     title: "测试文档-2",
     value: [
@@ -58,6 +58,8 @@ const mockDocData: IDoc[] = [
         ],
       },
     ],
+    parentId: "doc_1",
+    childrenId: [],
     authorId: "usr_1",
     administratorsId: ["usr_1"],
     collaboratorsId: ["usr_1"],
@@ -65,7 +67,6 @@ const mockDocData: IDoc[] = [
   },
   {
     id: "doc_3",
-    parent: "fld_1",
     lastModify: "2021-10-10T14:48:00",
     title: "测试文档-3",
     value: [
@@ -88,6 +89,8 @@ const mockDocData: IDoc[] = [
         ],
       },
     ],
+    parentId: "doc_1",
+    childrenId: [],
     authorId: "usr_1",
     administratorsId: ["usr_1"],
     collaboratorsId: ["usr_1"],
@@ -95,7 +98,6 @@ const mockDocData: IDoc[] = [
   },
   {
     id: "doc_4",
-    parent: "fld_2",
     lastModify: "2021-10-10T14:48:00",
     title: "测试文档-4",
     value: [
@@ -118,6 +120,8 @@ const mockDocData: IDoc[] = [
         ],
       },
     ],
+    parentId: null,
+    childrenId: ["doc_5"],
     authorId: "usr_1",
     administratorsId: ["usr_1"],
     collaboratorsId: ["usr_1"],
@@ -125,7 +129,6 @@ const mockDocData: IDoc[] = [
   },
   {
     id: "doc_5",
-    parent: "fld_2",
     lastModify: "2021-10-10T14:48:00",
     title: "测试文档-5",
     value: [
@@ -148,6 +151,8 @@ const mockDocData: IDoc[] = [
         ],
       },
     ],
+    parentId: "doc_4",
+    childrenId: [],
     authorId: "usr_1",
     administratorsId: ["usr_1"],
     collaboratorsId: ["usr_1"],
@@ -165,11 +170,43 @@ const getDoc = async (url: string, docId: IDocId): Promise<IDoc> => {
   return mockDocData.find((doc) => doc.id === docId)!
 }
 
+const getTopDocs = async (url: string): Promise<IDoc[]> => {
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      resolve("foo")
+    }, 1000)
+  })
+
+  return mockDocData.filter((doc) => !doc.parentId)
+}
+
+/**
+ * 通过文档 id 拿到特定文档数据的钩子
+ *
+ * @param id 文档 id
+ * @returns 文档数据
+ *
+ */
 export const useDoc = (id: string) => {
   const { data, error } = useSWR(["/api/doc", id], getDoc)
 
   return {
     doc: data,
     errorGetDoc: error,
+  }
+}
+
+/**
+ * 用于获得最顶层文档的钩子
+ *
+ * @returns 一个数组, 包含顶层的文档
+ *
+ */
+export const useTopDocs = () => {
+  const { data, error } = useSWR(["/api/doc"], getTopDocs)
+
+  return {
+    topDocs: data,
+    errorGetTopDocs: error,
   }
 }

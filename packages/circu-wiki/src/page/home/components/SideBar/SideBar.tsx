@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
-import { useFoldersId } from "../../../../server/folder"
-import Folder from "./Folder"
+import { useTopDocs } from "../../../../server/doc"
+import Doc from "./Doc"
 
 const SideBar: React.FC = () => {
-  const { foldersId, errorGetFolders } = useFoldersId()
+  const { topDocs, errorGetTopDocs } = useTopDocs()
 
   const [isResizeColDrag, setIsResizeColDrag] = useState(false)
   const [sideBarWidth, setSideBarWidth] = useState(
@@ -61,7 +61,7 @@ const SideBar: React.FC = () => {
       <div id={"side-bar-root"} className={"h-full"}>
         <div className={"bg-transparent h-12 mb-11"}></div>
         <div className={"bg-transparent p-4"}>
-          {foldersId ? foldersId.map((id) => <Folder key={id} folderId={id}></Folder>) : <div></div>}
+          {topDocs ? topDocs.map((doc) => <Doc key={doc.id} docId={doc.id}></Doc>) : <div></div>}
         </div>
       </div>
       <div
