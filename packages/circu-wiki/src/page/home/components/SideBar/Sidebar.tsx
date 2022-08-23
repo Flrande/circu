@@ -62,9 +62,9 @@ export const Sidebar: React.FC = () => {
         className={"bg-[#202020] h-full absolute z-10 rounded-r transition-transform duration-200"}
         style={{
           width: `${sidebarStateSnap.sidebarWidth}px`,
-          // 2 是宽度调节列的宽度
+          // 加 4 是因为要考虑宽度调节列的宽度
           transform: sidebarStateSnap.isSidebarFolded
-            ? `translateX(-${2 + sidebarStateSnap.sidebarWidth}px)`
+            ? `translateX(-${4 + sidebarStateSnap.sidebarWidth}px)`
             : undefined,
         }}
       >
