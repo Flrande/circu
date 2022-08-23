@@ -30,7 +30,7 @@ const Editor: React.FC = () => {
   }, [])
 
   return (
-    <div id="editor-root" className={"grow bg-neutral-900 h-screen"}>
+    <div id="editor-root" className={"grow bg-transparent h-screen"}>
       <CircuEditor editor={editor} value={value} onChange={(newValue) => setValue(newValue)}></CircuEditor>
     </div>
   )

@@ -12,14 +12,14 @@ const Doc: React.FC<{
   const [isFolded, setIsFolded] = useState(true)
 
   return (
-    <div className={"my-2 pl-3"}>
+    <div className={"my-1 pl-3"}>
       {doc ? (
         <div>
           <div
             onClick={() => {
               setIsFolded(!isFolded)
             }}
-            className={"flex items-center h-10 bg-transparent text-gray-400 hover:bg-[#383838] rounded cursor-pointer"}
+            className={"flex items-center h-9 bg-transparent text-gray-400 hover:bg-[#383838] rounded cursor-pointer"}
           >
             <span
               className={"mx-2 w-4 shrink-0"}
