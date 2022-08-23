@@ -2,7 +2,7 @@ import Home from "./page/home/Home"
 
 const App: React.FC = () => {
   return (
-    <div>
+    <div className={"h-full w-full"}>
       <Home></Home>
     </div>
   )

@@ -3,7 +3,7 @@ import { Sidebar } from "./components/SideBar/Sidebar"
 
 const Home: React.FC = () => {
   return (
-    <div className={"flex w-screen h-screen bg-neutral-900"}>
+    <div className={"flex h-full w-full bg-neutral-900"}>
       <Sidebar></Sidebar>
       <Editor></Editor>
     </div>

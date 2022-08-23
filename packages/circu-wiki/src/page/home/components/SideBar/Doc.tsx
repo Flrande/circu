@@ -1,9 +1,9 @@
 import { useDoc } from "../../../../server/doc"
 import type { IDoc } from "../../../../server/interface"
-import IconDoc from "./icons/IconDoc"
+import IconDoc from "../../../../icons/IconDoc"
 import Skeleton from "react-loading-skeleton"
 import { useState } from "react"
-import IconDown from "./icons/IconDown"
+import IconDown from "../../../../icons/IconDown"
 
 const Doc: React.FC<{
   docId: IDoc["id"]

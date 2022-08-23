@@ -3,9 +3,19 @@
 @tailwind utilities;
 
 @layer base {
+  html,
+  body {
+    height: 100%;
+    width: 100%;
+  }
 }
 
 @layer components {
+  #root {
+    height: 100%;
+    width: 100%;
+  }
+
   .head-1 > :nth-child(1) {
     @apply -top-4 h-4;
   }

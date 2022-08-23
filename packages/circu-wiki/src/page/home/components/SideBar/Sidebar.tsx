@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
 import { useSnapshot } from "valtio"
+import IconMenuUnfold from "../../../../icons/IconMenuUnfold"
 import { useTopDocs } from "../../../../server/doc"
 import Doc from "./Doc"
-import IconMenuUnfold from "./icons/IconMenuUnfold"
 import { sidebarState } from "./state"
 
 export const Sidebar: React.FC = () => {
-  const sidebarStateSnap = useSnapshot(sidebarState, {})
+  const sidebarStateSnap = useSnapshot(sidebarState)
 
   // 拿到最顶部的文档数据
   const { topDocs, errorGetTopDocs } = useTopDocs()
@@ -53,13 +53,13 @@ export const Sidebar: React.FC = () => {
 
   return (
     <div
-      className={"shrink-0 bg-transparent transition-[flex-basis] duration-300"}
+      className={"shrink-0 bg-transparent transition-[flex-basis] duration-200"}
       style={{
         flexBasis: `${sidebarStateSnap.isSidebarFolded ? 0 : sidebarStateSnap.sidebarWidth}px`,
       }}
     >
       <div
-        className={"bg-[#202020] h-full absolute z-10 rounded-r transition-transform duration-300"}
+        className={"bg-[#202020] h-full absolute z-10 rounded-r transition-transform duration-200"}
         style={{
           width: `${sidebarStateSnap.sidebarWidth}px`,
           // 2 是宽度调节列的宽度
@@ -69,8 +69,8 @@ export const Sidebar: React.FC = () => {
         }}
       >
         <div id={"side-bar-root"} className={"h-full relative"}>
-          <div className={"bg-transparent h-12 w-full absolute top-0"}>
-            <div className={"flex w-full items-center justify-center p-4"}>
+          <div className={"bg-transparent w-full absolute top-0"}>
+            <div className={"flex w-full items-center justify-center px-4 py-2"}>
               <div className={"flex-1 text-xl text-gray-300"}>
                 <div className={"flex items-center p-2"}>
                   <span>Flrande</span>
