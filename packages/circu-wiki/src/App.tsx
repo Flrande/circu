@@ -2,7 +2,7 @@ import Home from "./page/home/Home"
 
 const App: React.FC = () => {
   return (
-    <div className={"h-full w-full"}>
+    <div className={"h-screen overflow-hidden"}>
       <Home></Home>
     </div>
   )

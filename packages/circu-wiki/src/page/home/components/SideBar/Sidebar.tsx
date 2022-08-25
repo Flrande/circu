@@ -88,7 +88,7 @@ export const Sidebar: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className={"bg-transparent pt-4 pl-4 pb-4 mt-24"}>
+          <div className={"bg-transparent pt-4 pl-4 pb-4 pr-2 mt-24"}>
             {topDocs ? topDocs.map((doc) => <Doc key={doc.id} docId={doc.id}></Doc>) : <div></div>}
           </div>
         </div>
