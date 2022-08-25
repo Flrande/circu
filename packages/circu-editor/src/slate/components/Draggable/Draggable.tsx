@@ -62,7 +62,9 @@ const Draggable: React.FC = () => {
             }
             style={{
               left: `${left}px`,
-              top: `${rect.top + window.scrollY + 1}px`,
+              top: `${
+                rect.top + window.scrollY + 1 - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().top
+              }px`,
             }}
             contentEditable={false}
           >
