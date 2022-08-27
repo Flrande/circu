@@ -64,6 +64,7 @@ importers:
       "@nestjs/platform-express": ^9.0.0
       "@nestjs/schematics": ^9.0.1
       "@nestjs/testing": ^9.0.0
+      "@prisma/client": ^4.2.1
       "@types/express": ^4.17.13
       "@types/jest": 28.1.4
       "@types/node": ^16.0.0
@@ -74,6 +75,7 @@ importers:
       eslint-config-prettier: ^8.3.0
       eslint-plugin-prettier: ^4.2.1
       jest: 28.1.2
+      prisma: ^4.2.1
       reflect-metadata: ^0.1.13
       rimraf: ^3.0.2
       rxjs: ^7.2.0
@@ -86,6 +88,7 @@ importers:
       "@nestjs/common": 9.0.11_j5hagqx4mwzscud4kyjdvubauy
       "@nestjs/core": 9.0.11_psficsz3mqirqwo2ujbfhdr2aa
       "@nestjs/platform-express": 9.0.11_khr6mt6ojlxbw7bo55fknouh34
+      "@prisma/client": 4.2.1_prisma@4.2.1
       reflect-metadata: 0.1.13
       rimraf: 3.0.2
       rxjs: 7.5.6
@@ -103,6 +106,7 @@ importers:
       eslint-config-prettier: 8.5.0_eslint@8.22.0
       eslint-plugin-prettier: 4.2.1_vlh76yp6mdwtk5bzp6objvozmi
       jest: 28.1.2_mzpgosmlhlns7dfabrqnftw2du
+      prisma: 4.2.1
       source-map-support: 0.5.21
       supertest: 6.2.4
       ts-jest: 28.0.5_jest@28.1.2
@@ -1311,6 +1315,31 @@ packages:
       node-fetch: 2.6.7
     transitivePeerDependencies:
       - encoding
+
+  /@prisma/client/4.2.1_prisma@4.2.1:
+    resolution:
+      { integrity: sha512-PZBkY60+k5oix+e6IUfl3ub8TbRLNsPLdfWrdy2eh80WcHTaT+/UfvXf/B7gXedH7FRtbPFHZXk1hZenJiJZFQ== }
+    engines: { node: ">=14.17" }
+    requiresBuild: true
+    peerDependencies:
+      prisma: "*"
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+    dependencies:
+      "@prisma/engines-version": 4.2.0-33.2920a97877e12e055c1333079b8d19cee7f33826
+      prisma: 4.2.1
+    dev: false
+
+  /@prisma/engines-version/4.2.0-33.2920a97877e12e055c1333079b8d19cee7f33826:
+    resolution:
+      { integrity: sha512-tktkqdiwqE4QhmE088boPt+FwPj1Jub/zk+5F6sEfcRHzO5yz9jyMD5HFVtiwxZPLx/8Xg9ElnuTi8E5lWVQFQ== }
+    dev: false
+
+  /@prisma/engines/4.2.1:
+    resolution:
+      { integrity: sha512-0KqBwREUOjBiHwITsQzw2DWfLHjntvbqzGRawj4sBMnIiL5CXwyDUKeHOwXzKMtNr1rEjxEsypM14g0CzLRK3g== }
+    requiresBuild: true
 
   /@react-dnd/asap/5.0.2:
     resolution:
@@ -5298,6 +5327,15 @@ packages:
       ansi-styles: 5.2.0
       react-is: 18.2.0
     dev: true
+
+  /prisma/4.2.1:
+    resolution:
+      { integrity: sha512-HuYqnTDgH8atjPGtYmY0Ql9XrrJnfW7daG1PtAJRW0E6gJxc50lY3vrIDn0yjMR3TvRlypjTcspQX8DT+xD4Sg== }
+    engines: { node: ">=14.17" }
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      "@prisma/engines": 4.2.1
 
   /prismjs/1.28.0:
     resolution:

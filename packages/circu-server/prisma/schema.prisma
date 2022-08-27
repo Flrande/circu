@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Doc {
+  id         String   @id @default(cuid())
+  lastModify DateTime
+  title      String
+  value      Json
+
+  parentDocId  String?
+  parentDoc    Doc?    @relation("doc_parent_children", fields: [parentDocId], references: [id])
+  childrenDocs Doc[]   @relation("doc_parent_children")
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  administrators User[] @relation("doc_administrators")
+  collaborators  User[] @relation("doc_collaborators")
+  readers        User[] @relation("doc_readers")
+
+  @@map("doc")
+}
+
+model User {
+  id       String @id @default(cuid())
+  username String
+  nickname String
+  password String
+
+  docs Doc[]
+
+  canManageDocs Doc[] @relation("doc_administrators")
+  canWriteDocs  Doc[] @relation("doc_collaborators")
+  canReadDocs   Doc[] @relation("doc_readers")
+
+  @@map("user")
+}
