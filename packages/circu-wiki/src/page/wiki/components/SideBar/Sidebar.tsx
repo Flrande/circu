@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
 import { useSnapshot } from "valtio"
 import IconMenuUnfold from "../../../../icons/IconMenuUnfold"
@@ -46,9 +46,11 @@ export const Sidebar: React.FC = () => {
     }
   }, [isResizeColDrag])
 
-  // 初始化滚动条
+  const sidebarRootDom = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
-    ScrollBar.init(document.getElementById("side-bar-root")!)
+    if (sidebarRootDom.current) {
+      ScrollBar.init(sidebarRootDom.current)
+    }
   }, [])
 
   return (
@@ -68,7 +70,7 @@ export const Sidebar: React.FC = () => {
             : undefined,
         }}
       >
-        <div id={"side-bar-root"} className={"h-full relative"}>
+        <div ref={sidebarRootDom} className={"h-full relative"}>
           <div className={"bg-transparent w-full absolute top-0"}>
             <div className={"flex w-full items-center justify-center px-4 py-2"}>
               <div className={"flex-1 text-xl text-gray-300"}>

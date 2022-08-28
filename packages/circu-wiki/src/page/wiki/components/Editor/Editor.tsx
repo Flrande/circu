@@ -1,6 +1,6 @@
 import { CircuEditor, CustomElement, CustomText, useCircuEditor } from "circu-editor"
 import type { ITitle } from "circu-editor/src/slate/components/Nodes/Block/Title/types"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
 import { useSnapshot } from "valtio"
 import IconMenuUnfold from "../../../../icons/IconMenuUnfold"
@@ -39,9 +39,15 @@ const Editor: React.FC = () => {
 
   const sidebarStateSnap = useSnapshot(sidebarState)
 
+  const editorRootDom = useRef<HTMLDivElement | null>(null)
+  const sidebarRootDom = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
-    ScrollBar.init(document.getElementById("editor-root")!)
-    ScrollBar.init(document.getElementById("editor-side-bar-root")!)
+    if (editorRootDom.current) {
+      ScrollBar.init(editorRootDom.current)
+    }
+    if (sidebarRootDom.current) {
+      ScrollBar.init(sidebarRootDom.current)
+    }
   }, [])
 
   return (
@@ -103,7 +109,7 @@ const Editor: React.FC = () => {
             </div>
           </div>
 
-          <div id={"editor-side-bar-root"} className={"h-full"}>
+          <div ref={sidebarRootDom} className={"h-full"}>
             <div className={"bg-transparent pt-4 pl-4 pb-4 pr-2"}>
               {topDocs ? topDocs.map((doc) => <Doc key={doc.id} docId={doc.id}></Doc>) : <div></div>}
             </div>
@@ -111,7 +117,7 @@ const Editor: React.FC = () => {
         </div>
       </div>
 
-      <div id="editor-root" className={"h-full pt-14"}>
+      <div ref={editorRootDom} className={"h-full pt-14"}>
         <CircuEditor editor={editor} value={value} onChange={(newValue) => setValue(newValue)}></CircuEditor>
       </div>
     </div>
