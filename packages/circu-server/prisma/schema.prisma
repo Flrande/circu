@@ -2,42 +2,110 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model Doc {
-  id         String   @id @default(cuid())
-  lastModify DateTime
-  title      String
-  value      Json
+// 字段存活状态
+enum SurvivalStatus {
+  // 未删除
+  ALIVE
+  // 已删除(可回收)
+  DELETED
+  // 已删除(不可回收)
+  COMPLETELY_DELETED
+}
+
+// 文档有两种类型, 非知识库的和属于知识库的
+// 非知识库的文档不能作为其他文档的父亲, 只能有文件夹作为父亲
+// 属于知识库的文档可以作为其他文档的父亲, 与文件夹不相关
+model WikiDoc {
+  id             String         @id @default(cuid())
+  lastModify     DateTime
+  title          String
+  value          Json
+  survivalStatus SurvivalStatus @default(ALIVE)
 
   parentDocId  String?
-  parentDoc    Doc?    @relation("doc_parent_children", fields: [parentDocId], references: [id])
-  childrenDocs Doc[]   @relation("doc_parent_children")
+  parentDoc    WikiDoc?  @relation("wiki_doc_parent", fields: [parentDocId], references: [id])
+  childrenDocs WikiDoc[] @relation("wiki_doc_parent")
 
   authorId String
   author   User   @relation(fields: [authorId], references: [id])
 
-  administrators User[] @relation("doc_administrators")
-  collaborators  User[] @relation("doc_collaborators")
-  readers        User[] @relation("doc_readers")
+  administrators User[] @relation("wiki_doc_administrators")
+  collaborators  User[] @relation("wiki_doc_collaborators")
+  readers        User[] @relation("wiki_doc_readers")
 
-  @@map("doc")
+  @@map("wiki_doc")
+}
+
+model GeneralDoc {
+  id             String         @id @default(cuid())
+  lastModify     DateTime
+  title          String
+  value          Json
+  survivalStatus SurvivalStatus @default(ALIVE)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  parentFolderId String?
+  parentFolder   Folder? @relation(fields: [parentFolderId], references: [id])
+
+  administrators User[] @relation("general_doc_administrators")
+  collaborators  User[] @relation("general_doc_collaborators")
+  readers        User[] @relation("general_doc_readers")
+
+  @@map("general_doc")
+}
+
+model Folder {
+  id             String         @id @default(cuid())
+  lastModify     DateTime
+  title          String
+  description    String
+  survivalStatus SurvivalStatus @default(ALIVE)
+
+  childrenDocs GeneralDoc[]
+
+  parentFolderId  String?
+  parentFolder    Folder?  @relation("folder_parent", fields: [parentFolderId], references: [id])
+  childrenFolders Folder[] @relation("folder_parent")
+
+  administrators User[] @relation("folder_administrators")
+  collaborators  User[] @relation("folder_collaborators")
+  readers        User[] @relation("folder_readers")
+
+  @@map("folder")
 }
 
 model User {
-  id       String @id @default(cuid())
-  username String
-  nickname String
-  password String
+  id             String         @id @default(cuid())
+  username       String
+  nickname       String
+  password       String
+  survivalStatus SurvivalStatus @default(ALIVE)
 
-  docs Doc[]
+  authoredWikiDocs    WikiDoc[]
+  authoredGeneralDocs GeneralDoc[]
 
-  canManageDocs Doc[] @relation("doc_administrators")
-  canWriteDocs  Doc[] @relation("doc_collaborators")
-  canReadDocs   Doc[] @relation("doc_readers")
+  canManageWikiDocs WikiDoc[] @relation("wiki_doc_administrators")
+  canWriteWikiDocs  WikiDoc[] @relation("wiki_doc_collaborators")
+  canReadWikiDocs   WikiDoc[] @relation("wiki_doc_readers")
+
+  canManageGeneralDocs GeneralDoc[] @relation("general_doc_administrators")
+  canWriteGeneralDocs  GeneralDoc[] @relation("general_doc_collaborators")
+  canReadGeneralDocs   GeneralDoc[] @relation("general_doc_readers")
+
+  canManageFolders Folder[] @relation("folder_administrators")
+  canWriteFolders  Folder[] @relation("folder_collaborators")
+  canReadFolders   Folder[] @relation("folder_readers")
 
   @@map("user")
 }

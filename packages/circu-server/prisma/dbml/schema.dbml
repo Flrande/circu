@@ -1,0 +1,129 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table wiki_doc {
+  id String [pk]
+  lastModify DateTime [not null]
+  title String [not null]
+  value Json [not null]
+  survivalStatus SurvivalStatus [not null, default: 'ALIVE']
+  parentDocId String
+  parentDoc wiki_doc
+  childrenDocs wiki_doc [not null]
+  authorId String [not null]
+  author user [not null]
+  administrators user [not null]
+  collaborators user [not null]
+  readers user [not null]
+}
+
+Table general_doc {
+  id String [pk]
+  lastModify DateTime [not null]
+  title String [not null]
+  value Json [not null]
+  survivalStatus SurvivalStatus [not null, default: 'ALIVE']
+  authorId String [not null]
+  author user [not null]
+  parentFolderId String
+  parentFolder folder
+  administrators user [not null]
+  collaborators user [not null]
+  readers user [not null]
+}
+
+Table folder {
+  id String [pk]
+  lastModify DateTime [not null]
+  title String [not null]
+  description String [not null]
+  survivalStatus SurvivalStatus [not null, default: 'ALIVE']
+  childrenDocs general_doc [not null]
+  parentFolderId String
+  parentFolder folder
+  childrenFolders folder [not null]
+  administrators user [not null]
+  collaborators user [not null]
+  readers user [not null]
+}
+
+Table user {
+  id String [pk]
+  username String [not null]
+  nickname String [not null]
+  password String [not null]
+  survivalStatus SurvivalStatus [not null, default: 'ALIVE']
+  authoredWikiDocs wiki_doc [not null]
+  authoredGeneralDocs general_doc [not null]
+  canManageWikiDocs wiki_doc [not null]
+  canWriteWikiDocs wiki_doc [not null]
+  canReadWikiDocs wiki_doc [not null]
+  canManageGeneralDocs general_doc [not null]
+  canWriteGeneralDocs general_doc [not null]
+  canReadGeneralDocs general_doc [not null]
+  canManageFolders folder [not null]
+  canWriteFolders folder [not null]
+  canReadFolders folder [not null]
+}
+
+Table wiki_doc_administrators {
+  administratorsId String [ref: > user.id]
+  canmanagewikidocsId String [ref: > wiki_doc.id]
+}
+
+Table wiki_doc_collaborators {
+  collaboratorsId String [ref: > user.id]
+  canwritewikidocsId String [ref: > wiki_doc.id]
+}
+
+Table wiki_doc_readers {
+  readersId String [ref: > user.id]
+  canreadwikidocsId String [ref: > wiki_doc.id]
+}
+
+Table general_doc_administrators {
+  administratorsId String [ref: > user.id]
+  canmanagegeneraldocsId String [ref: > general_doc.id]
+}
+
+Table general_doc_collaborators {
+  collaboratorsId String [ref: > user.id]
+  canwritegeneraldocsId String [ref: > general_doc.id]
+}
+
+Table general_doc_readers {
+  readersId String [ref: > user.id]
+  canreadgeneraldocsId String [ref: > general_doc.id]
+}
+
+Table folder_administrators {
+  administratorsId String [ref: > user.id]
+  canmanagefoldersId String [ref: > folder.id]
+}
+
+Table folder_collaborators {
+  collaboratorsId String [ref: > user.id]
+  canwritefoldersId String [ref: > folder.id]
+}
+
+Table folder_readers {
+  readersId String [ref: > user.id]
+  canreadfoldersId String [ref: > folder.id]
+}
+
+Enum SurvivalStatus {
+  ALIVE
+  DELETED
+  COMPLETELY_DELETED
+}
+
+Ref: wiki_doc.parentDocId - wiki_doc.id
+
+Ref: wiki_doc.authorId > user.id
+
+Ref: general_doc.authorId > user.id
+
+Ref: general_doc.parentFolderId > folder.id
+
+Ref: folder.parentFolderId - folder.id
