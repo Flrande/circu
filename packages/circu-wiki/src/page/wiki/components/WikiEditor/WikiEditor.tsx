@@ -5,10 +5,10 @@ import ScrollBar from "smooth-scrollbar"
 import { useSnapshot } from "valtio"
 import IconMenuUnfold from "../../../../icons/IconMenuUnfold"
 import { useTopDocs } from "../../../../server/doc"
-import Doc from "../SideBar/Doc"
-import { sidebarState } from "../SideBar/state"
+import Doc from "../WikiSdeBar/Doc"
+import { sidebarState } from "../WikiSdeBar/state"
 
-const Editor: React.FC = () => {
+const WikiEditor: React.FC = () => {
   const editor = useCircuEditor()
 
   // 拿到最顶部的文档数据
@@ -129,4 +129,4 @@ const Editor: React.FC = () => {
   )
 }
 
-export default Editor
+export default WikiEditor

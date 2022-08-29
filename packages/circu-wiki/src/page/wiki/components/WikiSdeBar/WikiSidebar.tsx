@@ -6,7 +6,7 @@ import { useTopDocs } from "../../../../server/doc"
 import Doc from "./Doc"
 import { sidebarState } from "./state"
 
-export const Sidebar: React.FC = () => {
+export const WikiSidebar: React.FC = () => {
   const sidebarStateSnap = useSnapshot(sidebarState)
 
   // 拿到最顶部的文档数据
@@ -117,4 +117,4 @@ export const Sidebar: React.FC = () => {
   )
 }
 
-export default Sidebar
+export default WikiSidebar

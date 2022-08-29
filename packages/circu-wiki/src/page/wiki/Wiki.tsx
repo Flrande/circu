@@ -1,11 +1,11 @@
-import Editor from "./components/Editor/Editor"
-import { Sidebar } from "./components/SideBar/Sidebar"
+import WikiEditor from "./components/WikiEditor/WikiEditor"
+import WikiSidebar from "./components/WikiSdeBar/WikiSidebar"
 
 const Wiki: React.FC = () => {
   return (
     <div className={"flex h-full w-full bg-neutral-900"}>
-      <Sidebar></Sidebar>
-      <Editor></Editor>
+      <WikiSidebar></WikiSidebar>
+      <WikiEditor></WikiEditor>
     </div>
   )
 }
