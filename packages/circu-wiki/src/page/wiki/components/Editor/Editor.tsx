@@ -40,13 +40,13 @@ const Editor: React.FC = () => {
   const sidebarStateSnap = useSnapshot(sidebarState)
 
   const editorRootDom = useRef<HTMLDivElement | null>(null)
-  const sidebarRootDom = useRef<HTMLDivElement | null>(null)
+  const sidebarListDom = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
     if (editorRootDom.current) {
       ScrollBar.init(editorRootDom.current)
     }
-    if (sidebarRootDom.current) {
-      ScrollBar.init(sidebarRootDom.current)
+    if (sidebarListDom.current) {
+      ScrollBar.init(sidebarListDom.current)
     }
   }, [])
 
@@ -109,7 +109,12 @@ const Editor: React.FC = () => {
             </div>
           </div>
 
-          <div ref={sidebarRootDom} className={"h-full"}>
+          <div
+            ref={sidebarListDom}
+            style={{
+              height: "calc(100% - 64px)",
+            }}
+          >
             <div className={"bg-transparent pt-4 pl-4 pb-4 pr-2"}>
               {topDocs ? topDocs.map((doc) => <Doc key={doc.id} docId={doc.id}></Doc>) : <div></div>}
             </div>

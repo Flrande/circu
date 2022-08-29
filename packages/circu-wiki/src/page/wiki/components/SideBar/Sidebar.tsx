@@ -46,10 +46,10 @@ export const Sidebar: React.FC = () => {
     }
   }, [isResizeColDrag])
 
-  const sidebarRootDom = useRef<HTMLDivElement | null>(null)
+  const sidebarListDom = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
-    if (sidebarRootDom.current) {
-      ScrollBar.init(sidebarRootDom.current)
+    if (sidebarListDom.current) {
+      ScrollBar.init(sidebarListDom.current)
     }
   }, [])
 
@@ -70,7 +70,7 @@ export const Sidebar: React.FC = () => {
             : undefined,
         }}
       >
-        <div ref={sidebarRootDom} className={"h-full relative"}>
+        <div className={"h-full relative pt-24"}>
           <div className={"bg-transparent w-full absolute top-0"}>
             <div className={"flex w-full items-center justify-center px-4 py-2"}>
               <div className={"flex-1 text-xl text-gray-300"}>
@@ -90,10 +90,19 @@ export const Sidebar: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className={"bg-transparent pt-4 pl-4 pb-4 pr-2 mt-24"}>
-            {topDocs ? topDocs.map((doc) => <Doc key={doc.id} docId={doc.id}></Doc>) : <div></div>}
+
+          <div
+            ref={sidebarListDom}
+            style={{
+              height: "calc(100% - 96px)",
+            }}
+          >
+            <div className={"bg-transparent pt-4 pl-4 pb-4 pr-2"}>
+              {topDocs ? topDocs.map((doc) => <Doc key={doc.id} docId={doc.id}></Doc>) : <div></div>}
+            </div>
           </div>
         </div>
+
         <div
           onMouseDown={() => {
             setIsResizeColDrag(true)
