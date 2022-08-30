@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
 import { useSnapshot } from "valtio"
 import IconMenuUnfold from "../../../../icons/IconMenuUnfold"
-import { useTopDocs } from "../../../../server/doc"
+import { useTopWikiDocs } from "../../../../server/wiki-doc"
 import Doc from "../WikiSdeBar/Doc"
 import { sidebarState } from "../WikiSdeBar/state"
 
@@ -12,7 +12,7 @@ const WikiEditor: React.FC = () => {
   const editor = useCircuEditor()
 
   // 拿到最顶部的文档数据
-  const { topDocs, errorGetTopDocs } = useTopDocs()
+  const { data, error } = useTopWikiDocs()
 
   const [isSidebarDisplay, setIsSidebarDisplay] = useState(false)
 
@@ -116,7 +116,7 @@ const WikiEditor: React.FC = () => {
             }}
           >
             <div className={"bg-transparent pt-4 pl-4 pb-4 pr-2"}>
-              {topDocs ? topDocs.map((doc) => <Doc key={doc.id} docId={doc.id}></Doc>) : <div></div>}
+              {data ? data.map((doc) => <Doc key={doc.id} docId={doc.id}></Doc>) : <div></div>}
             </div>
           </div>
         </div>

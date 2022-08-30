@@ -1,19 +1,18 @@
-import { useDoc } from "../../../../server/doc"
-import type { IDoc } from "../../../../server/interface"
 import IconDoc from "../../../../icons/IconDoc"
 import Skeleton from "react-loading-skeleton"
 import { useState } from "react"
 import IconDown from "../../../../icons/IconDown"
+import { useWikiDoc } from "../../../../server/wiki-doc"
 
 const Doc: React.FC<{
-  docId: IDoc["id"]
+  docId: string
 }> = ({ docId }) => {
-  const { doc, errorGetDoc } = useDoc(docId)
+  const { data, error } = useWikiDoc(docId)
   const [isFolded, setIsFolded] = useState(true)
 
   return (
     <div className={"my-1 pl-3"}>
-      {doc ? (
+      {data ? (
         <div>
           <div
             onClick={() => {
@@ -32,12 +31,12 @@ const Doc: React.FC<{
             <span className={"mx-2 w-5 shrink-0"}>
               <IconDoc></IconDoc>
             </span>
-            <span className={"text-base font-medium truncate select-none"}>{doc.title}</span>
+            <span className={"text-base font-medium truncate select-none"}>{data.title}</span>
           </div>
 
           {!isFolded && (
             <ul>
-              {doc.childrenId.map((id) => (
+              {data.childrenDocsId.map((id) => (
                 <Doc key={id} docId={id}></Doc>
               ))}
             </ul>

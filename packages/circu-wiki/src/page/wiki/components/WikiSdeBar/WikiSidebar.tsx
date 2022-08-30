@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
 import { useSnapshot } from "valtio"
 import IconMenuUnfold from "../../../../icons/IconMenuUnfold"
-import { useTopDocs } from "../../../../server/doc"
+import { useTopWikiDocs } from "../../../../server/wiki-doc"
 import Doc from "./Doc"
 import { sidebarState } from "./state"
 
@@ -10,7 +10,7 @@ export const WikiSidebar: React.FC = () => {
   const sidebarStateSnap = useSnapshot(sidebarState)
 
   // 拿到最顶部的文档数据
-  const { topDocs, errorGetTopDocs } = useTopDocs()
+  const { data, error } = useTopWikiDocs()
 
   // 是否正在调节侧边栏宽度
   const [isResizeColDrag, setIsResizeColDrag] = useState(false)
@@ -98,7 +98,7 @@ export const WikiSidebar: React.FC = () => {
             }}
           >
             <div className={"bg-transparent pt-4 pl-4 pb-4 pr-2"}>
-              {topDocs ? topDocs.map((doc) => <Doc key={doc.id} docId={doc.id}></Doc>) : <div></div>}
+              {data ? data.map((doc) => <Doc key={doc.id} docId={doc.id}></Doc>) : <div></div>}
             </div>
           </div>
         </div>
