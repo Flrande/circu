@@ -37,7 +37,7 @@ Table folder {
   id String [pk]
   lastModify DateTime [not null]
   title String [not null]
-  description String [not null]
+  description String
   survivalStatus SurvivalStatus [not null, default: 'ALIVE']
   childrenDocs general_doc [not null]
   parentFolderId String
