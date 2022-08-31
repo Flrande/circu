@@ -8,12 +8,12 @@ import IconFolderClose from "../../icons/IconFolderClose"
 import IconHome from "../../icons/IconHome"
 import IconPeoples from "../../icons/IconPeoples"
 import IconStar from "../../icons/IconStar"
-import { driverStateStore } from "./state"
+import { drivePageSignal, driverStateStore } from "./state"
 
 const DriveSidebarItem: React.FC<{
   Icon: React.FC
   message: string
-  signal: "home" | "me" | "shared" | "favorites" | "wiki" | "trash"
+  signal: drivePageSignal
 }> = ({ Icon, message, signal }) => {
   const driverStateSnap = useSnapshot(driverStateStore)
   const navigate = useNavigate()
@@ -41,6 +41,7 @@ const DriveSidebarItem: React.FC<{
 const DriveSidebar: React.FC = () => {
   const driverStateSnap = useSnapshot(driverStateStore)
 
+  //TODO: 持久化
   // 是否正在调节侧边栏宽度
   const [isResizeColDrag, setIsResizeColDrag] = useState(false)
   // 添加事件监听器, 用于调节侧边栏宽度

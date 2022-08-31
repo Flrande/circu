@@ -1,7 +1,9 @@
 import { proxy } from "valtio"
 
+export type drivePageSignal = "home" | "me" | "shared" | "favorites" | "wiki" | "trash"
+
 export const driverStateStore = proxy<{
-  currentPage: "home" | "me" | "shared" | "favorites" | "wiki" | "trash"
+  currentPage: drivePageSignal
   sidebarWidth: number
 }>({
   currentPage: "home",
