@@ -41,7 +41,6 @@ const DriveSidebarItem: React.FC<{
 const DriveSidebar: React.FC = () => {
   const driverStateSnap = useSnapshot(driverStateStore)
 
-  //TODO: 持久化
   // 是否正在调节侧边栏宽度
   const [isResizeColDrag, setIsResizeColDrag] = useState(false)
   // 添加事件监听器, 用于调节侧边栏宽度
