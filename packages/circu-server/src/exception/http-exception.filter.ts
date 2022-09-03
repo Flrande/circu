@@ -1,4 +1,5 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common"
+import { ConfigService } from "@nestjs/config"
 import { Response } from "express"
 import { GlobalExceptionCode } from "src/app.constants"
 import { ICommonException } from "./common.exception"
@@ -8,11 +9,14 @@ import { ICommonException } from "./common.exception"
  */
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
+  constructor(private configService: ConfigService) {}
+
   catch(exception: HttpException, host: ArgumentsHost) {
     const expRes = host.switchToHttp().getResponse<Response>()
     const excRes = exception.getResponse() as ICommonException
 
-    if (excRes.isFiltered) {
+    // 开发环境下不过滤
+    if (excRes.isFiltered && this.configService.get<string>("NODE_ENV") !== "DEV") {
       const newRes: ICommonException = {
         code: GlobalExceptionCode.COMMON_EXCEPTION_CODE,
         message: "Error",
