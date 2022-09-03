@@ -8,10 +8,33 @@ import { UserExceptionCode } from "./user.constants"
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  async createUser(data: Omit<Prisma.UserCreateInput, "id">): Promise<User> {
-    return this.prisma.user.create({
-      data,
+  async createUser(
+    data: Pick<User, "username" | "nickname" | "password">
+  ): Promise<Pick<User, "id" | "nickname" | "username">> {
+    // 查询用户名是否重复
+    const existingUser = await this.prisma.user.findFirst({
+      where: {
+        username: data.username,
+      },
     })
+    if (existingUser) {
+      throw new CommonException({
+        code: UserExceptionCode.USER_IS_EXISTING,
+        message: "用户名已存在",
+        isFiltered: false,
+      })
+    }
+
+    const result = await this.prisma.user.create({
+      data,
+      select: {
+        id: true,
+        username: true,
+        nickname: true,
+      },
+    })
+
+    return result
   }
 
   async findUser(
