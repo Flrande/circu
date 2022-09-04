@@ -3,6 +3,7 @@ import { UserService } from "./user.service"
 import { CreateUserDto } from "./dto/create-user.dto"
 import { ISuccessResponse } from "src/interfaces/response"
 import { User } from "@prisma/client"
+import { UserIdQuery } from "./dto/get-user.dto"
 
 @Controller("api/user")
 export class UserController {
@@ -10,9 +11,8 @@ export class UserController {
 
   /**
    * 注册新用户, 需提供用户名, 用户昵称, 用户密码
-   * //TODO: 限制用户名字符
+   *
    * //TODO: 用户密码哈希存储
-   * //TODO: 验证载荷字段是否合法及有缺失
    *
    * @param createUserDto
    */
@@ -32,10 +32,10 @@ export class UserController {
   /**
    * 根据用户 id 查询用户基本信息
    *
-   * @param id
+   * @param query
    */
   @Get()
-  async getUserById(@Query("id") id: string) {
-    const result = await this.userService.findUser({ id })
+  async getUserById(@Query() query: UserIdQuery) {
+    const result = await this.userService.findUserById(query.id)
   }
 }

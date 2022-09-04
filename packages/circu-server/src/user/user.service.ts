@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common"
-import { Prisma, User } from "@prisma/client"
+import { User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
 import { UserExceptionCode } from "./user.constants"
@@ -37,11 +37,11 @@ export class UserService {
     return result
   }
 
-  async findUser(
-    userWhereUniqueInput: Prisma.UserWhereUniqueInput
-  ): Promise<Pick<User, "id" | "nickname" | "username"> | null> {
+  async findUserById(id: User["id"]): Promise<Pick<User, "id" | "nickname" | "username"> | null> {
     const result = await this.prisma.user.findUnique({
-      where: userWhereUniqueInput,
+      where: {
+        id,
+      },
       select: {
         id: true,
         username: true,
