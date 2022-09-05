@@ -8,9 +8,7 @@ const Drive: React.FC = () => {
       <DriveSidebar></DriveSidebar>
       <div className={"flex-col flex-1"}>
         <DriveTopbar></DriveTopbar>
-        <div>
-          <Outlet></Outlet>
-        </div>
+        <Outlet></Outlet>
       </div>
     </div>
   )
