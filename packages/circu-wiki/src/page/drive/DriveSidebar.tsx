@@ -93,36 +93,52 @@ const DriveSidebar: React.FC = () => {
           }}
         >
           <DriveSidebarItem
-            icon={<Home theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />}
+            icon={<Home theme="outline" size="20" fill="currentColor" strokeLinejoin="bevel" strokeLinecap="square" />}
             message={"主页"}
             signal={"home"}
           ></DriveSidebarItem>
           <DriveSidebarItem
             icon={
-              <FolderClose theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />
+              <FolderClose
+                theme="outline"
+                size="20"
+                fill="currentColor"
+                strokeLinejoin="bevel"
+                strokeLinecap="square"
+              />
             }
             message={"我的空间"}
             signal={"me"}
           ></DriveSidebarItem>
           <DriveSidebarItem
-            icon={<Peoples theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />}
+            icon={
+              <Peoples theme="outline" size="20" fill="currentColor" strokeLinejoin="bevel" strokeLinecap="square" />
+            }
             message={"共享空间"}
             signal={"shared"}
           ></DriveSidebarItem>
           <DriveSidebarItem
             icon={
-              <DocumentFolder theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />
+              <DocumentFolder
+                theme="outline"
+                size="20"
+                fill="currentColor"
+                strokeLinejoin="bevel"
+                strokeLinecap="square"
+              />
             }
             message={"知识库"}
             signal={"wiki"}
           ></DriveSidebarItem>
           <DriveSidebarItem
-            icon={<Star theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />}
+            icon={<Star theme="outline" size="20" fill="currentColor" strokeLinejoin="bevel" strokeLinecap="square" />}
             message={"收藏"}
             signal={"favorites"}
           ></DriveSidebarItem>
           <DriveSidebarItem
-            icon={<DeleteOne theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />}
+            icon={
+              <DeleteOne theme="outline" size="20" fill="currentColor" strokeLinejoin="bevel" strokeLinecap="square" />
+            }
             message={"回收站"}
             signal={"trash"}
           ></DriveSidebarItem>
