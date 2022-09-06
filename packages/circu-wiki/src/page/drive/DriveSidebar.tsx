@@ -1,20 +1,15 @@
+import { DeleteOne, DocumentFolder, FolderClose, Home, Peoples, Star } from "@icon-park/react"
 import type React from "react"
-import { useEffect, useState } from "react"
+import { ReactElement, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useSnapshot } from "valtio"
-import IconDelete from "../../icons/IconDelete"
-import IconDocFolder from "../../icons/IconDocFolder"
-import IconFolderClose from "../../icons/IconFolderClose"
-import IconHome from "../../icons/IconHome"
-import IconPeoples from "../../icons/IconPeoples"
-import IconStar from "../../icons/IconStar"
 import { drivePageSignal, driverStateStore } from "./state"
 
 const DriveSidebarItem: React.FC<{
-  Icon: React.FC
+  icon: ReactElement
   message: string
   signal: drivePageSignal
-}> = ({ Icon, message, signal }) => {
+}> = ({ icon, message, signal }) => {
   const driverStateSnap = useSnapshot(driverStateStore)
   const navigate = useNavigate()
 
@@ -30,9 +25,7 @@ const DriveSidebarItem: React.FC<{
         color: driverStateSnap.currentPage === signal ? "#4c88ff" : "#ebebeb",
       }}
     >
-      <div className={"w-5 h-5 ml-5"}>
-        <Icon></Icon>
-      </div>
+      <div className={"w-5 h-5 ml-5"}>{icon}</div>
       <div className={"text-base ml-2 select-none"}>{message}</div>
     </div>
   )
@@ -99,12 +92,40 @@ const DriveSidebar: React.FC = () => {
             height: "calc(100% - 80px)",
           }}
         >
-          <DriveSidebarItem Icon={IconHome} message={"主页"} signal={"home"}></DriveSidebarItem>
-          <DriveSidebarItem Icon={IconFolderClose} message={"我的空间"} signal={"me"}></DriveSidebarItem>
-          <DriveSidebarItem Icon={IconPeoples} message={"共享空间"} signal={"shared"}></DriveSidebarItem>
-          <DriveSidebarItem Icon={IconDocFolder} message={"知识库"} signal={"wiki"}></DriveSidebarItem>
-          <DriveSidebarItem Icon={IconStar} message={"收藏"} signal={"favorites"}></DriveSidebarItem>
-          <DriveSidebarItem Icon={IconDelete} message={"回收站"} signal={"trash"}></DriveSidebarItem>
+          <DriveSidebarItem
+            icon={<Home theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />}
+            message={"主页"}
+            signal={"home"}
+          ></DriveSidebarItem>
+          <DriveSidebarItem
+            icon={
+              <FolderClose theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />
+            }
+            message={"我的空间"}
+            signal={"me"}
+          ></DriveSidebarItem>
+          <DriveSidebarItem
+            icon={<Peoples theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />}
+            message={"共享空间"}
+            signal={"shared"}
+          ></DriveSidebarItem>
+          <DriveSidebarItem
+            icon={
+              <DocumentFolder theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />
+            }
+            message={"知识库"}
+            signal={"wiki"}
+          ></DriveSidebarItem>
+          <DriveSidebarItem
+            icon={<Star theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />}
+            message={"收藏"}
+            signal={"favorites"}
+          ></DriveSidebarItem>
+          <DriveSidebarItem
+            icon={<DeleteOne theme="outline" size="20" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />}
+            message={"回收站"}
+            signal={"trash"}
+          ></DriveSidebarItem>
         </div>
       </div>
 

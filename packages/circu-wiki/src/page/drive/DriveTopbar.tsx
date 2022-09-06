@@ -1,6 +1,6 @@
 import { Avatar } from "@arco-design/web-react"
+import { Search } from "@icon-park/react"
 import { useState } from "react"
-import IconSearch from "../../icons/IconSearch"
 
 const DriveTopbar: React.FC = () => {
   const [isInputFocus, setIsInputFocus] = useState(false)
@@ -17,7 +17,7 @@ const DriveTopbar: React.FC = () => {
           }}
         >
           <div className={"h-4 w-4 text-[#a6a6a6] ml-2 mr-3"}>
-            <IconSearch></IconSearch>
+            <Search theme="outline" size="16" fill="#9b9b9b" strokeLinejoin="bevel" strokeLinecap="square" />
           </div>
           <input
             onFocus={() => {

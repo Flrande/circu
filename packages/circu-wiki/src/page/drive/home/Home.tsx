@@ -1,7 +1,5 @@
+import { DocDetail, Down, FolderClose } from "@icon-park/react"
 import { useRef, useState } from "react"
-import IconDoc from "../../../icons/IconDoc"
-import IconDown from "../../../icons/IconDown"
-import IconFolderClose from "../../../icons/IconFolderClose"
 
 const Home: React.FC = () => {
   const [isButtonHover, setIsButtonHover] = useState(false)
@@ -35,7 +33,7 @@ const Home: React.FC = () => {
                 transform: isButtonHover ? "rotate(0.5turn)" : undefined,
               }}
             >
-              <IconDown></IconDown>
+              <Down theme="outline" size="14" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />
             </div>
             <div
               className={"absolute w-[160px] bg-transparent py-1 right-0"}
@@ -46,17 +44,13 @@ const Home: React.FC = () => {
             >
               <div className={"bg-[#292929] flex flex-col rounded-md border border-solid border-[#464646] p-2"}>
                 <div className={"flex items-center p-2 rounded-md hover:bg-[#383838]"}>
-                  <div className={"w-5 h-5"}>
-                    <IconDoc></IconDoc>
-                  </div>
+                  <DocDetail theme="filled" size="22" fill="#4a90e2" strokeLinejoin="bevel" strokeLinecap="square" />
                   <div className={"text-[#ebebeb] text-base ml-2"}>
                     <span>新建文档</span>
                   </div>
                 </div>
                 <div className={"flex items-center p-2 rounded-md hover:bg-[#383838]"}>
-                  <div className={"w-5 h-5"}>
-                    <IconFolderClose></IconFolderClose>
-                  </div>
+                  <FolderClose theme="filled" size="22" fill="#f8e71c" strokeLinejoin="bevel" strokeLinecap="square" />
                   <div className={"text-[#ebebeb] text-base ml-2"}>
                     <span>新建文件夹</span>
                   </div>

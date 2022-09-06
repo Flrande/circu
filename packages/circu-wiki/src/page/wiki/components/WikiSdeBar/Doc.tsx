@@ -1,8 +1,7 @@
-import IconDoc from "../../../../icons/IconDoc"
 import Skeleton from "react-loading-skeleton"
 import { useState } from "react"
-import IconDown from "../../../../icons/IconDown"
 import { useWikiDoc } from "../../../../server/wiki-doc"
+import { DocDetail, Down } from "@icon-park/react"
 
 const Doc: React.FC<{
   docId: string
@@ -18,7 +17,7 @@ const Doc: React.FC<{
             onClick={() => {
               setIsFolded(!isFolded)
             }}
-            className={"flex items-center h-9 bg-transparent text-gray-400 hover:bg-[#383838] rounded cursor-pointer"}
+            className={"flex items-center h-9 bg-transparent text-[#ebebeb] hover:bg-[#383838] rounded cursor-pointer"}
           >
             <span
               className={"mx-2 w-4 shrink-0"}
@@ -26,10 +25,10 @@ const Doc: React.FC<{
                 transform: isFolded ? "rotate(-0.25turn)" : undefined,
               }}
             >
-              <IconDown></IconDown>
+              <Down theme="filled" size="16" fill="#a6a6a6" strokeLinejoin="bevel" strokeLinecap="square" />
             </span>
             <span className={"mx-2 w-5 shrink-0"}>
-              <IconDoc></IconDoc>
+              <DocDetail theme="outline" size="20" fill="#a6a6a6" strokeLinejoin="bevel" strokeLinecap="square" />
             </span>
             <span className={"text-base font-medium truncate select-none"}>{data.title}</span>
           </div>

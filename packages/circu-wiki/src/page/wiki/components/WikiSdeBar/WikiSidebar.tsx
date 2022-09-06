@@ -1,7 +1,7 @@
+import { MenuUnfoldOne } from "@icon-park/react"
 import { useEffect, useRef, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
 import { useSnapshot } from "valtio"
-import IconMenuUnfold from "../../../../icons/IconMenuUnfold"
 import { useTopWikiDocs } from "../../../../server/wiki-doc"
 import Doc from "./Doc"
 import { sidebarState } from "./state"
@@ -85,7 +85,13 @@ export const WikiSidebar: React.FC = () => {
                 className={"shrink-0 grow-0 p-[2px] text-gray-400 hover:bg-gray-400/20 rounded"}
               >
                 <div className={"w-6 h-6"}>
-                  <IconMenuUnfold></IconMenuUnfold>
+                  <MenuUnfoldOne
+                    theme="outline"
+                    size="24"
+                    fill="#ebebeb"
+                    strokeLinejoin="bevel"
+                    strokeLinecap="square"
+                  />
                 </div>
               </div>
             </div>

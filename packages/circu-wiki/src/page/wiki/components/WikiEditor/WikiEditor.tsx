@@ -1,9 +1,9 @@
+import { MenuFoldOne } from "@icon-park/react"
 import { CircuEditor, CustomElement, CustomText, useCircuEditor } from "circu-editor"
 import type { ITitle } from "circu-editor/src/slate/components/Nodes/Block/Title/types"
 import { useEffect, useRef, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
 import { useSnapshot } from "valtio"
-import IconMenuUnfold from "../../../../icons/IconMenuUnfold"
 import { useTopWikiDocs } from "../../../../server/wiki-doc"
 import Doc from "../WikiSdeBar/Doc"
 import { sidebarState } from "../WikiSdeBar/state"
@@ -69,9 +69,7 @@ const WikiEditor: React.FC = () => {
               display: sidebarStateSnap.isSidebarFolded ? undefined : "none",
             }}
           >
-            <div className={"w-6 h-6 rotate-180"}>
-              <IconMenuUnfold></IconMenuUnfold>
-            </div>
+            <MenuFoldOne theme="outline" size="24" fill="#ebebeb" strokeLinejoin="bevel" strokeLinecap="square" />
           </div>
           <div className={"flex-1 text-xl text-gray-300"}>
             <div className={"flex items-center p-2 select-none"}>
