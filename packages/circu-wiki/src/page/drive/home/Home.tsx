@@ -1,15 +1,24 @@
 import { DocDetail, Down, FolderClose } from "@icon-park/react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import DocList from "../components/DocList/DocList"
 import FolderBlock from "../components/FolderBlock/FolderBlock"
+import ScrollBar from "smooth-scrollbar"
 
 const Home: React.FC = () => {
   const [isButtonHover, setIsButtonHover] = useState(false)
 
   const buttonDom = useRef<HTMLButtonElement>(null)
+  const rootDom = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    //TODO: 粘性布局
+    if (rootDom.current) {
+      ScrollBar.init(rootDom.current)
+    }
+  })
 
   return (
-    <div className={"flex flex-col py-3 px-8 h-full"}>
+    <div ref={rootDom} className={"flex flex-col py-3 px-8 h-full"}>
       <div className={"flex items-center justify-between my-4"}>
         <div>
           <span className={"text-xl text-[#ebebeb] font-semibold"}>主页</span>
