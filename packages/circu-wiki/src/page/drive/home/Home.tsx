@@ -1,5 +1,6 @@
 import { DocDetail, Down, FolderClose } from "@icon-park/react"
 import { useRef, useState } from "react"
+import DocList from "../components/DocList/DocList"
 import FolderBlock from "../components/FolderBlock/FolderBlock"
 
 const Home: React.FC = () => {
@@ -76,6 +77,22 @@ const Home: React.FC = () => {
           <FolderBlock name={"学习"}></FolderBlock>
           <FolderBlock name={"学习"}></FolderBlock>
           <FolderBlock name={"学习"}></FolderBlock>
+        </div>
+      </div>
+      <div className={"my-3"}>
+        <div>
+          <span className={"text-lg text-[#ebebeb] font-semibold"}>文档</span>
+        </div>
+        <div className={"py-3"}>
+          <DocList
+            docs={[
+              {
+                name: "测试文件",
+                author: "Tom",
+                lastModify: "1月1日 0:0",
+              },
+            ]}
+          ></DocList>
         </div>
       </div>
     </div>
