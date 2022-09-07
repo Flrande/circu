@@ -1,4 +1,36 @@
+import { DocDetail } from "@icon-park/react"
 import { CSSProperties, useEffect, useRef, useState } from "react"
+
+const DocListItem: React.FC<{
+  doc: {
+    name: string
+    author: string
+    lastModify: string
+  }
+}> = ({ doc }) => {
+  return (
+    <div className={"flex py-5 px-2 border-t border-solid border-[#353535] hover:rounded-md hover:bg-[#353535]"}>
+      <div className={"flex items-center basis-[var(--first-col)] mr-2 text-[#ebebeb] text-sm"}>
+        <div className={"mr-2"}>
+          <DocDetail theme="filled" size="24" fill="#4a90e2" strokeLinejoin="bevel" strokeLinecap="square" />
+        </div>
+        <div>
+          <span>{doc.name}</span>
+        </div>
+      </div>
+      <div className={"flex justify-between basis-[var(--second-col)] mr-2 text-[#a6a6a6]"}>
+        <div>
+          <span>{doc.author}</span>
+        </div>
+      </div>
+      <div className={"flex justify-between basis-[var(--third-col)] mr-2 text-[#a6a6a6]"}>
+        <div>
+          <span>{doc.lastModify}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const DocList: React.FC<{
   docs: {
@@ -6,7 +38,7 @@ const DocList: React.FC<{
     author: string
     lastModify: string
   }[]
-}> = () => {
+}> = ({ docs }) => {
   const [isHeadHover, setIsHeadHover] = useState(false)
 
   const headDom = useRef<HTMLDivElement>(null)
@@ -107,7 +139,7 @@ const DocList: React.FC<{
         onMouseLeave={() => {
           setIsHeadHover(false)
         }}
-        className={"flex pb-2 text-[#a6a6a6]"}
+        className={"flex pb-2 px-2 text-[#a6a6a6]"}
       >
         <div className={"flex justify-between basis-[var(--first-col)] mr-2"}>
           <div>
@@ -139,10 +171,13 @@ const DocList: React.FC<{
         </div>
         <div className={"flex justify-between basis-[var(--third-col)] mr-2"}>
           <div>
-            <span>修改时间</span>
+            <span>最近打开</span>
           </div>
         </div>
       </div>
+      {docs.map((doc) => (
+        <DocListItem doc={doc}></DocListItem>
+      ))}
     </div>
   )
 }
