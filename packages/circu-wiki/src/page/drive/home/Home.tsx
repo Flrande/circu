@@ -1,5 +1,6 @@
 import { DocDetail, Down, FolderClose } from "@icon-park/react"
 import { useRef, useState } from "react"
+import FolderBlock from "../components/FolderBlock/FolderBlock"
 
 const Home: React.FC = () => {
   const [isButtonHover, setIsButtonHover] = useState(false)
@@ -7,8 +8,8 @@ const Home: React.FC = () => {
   const buttonDom = useRef<HTMLButtonElement>(null)
 
   return (
-    <div className={"flex flex-col p-3 h-full"}>
-      <div className={"flex items-center py-2 px-6 justify-between"}>
+    <div className={"flex flex-col py-3 px-8 h-full"}>
+      <div className={"flex items-center justify-between my-4"}>
         <div>
           <span className={"text-xl text-[#ebebeb] font-semibold"}>主页</span>
         </div>
@@ -60,7 +61,23 @@ const Home: React.FC = () => {
           </button>
         </div>
       </div>
-      <div></div>
+      <div className={"my-3"}>
+        <div>
+          <span className={"text-lg text-[#ebebeb] font-semibold"}>快速访问</span>
+        </div>
+        <div
+          className={
+            "py-3 grid gap-3 grid-cols-[repeat(auto-fill,minmax(268px,1fr))] 2xl:grid-cols-[repeat(4,minmax(268px,360px))]"
+          }
+        >
+          <FolderBlock name={"学习"}></FolderBlock>
+          <FolderBlock name={"学习"}></FolderBlock>
+          <FolderBlock name={"学习"}></FolderBlock>
+          <FolderBlock name={"学习"}></FolderBlock>
+          <FolderBlock name={"学习"}></FolderBlock>
+          <FolderBlock name={"学习"}></FolderBlock>
+        </div>
+      </div>
     </div>
   )
 }
