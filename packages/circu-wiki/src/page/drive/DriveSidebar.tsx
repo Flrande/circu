@@ -70,7 +70,7 @@ const DriveSidebar: React.FC = () => {
 
   return (
     <div
-      className={"shrink-0 relative bg-[#262626]"}
+      className={"shrink-0 relative bg-[#262626] pr-[2px]"}
       style={{
         flexBasis: `${driverStateSnap.sidebarWidth}px`,
       }}
@@ -149,7 +149,7 @@ const DriveSidebar: React.FC = () => {
         onMouseDown={() => {
           setIsResizeColDrag(true)
         }}
-        className={"absolute -right-[2px] top-0 h-full w-[2px] bg-transparent hover:bg-[#3d3d3d] cursor-col-resize"}
+        className={"absolute right-0 top-0 h-full w-[2px] bg-transparent hover:bg-[#3d3d3d] cursor-col-resize"}
         style={{
           backgroundColor: isResizeColDrag ? "#3d3d3d" : undefined,
         }}
