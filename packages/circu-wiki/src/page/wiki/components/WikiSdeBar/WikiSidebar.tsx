@@ -39,6 +39,15 @@ export const WikiSidebar: React.FC = () => {
           signal: controller.signal,
         }
       )
+      document.addEventListener(
+        "selectstart",
+        (event) => {
+          event.preventDefault()
+        },
+        {
+          signal: controller.signal,
+        }
+      )
     }
 
     return () => {
