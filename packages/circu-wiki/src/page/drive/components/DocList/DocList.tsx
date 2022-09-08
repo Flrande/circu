@@ -3,13 +3,14 @@ import { CSSProperties, useEffect, useRef, useState } from "react"
 
 const DocListItem: React.FC<{
   doc: {
+    id: string
     name: string
     author: string
     lastModify: string
   }
 }> = ({ doc }) => {
   return (
-    <div className={"flex py-5 px-2 border-t border-solid border-[#353535] hover:rounded-md hover:bg-[#353535]"}>
+    <div className={"flex py-5 pl-2 border-t border-solid border-[#353535] hover:rounded-md hover:bg-[#353535]"}>
       <div className={"flex items-center basis-[var(--first-col)] mr-2 text-[#ebebeb] text-sm"}>
         <div className={"mr-2"}>
           <DocDetail theme="filled" size="24" fill="#4a90e2" strokeLinejoin="bevel" strokeLinecap="square" />
@@ -34,6 +35,7 @@ const DocListItem: React.FC<{
 
 const DocList: React.FC<{
   docs: {
+    id: string
     name: string
     author: string
     lastModify: string
@@ -48,12 +50,14 @@ const DocList: React.FC<{
 
   const [isFirstDrag, setIsFirstDrag] = useState(false)
   const [isSecondDrag, setIsSecondDrag] = useState(false)
+  //TODO: 解决拖动时产生选区的问题 (为什么 selectstart 的监听器未生效?)
+  //TODO: 某些情况下会产生拖拽事件, 导致无法正常结束拖动 (理论避免产生选区就能解决这个问题?)
+  // 第一个拖动条
   useEffect(() => {
-    // 第一列不小于 140, 第二第三列不小于100
-    if (isFirstDrag && headDom.current) {
-      const controller = new AbortController()
-      const head = headDom.current
+    const controller = new AbortController()
 
+    if (isFirstDrag && headDom.current) {
+      const head = headDom.current
       const headRect = head.getBoundingClientRect()
 
       document.addEventListener(
@@ -78,16 +82,28 @@ const DocList: React.FC<{
           signal: controller.signal,
         }
       )
-
-      return () => {
-        controller.abort()
-      }
+      document.addEventListener(
+        "selectstart",
+        (event) => {
+          console.log(1)
+          event.preventDefault()
+        },
+        {
+          signal: controller.signal,
+        }
+      )
     }
 
-    if (isSecondDrag && headDom.current) {
-      const controller = new AbortController()
-      const head = headDom.current
+    return () => {
+      controller.abort()
+    }
+  }, [isFirstDrag])
+  // 第二个拖动条
+  useEffect(() => {
+    const controller = new AbortController()
 
+    if (isSecondDrag && headDom.current) {
+      const head = headDom.current
       const headRect = head.getBoundingClientRect()
 
       document.addEventListener(
@@ -112,12 +128,28 @@ const DocList: React.FC<{
           signal: controller.signal,
         }
       )
-
-      return () => {
-        controller.abort()
-      }
+      document.addEventListener(
+        "selectstart",
+        (event) => {
+          event.preventDefault()
+        },
+        {
+          signal: controller.signal,
+        }
+      )
     }
-  }, [isFirstDrag, isSecondDrag])
+
+    return () => {
+      controller.abort()
+    }
+  }, [isSecondDrag])
+
+  // 初次渲染时调整三列的宽度, 避免第一次拖动调整时宽度出现突变现象
+  useEffect(() => {
+    if (headDom.current) {
+      setThirdCol(headDom.current.clientWidth - firstCol - secondCol)
+    }
+  }, [])
 
   return (
     <div
@@ -139,7 +171,7 @@ const DocList: React.FC<{
         onMouseLeave={() => {
           setIsHeadHover(false)
         }}
-        className={"flex pb-2 px-2 text-[#a6a6a6]"}
+        className={"flex pb-2 pl-2 text-[#a6a6a6]"}
       >
         <div className={"flex justify-between basis-[var(--first-col)] mr-2"}>
           <div>
@@ -176,7 +208,7 @@ const DocList: React.FC<{
         </div>
       </div>
       {docs.map((doc) => (
-        <DocListItem doc={doc}></DocListItem>
+        <DocListItem key={doc.id} doc={doc}></DocListItem>
       ))}
     </div>
   )

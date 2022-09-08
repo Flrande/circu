@@ -96,26 +96,31 @@ const Home: React.FC = () => {
           <DocList
             docs={[
               {
+                id: "1",
                 name: "测试文件",
                 author: "Tom",
                 lastModify: "1月1日 0:0",
               },
               {
+                id: "2",
                 name: "测试文件",
                 author: "Tom",
                 lastModify: "1月1日 0:0",
               },
               {
+                id: "3",
                 name: "测试文件",
                 author: "Tom",
                 lastModify: "1月1日 0:0",
               },
               {
+                id: "4",
                 name: "测试文件",
                 author: "Tom",
                 lastModify: "1月1日 0:0",
               },
               {
+                id: "5",
                 name: "测试文件",
                 author: "Tom",
                 lastModify: "1月1日 0:0",
