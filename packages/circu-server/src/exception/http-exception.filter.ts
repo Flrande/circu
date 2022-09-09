@@ -1,8 +1,8 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common"
-import { ConfigService } from "@nestjs/config"
-import { Response } from "express"
-import { GlobalExceptionCode } from "src/app.constants"
-import { ICommonException } from "./common.exception"
+import type { ConfigService } from "@nestjs/config"
+import type { Response } from "express"
+import { GlobalExceptionCode } from "../app.constants"
+import type { ICommonException } from "./common.exception"
 
 /**
  * 全局异常过滤器, 识别不应暴露的异常并返回统一的响应

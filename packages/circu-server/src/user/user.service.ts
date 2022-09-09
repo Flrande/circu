@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common"
-import { User } from "@prisma/client"
-import { PrismaService } from "src/database/prisma.service"
-import { CommonException } from "src/exception/common.exception"
+import type { User } from "@prisma/client"
+import type { PrismaService } from "../database/prisma.service"
+import { CommonException } from "../exception/common.exception"
 import { UserExceptionCode } from "./user.constants"
 
 @Injectable()

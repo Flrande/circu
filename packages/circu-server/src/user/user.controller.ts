@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Query } from "@nestjs/common"
-import { UserService } from "./user.service"
-import { CreateUserDto } from "./dto/create-user.dto"
-import { ISuccessResponse } from "src/interfaces/response"
-import { User } from "@prisma/client"
-import { UserIdQuery } from "./dto/get-user.dto"
+import type { UserService } from "./user.service"
+import type { CreateUserDto } from "./dto/create-user.dto"
+import type { User } from "@prisma/client"
+import type { UserIdQuery } from "./dto/get-user.dto"
+import type { ISuccessResponse } from "../interfaces/response"
 
 @Controller("api/user")
 export class UserController {

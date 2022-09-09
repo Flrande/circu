@@ -1,7 +1,7 @@
 import { ValidationPipe } from "@nestjs/common"
 import { NestFactory } from "@nestjs/core"
 import { AppModule } from "./app.module"
-import * as session from "express-session"
+import session from "express-session"
 import { ConfigService } from "@nestjs/config"
 import Redis from "ioredis"
 
