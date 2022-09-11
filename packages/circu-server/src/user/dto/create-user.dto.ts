@@ -1,4 +1,4 @@
-import { User } from "@prisma/client"
+import type { User } from "@prisma/client"
 import { IsAlphanumeric, IsByteLength, IsNotEmpty, IsString } from "class-validator"
 
 export class CreateUserDto implements Pick<User, "username" | "nickname" | "password"> {
