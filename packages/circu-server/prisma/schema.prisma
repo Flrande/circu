@@ -89,7 +89,7 @@ model User {
   id             String         @id @default(cuid())
   username       String
   nickname       String
-  password       String
+  password       Bytes
   survivalStatus SurvivalStatus @default(ALIVE)
 
   authoredWikiDocs    WikiDoc[]

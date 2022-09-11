@@ -52,7 +52,7 @@ Table user {
   id String [pk]
   username String [not null]
   nickname String [not null]
-  password String [not null]
+  password Bytes [not null]
   survivalStatus SurvivalStatus [not null, default: 'ALIVE']
   authoredWikiDocs wiki_doc [not null]
   authoredGeneralDocs general_doc [not null]
