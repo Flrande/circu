@@ -3,10 +3,12 @@ import { randomBytes, scrypt, timingSafeEqual } from "crypto"
 import { Buffer } from "buffer"
 import { AuthExceptionCode } from "./auth.constants"
 import { CommonException } from "src/exception/common.exception"
+import { Request } from "express"
+import { PrismaService } from "src/database/prisma.service"
 
 @Injectable()
 export class AuthService {
-  constructor() {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * 用于散列密码以用于存储的函数, 传入的 password 字符串应经过 String.prototype.normalize() 处理, 或限制其可用字符
@@ -40,7 +42,7 @@ export class AuthService {
    */
   async comparePassword(password: string, hash: Buffer): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      const [salt, key] = [hash.subarray(0, 15), hash.subarray(16)]
+      const [salt, key] = [hash.subarray(0, 16), hash.subarray(16)]
       const passwordBuffer = Buffer.from(password)
 
       scrypt(passwordBuffer, salt, 64, (err, derivedKey) => {
@@ -52,9 +54,46 @@ export class AuthService {
             })
           )
         }
-
         resolve(timingSafeEqual(key, derivedKey))
       })
     })
+  }
+
+  async signIn(
+    payload: {
+      username: string
+      password: string
+    },
+    req: Request
+  ): Promise<void> {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        username: payload.username,
+      },
+      select: {
+        id: true,
+        password: true,
+      },
+    })
+
+    if (!user) {
+      throw new CommonException({
+        code: AuthExceptionCode.SIGN_IN_NO_USER,
+        message: `未能找到用户名为${payload.username}的用户`,
+        isFiltered: false,
+      })
+    }
+
+    const result = await this.comparePassword(payload.password, user.password)
+
+    if (!result) {
+      throw new CommonException({
+        code: AuthExceptionCode.SIGN_IN_PASSWORD_NOT_MATCH,
+        message: "密码错误",
+        isFiltered: false,
+      })
+    }
+
+    req.session.userid = user.id
   }
 }

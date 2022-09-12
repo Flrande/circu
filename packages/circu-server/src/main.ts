@@ -3,9 +3,11 @@ import { NestFactory } from "@nestjs/core"
 import { AppModule } from "./app.module"
 import session from "express-session"
 import { ConfigService } from "@nestjs/config"
-import Redis from "ioredis"
+import connectRedis from "connect-redis"
 
-const RedisStore = require("connect-redis")(session)
+//TODO: 适配 ioredis 大版本
+const Redis = require("ioredis")
+const RedisStore = connectRedis(session)
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)

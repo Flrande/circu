@@ -47,7 +47,7 @@ export class UserService {
     return result
   }
 
-  async findUserById(id: User["id"]): Promise<Pick<User, "id" | "nickname" | "username"> | null> {
+  async findUserById(id: User["id"]): Promise<Pick<User, "id" | "nickname" | "username">> {
     const result = await this.prismaService.user.findUnique({
       where: {
         id,
