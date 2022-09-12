@@ -11,10 +11,6 @@ export class UserController {
 
   /**
    * 注册新用户, 需提供用户名, 用户昵称, 用户密码
-   *
-   * //TODO: 用户密码哈希存储
-   *
-   * @param createUserDto
    */
   @Post("register")
   async register(
@@ -31,8 +27,6 @@ export class UserController {
 
   /**
    * 根据用户 id 查询用户基本信息
-   *
-   * @param query
    */
   @Get()
   async getUserById(@Query() query: UserIdQuery) {
