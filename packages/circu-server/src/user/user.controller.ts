@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Query } from "@nestjs/common"
-import type { UserService } from "./user.service"
-import type { CreateUserDto } from "./dto/create-user.dto"
-import type { User } from "@prisma/client"
-import type { UserIdQuery } from "./dto/get-user.dto"
-import type { ISuccessResponse } from "../interfaces/response"
+import { User } from "@prisma/client"
+import { ISuccessResponse } from "src/interfaces/response"
+import { CreateUserDto } from "./dto/create-user.dto"
+import { UserIdQuery } from "./dto/get-user.dto"
+import { UserService } from "./user.service"
 
 @Controller("api/user")
 export class UserController {
@@ -37,5 +37,11 @@ export class UserController {
   @Get()
   async getUserById(@Query() query: UserIdQuery) {
     const result = await this.userService.findUserById(query.id)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: result,
+    }
   }
 }

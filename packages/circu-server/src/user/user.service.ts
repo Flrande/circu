@@ -1,18 +1,21 @@
 import { Injectable } from "@nestjs/common"
-import type { User } from "@prisma/client"
-import type { PrismaService } from "../database/prisma.service"
-import { CommonException } from "../exception/common.exception"
+import { User } from "@prisma/client"
+import { AuthService } from "src/auth/auth.service"
+import { PrismaService } from "src/database/prisma.service"
+import { CommonException } from "src/exception/common.exception"
 import { UserExceptionCode } from "./user.constants"
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService, private readonly authService: AuthService) {}
 
-  async createUser(
-    data: Pick<User, "username" | "nickname" | "password">
-  ): Promise<Pick<User, "id" | "nickname" | "username">> {
+  async createUser(data: {
+    username: string
+    nickname: string
+    password: string
+  }): Promise<Pick<User, "id" | "nickname" | "username">> {
     // 查询用户名是否重复
-    const existingUser = await this.prisma.user.findFirst({
+    const existingUser = await this.prismaService.user.findFirst({
       where: {
         username: data.username,
       },
@@ -25,8 +28,15 @@ export class UserService {
       })
     }
 
-    const result = await this.prisma.user.create({
-      data,
+    const hashPassword = await this.authService.hashPassword(data.password)
+    const createPayload: Pick<User, "username" | "nickname" | "password"> = {
+      username: data.username,
+      nickname: data.nickname,
+      password: hashPassword,
+    }
+
+    const result = await this.prismaService.user.create({
+      data: createPayload,
       select: {
         id: true,
         username: true,
@@ -38,7 +48,7 @@ export class UserService {
   }
 
   async findUserById(id: User["id"]): Promise<Pick<User, "id" | "nickname" | "username"> | null> {
-    const result = await this.prisma.user.findUnique({
+    const result = await this.prismaService.user.findUnique({
       where: {
         id,
       },

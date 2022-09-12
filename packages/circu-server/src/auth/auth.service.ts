@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common"
 import { randomBytes, scrypt, timingSafeEqual } from "crypto"
 import { Buffer } from "buffer"
-import { CommonException } from "../exception/common.exception"
 import { AuthExceptionCode } from "./auth.constants"
+import { CommonException } from "src/exception/common.exception"
 
 @Injectable()
 export class AuthService {

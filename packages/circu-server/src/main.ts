@@ -17,8 +17,8 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
-      disableErrorMessages: true,
-      dismissDefaultMessages: true,
+      disableErrorMessages: configService.getOrThrow("NODE_ENV") === "DEV" ? false : true,
+      dismissDefaultMessages: configService.getOrThrow("NODE_ENV") === "DEV" ? false : true,
     })
   )
 
