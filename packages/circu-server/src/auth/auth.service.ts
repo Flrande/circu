@@ -59,6 +59,9 @@ export class AuthService {
     })
   }
 
+  /**
+   * 用于登录的函数, 接受用户输入的用户名及密码和当前的请求对象, 校验通过后持久化会话信息
+   */
   async signIn(
     payload: {
       username: string

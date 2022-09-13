@@ -44,6 +44,9 @@ export class UserController {
     }
   }
 
+  /**
+   * 登录, 并将用户会话信息持久化到内存数据库中
+   */
   @Post("signin")
   async signIn(@Body() body: UserSignInDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
     await this.authService.signIn(body, req)
