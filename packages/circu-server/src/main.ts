@@ -5,7 +5,6 @@ import session from "express-session"
 import { ConfigService } from "@nestjs/config"
 import connectRedis from "connect-redis"
 
-//TODO: 适配 ioredis 大版本
 const Redis = require("ioredis")
 const RedisStore = connectRedis(session)
 
