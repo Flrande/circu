@@ -1,10 +1,11 @@
 import { Module } from "@nestjs/common"
 import { PrismaService } from "src/database/prisma.service"
-import { DocController } from "./doc.controller"
-import { DocService } from "./doc.service"
+import { GeneralDocAuthService } from "./general-doc-auth.service"
+import { GeneralDocController } from "./general-doc.controller"
+import { GeneralDocService } from "./general-doc.service"
 
 @Module({
-  controllers: [DocController],
-  providers: [DocService, PrismaService],
+  controllers: [GeneralDocController],
+  providers: [GeneralDocService, GeneralDocAuthService, PrismaService],
 })
 export class DocModule {}

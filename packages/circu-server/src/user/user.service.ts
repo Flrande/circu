@@ -62,7 +62,7 @@ export class UserService {
     if (!result) {
       throw new CommonException({
         code: UserExceptionCode.USER_NOT_FOUND,
-        message: "未能找到对应用户",
+        message: `未能找到用户信息(id: ${id})`,
       })
     }
 

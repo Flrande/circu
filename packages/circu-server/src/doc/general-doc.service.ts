@@ -1,25 +1,43 @@
 import { Injectable } from "@nestjs/common"
-import { GeneralDoc, Prisma, SurvivalStatus } from "@prisma/client"
+import { GeneralDoc, Prisma, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
 import { DocExceptionCode } from "./doc.constants"
+import { GeneralDocAuthService } from "./general-doc-auth.service"
 
 @Injectable()
-export class DocService {
-  constructor(private readonly prismaService: PrismaService) {}
+export class GeneralDocService {
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly generalDocAuthService: GeneralDocAuthService
+  ) {}
 
-  async findGeneralDocById(
-    id: GeneralDoc["id"]
+  /**
+   * 根据 id 查询文档元信息, 不包含文档内容
+   *
+   * 需要操作者的用户 id, 用于判断操作者是否有权限获得文档信息
+   */
+  async findDocMetaById(
+    userId: User["id"],
+    docId: GeneralDoc["id"]
   ): Promise<Pick<GeneralDoc, "id" | "lastModify" | "title" | "authorId" | "parentFolderId">> {
+    // 校验权限
+    const flag = await this.generalDocAuthService.verifyUserReadDoc(userId, docId)
+    if (!flag) {
+      throw new CommonException({
+        code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC,
+        message: `当前用户无权阅读文档(id: ${docId})`,
+      })
+    }
+
     const result = await this.prismaService.generalDoc.findUnique({
       where: {
-        id,
+        id: docId,
       },
       select: {
         id: true,
         lastModify: true,
         title: true,
-        value: true,
         authorId: true,
         parentFolderId: true,
       },
@@ -28,16 +46,33 @@ export class DocService {
     if (!result) {
       throw new CommonException({
         code: DocExceptionCode.GENERAL_DOC_NOT_FOUND,
-        message: "未能找到对应文档",
+        message: `未能找到文档信息(id: ${docId})`,
       })
     }
 
     return result
   }
 
-  async createGeneralDoc(
+  /**
+   * 创建新的文档, 不需要提供新文档的值
+   *
+   * 需要操作者的用户 id, 用于判断操作者是否有权限在该文件夹上新建文档
+   */
+  async createDoc(
+    userId: User["id"],
     data: Pick<GeneralDoc, "title" | "authorId" | "parentFolderId">
   ): Promise<Pick<GeneralDoc, "id" | "lastModify" | "title" | "authorId" | "parentFolderId">> {
+    // 校验权限
+    const flag = data.parentFolderId
+      ? await this.generalDocAuthService.verifyUserWriteFolder(userId, data.parentFolderId)
+      : true
+    if (!flag) {
+      throw new CommonException({
+        code: DocExceptionCode.CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER,
+        message: `当前用户无权写文件夹(id: ${data.parentFolderId})`,
+      })
+    }
+
     const initialValue = [
       {
         type: "title",
@@ -71,7 +106,7 @@ export class DocService {
     if (!author) {
       throw new CommonException({
         code: DocExceptionCode.GENERAL_DOC_CREATE_BUT_NOT_FOUND_USER,
-        message: "未找到作者信息",
+        message: `未找到用户信息(id: ${data.authorId})`,
       })
     }
 
@@ -81,6 +116,15 @@ export class DocService {
       value: initialValue,
       survivalStatus: SurvivalStatus.ALIVE,
       author: {
+        connect: author,
+      },
+      administrators: {
+        connect: author,
+      },
+      readers: {
+        connect: author,
+      },
+      collaborators: {
         connect: author,
       },
     }
@@ -98,7 +142,7 @@ export class DocService {
       if (!folder) {
         throw new CommonException({
           code: DocExceptionCode.GENERAL_DOC_CREATE_BUT_NOT_FOUND_PARENT_FOLDER,
-          message: "未找到父文件夹信息",
+          message: `未找到父文件夹信息(id: ${data.parentFolderId})`,
         })
       }
 

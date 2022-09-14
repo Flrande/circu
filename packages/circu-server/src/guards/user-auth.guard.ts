@@ -6,7 +6,7 @@ import { PrismaService } from "src/database/prisma.service"
  * 一个用于判断请求是否在内存数据库中有对应会话的守卫组件
  */
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class UserAuthGuard implements CanActivate {
   constructor(private readonly prismaService: PrismaService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
