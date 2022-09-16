@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Post, Query, Req, UseGuards } from "@nestjs/common"
-import { GeneralDoc } from "@prisma/client"
+import { Doc } from "@prisma/client"
 import { Request } from "express"
 import { UserAuthGuard } from "src/guards/user-auth.guard"
 import { ISuccessResponse } from "src/interfaces/response"
 import { CreateGeneralDocDto } from "./dto/create-doc.dto"
-import { DocIdQueryDto } from "./dto/get-doc.dto"
+import { DocIdQueryDto } from "./dto/doc-id.dto"
 import { GeneralDocService } from "./general-doc.service"
 
 @Controller("api/doc/general")
@@ -19,7 +19,7 @@ export class GeneralDocController {
   async getGeneralDocById(
     @Query() query: DocIdQueryDto,
     @Req() req: Request
-  ): Promise<ISuccessResponse<Pick<GeneralDoc, "id" | "lastModify" | "title" | "authorId" | "parentFolderId">>> {
+  ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">>> {
     const result = await this.generalDocService.findDocMetaById(req.session.userid!, query.id)
 
     return {
@@ -37,7 +37,7 @@ export class GeneralDocController {
   async createGeneralDoc(
     @Body() createGeneralDocDto: CreateGeneralDocDto,
     @Req() req: Request
-  ): Promise<ISuccessResponse<Pick<GeneralDoc, "id" | "lastModify" | "title" | "authorId" | "parentFolderId">>> {
+  ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">>> {
     const createPayload = {
       title: createGeneralDocDto.title ? createGeneralDocDto.title : "未命名文档",
       parentFolderId: createGeneralDocDto.parentFolderId ? createGeneralDocDto.parentFolderId : null,
@@ -51,4 +51,13 @@ export class GeneralDocController {
       data: result,
     }
   }
+
+  /**
+   * 删除文档, 需要登录
+   */
+  // @Get("delete")
+  // @UseGuards(UserAuthGuard)
+  // async deleteGeneralDoc(@Query() query: DocIdQueryDto, @Req() req: Request) {
+
+  // }
 }

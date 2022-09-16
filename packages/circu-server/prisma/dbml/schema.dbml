@@ -2,50 +2,35 @@
 //// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 //// ------------------------------------------------------
 
-Table wiki_doc {
-  id String [pk]
-  lastModify DateTime [not null]
-  title String [not null]
-  value Json [not null]
-  survivalStatus SurvivalStatus [not null, default: 'ALIVE']
-  parentDocId String
-  parentDoc wiki_doc
-  childrenDocs wiki_doc [not null]
-  authorId String [not null]
-  author user [not null]
-  administrators user [not null]
-  collaborators user [not null]
-  readers user [not null]
-}
-
-Table general_doc {
-  id String [pk]
-  lastModify DateTime [not null]
-  title String [not null]
-  value Json [not null]
-  survivalStatus SurvivalStatus [not null, default: 'ALIVE']
-  authorId String [not null]
-  author user [not null]
-  parentFolderId String
-  parentFolder folder
-  administrators user [not null]
-  collaborators user [not null]
-  readers user [not null]
-}
-
 Table folder {
   id String [pk]
   lastModify DateTime [not null]
   title String [not null]
   description String
   survivalStatus SurvivalStatus [not null, default: 'ALIVE']
-  childrenDocs general_doc [not null]
+  authorId String [not null]
+  author user [not null]
+  childrenDocs doc [not null]
   parentFolderId String
   parentFolder folder
   childrenFolders folder [not null]
-  administrators user [not null]
-  collaborators user [not null]
-  readers user [not null]
+  roles role [not null]
+}
+
+Table doc {
+  id String [pk]
+  lastModify DateTime [not null]
+  value Json [not null]
+  survivalStatus SurvivalStatus [not null, default: 'ALIVE']
+  docType DocType [not null]
+  authorId String [not null]
+  author user [not null]
+  parentFolderId String
+  parentFolder folder
+  parentDocId String
+  parentDoc doc
+  childrenDocs doc [not null]
+  roles role [not null]
 }
 
 Table user {
@@ -54,62 +39,31 @@ Table user {
   nickname String [not null]
   password Bytes [not null]
   survivalStatus SurvivalStatus [not null, default: 'ALIVE']
-  authoredWikiDocs wiki_doc [not null]
-  authoredGeneralDocs general_doc [not null]
-  canManageWikiDocs wiki_doc [not null]
-  canWriteWikiDocs wiki_doc [not null]
-  canReadWikiDocs wiki_doc [not null]
-  canManageGeneralDocs general_doc [not null]
-  canWriteGeneralDocs general_doc [not null]
-  canReadGeneralDocs general_doc [not null]
-  canManageFolders folder [not null]
-  canWriteFolders folder [not null]
-  canReadFolders folder [not null]
+  authoredDocs doc [not null]
+  authoredFolder folder [not null]
+  roles role [not null]
 }
 
-Table wiki_doc_administrators {
-  administratorsId String [ref: > user.id]
-  canmanagewikidocsId String [ref: > wiki_doc.id]
+Table role {
+  id String [pk]
+  roleType RoleType [not null]
+  docId String
+  doc doc
+  folderId String
+  folder folder
+  user user [not null]
+  parentRoles role [not null]
+  childrenRoles role [not null]
 }
 
-Table wiki_doc_collaborators {
-  collaboratorsId String [ref: > user.id]
-  canwritewikidocsId String [ref: > wiki_doc.id]
+Table RoleToUser {
+  rolesId String [ref: > role.id]
+  userId String [ref: > user.id]
 }
 
-Table wiki_doc_readers {
-  readersId String [ref: > user.id]
-  canreadwikidocsId String [ref: > wiki_doc.id]
-}
-
-Table general_doc_administrators {
-  administratorsId String [ref: > user.id]
-  canmanagegeneraldocsId String [ref: > general_doc.id]
-}
-
-Table general_doc_collaborators {
-  collaboratorsId String [ref: > user.id]
-  canwritegeneraldocsId String [ref: > general_doc.id]
-}
-
-Table general_doc_readers {
-  readersId String [ref: > user.id]
-  canreadgeneraldocsId String [ref: > general_doc.id]
-}
-
-Table folder_administrators {
-  administratorsId String [ref: > user.id]
-  canmanagefoldersId String [ref: > folder.id]
-}
-
-Table folder_collaborators {
-  collaboratorsId String [ref: > user.id]
-  canwritefoldersId String [ref: > folder.id]
-}
-
-Table folder_readers {
-  readersId String [ref: > user.id]
-  canreadfoldersId String [ref: > folder.id]
+Table role_parent {
+  parentrolesId String [ref: > role.id]
+  childrenrolesId String [ref: > role.id]
 }
 
 Enum SurvivalStatus {
@@ -118,12 +72,27 @@ Enum SurvivalStatus {
   COMPLETELY_DELETED
 }
 
-Ref: wiki_doc.parentDocId - wiki_doc.id
+Enum DocType {
+  GENERAL
+  WIKI
+}
 
-Ref: wiki_doc.authorId > user.id
+Enum RoleType {
+  ADMINISTRATOR
+  COLLABORATOR
+  READER
+}
 
-Ref: general_doc.authorId > user.id
-
-Ref: general_doc.parentFolderId > folder.id
+Ref: folder.authorId > user.id
 
 Ref: folder.parentFolderId - folder.id
+
+Ref: doc.authorId > user.id
+
+Ref: doc.parentFolderId > folder.id
+
+Ref: doc.parentDocId - doc.id
+
+Ref: role.docId > doc.id
+
+Ref: role.folderId > folder.id

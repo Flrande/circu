@@ -21,91 +21,104 @@ enum SurvivalStatus {
   COMPLETELY_DELETED
 }
 
-// 文档有两种类型, 非知识库的和属于知识库的
-// 非知识库的文档不能作为其他文档的父亲, 只能有文件夹作为父亲
-// 属于知识库的文档可以作为其他文档的父亲, 与文件夹不相关
-model WikiDoc {
-  id             String         @id @default(cuid())
-  lastModify     DateTime
-  title          String
-  value          Json
-  survivalStatus SurvivalStatus @default(ALIVE)
-
-  parentDocId  String?
-  parentDoc    WikiDoc?  @relation("wiki_doc_parent", fields: [parentDocId], references: [id])
-  childrenDocs WikiDoc[] @relation("wiki_doc_parent")
-
-  authorId String
-  author   User   @relation(fields: [authorId], references: [id])
-
-  administrators User[] @relation("wiki_doc_administrators")
-  collaborators  User[] @relation("wiki_doc_collaborators")
-  readers        User[] @relation("wiki_doc_readers")
-
-  @@map("wiki_doc")
+// 文档类型
+//TODO: 加一个约束
+enum DocType {
+  GENERAL
+  WIKI
 }
 
-model GeneralDoc {
-  id             String         @id @default(cuid())
-  lastModify     DateTime
-  title          String
-  value          Json
-  survivalStatus SurvivalStatus @default(ALIVE)
-
-  authorId String
-  author   User   @relation(fields: [authorId], references: [id])
-
-  parentFolderId String?
-  parentFolder   Folder? @relation(fields: [parentFolderId], references: [id])
-
-  administrators User[] @relation("general_doc_administrators")
-  collaborators  User[] @relation("general_doc_collaborators")
-  readers        User[] @relation("general_doc_readers")
-
-  @@map("general_doc")
+// 规则类型
+enum RoleType {
+  ADMINISTRATOR
+  COLLABORATOR
+  READER
 }
 
 model Folder {
-  id             String         @id @default(cuid())
-  lastModify     DateTime
-  title          String
-  description    String?
-  survivalStatus SurvivalStatus @default(ALIVE)
+  id             String         @id @default(cuid()) @map("id")
+  lastModify     DateTime       @map("last_modify")
+  title          String         @map("title")
+  description    String?        @map("description")
+  survivalStatus SurvivalStatus @default(ALIVE) @map("survival_status")
 
-  childrenDocs GeneralDoc[]
+  authorId String @map("author_id")
+  author   User   @relation(fields: [authorId], references: [id])
 
-  parentFolderId  String?
+  childrenDocs Doc[]
+
+  parentFolderId  String?  @map("parent_folder_id")
   parentFolder    Folder?  @relation("folder_parent", fields: [parentFolderId], references: [id])
   childrenFolders Folder[] @relation("folder_parent")
 
-  administrators User[] @relation("folder_administrators")
-  collaborators  User[] @relation("folder_collaborators")
-  readers        User[] @relation("folder_readers")
+  roles Role[]
 
   @@map("folder")
 }
 
+model Doc {
+  id             String         @id @default(cuid()) @map("id")
+  lastModify     DateTime       @map("last_modify")
+  value          Json           @map("value")
+  survivalStatus SurvivalStatus @default(ALIVE) @map("survival_status")
+  docType        DocType        @map("doc_type")
+
+  authorId String @map("author_id")
+  author   User   @relation(fields: [authorId], references: [id])
+
+  // 类型为 general doc 时
+  parentFolderId String? @map("parent_folder_id")
+  parentFolder   Folder? @relation(fields: [parentFolderId], references: [id])
+
+  // 类型为 wiki doc 时
+  parentDocId  String? @map("parent_doc_id")
+  parentDoc    Doc?    @relation("wiki_doc_parent", fields: [parentDocId], references: [id])
+  childrenDocs Doc[]   @relation("wiki_doc_parent")
+
+  roles Role[]
+
+  @@map("doc")
+}
+
 model User {
-  id             String         @id @default(cuid())
-  username       String
-  nickname       String
-  password       Bytes
-  survivalStatus SurvivalStatus @default(ALIVE)
+  id             String         @id @default(cuid()) @map("id")
+  username       String         @map("username")
+  nickname       String         @map("nickname")
+  password       Bytes          @map("password")
+  survivalStatus SurvivalStatus @default(ALIVE) @map("survival_status")
 
-  authoredWikiDocs    WikiDoc[]
-  authoredGeneralDocs GeneralDoc[]
+  authoredDocs   Doc[]
+  authoredFolder Folder[]
 
-  canManageWikiDocs WikiDoc[] @relation("wiki_doc_administrators")
-  canWriteWikiDocs  WikiDoc[] @relation("wiki_doc_collaborators")
-  canReadWikiDocs   WikiDoc[] @relation("wiki_doc_readers")
-
-  canManageGeneralDocs GeneralDoc[] @relation("general_doc_administrators")
-  canWriteGeneralDocs  GeneralDoc[] @relation("general_doc_collaborators")
-  canReadGeneralDocs   GeneralDoc[] @relation("general_doc_readers")
-
-  canManageFolders Folder[] @relation("folder_administrators")
-  canWriteFolders  Folder[] @relation("folder_collaborators")
-  canReadFolders   Folder[] @relation("folder_readers")
+  roles Role[]
 
   @@map("user")
+}
+
+// 角色表, 每个角色代表着某个文件夹和某个文档的一种权限, 分别为管理者, 协作者, 阅读者
+// 角色之间的父子关系参考文件夹与文档, 文档与文档之间的父子关系, 父角色拥有子角色的所有权限
+// 父子关系举例:
+//   若目录结构为: 
+//     folder_1 < doc_1
+//   则角色父子关系为: (a 为管理员角色, c 为协作者角色, r 为阅读者角色)
+//     folder_1.a <- folder_1.c <- folder_1.r
+//        ^             ^             ^
+//        |             |             |
+//       doc_1.a <-- doc_1.c <---- doc_1.r
+model Role {
+  id       String   @id @default(cuid()) @map("id")
+  roleType RoleType @map("role_type")
+
+  docId String? @map("doc_id")
+  doc   Doc?    @relation(fields: [docId], references: [id])
+
+  folderId String? @map("folder_id")
+  folder   Folder? @relation(fields: [folderId], references: [id])
+
+  user User[]
+
+  parentRoles   Role[] @relation("role_parent")
+  childrenRoles Role[] @relation("role_parent")
+
+  @@map("role")
 }
