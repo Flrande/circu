@@ -1,6 +1,6 @@
 import { IsAlphanumeric, IsString } from "class-validator"
 
-export class DocIdQueryDto {
+export class IdQueryDto {
   @IsString()
   @IsAlphanumeric()
   id: string

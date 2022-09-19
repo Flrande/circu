@@ -2,12 +2,17 @@ import { Injectable } from "@nestjs/common"
 import { Doc, DocType, Prisma, RoleType, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
-import { DocAuthService } from "./doc-auth.service"
-import { DocExceptionCode } from "./doc.constants"
+import { DocExceptionCode } from "../doc.constants"
+import { FolderAuthService } from "./auth/folder-auth.service"
+import { GeneralDocAuthService } from "./auth/general-doc-auth.service"
 
 @Injectable()
 export class GeneralDocService {
-  constructor(private readonly prismaService: PrismaService, private readonly docAuthService: DocAuthService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly generalDocAuthService: GeneralDocAuthService,
+    private readonly folderAuthService: FolderAuthService
+  ) {}
 
   /**
    * 根据 id 查询文档元信息, 不包含文档内容
@@ -19,7 +24,7 @@ export class GeneralDocService {
     docId: Doc["id"]
   ): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">> {
     // 校验权限
-    const flag = await this.docAuthService.verifyUserReadGeneralDoc(userId, docId)
+    const flag = await this.generalDocAuthService.verifyUserReadGeneralDoc(userId, docId)
     if (!flag) {
       throw new CommonException({
         code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC,
@@ -60,7 +65,7 @@ export class GeneralDocService {
   ): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">> {
     // 校验权限
     const flag = data.parentFolderId
-      ? await this.docAuthService.verifyUserWriteFolder(userId, data.parentFolderId)
+      ? await this.folderAuthService.verifyUserWriteFolder(userId, data.parentFolderId)
       : true
     if (!flag) {
       throw new CommonException({
@@ -112,7 +117,9 @@ export class GeneralDocService {
       value: initialValue,
       docType: DocType.GENERAL,
       author: {
-        connect: author,
+        connect: {
+          id: author.id,
+        },
       },
     }
 
@@ -178,7 +185,9 @@ export class GeneralDocService {
 
       // 将新文档与父文件夹关联
       createPayload.parentFolder = {
-        connect: folder,
+        connect: {
+          id: folder.id,
+        },
       }
 
       // 新建文档
@@ -198,14 +207,20 @@ export class GeneralDocService {
         data: {
           roleType: RoleType.ADMINISTRATOR,
           doc: {
-            connect: createDocResult,
+            connect: {
+              id: createDocResult.id,
+            },
           },
           parentRoles: {
-            connect: folderAdministratorRole,
+            connect: {
+              id: folderAdministratorRole.id,
+            },
           },
           // 将新文档的管理者角色和新文档作者相关联
           user: {
-            connect: author,
+            connect: {
+              id: author.id,
+            },
           },
         },
       })
@@ -214,10 +229,12 @@ export class GeneralDocService {
         data: {
           roleType: RoleType.COLLABORATOR,
           doc: {
-            connect: createDocResult,
+            connect: {
+              id: createDocResult.id,
+            },
           },
           parentRoles: {
-            connect: [folderCollaboratorRole, createAdministratorRoleResult],
+            connect: [{ id: folderCollaboratorRole.id }, { id: createAdministratorRoleResult.id }],
           },
         },
       })
@@ -226,16 +243,19 @@ export class GeneralDocService {
         data: {
           roleType: RoleType.READER,
           doc: {
-            connect: createDocResult,
+            connect: {
+              id: createDocResult.id,
+            },
           },
           parentRoles: {
-            connect: [folderReaderRole, createCollaboratorRoleResult],
+            connect: [{ id: folderReaderRole.id }, { id: createCollaboratorRoleResult.id }],
           },
         },
       })
 
       return createDocResult
     } else {
+      // 新建文档
       const createDocResult = await this.prismaService.doc.create({
         data: createPayload,
         select: {
@@ -252,11 +272,13 @@ export class GeneralDocService {
         data: {
           roleType: RoleType.ADMINISTRATOR,
           doc: {
-            connect: createDocResult,
+            connect: { id: createDocResult.id },
           },
           // 将新文档的管理者角色和新文档作者相关联
           user: {
-            connect: author,
+            connect: {
+              id: author.id,
+            },
           },
         },
       })
@@ -265,10 +287,14 @@ export class GeneralDocService {
         data: {
           roleType: RoleType.COLLABORATOR,
           doc: {
-            connect: createDocResult,
+            connect: {
+              id: createDocResult.id,
+            },
           },
           parentRoles: {
-            connect: createAdministratorRoleResult,
+            connect: {
+              id: createAdministratorRoleResult.id,
+            },
           },
         },
       })
@@ -277,10 +303,14 @@ export class GeneralDocService {
         data: {
           roleType: RoleType.READER,
           doc: {
-            connect: createDocResult,
+            connect: {
+              id: createDocResult.id,
+            },
           },
           parentRoles: {
-            connect: createCollaboratorRoleResult,
+            connect: {
+              id: createCollaboratorRoleResult.id,
+            },
           },
         },
       })

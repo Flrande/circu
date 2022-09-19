@@ -3,9 +3,9 @@ import { Doc } from "@prisma/client"
 import { Request } from "express"
 import { UserAuthGuard } from "src/guards/user-auth.guard"
 import { ISuccessResponse } from "src/interfaces/response"
-import { CreateGeneralDocDto } from "./dto/create-doc.dto"
-import { DocIdQueryDto } from "./dto/doc-id.dto"
-import { GeneralDocService } from "./general-doc.service"
+import { CreateGeneralDocDto } from "../dto/create-doc.dto"
+import { IdQueryDto } from "../dto/id.dto"
+import { GeneralDocService } from "../service/general-doc.service"
 
 @Controller("api/doc/general")
 export class GeneralDocController {
@@ -17,7 +17,7 @@ export class GeneralDocController {
   @Get()
   @UseGuards(UserAuthGuard)
   async getGeneralDocById(
-    @Query() query: DocIdQueryDto,
+    @Query() query: IdQueryDto,
     @Req() req: Request
   ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">>> {
     const result = await this.generalDocService.findDocMetaById(req.session.userid!, query.id)
