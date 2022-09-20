@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common"
-import { Doc, DocType, Prisma, RoleType, User } from "@prisma/client"
+import { Doc, DocType, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
 import { DocExceptionCode } from "../doc.constants"
@@ -40,6 +40,7 @@ export class GeneralDocService {
       select: {
         id: true,
         lastModify: true,
+        survivalStatus: true,
         authorId: true,
         parentFolderId: true,
       },
@@ -47,12 +48,25 @@ export class GeneralDocService {
 
     if (!result) {
       throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_NOT_FOUND,
+        code: DocExceptionCode.GENERAL_DOC_READ_BUT_DOC_NOT_FOUND,
         message: `未能找到文档信息(文档id: ${docId})`,
       })
     }
 
-    return result
+    if (result.survivalStatus !== SurvivalStatus.ALIVE) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_READ_BUT_DOC_DELETED,
+        message: "该文档已被删除(文档id: ${docId})",
+        isFiltered: false,
+      })
+    }
+
+    return {
+      id: result.id,
+      lastModify: result.lastModify,
+      authorId: result.authorId,
+      parentFolderId: result.parentFolderId,
+    }
   }
 
   /**
@@ -327,7 +341,37 @@ export class GeneralDocService {
    * 需要操作者的用户 id, 用于判断操作者是否有权限删除文档
    *
    */
-  // async deleteDoc(userId: User["id"], docId: GeneralDoc["id"]) {
+  async deleteDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
+    const docData = await this.prismaService.doc.findUnique({
+      where: {
+        id: docId,
+      },
+    })
 
-  // }
+    if (!docData) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_DELETE_BUT_NOT_FOUND_DOC,
+        message: `未能找到文档信息(id: ${docId})`,
+      })
+    }
+
+    // 校验权限
+    const flag = await this.generalDocAuthService.verifyUserAdministerGeneralDoc(userId, docId)
+    if (!flag) {
+      throw new CommonException({
+        code: DocExceptionCode.CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC,
+        message: `当前用户没有该文档的管理权限`,
+        isFiltered: false,
+      })
+    }
+
+    await this.prismaService.doc.update({
+      where: {
+        id: docId,
+      },
+      data: {
+        survivalStatus: SurvivalStatus.DELETED,
+      },
+    })
+  }
 }

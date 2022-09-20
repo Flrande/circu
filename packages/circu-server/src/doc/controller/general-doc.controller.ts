@@ -55,9 +55,15 @@ export class GeneralDocController {
   /**
    * 删除文档, 需要登录
    */
-  // @Get("delete")
-  // @UseGuards(UserAuthGuard)
-  // async deleteGeneralDoc(@Query() query: DocIdQueryDto, @Req() req: Request) {
+  @Get("delete")
+  @UseGuards(UserAuthGuard)
+  async deleteGeneralDoc(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.deleteDoc(req.session.userid!, query.id)
 
-  // }
+    return {
+      code: 0,
+      message: "删除成功",
+      data: {},
+    }
+  }
 }
