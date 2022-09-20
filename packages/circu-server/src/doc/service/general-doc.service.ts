@@ -28,7 +28,8 @@ export class GeneralDocService {
     if (!flag) {
       throw new CommonException({
         code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC,
-        message: `当前用户无权阅读文档(id: ${docId})`,
+        message: `当前用户无权阅读文档(文档id: ${docId})`,
+        isFiltered: false,
       })
     }
 
@@ -47,7 +48,7 @@ export class GeneralDocService {
     if (!result) {
       throw new CommonException({
         code: DocExceptionCode.GENERAL_DOC_NOT_FOUND,
-        message: `未能找到文档信息(id: ${docId})`,
+        message: `未能找到文档信息(文档id: ${docId})`,
       })
     }
 
@@ -70,7 +71,8 @@ export class GeneralDocService {
     if (!flag) {
       throw new CommonException({
         code: DocExceptionCode.CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER,
-        message: `当前用户无权写文件夹(id: ${data.parentFolderId})`,
+        message: `当前用户无权写文件夹(文件夹id: ${data.parentFolderId})`,
+        isFiltered: false,
       })
     }
 

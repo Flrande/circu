@@ -1,5 +1,6 @@
 // doc 相关错误范围 1400-1699
 export const DocExceptionCode = {
+  // general-doc
   /**
    * 未找到 general-doc 信息
    */
@@ -13,29 +14,36 @@ export const DocExceptionCode = {
    */
   GENERAL_DOC_CREATE_BUT_NOT_FOUND_PARENT_FOLDER: 1402,
   /**
-   * 当前登录的用户没有读取该 general-doc 的权限
+   * 删除 general-doc 时未能找到文档信息 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC: 1403,
+  GENERAL_DOC_DELETE_BUT_NOT_FOUND_DOC: 1403,
   /**
-   * 当前登录的用户没有修改该 general-doc 的权限
+   * 当前登录的用户没有读取该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_WRITE_THIS_GENERAL_DOC: 1404,
+  CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC: 1404,
   /**
-   * 当前登录的用户没有管理该 general-doc 的权限
+   * 当前登录的用户没有修改该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC: 1405,
+  CURRENT_USER_CAN_NOT_WRITE_THIS_GENERAL_DOC: 1405,
+  /**
+   * 当前登录的用户没有管理该 general-doc 的权限 [不过滤]
+   */
+  CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC: 1406,
   /**
    * 未能找到该 general-doc 的管理者角色
    */
-  GENERAL_DOC_ADMINISTRATOR_ROLE_NOT_FOUND: 1406,
+  GENERAL_DOC_ADMINISTRATOR_ROLE_NOT_FOUND: 1407,
   /**
    * 未能找到该 general-doc 的协作者角色
    */
-  GENERAL_DOC_COLLABORATOR_ROLE_NOT_FOUND: 1407,
+  GENERAL_DOC_COLLABORATOR_ROLE_NOT_FOUND: 1408,
   /**
    * 未能找到该 general-doc 的阅读者角色
    */
-  GENERAL_DOC_READER_ROLE_NOT_FOUND: 1408,
+  GENERAL_DOC_READER_ROLE_NOT_FOUND: 1409,
+
+  // wiki-doc
+  // --------------------------------------------------
 
   /**
    * 未找到 wiki-doc 信息
@@ -50,15 +58,15 @@ export const DocExceptionCode = {
    */
   WIKI_DOC_CREATE_BUT_NOT_FOUND_PARENT_DOC: 1452,
   /**
-   * 当前登录的用户没有读取该 wiki-doc 的权限
+   * 当前登录的用户没有读取该 wiki-doc 的权限 [不过滤]
    */
   CURRENT_USER_CAN_NOT_READ_THIS_WIKI_DOC: 1453,
   /**
-   * 当前登录的用户没有修改该 wiki-doc 的权限
+   * 当前登录的用户没有修改该 wiki-doc 的权限 [不过滤]
    */
   CURRENT_USER_CAN_NOT_WRITE_THIS_WIKI_DOC: 1454,
   /**
-   * 当前登录的用户没有管理该 wiki-doc 的权限
+   * 当前登录的用户没有管理该 wiki-doc 的权限 [不过滤]
    */
   CURRENT_USER_CAN_NOT_MANAGE_THIS_WIKI_DOC: 1455,
   /**
@@ -74,6 +82,9 @@ export const DocExceptionCode = {
    */
   WIKI_DOC_READER_ROLE_NOT_FOUND: 1458,
 
+  // folder
+  //--------------------------------------------------
+
   /**
    * 未找到文件夹信息
    */
@@ -87,15 +98,15 @@ export const DocExceptionCode = {
    */
   FOLDER_CREATE_BUT_NOT_FOUND_PARENT_FOLDER: 1502,
   /**
-   * 当前登录的用户没有读取该文件夹的权限
+   * 当前登录的用户没有读取该文件夹的权限 [不过滤]
    */
   CURRENT_USER_CAN_NOT_READ_THIS_FOLDER: 1503,
   /**
-   * 当前登录的用户没有修改该文件夹的权限
+   * 当前登录的用户没有修改该文件夹的权限 [不过滤]
    */
   CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER: 1504,
   /**
-   * 当前登录的用户没有管理该文件夹的权限
+   * 当前登录的用户没有管理该文件夹的权限 [不过滤]
    */
   CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER: 1505,
   /**

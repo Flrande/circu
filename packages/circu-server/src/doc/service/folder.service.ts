@@ -18,7 +18,8 @@ export class FolderService {
     if (!flag) {
       throw new CommonException({
         code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_FOLDER,
-        message: `当前用户无权阅读文件夹(id: ${folderId})`,
+        message: `当前用户无权阅读文件夹(文件夹id: ${folderId})`,
+        isFiltered: false,
       })
     }
 
@@ -39,7 +40,7 @@ export class FolderService {
     if (!result) {
       throw new CommonException({
         code: DocExceptionCode.FOLDER_NOT_FOUND,
-        message: `未能找到文件夹信息(id: ${folderId})`,
+        message: `未能找到文件夹信息(文件夹id: ${folderId})`,
       })
     }
 
@@ -57,7 +58,8 @@ export class FolderService {
     if (!flag) {
       throw new CommonException({
         code: DocExceptionCode.CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER,
-        message: `当前用户无权写文件夹(id: ${data.parentFolderId})`,
+        message: `当前用户无权写文件夹(文件夹id: ${data.parentFolderId})`,
+        isFiltered: false,
       })
     }
 
@@ -73,7 +75,7 @@ export class FolderService {
     if (!author) {
       throw new CommonException({
         code: DocExceptionCode.FOLDER_CREATE_BUT_NOT_FOUND_USER,
-        message: `未找到用户信息(id: ${userId})`,
+        message: `未找到用户信息(用户id: ${userId})`,
       })
     }
 
@@ -100,7 +102,7 @@ export class FolderService {
       if (!folder) {
         throw new CommonException({
           code: DocExceptionCode.GENERAL_DOC_CREATE_BUT_NOT_FOUND_PARENT_FOLDER,
-          message: `未找到父文件夹信息(id: ${data.parentFolderId})`,
+          message: `未找到父文件夹信息(父文件夹id: ${data.parentFolderId})`,
         })
       }
 
