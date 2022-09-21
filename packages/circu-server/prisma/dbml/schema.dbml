@@ -22,6 +22,7 @@ Table doc {
   lastModify DateTime [not null]
   value Json [not null]
   survivalStatus SurvivalStatus [not null, default: 'ALIVE']
+  lastDeleted DateTime
   docType DocType [not null]
   authorId String [not null]
   author user [not null]
