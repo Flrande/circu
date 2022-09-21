@@ -72,6 +72,27 @@ export class GeneralDocService {
   }
 
   /**
+   * 接受用户 id, 返回该用户个人空间的顶部文档
+   */
+  async findTopDocs(userId: User["id"]): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]> {
+    const result = await this.prismaService.doc.findMany({
+      where: {
+        authorId: userId,
+        parentFolder: null,
+        docType: DocType.GENERAL,
+      },
+      select: {
+        id: true,
+        lastModify: true,
+        authorId: true,
+        parentFolderId: true,
+      },
+    })
+
+    return result
+  }
+
+  /**
    * 创建新的文档, 不需要提供新文档的值
    *
    * 需要操作者的用户 id, 用于判断操作者是否有权限在该文件夹上新建文档

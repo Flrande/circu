@@ -67,6 +67,30 @@ export class FolderService {
     }
   }
 
+  /**
+   * 接受用户 id, 返回该用户个人空间的顶部文件夹
+   */
+  async findTopFolders(
+    userId: User["id"]
+  ): Promise<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">[]> {
+    const result = await this.prismaService.folder.findMany({
+      where: {
+        authorId: userId,
+        parentFolder: null,
+      },
+      select: {
+        id: true,
+        lastModify: true,
+        title: true,
+        description: true,
+        authorId: true,
+        parentFolderId: true,
+      },
+    })
+
+    return result
+  }
+
   async createFolder(
     userId: User["id"],
     data: Pick<Folder, "title" | "description" | "parentFolderId">

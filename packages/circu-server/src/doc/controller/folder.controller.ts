@@ -30,6 +30,25 @@ export class FolderController {
     }
   }
 
+  /**
+   * 获取当前登录用户个人空间的顶部文件夹
+   */
+  @Get("top/personal")
+  @UseGuards(UserAuthGuard)
+  async getPersonalTopFolders(
+    @Req() req: Request
+  ): Promise<
+    ISuccessResponse<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">[]>
+  > {
+    const result = await this.folderService.findTopFolders(req.session.userid!)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: result,
+    }
+  }
+
   @Post("create")
   @UseGuards(UserAuthGuard)
   async createFolder(
@@ -70,7 +89,7 @@ export class FolderController {
   /**
    * 彻底删除文件夹, 需要登录
    */
-  @Get("delete")
+  @Get("delete_completely")
   @UseGuards(UserAuthGuard)
   async deleteFolderCompletely(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
     await this.folderService.deleteFolder(req.session.userid!, query.id, "hard")

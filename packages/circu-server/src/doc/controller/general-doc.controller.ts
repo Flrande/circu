@@ -30,6 +30,23 @@ export class GeneralDocController {
   }
 
   /**
+   * 获取当前登录用户个人空间的顶部文档
+   */
+  @Get("top/personal")
+  @UseGuards(UserAuthGuard)
+  async getPersonalTopDocs(
+    @Req() req: Request
+  ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]>> {
+    const result = await this.generalDocService.findTopDocs(req.session.userid!)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: result,
+    }
+  }
+
+  /**
    * 创建新文档, 需要登录
    */
   @Post("create")
@@ -70,7 +87,7 @@ export class GeneralDocController {
   /**
    * 彻底删除文档, 需要登录
    */
-  @Get("delete")
+  @Get("delete_completely")
   @UseGuards(UserAuthGuard)
   async deleteGeneralDocCompletely(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
     await this.generalDocService.deleteDoc(req.session.userid!, query.id, "hard")
