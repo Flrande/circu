@@ -58,7 +58,22 @@ export class FolderController {
   @Get("delete")
   @UseGuards(UserAuthGuard)
   async deleteFolder(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
-    await this.folderService.deleteFolder(req.session.userid!, query.id)
+    await this.folderService.deleteFolder(req.session.userid!, query.id, "soft")
+
+    return {
+      code: 0,
+      message: "删除成功",
+      data: {},
+    }
+  }
+
+  /**
+   * 彻底删除文件夹, 需要登录
+   */
+  @Get("delete")
+  @UseGuards(UserAuthGuard)
+  async deleteFolderCompletely(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.folderService.deleteFolder(req.session.userid!, query.id, "hard")
 
     return {
       code: 0,

@@ -338,12 +338,12 @@ export class GeneralDocService {
   }
 
   /**
-   * 根据 id 将文档设为删除且可回收的状态
+   * 根据 id 将文档删除, 传入的 type 决定是可回收的删除还是彻底删除, soft 是可回收的删除, hard 是彻底删除
    *
    * 需要操作者的用户 id, 用于判断操作者是否有权限删除文档
    *
    */
-  async deleteDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
+  async deleteDoc(userId: User["id"], docId: Doc["id"], type: "soft" | "hard"): Promise<void> {
     const docData = await this.prismaService.doc.findUnique({
       where: {
         id: docId,
@@ -373,7 +373,7 @@ export class GeneralDocService {
         id: docId,
       },
       data: {
-        survivalStatus: SurvivalStatus.DELETED,
+        survivalStatus: type === "soft" ? SurvivalStatus.DELETED : SurvivalStatus.COMPLETELY_DELETED,
         lastDeleted: new Date(),
       },
     })
