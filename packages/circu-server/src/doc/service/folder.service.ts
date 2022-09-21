@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common"
-import { Folder, Prisma, RoleType, User } from "@prisma/client"
+import { Folder, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
 import { DocExceptionCode } from "../doc.constants"
@@ -32,6 +32,7 @@ export class FolderService {
         lastModify: true,
         title: true,
         description: true,
+        survivalStatus: true,
         authorId: true,
         parentFolderId: true,
       },
@@ -39,12 +40,27 @@ export class FolderService {
 
     if (!result) {
       throw new CommonException({
-        code: DocExceptionCode.FOLDER_NOT_FOUND,
+        code: DocExceptionCode.FOLDER_READ_BUT_FOLDER_NOT_FOUND,
         message: `未能找到文件夹信息(文件夹id: ${folderId})`,
       })
     }
 
-    return result
+    if (result.survivalStatus !== SurvivalStatus.ALIVE) {
+      throw new CommonException({
+        code: DocExceptionCode.FOLDER_READ_BUT_FOLDER_DELETED,
+        message: `该文件夹已被删除(文件夹id: ${folderId})`,
+        isFiltered: false,
+      })
+    }
+
+    return {
+      id: result.id,
+      lastModify: result.lastModify,
+      title: result.title,
+      description: result.authorId,
+      authorId: result.authorId,
+      parentFolderId: result.parentFolderId,
+    }
   }
 
   async createFolder(
@@ -287,5 +303,46 @@ export class FolderService {
 
       return createFolderResult
     }
+  }
+
+  /**
+   * 根据 id 将文件夹设为删除且可回收的状态
+   *
+   * 需要操作者的用户 id, 用于判断操作者是否有权限删除文档
+   *
+   */
+  async deleteFolder(userId: User["id"], folderId: Folder["id"]): Promise<void> {
+    const folderData = await this.prismaService.folder.findUnique({
+      where: {
+        id: folderId,
+      },
+    })
+
+    if (!folderData) {
+      throw new CommonException({
+        code: DocExceptionCode.FOLDER_DELETE_BUT_NOT_FOUND_FOLDER,
+        message: `未能找到文件夹信息(id: ${folderId})`,
+        isFiltered: false,
+      })
+    }
+
+    // 校验权限
+    const flag = await this.folderAuthService.verifyUserAdministerFolder(userId, folderId)
+    if (!flag) {
+      throw new CommonException({
+        code: DocExceptionCode.CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER,
+        message: `当前用户没有该文件夹的管理权限(文件夹id: ${folderId})`,
+        isFiltered: false,
+      })
+    }
+
+    await this.prismaService.folder.update({
+      where: {
+        id: folderId,
+      },
+      data: {
+        survivalStatus: SurvivalStatus.DELETED,
+      },
+    })
   }
 }

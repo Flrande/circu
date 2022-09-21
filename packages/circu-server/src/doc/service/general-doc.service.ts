@@ -56,7 +56,7 @@ export class GeneralDocService {
     if (result.survivalStatus !== SurvivalStatus.ALIVE) {
       throw new CommonException({
         code: DocExceptionCode.GENERAL_DOC_READ_BUT_DOC_DELETED,
-        message: "该文档已被删除(文档id: ${docId})",
+        message: `该文档已被删除(文档id: ${docId})`,
         isFiltered: false,
       })
     }
@@ -351,7 +351,8 @@ export class GeneralDocService {
     if (!docData) {
       throw new CommonException({
         code: DocExceptionCode.GENERAL_DOC_DELETE_BUT_NOT_FOUND_DOC,
-        message: `未能找到文档信息(id: ${docId})`,
+        message: `未能找到文档信息(文档id: ${docId})`,
+        isFiltered: false,
       })
     }
 
@@ -360,7 +361,7 @@ export class GeneralDocService {
     if (!flag) {
       throw new CommonException({
         code: DocExceptionCode.CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC,
-        message: `当前用户没有该文档的管理权限`,
+        message: `当前用户没有该文档的管理权限(文档id: ${docId})`,
         isFiltered: false,
       })
     }

@@ -92,37 +92,45 @@ export const DocExceptionCode = {
   /**
    * 未找到文件夹信息
    */
-  FOLDER_NOT_FOUND: 1500,
+  FOLDER_READ_BUT_FOLDER_NOT_FOUND: 1500,
+  /**
+   * 查找的文件夹已被删除 [不过滤]
+   */
+  FOLDER_READ_BUT_FOLDER_DELETED: 1501,
   /**
    * 新建文件夹时未能找到作者信息
    */
-  FOLDER_CREATE_BUT_NOT_FOUND_USER: 1501,
+  FOLDER_CREATE_BUT_NOT_FOUND_USER: 1502,
   /**
    * 新建文件夹时未能找到父文件夹信息
    */
-  FOLDER_CREATE_BUT_NOT_FOUND_PARENT_FOLDER: 1502,
+  FOLDER_CREATE_BUT_NOT_FOUND_PARENT_FOLDER: 1503,
+  /**
+   * 删除文件夹时未能找到文件夹信息 [不过滤]
+   */
+  FOLDER_DELETE_BUT_NOT_FOUND_FOLDER: 1504,
   /**
    * 当前登录的用户没有读取该文件夹的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_READ_THIS_FOLDER: 1503,
+  CURRENT_USER_CAN_NOT_READ_THIS_FOLDER: 1505,
   /**
    * 当前登录的用户没有修改该文件夹的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER: 1504,
+  CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER: 1506,
   /**
    * 当前登录的用户没有管理该文件夹的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER: 1505,
+  CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER: 1507,
   /**
    * 未能找到该文件夹的管理者角色
    */
-  FOLDER_ADMINISTRATOR_ROLE_NOT_FOUND: 1506,
+  FOLDER_ADMINISTRATOR_ROLE_NOT_FOUND: 1508,
   /**
    * 未能找到该文件夹的协作者角色
    */
-  FOLDER_COLLABORATOR_ROLE_NOT_FOUND: 1507,
+  FOLDER_COLLABORATOR_ROLE_NOT_FOUND: 1509,
   /**
    * 未能找到该文件夹的阅读者角色
    */
-  FOLDER_READER_ROLE_NOT_FOUND: 1508,
+  FOLDER_READER_ROLE_NOT_FOUND: 1510,
 } as const
