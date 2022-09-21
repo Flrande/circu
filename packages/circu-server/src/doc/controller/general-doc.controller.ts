@@ -19,8 +19,8 @@ export class GeneralDocController {
   async getGeneralDocById(
     @Query() query: IdQueryDto,
     @Req() req: Request
-  ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">>> {
-    const result = await this.generalDocService.findDocMetaById(req.session.userid!, query.id)
+  ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">>> {
+    const result = await this.generalDocService.findDocMetaDataById(req.session.userid!, query.id)
 
     return {
       code: 0,

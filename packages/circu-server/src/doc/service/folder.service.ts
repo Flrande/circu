@@ -12,7 +12,9 @@ export class FolderService {
   async findFolderById(
     userId: User["id"],
     folderId: Folder["id"]
-  ): Promise<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">> {
+  ): Promise<
+    Pick<Folder, "id" | "lastModify" | "title" | "description" | "lastDeleted" | "authorId" | "parentFolderId">
+  > {
     // 校验权限
     const flag = await this.folderAuthService.verifyUserReadFolder(userId, folderId)
     if (!flag) {
@@ -32,6 +34,7 @@ export class FolderService {
         lastModify: true,
         title: true,
         description: true,
+        lastDeleted: true,
         survivalStatus: true,
         authorId: true,
         parentFolderId: true,
@@ -58,6 +61,7 @@ export class FolderService {
       lastModify: result.lastModify,
       title: result.title,
       description: result.authorId,
+      lastDeleted: result.lastDeleted,
       authorId: result.authorId,
       parentFolderId: result.parentFolderId,
     }
@@ -342,6 +346,7 @@ export class FolderService {
       },
       data: {
         survivalStatus: SurvivalStatus.DELETED,
+        lastDeleted: new Date(),
       },
     })
   }

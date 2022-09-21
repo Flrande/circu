@@ -19,10 +19,10 @@ export class GeneralDocService {
    *
    * 需要操作者的用户 id, 用于判断操作者是否有权限获得文档信息
    */
-  async findDocMetaById(
+  async findDocMetaDataById(
     userId: User["id"],
     docId: Doc["id"]
-  ): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">> {
+  ): Promise<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">> {
     // 校验权限
     const flag = await this.generalDocAuthService.verifyUserReadGeneralDoc(userId, docId)
     if (!flag) {
@@ -40,6 +40,7 @@ export class GeneralDocService {
       select: {
         id: true,
         lastModify: true,
+        lastDeleted: true,
         survivalStatus: true,
         authorId: true,
         parentFolderId: true,
@@ -64,6 +65,7 @@ export class GeneralDocService {
     return {
       id: result.id,
       lastModify: result.lastModify,
+      lastDeleted: result.lastDeleted,
       authorId: result.authorId,
       parentFolderId: result.parentFolderId,
     }
@@ -372,6 +374,7 @@ export class GeneralDocService {
       },
       data: {
         survivalStatus: SurvivalStatus.DELETED,
+        lastDeleted: new Date(),
       },
     })
   }

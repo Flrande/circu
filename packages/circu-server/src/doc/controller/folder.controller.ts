@@ -17,7 +17,9 @@ export class FolderController {
     @Query() query: IdQueryDto,
     @Req() req: Request
   ): Promise<
-    ISuccessResponse<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">>
+    ISuccessResponse<
+      Pick<Folder, "id" | "lastModify" | "title" | "description" | "lastDeleted" | "authorId" | "parentFolderId">
+    >
   > {
     const result = await this.folderService.findFolderById(req.session.userid!, query.id)
 
