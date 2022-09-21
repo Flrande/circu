@@ -8,6 +8,7 @@ Table folder {
   title String [not null]
   description String
   survivalStatus SurvivalStatus [not null, default: 'ALIVE']
+  lastDeleted DateTime
   authorId String [not null]
   author user [not null]
   childrenDocs doc [not null]

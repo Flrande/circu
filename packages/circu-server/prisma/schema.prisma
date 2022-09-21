@@ -41,6 +41,7 @@ model Folder {
   title          String         @map("title")
   description    String?        @map("description")
   survivalStatus SurvivalStatus @default(ALIVE) @map("survival_status")
+  lastDeleted    DateTime?       @map("last_deleted")
 
   authorId String @map("author_id")
   author   User   @relation(fields: [authorId], references: [id])
