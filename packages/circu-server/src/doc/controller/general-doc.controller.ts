@@ -16,7 +16,7 @@ export class GeneralDocController {
    */
   @Get()
   @UseGuards(UserAuthGuard)
-  async getGeneralDocById(
+  async getDocById(
     @Query() query: IdQueryDto,
     @Req() req: Request
   ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">>> {
@@ -51,7 +51,7 @@ export class GeneralDocController {
    */
   @Post("create")
   @UseGuards(UserAuthGuard)
-  async createGeneralDoc(
+  async createDoc(
     @Body() createGeneralDocDto: CreateGeneralDocDto,
     @Req() req: Request
   ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">>> {
@@ -74,7 +74,7 @@ export class GeneralDocController {
    */
   @Get("delete")
   @UseGuards(UserAuthGuard)
-  async deleteGeneralDoc(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+  async deleteDoc(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
     await this.generalDocService.deleteDoc(req.session.userid!, query.id, "soft")
 
     return {
@@ -89,12 +89,27 @@ export class GeneralDocController {
    */
   @Get("delete_completely")
   @UseGuards(UserAuthGuard)
-  async deleteGeneralDocCompletely(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+  async deleteDocCompletely(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
     await this.generalDocService.deleteDoc(req.session.userid!, query.id, "hard")
 
     return {
       code: 0,
       message: "删除成功",
+      data: {},
+    }
+  }
+
+  /**
+   * 恢复未彻底删除的文档, 需要登录
+   */
+  @Get("revert_delete")
+  @UseGuards(UserAuthGuard)
+  async revertDoc(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.revertDoc(req.session.userid!, query.id)
+
+    return {
+      code: 0,
+      message: "恢复成功",
       data: {},
     }
   }

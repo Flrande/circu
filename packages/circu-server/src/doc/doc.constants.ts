@@ -22,29 +22,37 @@ export const DocExceptionCode = {
    */
   GENERAL_DOC_DELETE_BUT_NOT_FOUND_DOC: 1404,
   /**
+   * 用户想要恢复的文档已过期 [不过滤]
+   */
+  GENERAL_DOC_DELETE_REVERT_TOO_LATE: 1405,
+  /**
+   * 用户想要恢复的文档已被彻底删除 [不过滤]
+   */
+  GENERAL_DOC_DELETE_REVERT_FAIL: 1406,
+  /**
    * 当前登录的用户没有读取该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC: 1405,
+  CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC: 1407,
   /**
    * 当前登录的用户没有修改该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_WRITE_THIS_GENERAL_DOC: 1406,
+  CURRENT_USER_CAN_NOT_WRITE_THIS_GENERAL_DOC: 1408,
   /**
    * 当前登录的用户没有管理该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC: 1407,
+  CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC: 1409,
   /**
    * 未能找到该 general-doc 的管理者角色
    */
-  GENERAL_DOC_ADMINISTRATOR_ROLE_NOT_FOUND: 1408,
+  GENERAL_DOC_ADMINISTRATOR_ROLE_NOT_FOUND: 1410,
   /**
    * 未能找到该 general-doc 的协作者角色
    */
-  GENERAL_DOC_COLLABORATOR_ROLE_NOT_FOUND: 1409,
+  GENERAL_DOC_COLLABORATOR_ROLE_NOT_FOUND: 1411,
   /**
    * 未能找到该 general-doc 的阅读者角色
    */
-  GENERAL_DOC_READER_ROLE_NOT_FOUND: 1410,
+  GENERAL_DOC_READER_ROLE_NOT_FOUND: 1412,
 
   // wiki-doc
   // --------------------------------------------------
@@ -134,3 +142,6 @@ export const DocExceptionCode = {
    */
   FOLDER_READER_ROLE_NOT_FOUND: 1510,
 } as const
+
+// 文档删除的过期时间
+export const DOC_DELETE_EXPIRE_DAY_TIME = 30

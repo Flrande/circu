@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { Doc, DocType, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
-import { DocExceptionCode } from "../doc.constants"
+import { DocExceptionCode, DOC_DELETE_EXPIRE_DAY_TIME } from "../doc.constants"
 import { FolderAuthService } from "./auth/folder-auth.service"
 import { GeneralDocAuthService } from "./auth/general-doc-auth.service"
 
@@ -396,6 +396,68 @@ export class GeneralDocService {
       data: {
         survivalStatus: type === "soft" ? SurvivalStatus.DELETED : SurvivalStatus.COMPLETELY_DELETED,
         lastDeleted: new Date(),
+      },
+    })
+  }
+
+  /**
+   * 根据 id 将已删除的文档恢复, 若已彻底删除, 不可恢复
+   *
+   * 需要操作者的用户 id, 用于判断操作者是否有权限恢复文档
+   *
+   */
+  async revertDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
+    const docData = await this.prismaService.doc.findUnique({
+      where: {
+        id: docId,
+      },
+    })
+
+    if (!docData) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_DELETE_BUT_NOT_FOUND_DOC,
+        message: `未能找到文档信息(文档id: ${docId})`,
+        isFiltered: false,
+      })
+    }
+
+    // 校验权限
+    const flag = await this.generalDocAuthService.verifyUserAdministerGeneralDoc(userId, docId)
+    if (!flag) {
+      throw new CommonException({
+        code: DocExceptionCode.CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC,
+        message: `当前用户没有该文档的管理权限(文档id: ${docId})`,
+        isFiltered: false,
+      })
+    }
+
+    // 判断是否已彻底删除
+    if (docData.survivalStatus === SurvivalStatus.COMPLETELY_DELETED) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_DELETE_REVERT_FAIL,
+        message: `文档已被彻底删除(文档id: ${docId})`,
+      })
+    }
+
+    // 判断是否已过期
+    const currentTime = new Date()
+    if (
+      docData.lastDeleted &&
+      (currentTime.getTime() - docData.lastDeleted.getTime()) / (1000 * 3600 * 24) > DOC_DELETE_EXPIRE_DAY_TIME
+    ) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_DELETE_REVERT_TOO_LATE,
+        message: `文档已过期(文档id: ${docId})`,
+      })
+    }
+
+    await this.prismaService.doc.update({
+      where: {
+        id: docId,
+      },
+      data: {
+        survivalStatus: SurvivalStatus.ALIVE,
+        lastDeleted: null,
       },
     })
   }
