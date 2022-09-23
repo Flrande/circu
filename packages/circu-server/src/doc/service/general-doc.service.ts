@@ -19,7 +19,7 @@ export class GeneralDocService {
    *
    * 需要操作者的用户 id, 用于判断操作者是否有权限获得文档信息
    */
-  async findDocMetaDataById(
+  async getDocMetaDataById(
     userId: User["id"],
     docId: Doc["id"]
   ): Promise<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">> {
@@ -74,7 +74,7 @@ export class GeneralDocService {
   /**
    * 接受用户 id, 返回该用户个人空间的顶部文档
    */
-  async findTopDocs(userId: User["id"]): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]> {
+  async getTopDocs(userId: User["id"]): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]> {
     const result = await this.prismaService.doc.findMany({
       where: {
         authorId: userId,

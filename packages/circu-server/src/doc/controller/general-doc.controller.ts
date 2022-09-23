@@ -20,7 +20,7 @@ export class GeneralDocController {
     @Query() query: IdQueryDto,
     @Req() req: Request
   ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">>> {
-    const result = await this.generalDocService.findDocMetaDataById(req.session.userid!, query.id)
+    const result = await this.generalDocService.getDocMetaDataById(req.session.userid!, query.id)
 
     return {
       code: 0,
@@ -37,7 +37,7 @@ export class GeneralDocController {
   async getPersonalTopDocs(
     @Req() req: Request
   ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]>> {
-    const result = await this.generalDocService.findTopDocs(req.session.userid!)
+    const result = await this.generalDocService.getTopDocs(req.session.userid!)
 
     return {
       code: 0,

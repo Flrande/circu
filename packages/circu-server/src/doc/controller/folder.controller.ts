@@ -21,7 +21,7 @@ export class FolderController {
       Pick<Folder, "id" | "lastModify" | "title" | "description" | "lastDeleted" | "authorId" | "parentFolderId">
     >
   > {
-    const result = await this.folderService.findFolderById(req.session.userid!, query.id)
+    const result = await this.folderService.getFolderById(req.session.userid!, query.id)
 
     return {
       code: 0,
@@ -40,7 +40,7 @@ export class FolderController {
   ): Promise<
     ISuccessResponse<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">[]>
   > {
-    const result = await this.folderService.findTopFolders(req.session.userid!)
+    const result = await this.folderService.getTopFolders(req.session.userid!)
 
     return {
       code: 0,

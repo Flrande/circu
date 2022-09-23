@@ -9,7 +9,7 @@ import { FolderAuthService } from "./auth/folder-auth.service"
 export class FolderService {
   constructor(private readonly prismaService: PrismaService, private readonly folderAuthService: FolderAuthService) {}
 
-  async findFolderById(
+  async getFolderById(
     userId: User["id"],
     folderId: Folder["id"]
   ): Promise<
@@ -70,7 +70,7 @@ export class FolderService {
   /**
    * 接受用户 id, 返回该用户个人空间的顶部文件夹
    */
-  async findTopFolders(
+  async getTopFolders(
     userId: User["id"]
   ): Promise<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">[]> {
     const result = await this.prismaService.folder.findMany({
