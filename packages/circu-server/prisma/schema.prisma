@@ -41,7 +41,7 @@ model Folder {
   title          String         @map("title")
   description    String?        @map("description")
   survivalStatus SurvivalStatus @default(ALIVE) @map("survival_status")
-  lastDeleted    DateTime?       @map("last_deleted")
+  lastDeleted    DateTime?      @map("last_deleted")
 
   authorId String @map("author_id")
   author   User   @relation(fields: [authorId], references: [id])
@@ -54,6 +54,8 @@ model Folder {
 
   roles Role[]
 
+  fastAccessedUser User[] @relation("folders_to_users")
+
   @@map("folder")
 }
 
@@ -62,7 +64,7 @@ model Doc {
   lastModify     DateTime       @map("last_modify")
   value          Json           @map("value")
   survivalStatus SurvivalStatus @default(ALIVE) @map("survival_status")
-  lastDeleted    DateTime?       @map("last_deleted")
+  lastDeleted    DateTime?      @map("last_deleted")
   docType        DocType        @map("doc_type")
 
   authorId String @map("author_id")
@@ -74,10 +76,12 @@ model Doc {
 
   // 类型为 wiki doc 时
   parentDocId  String? @map("parent_doc_id")
-  parentDoc    Doc?    @relation("wiki_doc_parent", fields: [parentDocId], references: [id])
-  childrenDocs Doc[]   @relation("wiki_doc_parent")
+  parentDoc    Doc?    @relation("wiki_doc_to_docs", fields: [parentDocId], references: [id])
+  childrenDocs Doc[]   @relation("wiki_doc_to_docs")
 
   roles Role[]
+
+  fastAccessedUser User[] @relation("docs_to_users")
 
   @@map("doc")
 }
@@ -92,7 +96,10 @@ model User {
   authoredDocs   Doc[]
   authoredFolder Folder[]
 
-  roles Role[]
+  fastAccessDocs    Doc[]    @relation("docs_to_users")
+  fastAccessFolders Folder[] @relation("folders_to_users")
+
+  roles Role[] @relation("roles_to_users")
 
   @@map("user")
 }
@@ -117,10 +124,10 @@ model Role {
   folderId String? @map("folder_id")
   folder   Folder? @relation(fields: [folderId], references: [id])
 
-  user User[]
+  user User[] @relation("roles_to_users")
 
-  parentRoles   Role[] @relation("role_parent")
-  childrenRoles Role[] @relation("role_parent")
+  parentRoles   Role[] @relation("parent_roles_to_child_roles")
+  childrenRoles Role[] @relation("parent_roles_to_child_roles")
 
   @@map("role")
 }
