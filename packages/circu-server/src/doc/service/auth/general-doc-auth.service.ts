@@ -44,23 +44,23 @@ export class GeneralDocAuthService {
         role.role_type
       from
         traverse
-      join _role_parent on
-        traverse.id = _role_parent."B"
+      join _parent_roles_to_child_roles on
+        traverse.id = _parent_roles_to_child_roles."B"
       join role on
-        _role_parent."A" = role.id 
+        _parent_roles_to_child_roles."A" = role.id 
         )
             select
         id,
         doc_id,
         folder_id,
         role_type,
-        "_RoleToUser"."B" as user_id
+        _roles_to_users."B" as user_id
       from
         traverse,
-        "_RoleToUser"
+        _roles_to_users
       where
-        "_RoleToUser"."A" = traverse.id
-        and "_RoleToUser"."B" = ${userId}
+        _roles_to_users."A" = traverse.id
+        and _roles_to_users."B" = ${userId}
       ;
     `
 
@@ -105,23 +105,23 @@ export class GeneralDocAuthService {
         role.role_type
       from
         traverse
-      join _role_parent on
-        traverse.id = _role_parent."B"
+      join _parent_roles_to_child_roles on
+        traverse.id = _parent_roles_to_child_roles."B"
       join role on
-        _role_parent."A" = role.id 
+        _parent_roles_to_child_roles."A" = role.id 
         )
             select
         id,
         doc_id,
         folder_id,
         role_type,
-        "_RoleToUser"."B" as user_id
+        _roles_to_users."B" as user_id
       from
         traverse,
-        "_RoleToUser"
+        _roles_to_users
       where
-        "_RoleToUser"."A" = traverse.id
-        and "_RoleToUser"."B" = ${userId}
+        _roles_to_users."A" = traverse.id
+        and _roles_to_users."B" = ${userId}
       ;
     `
 
@@ -166,23 +166,23 @@ export class GeneralDocAuthService {
         role.role_type
       from
         traverse
-      join _role_parent on
-        traverse.id = _role_parent."B"
+      join _parent_roles_to_child_roles on
+        traverse.id = _parent_roles_to_child_roles."B"
       join role on
-        _role_parent."A" = role.id 
+        _parent_roles_to_child_roles."A" = role.id 
         )
             select
         id,
         doc_id,
         folder_id,
         role_type,
-        "_RoleToUser"."B" as user_id
+        _roles_to_users."B" as user_id
       from
         traverse,
-        "_RoleToUser"
+        _roles_to_users
       where
-        "_RoleToUser"."A" = traverse.id
-        and "_RoleToUser"."B" = ${userId}
+        _roles_to_users."A" = traverse.id
+        and _roles_to_users."B" = ${userId}
       ;
     `
 
