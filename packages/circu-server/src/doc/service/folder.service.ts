@@ -91,6 +91,30 @@ export class FolderService {
     return result
   }
 
+  async getDeletedFolders(
+    userId: User["id"]
+  ): Promise<
+    Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "lastDeleted" | "parentFolderId">[]
+  > {
+    const result = await this.prismaService.folder.findMany({
+      where: {
+        authorId: userId,
+        survivalStatus: SurvivalStatus.DELETED,
+      },
+      select: {
+        id: true,
+        lastModify: true,
+        title: true,
+        description: true,
+        authorId: true,
+        lastDeleted: true,
+        parentFolderId: true,
+      },
+    })
+
+    return result
+  }
+
   async createFolder(
     userId: User["id"],
     data: Pick<Folder, "title" | "description" | "parentFolderId">

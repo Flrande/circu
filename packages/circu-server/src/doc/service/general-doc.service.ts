@@ -92,6 +92,27 @@ export class GeneralDocService {
     return result
   }
 
+  async getDeletedDocs(
+    userId: User["id"]
+  ): Promise<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">[]> {
+    const result = await this.prismaService.doc.findMany({
+      where: {
+        authorId: userId,
+        docType: DocType.GENERAL,
+        survivalStatus: SurvivalStatus.DELETED,
+      },
+      select: {
+        id: true,
+        lastModify: true,
+        lastDeleted: true,
+        authorId: true,
+        parentFolderId: true,
+      },
+    })
+
+    return result
+  }
+
   /**
    * 创建新的文档, 不需要提供新文档的值
    *

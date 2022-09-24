@@ -30,6 +30,23 @@ export class GeneralDocController {
   }
 
   /**
+   * 获取被删除的但仍可回收的文档
+   */
+  @Get("deleted")
+  @UseGuards(UserAuthGuard)
+  async getDeletedDocs(
+    @Req() req: Request
+  ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">[]>> {
+    const result = await this.generalDocService.getDeletedDocs(req.session.userid!)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: result,
+    }
+  }
+
+  /**
    * 获取当前登录用户个人空间的顶部文档
    */
   @Get("top/personal")

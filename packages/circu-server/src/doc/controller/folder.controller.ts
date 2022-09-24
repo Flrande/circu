@@ -31,6 +31,27 @@ export class FolderController {
   }
 
   /**
+   * 获取被删除的但仍可回收的文件夹
+   */
+  @Get("deleted")
+  @UseGuards(UserAuthGuard)
+  async getDeletedFolders(
+    @Req() req: Request
+  ): Promise<
+    ISuccessResponse<
+      Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "lastDeleted" | "parentFolderId">[]
+    >
+  > {
+    const result = await this.folderService.getDeletedFolders(req.session.userid!)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: result,
+    }
+  }
+
+  /**
    * 获取当前登录用户个人空间的顶部文件夹
    */
   @Get("top/personal")
