@@ -374,7 +374,6 @@ export class FolderService {
       throw new CommonException({
         code: DocExceptionCode.FOLDER_DELETE_BUT_NOT_FOUND_FOLDER,
         message: `未能找到文件夹信息(id: ${folderId})`,
-        isFiltered: false,
       })
     }
 

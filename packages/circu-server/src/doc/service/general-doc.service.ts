@@ -475,9 +475,8 @@ export class GeneralDocService {
 
     if (!docData) {
       throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_DELETE_BUT_NOT_FOUND_DOC,
+        code: DocExceptionCode.GENERAL_DOC_DELETE_BUT_DOC_NOT_FOUND,
         message: `未能找到文档信息(文档id: ${docId})`,
-        isFiltered: false,
       })
     }
 
@@ -517,9 +516,8 @@ export class GeneralDocService {
 
     if (!docData) {
       throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_DELETE_BUT_NOT_FOUND_DOC,
+        code: DocExceptionCode.GENERAL_DOC_DELETE_REVERT_BUT_DOC_NOT_FOUND,
         message: `未能找到文档信息(文档id: ${docId})`,
-        isFiltered: false,
       })
     }
 

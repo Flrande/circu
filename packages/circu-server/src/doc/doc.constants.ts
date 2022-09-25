@@ -29,43 +29,46 @@ export const DocExceptionCode = {
    * 为用户添加快速访问的文档时文档已被删除 [不过滤]
    */
   GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_DELETED: 1406,
-  //TODO: 改成过滤
   /**
-   * 删除 general-doc 时未能找到文档信息 [不过滤]
+   * 删除 general-doc 时未能找到文档信息
    */
-  GENERAL_DOC_DELETE_BUT_NOT_FOUND_DOC: 1407,
+  GENERAL_DOC_DELETE_BUT_DOC_NOT_FOUND: 1407,
+  /**
+   * 恢复 general-doc 时未能找到文档信息
+   */
+  GENERAL_DOC_DELETE_REVERT_BUT_DOC_NOT_FOUND: 1408,
   /**
    * 用户想要恢复的文档已过期 [不过滤]
    */
-  GENERAL_DOC_DELETE_REVERT_TOO_LATE: 1408,
+  GENERAL_DOC_DELETE_REVERT_TOO_LATE: 1409,
   /**
    * 用户想要恢复的文档已被彻底删除 [不过滤]
    */
-  GENERAL_DOC_DELETE_REVERT_FAIL: 1409,
+  GENERAL_DOC_DELETE_REVERT_FAIL: 1410,
   /**
    * 当前登录的用户没有读取该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC: 1410,
+  CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC: 1411,
   /**
    * 当前登录的用户没有修改该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_WRITE_THIS_GENERAL_DOC: 1411,
+  CURRENT_USER_CAN_NOT_WRITE_THIS_GENERAL_DOC: 1412,
   /**
    * 当前登录的用户没有管理该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC: 1412,
+  CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC: 1413,
   /**
    * 未能找到该 general-doc 的管理者角色
    */
-  GENERAL_DOC_ADMINISTRATOR_ROLE_NOT_FOUND: 1413,
+  GENERAL_DOC_ADMINISTRATOR_ROLE_NOT_FOUND: 1414,
   /**
    * 未能找到该 general-doc 的协作者角色
    */
-  GENERAL_DOC_COLLABORATOR_ROLE_NOT_FOUND: 1414,
+  GENERAL_DOC_COLLABORATOR_ROLE_NOT_FOUND: 1415,
   /**
    * 未能找到该 general-doc 的阅读者角色
    */
-  GENERAL_DOC_READER_ROLE_NOT_FOUND: 1415,
+  GENERAL_DOC_READER_ROLE_NOT_FOUND: 1416,
 
   // wiki-doc
   // --------------------------------------------------
@@ -126,9 +129,8 @@ export const DocExceptionCode = {
    * 新建文件夹时未能找到父文件夹信息
    */
   FOLDER_CREATE_BUT_NOT_FOUND_PARENT_FOLDER: 1503,
-  //TODO: 改成过滤
   /**
-   * 删除文件夹时未能找到文件夹信息 [不过滤]
+   * 删除文件夹时未能找到文件夹信息
    */
   FOLDER_DELETE_BUT_NOT_FOUND_FOLDER: 1504,
   /**
