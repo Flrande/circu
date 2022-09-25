@@ -92,6 +92,38 @@ export class GeneralDocService {
     return result
   }
 
+  /**
+   * 接受用户 id, 返回该用户主页快速访问的文档
+   */
+  async getFastAccessDocs(
+    userId: User["id"]
+  ): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        fastAccessDocs: {
+          select: {
+            id: true,
+            lastModify: true,
+            authorId: true,
+            parentFolderId: true,
+          },
+        },
+      },
+    })
+
+    if (!user) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_READ_FAST_ACCESS_BUT_USER_NOT_FOUND,
+        message: `未能找到用户信息(用户id: ${userId})`,
+      })
+    }
+
+    return user.fastAccessDocs
+  }
+
   async getDeletedDocs(
     userId: User["id"]
   ): Promise<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">[]> {
@@ -377,6 +409,55 @@ export class GeneralDocService {
 
       return createDocResult
     }
+  }
+
+  /**
+   * 为用户添加新的快速访问文档
+   */
+  async addFastAccessDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
+    // 校验是否有读权限
+    const flag = await this.generalDocAuthService.verifyUserReadGeneralDoc(userId, docId)
+    if (!flag) {
+      throw new CommonException({
+        code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC,
+        message: `当前用户无权阅读文档(文档id: ${docId})`,
+        isFiltered: false,
+      })
+    }
+
+    const doc = await this.prismaService.doc.findUnique({
+      where: {
+        id: docId,
+      },
+    })
+
+    if (!doc) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_NOT_FOUND,
+        message: `未能找到文档信息(文档id: ${docId})`,
+      })
+    }
+
+    if (doc.survivalStatus !== SurvivalStatus.ALIVE) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_DELETED,
+        message: `文档已被删除(文档id: ${docId})`,
+        isFiltered: false,
+      })
+    }
+
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        fastAccessDocs: {
+          connect: {
+            id: docId,
+          },
+        },
+      },
+    })
   }
 
   /**

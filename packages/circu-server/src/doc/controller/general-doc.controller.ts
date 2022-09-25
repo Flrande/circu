@@ -12,7 +12,7 @@ export class GeneralDocController {
   constructor(private readonly generalDocService: GeneralDocService) {}
 
   /**
-   * 根据 id 获取文档信息, 需要登录
+   * 根据 id 获取文档信息
    */
   @Get()
   @UseGuards(UserAuthGuard)
@@ -49,7 +49,7 @@ export class GeneralDocController {
   /**
    * 获取当前登录用户个人空间的顶部文档
    */
-  @Get("top/personal")
+  @Get("personal")
   @UseGuards(UserAuthGuard)
   async getPersonalTopDocs(
     @Req() req: Request
@@ -64,7 +64,24 @@ export class GeneralDocController {
   }
 
   /**
-   * 创建新文档, 需要登录
+   * 获取当前登录用户主页中快速访问的文档
+   */
+  @Get("fast_access")
+  @UseGuards(UserAuthGuard)
+  async getFastAccessDocs(
+    @Req() req: Request
+  ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]>> {
+    const result = await this.generalDocService.getFastAccessDocs(req.session.userid!)
+
+    return {
+      code: 0,
+      message: "添加成功",
+      data: result,
+    }
+  }
+
+  /**
+   * 创建新文档
    */
   @Post("create")
   @UseGuards(UserAuthGuard)
@@ -87,7 +104,22 @@ export class GeneralDocController {
   }
 
   /**
-   * 删除文档, 需要登录
+   * 添加新的快速访问文档
+   */
+  @Post("add_fast_access")
+  @UseGuards(UserAuthGuard)
+  async addFastAccessDoc(@Body() body: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.addFastAccessDoc(req.session.userid!, body.id)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: {},
+    }
+  }
+
+  /**
+   * 删除文档
    */
   @Get("delete")
   @UseGuards(UserAuthGuard)
@@ -102,7 +134,7 @@ export class GeneralDocController {
   }
 
   /**
-   * 彻底删除文档, 需要登录
+   * 彻底删除文档
    */
   @Get("delete_completely")
   @UseGuards(UserAuthGuard)
@@ -117,7 +149,7 @@ export class GeneralDocController {
   }
 
   /**
-   * 恢复未彻底删除的文档, 需要登录
+   * 恢复未彻底删除的文档
    */
   @Get("revert_delete")
   @UseGuards(UserAuthGuard)

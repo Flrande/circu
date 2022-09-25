@@ -10,49 +10,62 @@ export const DocExceptionCode = {
    */
   GENERAL_DOC_READ_BUT_DOC_DELETED: 1401,
   /**
+   * 查找用户主页快速访问的 general-doc 时未能找到用户信息
+   */
+  GENERAL_DOC_READ_FAST_ACCESS_BUT_USER_NOT_FOUND: 1402,
+  /**
    * 新建 general-doc 时未能找到作者信息
    */
-  GENERAL_DOC_CREATE_BUT_NOT_FOUND_USER: 1402,
+  GENERAL_DOC_CREATE_BUT_NOT_FOUND_USER: 1403,
   /**
    * 新建 general-doc 时未能找到父文件夹信息
    */
-  GENERAL_DOC_CREATE_BUT_NOT_FOUND_PARENT_FOLDER: 1403,
+  GENERAL_DOC_CREATE_BUT_NOT_FOUND_PARENT_FOLDER: 1404,
+  /**
+   * 为用户添加快速访问的文档时未能找到文档
+   */
+  GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_NOT_FOUND: 1405,
+  /**
+   * 为用户添加快速访问的文档时文档已被删除 [不过滤]
+   */
+  GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_DELETED: 1406,
+  //TODO: 改成过滤
   /**
    * 删除 general-doc 时未能找到文档信息 [不过滤]
    */
-  GENERAL_DOC_DELETE_BUT_NOT_FOUND_DOC: 1404,
+  GENERAL_DOC_DELETE_BUT_NOT_FOUND_DOC: 1407,
   /**
    * 用户想要恢复的文档已过期 [不过滤]
    */
-  GENERAL_DOC_DELETE_REVERT_TOO_LATE: 1405,
+  GENERAL_DOC_DELETE_REVERT_TOO_LATE: 1408,
   /**
    * 用户想要恢复的文档已被彻底删除 [不过滤]
    */
-  GENERAL_DOC_DELETE_REVERT_FAIL: 1406,
+  GENERAL_DOC_DELETE_REVERT_FAIL: 1409,
   /**
    * 当前登录的用户没有读取该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC: 1407,
+  CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC: 1410,
   /**
    * 当前登录的用户没有修改该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_WRITE_THIS_GENERAL_DOC: 1408,
+  CURRENT_USER_CAN_NOT_WRITE_THIS_GENERAL_DOC: 1411,
   /**
    * 当前登录的用户没有管理该 general-doc 的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC: 1409,
+  CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC: 1412,
   /**
    * 未能找到该 general-doc 的管理者角色
    */
-  GENERAL_DOC_ADMINISTRATOR_ROLE_NOT_FOUND: 1410,
+  GENERAL_DOC_ADMINISTRATOR_ROLE_NOT_FOUND: 1413,
   /**
    * 未能找到该 general-doc 的协作者角色
    */
-  GENERAL_DOC_COLLABORATOR_ROLE_NOT_FOUND: 1411,
+  GENERAL_DOC_COLLABORATOR_ROLE_NOT_FOUND: 1414,
   /**
    * 未能找到该 general-doc 的阅读者角色
    */
-  GENERAL_DOC_READER_ROLE_NOT_FOUND: 1412,
+  GENERAL_DOC_READER_ROLE_NOT_FOUND: 1415,
 
   // wiki-doc
   // --------------------------------------------------
@@ -113,6 +126,7 @@ export const DocExceptionCode = {
    * 新建文件夹时未能找到父文件夹信息
    */
   FOLDER_CREATE_BUT_NOT_FOUND_PARENT_FOLDER: 1503,
+  //TODO: 改成过滤
   /**
    * 删除文件夹时未能找到文件夹信息 [不过滤]
    */
