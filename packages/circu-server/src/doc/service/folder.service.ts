@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { Folder, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
-import { DocExceptionCode } from "../doc.constants"
+import { DELETE_EXPIRE_DAY_TIME, DocExceptionCode } from "../doc.constants"
 import { FolderAuthService } from "./auth/folder-auth.service"
 
 @Injectable()
@@ -142,7 +142,7 @@ export class FolderService {
 
     if (!author) {
       throw new CommonException({
-        code: DocExceptionCode.FOLDER_CREATE_BUT_NOT_FOUND_USER,
+        code: DocExceptionCode.FOLDER_CREATE_BUT_USER_NOT_FOUND,
         message: `未找到用户信息(用户id: ${userId})`,
       })
     }
@@ -169,7 +169,7 @@ export class FolderService {
 
       if (!folder) {
         throw new CommonException({
-          code: DocExceptionCode.GENERAL_DOC_CREATE_BUT_NOT_FOUND_PARENT_FOLDER,
+          code: DocExceptionCode.FOLDER_CREATE_BUT_PARENT_FOLDER_NOT_FOUND,
           message: `未找到父文件夹信息(父文件夹id: ${data.parentFolderId})`,
         })
       }
@@ -372,7 +372,7 @@ export class FolderService {
 
     if (!folderData) {
       throw new CommonException({
-        code: DocExceptionCode.FOLDER_DELETE_BUT_NOT_FOUND_FOLDER,
+        code: DocExceptionCode.FOLDER_DELETE_BUT_FOLDER_NOT_FOUND,
         message: `未能找到文件夹信息(id: ${folderId})`,
       })
     }
@@ -394,6 +394,68 @@ export class FolderService {
       data: {
         survivalStatus: type === "soft" ? SurvivalStatus.DELETED : SurvivalStatus.COMPLETELY_DELETED,
         lastDeleted: new Date(),
+      },
+    })
+  }
+
+  /**
+   * 根据 id 将已删除的文件夹恢复, 若已彻底删除, 不可恢复
+   *
+   * 需要操作者的用户 id, 用于判断操作者是否有权限恢复文档
+   */
+  async revertFolder(userId: User["id"], folderId: Folder["id"]): Promise<void> {
+    const folderData = await this.prismaService.folder.findUnique({
+      where: {
+        id: folderId,
+      },
+    })
+
+    if (!folderData) {
+      throw new CommonException({
+        code: DocExceptionCode.FOLDER_DELETE_REVERT_BUT_FOLDER_NOT_FOUND,
+        message: `未能找到文件夹信息(文件夹id: ${folderId})`,
+      })
+    }
+
+    // 校验权限
+    const flag = await this.folderAuthService.verifyUserAdministerFolder(userId, folderId)
+    if (!flag) {
+      throw new CommonException({
+        code: DocExceptionCode.CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER,
+        message: `当前用户没有该文件夹的管理权限(文档id: ${folderId})`,
+        isFiltered: false,
+      })
+    }
+
+    // 判断是否彻底删除
+    if (folderData.survivalStatus === SurvivalStatus.COMPLETELY_DELETED) {
+      throw new CommonException({
+        code: DocExceptionCode.FOLDER_DELETE_REVERT_FAIL,
+        message: `文件夹已被彻底删除(文件夹id: ${folderId})`,
+        isFiltered: false,
+      })
+    }
+
+    // 判断是否已过期
+    const currentTime = new Date()
+    if (
+      folderData.lastDeleted &&
+      (currentTime.getTime() - folderData.lastDeleted.getTime()) / (1000 * 3600 * 24) > DELETE_EXPIRE_DAY_TIME
+    ) {
+      throw new CommonException({
+        code: DocExceptionCode.FOLDER_DELETE_REVERT_TOO_LATE,
+        message: `文件夹已过期(文件夹id: ${folderId})`,
+        isFiltered: false,
+      })
+    }
+
+    await this.prismaService.folder.update({
+      where: {
+        id: folderId,
+      },
+      data: {
+        survivalStatus: SurvivalStatus.ALIVE,
+        lastDeleted: null,
       },
     })
   }

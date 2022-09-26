@@ -121,4 +121,19 @@ export class FolderController {
       data: {},
     }
   }
+
+  /**
+   * 恢复未彻底删除的文件夹
+   */
+  @Post("revert_delete")
+  @UseGuards(UserAuthGuard)
+  async revertFolder(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.folderService.revertFolder(req.session.userid!, query.id)
+
+    return {
+      code: 0,
+      message: "恢复成功",
+      data: {},
+    }
+  }
 }

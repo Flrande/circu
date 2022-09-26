@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { Doc, DocType, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
-import { DocExceptionCode, DOC_DELETE_EXPIRE_DAY_TIME } from "../doc.constants"
+import { DELETE_EXPIRE_DAY_TIME, DocExceptionCode } from "../doc.constants"
 import { FolderAuthService } from "./auth/folder-auth.service"
 import { GeneralDocAuthService } from "./auth/general-doc-auth.service"
 
@@ -199,7 +199,7 @@ export class GeneralDocService {
 
     if (!author) {
       throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_CREATE_BUT_NOT_FOUND_USER,
+        code: DocExceptionCode.GENERAL_DOC_CREATE_BUT_USER_NOT_FOUND,
         message: `未找到用户信息(id: ${userId})`,
       })
     }
@@ -228,7 +228,7 @@ export class GeneralDocService {
 
       if (!folder) {
         throw new CommonException({
-          code: DocExceptionCode.GENERAL_DOC_CREATE_BUT_NOT_FOUND_PARENT_FOLDER,
+          code: DocExceptionCode.GENERAL_DOC_CREATE_BUT_PARENT_FOLDER_NOT_FOUND,
           message: `未找到父文件夹信息(id: ${data.parentFolderId})`,
         })
       }
@@ -536,6 +536,7 @@ export class GeneralDocService {
       throw new CommonException({
         code: DocExceptionCode.GENERAL_DOC_DELETE_REVERT_FAIL,
         message: `文档已被彻底删除(文档id: ${docId})`,
+        isFiltered: false,
       })
     }
 
@@ -543,11 +544,12 @@ export class GeneralDocService {
     const currentTime = new Date()
     if (
       docData.lastDeleted &&
-      (currentTime.getTime() - docData.lastDeleted.getTime()) / (1000 * 3600 * 24) > DOC_DELETE_EXPIRE_DAY_TIME
+      (currentTime.getTime() - docData.lastDeleted.getTime()) / (1000 * 3600 * 24) > DELETE_EXPIRE_DAY_TIME
     ) {
       throw new CommonException({
         code: DocExceptionCode.GENERAL_DOC_DELETE_REVERT_TOO_LATE,
         message: `文档已过期(文档id: ${docId})`,
+        isFiltered: false,
       })
     }
 

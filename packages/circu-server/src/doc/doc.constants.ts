@@ -16,11 +16,11 @@ export const DocExceptionCode = {
   /**
    * 新建 general-doc 时未能找到作者信息
    */
-  GENERAL_DOC_CREATE_BUT_NOT_FOUND_USER: 1403,
+  GENERAL_DOC_CREATE_BUT_USER_NOT_FOUND: 1403,
   /**
    * 新建 general-doc 时未能找到父文件夹信息
    */
-  GENERAL_DOC_CREATE_BUT_NOT_FOUND_PARENT_FOLDER: 1404,
+  GENERAL_DOC_CREATE_BUT_PARENT_FOLDER_NOT_FOUND: 1404,
   /**
    * 为用户添加快速访问的文档时未能找到文档
    */
@@ -124,40 +124,52 @@ export const DocExceptionCode = {
   /**
    * 新建文件夹时未能找到作者信息
    */
-  FOLDER_CREATE_BUT_NOT_FOUND_USER: 1502,
+  FOLDER_CREATE_BUT_USER_NOT_FOUND: 1502,
   /**
    * 新建文件夹时未能找到父文件夹信息
    */
-  FOLDER_CREATE_BUT_NOT_FOUND_PARENT_FOLDER: 1503,
+  FOLDER_CREATE_BUT_PARENT_FOLDER_NOT_FOUND: 1503,
   /**
    * 删除文件夹时未能找到文件夹信息
    */
-  FOLDER_DELETE_BUT_NOT_FOUND_FOLDER: 1504,
+  FOLDER_DELETE_BUT_FOLDER_NOT_FOUND: 1504,
+  /**
+   * 恢复文件夹时未能找到文件夹信息
+   */
+  FOLDER_DELETE_REVERT_BUT_FOLDER_NOT_FOUND: 1505,
+  /**
+   * 用户想要恢复的文件夹已过期 [不过滤]
+   */
+  FOLDER_DELETE_REVERT_TOO_LATE: 1506,
+  /**
+   * 用户想要恢复的文件夹已被彻底删除 [不过滤]
+   */
+  FOLDER_DELETE_REVERT_FAIL: 1507,
   /**
    * 当前登录的用户没有读取该文件夹的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_READ_THIS_FOLDER: 1505,
+  CURRENT_USER_CAN_NOT_READ_THIS_FOLDER: 1508,
   /**
    * 当前登录的用户没有修改该文件夹的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER: 1506,
+  CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER: 1509,
   /**
    * 当前登录的用户没有管理该文件夹的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER: 1507,
+  CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER: 1510,
   /**
    * 未能找到该文件夹的管理者角色
    */
-  FOLDER_ADMINISTRATOR_ROLE_NOT_FOUND: 1508,
+  FOLDER_ADMINISTRATOR_ROLE_NOT_FOUND: 1511,
   /**
    * 未能找到该文件夹的协作者角色
    */
-  FOLDER_COLLABORATOR_ROLE_NOT_FOUND: 1509,
+  FOLDER_COLLABORATOR_ROLE_NOT_FOUND: 1512,
   /**
    * 未能找到该文件夹的阅读者角色
    */
-  FOLDER_READER_ROLE_NOT_FOUND: 1510,
+  FOLDER_READER_ROLE_NOT_FOUND: 1513,
 } as const
 
-// 文档删除的过期时间
-export const DOC_DELETE_EXPIRE_DAY_TIME = 30
+// 删除的过期时间
+export const DELETE_EXPIRE_DAY_TIME = 30
