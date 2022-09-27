@@ -1,27 +1,27 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from "@nestjs/common"
+import { Body, Controller, Delete, Get, Param, Post, Query, Req, UseGuards } from "@nestjs/common"
 import { Folder } from "@prisma/client"
 import { Request } from "express"
 import { UserAuthGuard } from "src/guards/user-auth.guard"
 import { ISuccessResponse } from "src/interfaces/response"
 import { CreateFolderDto } from "../dto/create-folder.dto"
-import { IdQueryDto } from "../dto/id.dto"
+import { IdDto } from "../dto/id.dto"
 import { FolderService } from "../service/folder.service"
 
 @Controller("api/folder")
 export class FolderController {
   constructor(private readonly folderService: FolderService) {}
 
-  @Get()
+  @Get(":id")
   @UseGuards(UserAuthGuard)
   async getFolderById(
-    @Query() query: IdQueryDto,
+    @Param() params: IdDto,
     @Req() req: Request
   ): Promise<
     ISuccessResponse<
       Pick<Folder, "id" | "lastModify" | "title" | "description" | "lastDeleted" | "authorId" | "parentFolderId">
     >
   > {
-    const result = await this.folderService.getFolderById(req.session.userid!, query.id)
+    const result = await this.folderService.getFolderById(req.session.userid!, params.id)
 
     return {
       code: 0,
@@ -54,7 +54,7 @@ export class FolderController {
   /**
    * 获取当前登录用户个人空间的顶部文件夹
    */
-  @Get("top/personal")
+  @Get("personal")
   @UseGuards(UserAuthGuard)
   async getPersonalTopFolders(
     @Req() req: Request
@@ -95,10 +95,10 @@ export class FolderController {
   /**
    * 删除文件夹, 需要登录
    */
-  @Get("delete")
+  @Delete("delete/:id")
   @UseGuards(UserAuthGuard)
-  async deleteFolder(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
-    await this.folderService.deleteFolder(req.session.userid!, query.id, "soft")
+  async deleteFolder(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.folderService.deleteFolder(req.session.userid!, params.id, "soft")
 
     return {
       code: 0,
@@ -110,10 +110,10 @@ export class FolderController {
   /**
    * 彻底删除文件夹, 需要登录
    */
-  @Get("delete_completely")
+  @Delete("delete_completely/:id")
   @UseGuards(UserAuthGuard)
-  async deleteFolderCompletely(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
-    await this.folderService.deleteFolder(req.session.userid!, query.id, "hard")
+  async deleteFolderCompletely(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.folderService.deleteFolder(req.session.userid!, params.id, "hard")
 
     return {
       code: 0,
@@ -125,10 +125,10 @@ export class FolderController {
   /**
    * 恢复未彻底删除的文件夹
    */
-  @Post("revert_delete")
+  @Post("revert_delete/:id")
   @UseGuards(UserAuthGuard)
-  async revertFolder(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
-    await this.folderService.revertFolder(req.session.userid!, query.id)
+  async revertFolder(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.folderService.revertFolder(req.session.userid!, params.id)
 
     return {
       code: 0,

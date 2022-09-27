@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from "@nestjs/common"
+import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nestjs/common"
 import { Doc } from "@prisma/client"
 import { Request } from "express"
 import { UserAuthGuard } from "src/guards/user-auth.guard"
 import { ISuccessResponse } from "src/interfaces/response"
 import { CreateGeneralDocDto } from "../dto/create-doc.dto"
-import { IdQueryDto } from "../dto/id.dto"
+import { IdDto } from "../dto/id.dto"
 import { GeneralDocService } from "../service/general-doc.service"
 
 @Controller("api/doc/general")
@@ -14,13 +14,13 @@ export class GeneralDocController {
   /**
    * 根据 id 获取文档信息
    */
-  @Get()
+  @Get(":id")
   @UseGuards(UserAuthGuard)
   async getDocById(
-    @Query() query: IdQueryDto,
+    @Param() params: IdDto,
     @Req() req: Request
   ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">>> {
-    const result = await this.generalDocService.getDocMetaDataById(req.session.userid!, query.id)
+    const result = await this.generalDocService.getDocMetaDataById(req.session.userid!, params.id)
 
     return {
       code: 0,
@@ -108,7 +108,7 @@ export class GeneralDocController {
    */
   @Post("add_fast_access")
   @UseGuards(UserAuthGuard)
-  async addFastAccessDoc(@Body() body: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+  async addFastAccessDoc(@Body() body: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
     await this.generalDocService.addFastAccessDoc(req.session.userid!, body.id)
 
     return {
@@ -121,10 +121,10 @@ export class GeneralDocController {
   /**
    * 删除文档
    */
-  @Get("delete")
+  @Delete("delete/:id")
   @UseGuards(UserAuthGuard)
-  async deleteDoc(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
-    await this.generalDocService.deleteDoc(req.session.userid!, query.id, "soft")
+  async deleteDoc(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.deleteDoc(req.session.userid!, params.id, "soft")
 
     return {
       code: 0,
@@ -136,10 +136,10 @@ export class GeneralDocController {
   /**
    * 彻底删除文档
    */
-  @Get("delete_completely")
+  @Delete("delete_completely/:id")
   @UseGuards(UserAuthGuard)
-  async deleteDocCompletely(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
-    await this.generalDocService.deleteDoc(req.session.userid!, query.id, "hard")
+  async deleteDocCompletely(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.deleteDoc(req.session.userid!, params.id, "hard")
 
     return {
       code: 0,
@@ -151,10 +151,10 @@ export class GeneralDocController {
   /**
    * 恢复未彻底删除的文档
    */
-  @Get("revert_delete")
+  @Post("revert_delete/:id")
   @UseGuards(UserAuthGuard)
-  async revertDoc(@Query() query: IdQueryDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
-    await this.generalDocService.revertDoc(req.session.userid!, query.id)
+  async revertDoc(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.revertDoc(req.session.userid!, params.id)
 
     return {
       code: 0,
