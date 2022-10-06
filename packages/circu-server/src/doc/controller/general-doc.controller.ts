@@ -106,10 +106,25 @@ export class GeneralDocController {
   /**
    * 添加新的快速访问文档
    */
-  @Post("add_fast_access")
+  @Post("fast_access/:id/add")
   @UseGuards(UserAuthGuard)
   async addFastAccessDoc(@Body() body: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
     await this.generalDocService.addFastAccessDoc(req.session.userid!, body.id)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: {},
+    }
+  }
+
+  /**
+   * 移除快速访问文档
+   */
+  @Post("fast_access/:id/remove")
+  @UseGuards(UserAuthGuard)
+  async removeFastAccessDoc(@Body() body: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.removeFastAccessDoc(req.session.userid!, body.id)
 
     return {
       code: 0,

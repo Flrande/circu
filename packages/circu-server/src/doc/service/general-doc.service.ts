@@ -461,6 +461,55 @@ export class GeneralDocService {
   }
 
   /**
+   * 移除快速访问文档
+   */
+  async removeFastAccessDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
+    // 校验是否有读权限
+    const flag = await this.generalDocAuthService.verifyUserReadGeneralDoc(userId, docId)
+    if (!flag) {
+      throw new CommonException({
+        code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC,
+        message: `当前用户无权阅读文档(文档id: ${docId})`,
+        isFiltered: false,
+      })
+    }
+
+    const doc = await this.prismaService.doc.findUnique({
+      where: {
+        id: docId,
+      },
+    })
+
+    if (!doc) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_NOT_FOUND,
+        message: `未能找到文档信息(文档id: ${docId})`,
+      })
+    }
+
+    if (doc.survivalStatus !== SurvivalStatus.ALIVE) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_DELETED,
+        message: `文档已被删除(文档id: ${docId})`,
+        isFiltered: false,
+      })
+    }
+
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        fastAccessDocs: {
+          disconnect: {
+            id: docId,
+          },
+        },
+      },
+    })
+  }
+
+  /**
    * 根据 id 将文档删除, 传入的 type 决定是可回收的删除还是彻底删除, soft 是可回收的删除, hard 是彻底删除
    *
    * 需要操作者的用户 id, 用于判断操作者是否有权限删除文档
