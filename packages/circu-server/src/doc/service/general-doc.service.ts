@@ -80,6 +80,7 @@ export class GeneralDocService {
         authorId: userId,
         parentFolder: null,
         docType: DocType.GENERAL,
+        survivalStatus: SurvivalStatus.ALIVE,
       },
       select: {
         id: true,
