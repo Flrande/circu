@@ -14,7 +14,7 @@ export class GeneralDocController {
   /**
    * 根据 id 获取文档信息
    */
-  @Get(":id")
+  @Get("data/:id")
   @UseGuards(UserAuthGuard)
   async getDocById(
     @Param() params: IdDto,
@@ -75,7 +75,7 @@ export class GeneralDocController {
 
     return {
       code: 0,
-      message: "添加成功",
+      message: "查询成功",
       data: result,
     }
   }
@@ -108,12 +108,12 @@ export class GeneralDocController {
    */
   @Post("fast_access/:id/add")
   @UseGuards(UserAuthGuard)
-  async addFastAccessDoc(@Body() body: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
-    await this.generalDocService.addFastAccessDoc(req.session.userid!, body.id)
+  async addFastAccessDoc(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.addFastAccessDoc(req.session.userid!, params.id)
 
     return {
       code: 0,
-      message: "查询成功",
+      message: "添加成功",
       data: {},
     }
   }
@@ -123,12 +123,12 @@ export class GeneralDocController {
    */
   @Post("fast_access/:id/remove")
   @UseGuards(UserAuthGuard)
-  async removeFastAccessDoc(@Body() body: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
-    await this.generalDocService.removeFastAccessDoc(req.session.userid!, body.id)
+  async removeFastAccessDoc(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.removeFastAccessDoc(req.session.userid!, params.id)
 
     return {
       code: 0,
-      message: "查询成功",
+      message: "移除成功",
       data: {},
     }
   }

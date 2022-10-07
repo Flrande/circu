@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Query, Req } from "@nestjs/common"
+import { Controller, Get, Post, Body, Req, Param } from "@nestjs/common"
 import { User } from "@prisma/client"
 import { Request } from "express"
 import { AuthService } from "src/auth/auth.service"
@@ -31,11 +31,11 @@ export class UserController {
   /**
    * 根据用户 id 查询用户基本信息
    */
-  @Get()
+  @Get("data/:id")
   async getUserById(
-    @Query() query: UserIdQueryDto
+    @Param() params: UserIdQueryDto
   ): Promise<ISuccessResponse<Pick<User, "id" | "username" | "nickname">>> {
-    const result = await this.userService.findUserById(query.id)
+    const result = await this.userService.findUserById(params.id)
 
     return {
       code: 0,
