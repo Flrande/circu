@@ -122,53 +122,65 @@ export const DocExceptionCode = {
    */
   FOLDER_READ_BUT_FOLDER_DELETED: 1501,
   /**
+   * 查找用户主页快速访问的文件夹时未能找到用户信息
+   */
+  FOLDER_READ_FAST_ACCESS_BUT_USER_NOT_FOUND: 1502,
+  /**
    * 新建文件夹时未能找到作者信息
    */
-  FOLDER_CREATE_BUT_USER_NOT_FOUND: 1502,
+  FOLDER_CREATE_BUT_USER_NOT_FOUND: 1503,
   /**
    * 新建文件夹时未能找到父文件夹信息
    */
-  FOLDER_CREATE_BUT_PARENT_FOLDER_NOT_FOUND: 1503,
+  FOLDER_CREATE_BUT_PARENT_FOLDER_NOT_FOUND: 1504,
+  /**
+   * 为用户添加快速访问的文件夹时未能找到文件夹
+   */
+  FOLDER_CREATE_FAST_ACCESS_BUT_FOLDER_NOT_FOUND: 1505,
+  /**
+   * 为用户添加快速访问的文档时文档已被删除 [不过滤]
+   */
+  FOLDER_CREATE_FAST_ACCESS_BUT_FOLDER_DELETED: 1506,
   /**
    * 删除文件夹时未能找到文件夹信息
    */
-  FOLDER_DELETE_BUT_FOLDER_NOT_FOUND: 1504,
+  FOLDER_DELETE_BUT_FOLDER_NOT_FOUND: 1507,
   /**
    * 恢复文件夹时未能找到文件夹信息
    */
-  FOLDER_DELETE_REVERT_BUT_FOLDER_NOT_FOUND: 1505,
+  FOLDER_DELETE_REVERT_BUT_FOLDER_NOT_FOUND: 1508,
   /**
    * 用户想要恢复的文件夹已过期 [不过滤]
    */
-  FOLDER_DELETE_REVERT_TOO_LATE: 1506,
+  FOLDER_DELETE_REVERT_TOO_LATE: 1509,
   /**
    * 用户想要恢复的文件夹已被彻底删除 [不过滤]
    */
-  FOLDER_DELETE_REVERT_FAIL: 1507,
+  FOLDER_DELETE_REVERT_FAIL: 1510,
   /**
    * 当前登录的用户没有读取该文件夹的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_READ_THIS_FOLDER: 1508,
+  CURRENT_USER_CAN_NOT_READ_THIS_FOLDER: 1511,
   /**
    * 当前登录的用户没有修改该文件夹的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER: 1509,
+  CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER: 1512,
   /**
    * 当前登录的用户没有管理该文件夹的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER: 1510,
+  CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER: 1513,
   /**
    * 未能找到该文件夹的管理者角色
    */
-  FOLDER_ADMINISTRATOR_ROLE_NOT_FOUND: 1511,
+  FOLDER_ADMINISTRATOR_ROLE_NOT_FOUND: 1514,
   /**
    * 未能找到该文件夹的协作者角色
    */
-  FOLDER_COLLABORATOR_ROLE_NOT_FOUND: 1512,
+  FOLDER_COLLABORATOR_ROLE_NOT_FOUND: 1515,
   /**
    * 未能找到该文件夹的阅读者角色
    */
-  FOLDER_READER_ROLE_NOT_FOUND: 1513,
+  FOLDER_READER_ROLE_NOT_FOUND: 1516,
 } as const
 
 // 删除的过期时间

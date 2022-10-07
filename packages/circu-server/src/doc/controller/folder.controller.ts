@@ -11,7 +11,7 @@ import { FolderService } from "../service/folder.service"
 export class FolderController {
   constructor(private readonly folderService: FolderService) {}
 
-  @Get(":id")
+  @Get("data/:id")
   @UseGuards(UserAuthGuard)
   async getFolderById(
     @Param() params: IdDto,
@@ -70,6 +70,25 @@ export class FolderController {
     }
   }
 
+  /**
+   * 获取当前登录用户主页中快速访问的文件夹
+   */
+  @Get("fast_access")
+  @UseGuards(UserAuthGuard)
+  async getFastAccessFolders(
+    @Req() req: Request
+  ): Promise<
+    ISuccessResponse<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">[]>
+  > {
+    const result = await this.folderService.getFastAccessFolders(req.session.userid!)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: result,
+    }
+  }
+
   @Post("create")
   @UseGuards(UserAuthGuard)
   async createFolder(
@@ -89,6 +108,36 @@ export class FolderController {
       code: 0,
       message: "创建成功",
       data: result,
+    }
+  }
+
+  /**
+   * 添加新的快速访问文件夹
+   */
+  @Post("fast_access/:id/add")
+  @UseGuards(UserAuthGuard)
+  async addFastAccessFolder(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.folderService.addFastAccessFolder(req.session.userid!, params.id)
+
+    return {
+      code: 0,
+      message: "添加成功",
+      data: {},
+    }
+  }
+
+  /**
+   * 移除快速访问文档
+   */
+  @Post("fast_access/:id/remove")
+  @UseGuards(UserAuthGuard)
+  async removeFastAccessFolder(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.folderService.removeFastAccessFolder(req.session.userid!, params.id)
+
+    return {
+      code: 0,
+      message: "移除成功",
+      data: {},
     }
   }
 
