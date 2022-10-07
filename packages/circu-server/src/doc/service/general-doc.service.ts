@@ -125,6 +125,9 @@ export class GeneralDocService {
     return user.fastAccessDocs
   }
 
+  /**
+   * 接受用户 id, 返回该用户可回收的文档
+   */
   async getDeletedDocs(
     userId: User["id"]
   ): Promise<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">[]> {
@@ -414,6 +417,8 @@ export class GeneralDocService {
 
   /**
    * 为用户添加新的快速访问文档
+   *
+   * 需要操作者的用户 id, 用于判断操作者是否有权限获得文档信息
    */
   async addFastAccessDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
     // 校验是否有读权限
@@ -463,6 +468,8 @@ export class GeneralDocService {
 
   /**
    * 移除快速访问文档
+   *
+   * 需要操作者的用户 id, 用于判断操作者是否有权限获得文档信息
    */
   async removeFastAccessDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
     // 校验是否有读权限
@@ -513,8 +520,7 @@ export class GeneralDocService {
   /**
    * 根据 id 将文档删除, 传入的 type 决定是可回收的删除还是彻底删除, soft 是可回收的删除, hard 是彻底删除
    *
-   * 需要操作者的用户 id, 用于判断操作者是否有权限删除文档
-   *
+   * 需要操作者的用户 id, 用于判断操作者是否有文档的管理权限
    */
   async deleteDoc(userId: User["id"], docId: Doc["id"], type: "soft" | "hard"): Promise<void> {
     const docData = await this.prismaService.doc.findUnique({
@@ -554,8 +560,7 @@ export class GeneralDocService {
   /**
    * 根据 id 将已删除的文档恢复, 若已彻底删除, 不可恢复
    *
-   * 需要操作者的用户 id, 用于判断操作者是否有权限恢复文档
-   *
+   * 需要操作者的用户 id, 用于判断操作者是否有文档的管理权限
    */
   async revertDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
     const docData = await this.prismaService.doc.findUnique({
