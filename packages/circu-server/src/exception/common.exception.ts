@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus } from "@nestjs/common"
-import { GlobalExceptionCode } from "src/app.constants"
+import { GlobalExceptionCode } from "src/app.constant"
 
 export type ICommonException = {
   code: number

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common"
 import { randomBytes, scrypt, timingSafeEqual } from "crypto"
 import { Buffer } from "buffer"
-import { AuthExceptionCode } from "./auth.constants"
+import { AuthExceptionCode } from "./auth.constant"
 import { CommonException } from "src/exception/common.exception"
 import { Request } from "express"
 import { PrismaService } from "src/database/prisma.service"

@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common"
 import { ConfigService } from "@nestjs/config"
 import { Response } from "express"
-import { GlobalExceptionCode } from "src/app.constants"
+import { GlobalExceptionCode } from "src/app.constant"
 import { ICommonException } from "./common.exception"
 
 /**

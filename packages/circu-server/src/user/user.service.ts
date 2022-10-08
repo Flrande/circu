@@ -3,7 +3,7 @@ import { User } from "@prisma/client"
 import { AuthService } from "src/auth/auth.service"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
-import { UserExceptionCode } from "./user.constants"
+import { UserExceptionCode } from "./user.constant"
 
 @Injectable()
 export class UserService {

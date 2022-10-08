@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common"
 import { Doc, DocType, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
-import { DELETE_EXPIRE_DAY_TIME, DocExceptionCode } from "../doc.constants"
+import { DELETE_EXPIRE_DAY_TIME, DocExceptionCode } from "../doc.constant"
 import { FolderAuthService } from "./auth/folder-auth.service"
 import { GeneralDocAuthService } from "./auth/general-doc-auth.service"
 
