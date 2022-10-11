@@ -661,15 +661,73 @@ export class FolderService {
       })
     }
 
-    //FIXME 恢复文件夹时要连同文件夹下的所有子项恢复
-    await this.prismaService.folder.update({
-      where: {
-        id: folderId,
-      },
-      data: {
-        survivalStatus: SurvivalStatus.ALIVE,
-        lastDeleted: null,
-      },
-    })
+    // 恢复文件夹时要连同文件夹下的所有子项恢复
+    await this.prismaService.$transaction([
+      this.prismaService.$executeRaw`create temporary table tmp_table_for_delete_folder on
+      commit drop as
+      with recursive folder_traverse(
+      id,
+      parent_folder_id,
+      survival_status
+      ) as (
+      with recursive doc_traverse(
+      id,
+      parent_folder_id,
+      survival_status
+      ) as
+            (
+      select
+        id,
+        parent_folder_id,
+        survival_status
+      from
+        folder
+      where
+        folder.id = ${folderId}
+      union
+      select
+        doc.id,
+        doc.parent_folder_id,
+        doc.survival_status
+      from
+        doc
+      join doc_traverse on
+        doc_traverse.id = doc.parent_folder_id
+      where
+        doc.survival_status = 'DELETED'::"SurvivalStatus"
+        )
+      select
+        id,
+        parent_folder_id,
+        survival_status
+      from
+        doc_traverse
+      union
+      select
+        folder.id,
+        folder.parent_folder_id,
+        folder.survival_status
+      from
+        folder
+      join folder_traverse on
+        folder_traverse.id = folder.parent_folder_id
+      where
+        folder.survival_status = 'DELETED'::"SurvivalStatus"
+        )
+        select
+        *
+      from
+        folder_traverse;`,
+      this.prismaService.$executeRaw`update folder
+        set survival_status = 'ALIVE'::"SurvivalStatus",
+          last_deleted = null
+        from tmp_table_for_delete_folder
+        where tmp_table_for_delete_folder.id = folder.id;`,
+      this.prismaService.$executeRaw`update doc
+        set survival_status = 'ALIVE'::"SurvivalStatus",
+          last_deleted = null
+        from tmp_table_for_delete_folder
+        where tmp_table_for_delete_folder.id = doc.id;`,
+    ])
   }
 }
