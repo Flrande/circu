@@ -17,6 +17,7 @@ Table folder {
   childrenFolders folder [not null]
   roles role [not null]
   fastAccessedUser user [not null]
+  likedBestUsers user [not null]
 }
 
 Table doc {
@@ -35,6 +36,7 @@ Table doc {
   childrenDocs doc [not null]
   roles role [not null]
   fastAccessedUser user [not null]
+  likedBestUsers user [not null]
 }
 
 Table user {
@@ -47,6 +49,8 @@ Table user {
   authoredFolder folder [not null]
   fastAccessDocs doc [not null]
   fastAccessFolders folder [not null]
+  favoriteDocs doc [not null]
+  favoriteFolders folder [not null]
   roles role [not null]
   accessLogs user_access_log [not null]
 }
@@ -75,9 +79,19 @@ Table fast_access_folders_to_users {
   fastaccessfoldersId String [ref: > folder.id]
 }
 
+Table favorite_folders_to_users {
+  likedbestusersId String [ref: > user.id]
+  favoritefoldersId String [ref: > folder.id]
+}
+
 Table fast_access_docs_to_users {
   fastaccesseduserId String [ref: > user.id]
   fastaccessdocsId String [ref: > doc.id]
+}
+
+Table favorite_docs_to_users {
+  likedbestusersId String [ref: > user.id]
+  favoritedocsId String [ref: > doc.id]
 }
 
 Table roles_to_users {

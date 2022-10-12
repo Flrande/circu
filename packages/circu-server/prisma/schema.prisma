@@ -56,6 +56,8 @@ model Folder {
 
   fastAccessedUser User[] @relation("fast_access_folders_to_users")
 
+  likedBestUsers User[] @relation("favorite_folders_to_users")
+
   @@map("folder")
 }
 
@@ -83,6 +85,8 @@ model Doc {
 
   fastAccessedUser User[] @relation("fast_access_docs_to_users")
 
+  likedBestUsers User[] @relation("favorite_docs_to_users")
+
   @@map("doc")
 }
 
@@ -98,6 +102,9 @@ model User {
 
   fastAccessDocs    Doc[]    @relation("fast_access_docs_to_users")
   fastAccessFolders Folder[] @relation("fast_access_folders_to_users")
+
+  favoriteDocs    Doc[]    @relation("favorite_docs_to_users")
+  favoriteFolders Folder[] @relation("favorite_folders_to_users")
 
   roles Role[] @relation("roles_to_users")
 
