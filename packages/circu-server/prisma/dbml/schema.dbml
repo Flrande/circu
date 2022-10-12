@@ -48,6 +48,14 @@ Table user {
   fastAccessDocs doc [not null]
   fastAccessFolders folder [not null]
   roles role [not null]
+  accessLogs user_access_log [not null]
+}
+
+Table user_access_log {
+  id String [pk]
+  userId String [not null]
+  user user [not null]
+  time DateTime [not null]
 }
 
 Table role {
@@ -108,6 +116,8 @@ Ref: doc.authorId > user.id
 Ref: doc.parentFolderId > folder.id
 
 Ref: doc.parentDocId - doc.id
+
+Ref: user_access_log.userId > user.id
 
 Ref: role.docId > doc.id
 

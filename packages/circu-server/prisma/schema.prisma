@@ -101,7 +101,18 @@ model User {
 
   roles Role[] @relation("roles_to_users")
 
+  accessLogs UserAccessLog[]
+
   @@map("user")
+}
+
+model UserAccessLog {
+  id     String   @id @default(cuid()) @map("id")
+  userId String   @map("user_id")
+  user   User     @relation(fields: [userId], references: [id])
+  time   DateTime @map("time")
+
+  @@map("user_access_log")
 }
 
 // 角色表, 每个角色代表着某个文件夹和某个文档的一种权限, 分别为管理者, 协作者, 阅读者
