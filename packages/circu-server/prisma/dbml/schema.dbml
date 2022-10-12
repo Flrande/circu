@@ -70,12 +70,12 @@ Table role {
   childrenRoles role [not null]
 }
 
-Table folders_to_users {
+Table fast_access_folders_to_users {
   fastaccesseduserId String [ref: > user.id]
   fastaccessfoldersId String [ref: > folder.id]
 }
 
-Table docs_to_users {
+Table fast_access_docs_to_users {
   fastaccesseduserId String [ref: > user.id]
   fastaccessdocsId String [ref: > doc.id]
 }
