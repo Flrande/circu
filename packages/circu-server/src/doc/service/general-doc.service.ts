@@ -313,7 +313,7 @@ export class GeneralDocService {
             },
           },
           // 将新文档的管理者角色和新文档作者相关联
-          user: {
+          users: {
             connect: {
               id: author.id,
             },
@@ -371,7 +371,7 @@ export class GeneralDocService {
             connect: { id: createDocResult.id },
           },
           // 将新文档的管理者角色和新文档作者相关联
-          user: {
+          users: {
             connect: {
               id: author.id,
             },

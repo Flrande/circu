@@ -54,7 +54,7 @@ model Folder {
 
   roles Role[]
 
-  fastAccessedUser User[] @relation("fast_access_folders_to_users")
+  fastAccessedUsers User[] @relation("fast_access_folders_to_users")
 
   likedBestUsers User[] @relation("favorite_folders_to_users")
 
@@ -83,7 +83,7 @@ model Doc {
 
   roles Role[]
 
-  fastAccessedUser User[] @relation("fast_access_docs_to_users")
+  fastAccessedUsers User[] @relation("fast_access_docs_to_users")
 
   likedBestUsers User[] @relation("favorite_docs_to_users")
 
@@ -98,7 +98,7 @@ model User {
   survivalStatus SurvivalStatus @default(ALIVE) @map("survival_status")
 
   authoredDocs   Doc[]
-  authoredFolder Folder[]
+  authoredFolders Folder[]
 
   fastAccessDocs    Doc[]    @relation("fast_access_docs_to_users")
   fastAccessFolders Folder[] @relation("fast_access_folders_to_users")
@@ -142,7 +142,7 @@ model Role {
   folderId String? @map("folder_id")
   folder   Folder? @relation(fields: [folderId], references: [id])
 
-  user User[] @relation("roles_to_users")
+  users User[] @relation("roles_to_users")
 
   parentRoles   Role[] @relation("parent_roles_to_child_roles")
   childrenRoles Role[] @relation("parent_roles_to_child_roles")

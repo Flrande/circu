@@ -16,7 +16,7 @@ Table folder {
   parentFolder folder
   childrenFolders folder [not null]
   roles role [not null]
-  fastAccessedUser user [not null]
+  fastAccessedUsers user [not null]
   likedBestUsers user [not null]
 }
 
@@ -35,7 +35,7 @@ Table doc {
   parentDoc doc
   childrenDocs doc [not null]
   roles role [not null]
-  fastAccessedUser user [not null]
+  fastAccessedUsers user [not null]
   likedBestUsers user [not null]
 }
 
@@ -46,7 +46,7 @@ Table user {
   password Bytes [not null]
   survivalStatus SurvivalStatus [not null, default: 'ALIVE']
   authoredDocs doc [not null]
-  authoredFolder folder [not null]
+  authoredFolders folder [not null]
   fastAccessDocs doc [not null]
   fastAccessFolders folder [not null]
   favoriteDocs doc [not null]
@@ -69,13 +69,13 @@ Table role {
   doc doc
   folderId String
   folder folder
-  user user [not null]
+  users user [not null]
   parentRoles role [not null]
   childrenRoles role [not null]
 }
 
 Table fast_access_folders_to_users {
-  fastaccesseduserId String [ref: > user.id]
+  fastaccessedusersId String [ref: > user.id]
   fastaccessfoldersId String [ref: > folder.id]
 }
 
@@ -85,7 +85,7 @@ Table favorite_folders_to_users {
 }
 
 Table fast_access_docs_to_users {
-  fastaccesseduserId String [ref: > user.id]
+  fastaccessedusersId String [ref: > user.id]
   fastaccessdocsId String [ref: > doc.id]
 }
 
@@ -96,7 +96,7 @@ Table favorite_docs_to_users {
 
 Table roles_to_users {
   rolesId String [ref: > role.id]
-  userId String [ref: > user.id]
+  usersId String [ref: > user.id]
 }
 
 Table parent_roles_to_child_roles {

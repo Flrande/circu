@@ -300,7 +300,7 @@ export class FolderService {
             },
           },
           // 将新文件夹的管理者角色和新文件夹作者相关联
-          user: {
+          users: {
             connect: {
               id: author.id,
             },
@@ -361,7 +361,7 @@ export class FolderService {
             },
           },
           // 将新文件夹的管理者角色和新文件夹作者相关联
-          user: {
+          users: {
             connect: {
               id: author.id,
             },
