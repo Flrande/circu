@@ -1,74 +1,106 @@
 // doc 相关错误范围 1400-1699
 export const DocExceptionCode = {
   // general-doc
+
   /**
-   * 未找到 general-doc 信息
+   * 未找到文档信息
    */
   GENERAL_DOC_READ_BUT_DOC_NOT_FOUND: 1400,
+
   /**
-   * 查找的 general-doc 已被删除 [不过滤]
+   * 查找的文档已被删除 [不过滤]
    */
   GENERAL_DOC_READ_BUT_DOC_DELETED: 1401,
+
   /**
-   * 查找用户主页快速访问的 general-doc 时未能找到用户信息
+   * 查找用户主页快速访问的文档时未能找到用户信息
    */
   GENERAL_DOC_READ_FAST_ACCESS_BUT_USER_NOT_FOUND: 1402,
+
   /**
-   * 新建 general-doc 时未能找到作者信息
+   * 查找用户主页收藏的文档时未能找到用户信息
    */
-  GENERAL_DOC_CREATE_BUT_USER_NOT_FOUND: 1403,
+  GENERAL_DOC_READ_FAVORITE_BUT_USER_NOT_FOUND: 1403,
+
   /**
-   * 新建 general-doc 时未能找到父文件夹信息
+   * 新建文档时未能找到作者信息
    */
-  GENERAL_DOC_CREATE_BUT_PARENT_FOLDER_NOT_FOUND: 1404,
+  GENERAL_DOC_CREATE_BUT_USER_NOT_FOUND: 1404,
+
+  /**
+   * 新建文档时未能找到父文件夹信息
+   */
+  GENERAL_DOC_CREATE_BUT_PARENT_FOLDER_NOT_FOUND: 1405,
+
   /**
    * 为用户添加快速访问的文档时未能找到文档
    */
-  GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_NOT_FOUND: 1405,
+  GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_NOT_FOUND: 1406,
+
   /**
    * 为用户添加快速访问的文档时文档已被删除 [不过滤]
    */
-  GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_DELETED: 1406,
+  GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_DELETED: 1407,
+
   /**
-   * 删除 general-doc 时未能找到文档信息
+   * 为用户添加收藏文档时未能找到文档
    */
-  GENERAL_DOC_DELETE_BUT_DOC_NOT_FOUND: 1407,
+  GENERAL_DOC_CREATE_FAVORITE_BUT_DOC_NOT_FOUND: 1407,
+
   /**
-   * 恢复 general-doc 时未能找到文档信息
+   * 为用户添加收藏文档时文档已被删除 [不过滤]
    */
-  GENERAL_DOC_DELETE_REVERT_BUT_DOC_NOT_FOUND: 1408,
+  GENERAL_DOC_CREATE_FAVORITE_BUT_DOC_DELETED: 1408,
+
+  /**
+   * 删除文档时未能找到文档信息
+   */
+  GENERAL_DOC_DELETE_BUT_DOC_NOT_FOUND: 1409,
+
+  /**
+   * 恢复被删除的文档时未能找到文档信息
+   */
+  GENERAL_DOC_DELETE_REVERT_BUT_DOC_NOT_FOUND: 1410,
+
   /**
    * 用户想要恢复的文档已过期 [不过滤]
    */
-  GENERAL_DOC_DELETE_REVERT_TOO_LATE: 1409,
+  GENERAL_DOC_DELETE_REVERT_TOO_LATE: 1411,
+
   /**
    * 用户想要恢复的文档已被彻底删除 [不过滤]
    */
-  GENERAL_DOC_DELETE_REVERT_FAIL: 1410,
+  GENERAL_DOC_DELETE_REVERT_FAIL: 1412,
+
   /**
-   * 当前登录的用户没有读取该 general-doc 的权限 [不过滤]
+   * 当前登录的用户没有读取该文档的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC: 1411,
+  CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC: 1413,
+
   /**
-   * 当前登录的用户没有修改该 general-doc 的权限 [不过滤]
+   * 当前登录的用户没有修改该文档的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_WRITE_THIS_GENERAL_DOC: 1412,
+  CURRENT_USER_CAN_NOT_WRITE_THIS_GENERAL_DOC: 1414,
+
   /**
-   * 当前登录的用户没有管理该 general-doc 的权限 [不过滤]
+   * 当前登录的用户没有管理该文档的权限 [不过滤]
    */
-  CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC: 1413,
+  CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC: 1415,
+
   /**
-   * 未能找到该 general-doc 的管理者角色
+   * 未能找到该文档的管理者角色
    */
-  GENERAL_DOC_ADMINISTRATOR_ROLE_NOT_FOUND: 1414,
+  GENERAL_DOC_ADMINISTRATOR_ROLE_NOT_FOUND: 1416,
+
   /**
-   * 未能找到该 general-doc 的协作者角色
+   * 未能找到该文档的协作者角色
    */
-  GENERAL_DOC_COLLABORATOR_ROLE_NOT_FOUND: 1415,
+  GENERAL_DOC_COLLABORATOR_ROLE_NOT_FOUND: 1417,
+
   /**
-   * 未能找到该 general-doc 的阅读者角色
+   * 未能找到该文档的阅读者角色
    */
-  GENERAL_DOC_READER_ROLE_NOT_FOUND: 1416,
+  GENERAL_DOC_READER_ROLE_NOT_FOUND: 1418,
 
   // wiki-doc
   // --------------------------------------------------

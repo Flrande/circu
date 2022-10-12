@@ -81,6 +81,23 @@ export class GeneralDocController {
   }
 
   /**
+   * 获取当前登录用户主页中收藏的文档
+   */
+  @Get("favorite")
+  @UseGuards(UserAuthGuard)
+  async getFavoriteDocs(
+    @Req() req: Request
+  ): Promise<ISuccessResponse<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]>> {
+    const result = await this.generalDocService.getFavoriteDocs(req.session.userid!)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: result,
+    }
+  }
+
+  /**
    * 创建新文档
    */
   @Post("create")
@@ -125,6 +142,36 @@ export class GeneralDocController {
   @UseGuards(UserAuthGuard)
   async removeFastAccessDoc(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
     await this.generalDocService.removeFastAccessDoc(req.session.userid!, params.id)
+
+    return {
+      code: 0,
+      message: "移除成功",
+      data: {},
+    }
+  }
+
+  /**
+   * 添加新的收藏文档
+   */
+  @Post("favorite/:id/add")
+  @UseGuards(UserAuthGuard)
+  async addFavoriteDoc(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.addFavoriteDoc(req.session.userid!, params.id)
+
+    return {
+      code: 0,
+      message: "添加成功",
+      data: {},
+    }
+  }
+
+  /**
+   * 移除收藏文档
+   */
+  @Post("favorite/:id/remove")
+  @UseGuards(UserAuthGuard)
+  async removeFavoriteDoc(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.generalDocService.removeFavoriteDoc(req.session.userid!, params.id)
 
     return {
       code: 0,

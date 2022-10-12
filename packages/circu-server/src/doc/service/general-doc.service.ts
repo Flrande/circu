@@ -126,6 +126,36 @@ export class GeneralDocService {
   }
 
   /**
+   * 接受用户 id, 返回该用户收藏的文档
+   */
+  async getFavoriteDocs(userId: User["id"]): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        favoriteDocs: {
+          select: {
+            id: true,
+            lastModify: true,
+            authorId: true,
+            parentFolderId: true,
+          },
+        },
+      },
+    })
+
+    if (!user) {
+      throw new CommonException({
+        code: DocExceptionCode.GENERAL_DOC_READ_FAVORITE_BUT_USER_NOT_FOUND,
+        message: `未能找到用户信息(用户id: ${userId})`,
+      })
+    }
+
+    return user.favoriteDocs
+  }
+
+  /**
    * 接受用户 id, 返回该用户可回收的文档
    */
   async getDeletedDocs(
@@ -467,11 +497,11 @@ export class GeneralDocService {
   }
 
   /**
-   * 移除快速访问文档
+   * 为用户添加新的收藏文档
    *
    * 需要操作者的用户 id, 用于判断操作者是否有权限获得文档信息
    */
-  async removeFastAccessDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
+  async addFavoriteDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
     // 校验是否有读权限
     const flag = await this.generalDocAuthService.verifyUserReadGeneralDoc(userId, docId)
     if (!flag) {
@@ -490,14 +520,14 @@ export class GeneralDocService {
 
     if (!doc) {
       throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_NOT_FOUND,
+        code: DocExceptionCode.GENERAL_DOC_CREATE_FAVORITE_BUT_DOC_NOT_FOUND,
         message: `未能找到文档信息(文档id: ${docId})`,
       })
     }
 
     if (doc.survivalStatus !== SurvivalStatus.ALIVE) {
       throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_DELETED,
+        code: DocExceptionCode.GENERAL_DOC_CREATE_FAVORITE_BUT_DOC_DELETED,
         message: `文档已被删除(文档id: ${docId})`,
         isFiltered: false,
       })
@@ -508,7 +538,43 @@ export class GeneralDocService {
         id: userId,
       },
       data: {
+        favoriteDocs: {
+          connect: {
+            id: docId,
+          },
+        },
+      },
+    })
+  }
+
+  /**
+   * 移除快速访问文档
+   */
+  async removeFastAccessDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
         fastAccessDocs: {
+          disconnect: {
+            id: docId,
+          },
+        },
+      },
+    })
+  }
+
+  /**
+   * 移除收藏文档
+   */
+  async removeFavoriteDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        favoriteDocs: {
           disconnect: {
             id: docId,
           },
