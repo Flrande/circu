@@ -132,6 +132,40 @@ export class FolderService {
   }
 
   /**
+   * 接受用户 id, 返回该用户收藏的文件夹
+   */
+  async getFavoriteFolders(
+    userId: User["id"]
+  ): Promise<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">[]> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+      select: {
+        favoriteFolders: {
+          select: {
+            id: true,
+            lastModify: true,
+            title: true,
+            description: true,
+            authorId: true,
+            parentFolderId: true,
+          },
+        },
+      },
+    })
+
+    if (!user) {
+      throw new CommonException({
+        code: DocExceptionCode.FOLDER_READ_FAVORITE_BUT_USER_NOT_FOUND,
+        message: `未能找到用户信息(用户id: ${userId})`,
+      })
+    }
+
+    return user.favoriteFolders
+  }
+
+  /**
    * 接受用户 id, 返回该用户可回收的文件夹
    */
   async getDeletedFolders(
@@ -161,7 +195,7 @@ export class FolderService {
   /**
    * 创建新的文件夹
    *
-   * 需要操作者的用户 id, 用于判断操作者是否有权限在该文件夹上新建文档
+   * 需要操作者的用户 id, 用于判断操作者是否有权限在该文件夹上新建文件夹
    */
   async createFolder(
     userId: User["id"],
@@ -408,7 +442,7 @@ export class FolderService {
   /**
    * 为用户添加新的快速访问文件夹
    *
-   * 需要操作者的用户 id, 用于判断操作者是否有权限获得文档信息
+   * 需要操作者的用户 id, 用于判断操作者是否有权限获得文件夹信息
    */
   async addFastAccessFolder(userId: User["id"], folderId: Folder["id"]): Promise<void> {
     // 校验是否有读权限
@@ -457,11 +491,11 @@ export class FolderService {
   }
 
   /**
-   * 移除快速访问文件夹
+   * 为用户添加新的收藏文件夹
    *
    * 需要操作者的用户 id, 用于判断操作者是否有权限获得文件夹信息
    */
-  async removeFastAccessFolder(userId: User["id"], folderId: Folder["id"]): Promise<void> {
+  async addFavoriteFolder(userId: User["id"], folderId: Folder["id"]): Promise<void> {
     // 校验是否有读权限
     const flag = await this.folderAuthService.verifyUserReadFolder(userId, folderId)
     if (!flag) {
@@ -480,19 +514,37 @@ export class FolderService {
 
     if (!folder) {
       throw new CommonException({
-        code: DocExceptionCode.FOLDER_CREATE_FAST_ACCESS_BUT_FOLDER_NOT_FOUND,
+        code: DocExceptionCode.FOLDER_CREATE_FAVORITE_BUT_FOLDER_NOT_FOUND,
         message: `未能找到文件夹信息(文件夹id: ${folderId})`,
       })
     }
 
     if (folder.survivalStatus !== SurvivalStatus.ALIVE) {
       throw new CommonException({
-        code: DocExceptionCode.FOLDER_CREATE_FAST_ACCESS_BUT_FOLDER_DELETED,
+        code: DocExceptionCode.GENERAL_DOC_CREATE_FAVORITE_BUT_DOC_DELETED,
         message: `文件夹已被删除(文件夹id: ${folderId})`,
         isFiltered: false,
       })
     }
 
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        favoriteFolders: {
+          connect: {
+            id: folderId,
+          },
+        },
+      },
+    })
+  }
+
+  /**
+   * 移除快速访问文件夹
+   */
+  async removeFastAccessFolder(userId: User["id"], folderId: Folder["id"]): Promise<void> {
     await this.prismaService.user.update({
       where: {
         id: userId,
@@ -508,9 +560,27 @@ export class FolderService {
   }
 
   /**
+   * 移除收藏文件夹
+   */
+  async removeFavoriteFolder(userId: User["id"], folderId: Folder["id"]): Promise<void> {
+    await this.prismaService.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        favoriteFolders: {
+          disconnect: {
+            id: folderId,
+          },
+        },
+      },
+    })
+  }
+
+  /**
    * 根据 id 将文件夹删除, 传入的 type 决定是可回收的删除还是彻底删除, soft 是可回收的删除, hard 是彻底删除
    *
-   * 需要操作者的用户 id, 用于判断操作者是否有权限删除文档
+   * 需要操作者的用户 id, 用于判断操作者是否有权限删除文件夹
    */
   async deleteFolder(userId: User["id"], folderId: Folder["id"], type: "soft" | "hard"): Promise<void> {
     const folderData = await this.prismaService.folder.findUnique({
@@ -613,7 +683,7 @@ export class FolderService {
   /**
    * 根据 id 将已删除的文件夹恢复, 若已彻底删除, 不可恢复
    *
-   * 需要操作者的用户 id, 用于判断操作者是否有权限恢复文档
+   * 需要操作者的用户 id, 用于判断操作者是否有权限恢复文件夹
    */
   async revertFolder(userId: User["id"], folderId: Folder["id"]): Promise<void> {
     const folderData = await this.prismaService.folder.findUnique({
@@ -634,7 +704,7 @@ export class FolderService {
     if (!flag) {
       throw new CommonException({
         code: DocExceptionCode.CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER,
-        message: `当前用户没有该文件夹的管理权限(文档id: ${folderId})`,
+        message: `当前用户没有该文件夹的管理权限(文件夹id: ${folderId})`,
         isFiltered: false,
       })
     }

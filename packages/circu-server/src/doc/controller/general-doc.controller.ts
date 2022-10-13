@@ -81,7 +81,7 @@ export class GeneralDocController {
   }
 
   /**
-   * 获取当前登录用户主页中收藏的文档
+   * 获取当前登录用户收藏的文档
    */
   @Get("favorite")
   @UseGuards(UserAuthGuard)

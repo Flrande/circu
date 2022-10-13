@@ -11,6 +11,9 @@ import { FolderService } from "../service/folder.service"
 export class FolderController {
   constructor(private readonly folderService: FolderService) {}
 
+  /**
+   * 根据 id 获取文件夹信息
+   */
   @Get("data/:id")
   @UseGuards(UserAuthGuard)
   async getFolderById(
@@ -89,6 +92,28 @@ export class FolderController {
     }
   }
 
+  /**
+   * 获取当前登录用户收藏的文件夹
+   */
+  @Get("favorite")
+  @UseGuards(UserAuthGuard)
+  async getFavoriteFolders(
+    @Req() req: Request
+  ): Promise<
+    ISuccessResponse<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">[]>
+  > {
+    const result = await this.folderService.getFavoriteFolders(req.session.userid!)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: result,
+    }
+  }
+
+  /**
+   * 创建新文件夹
+   */
   @Post("create")
   @UseGuards(UserAuthGuard)
   async createFolder(
@@ -127,12 +152,42 @@ export class FolderController {
   }
 
   /**
-   * 移除快速访问文档
+   * 添加新的收藏文件夹
+   */
+  @Post("favorite/:id/add")
+  @UseGuards(UserAuthGuard)
+  async addFavoriteFolder(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.folderService.addFavoriteFolder(req.session.userid!, params.id)
+
+    return {
+      code: 0,
+      message: "添加成功",
+      data: {},
+    }
+  }
+
+  /**
+   * 移除快速访问文件夹
    */
   @Post("fast_access/:id/remove")
   @UseGuards(UserAuthGuard)
   async removeFastAccessFolder(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
     await this.folderService.removeFastAccessFolder(req.session.userid!, params.id)
+
+    return {
+      code: 0,
+      message: "移除成功",
+      data: {},
+    }
+  }
+
+  /**
+   * 移除收藏文件夹
+   */
+  @Post("favorite/:id/remove")
+  @UseGuards(UserAuthGuard)
+  async removeFavoriteFolder(@Param() params: IdDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
+    await this.folderService.removeFavoriteFolder(req.session.userid!, params.id)
 
     return {
       code: 0,
