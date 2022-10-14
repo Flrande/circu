@@ -1,5 +1,6 @@
 import { useAtomValue } from "jotai"
-import { Editor } from "slate"
+import { useRef } from "react"
+import { Editor, Path } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { mouseXStateAtom } from "../../state/mouse"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "../../types/constant"
@@ -17,6 +18,19 @@ const Draggable: React.FC = () => {
   const isFoldButtonActive = useAtomValue(isFoldButtonActiveAtom)
   const toolBarState = useAtomValue(toolBarStateAtom)
 
+  const xDomRef = useRef<HTMLElement | null>(null)
+  const tmpXPath = useRef<Path | null>(null)
+  if (
+    tmpXPath.current &&
+    mouseXState.xBlockPath &&
+    !Path.equals(tmpXPath.current, mouseXState.xBlockPath) &&
+    xDomRef.current
+  ) {
+    xDomRef.current.style.removeProperty("background-color")
+    xDomRef.current.style.removeProperty("border-radius")
+  }
+  tmpXPath.current = mouseXState.xBlockPath
+
   const { dragRef, onDragStart } = useDragBlock()
 
   if (mouseXState.xBlockPath && (!toolBarState || !toolBarState.isActive)) {
@@ -26,7 +40,7 @@ const Draggable: React.FC = () => {
 
       if (SlateElement.isElement(node) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, node.type)) {
         const element = node as BlockElementExceptTextLine
-        const dom = ReactEditor.toDOMNode(editor, element)
+        xDomRef.current = ReactEditor.toDOMNode(editor, element)
 
         // 判断父块级节点是不是引用, 若是, 要调整按钮的位置
         let quoteFlag = false
@@ -40,7 +54,7 @@ const Draggable: React.FC = () => {
         }
 
         // 计算位置
-        const rect = dom.getBoundingClientRect()
+        const rect = xDomRef.current.getBoundingClientRect()
         // 文档左右两边到视口的距离
         const docXPadding = (document.getElementById(EDITOR_ROOT_DOM_ID)!.clientWidth - DOC_WIDTH) / 2
 
@@ -57,6 +71,18 @@ const Draggable: React.FC = () => {
           <div
             ref={dragRef}
             onDragStart={onDragStart}
+            onMouseEnter={() => {
+              if (xDomRef.current) {
+                xDomRef.current.style.backgroundColor = "#192a4c"
+                xDomRef.current.style.borderRadius = "4px"
+              }
+            }}
+            onMouseLeave={() => {
+              if (xDomRef.current) {
+                xDomRef.current.style.removeProperty("background-color")
+                xDomRef.current.style.removeProperty("border-radius")
+              }
+            }}
             className={
               "absolute bg-neutral-800/50 hover:bg-neutral-800 hover:border border-solid border-zinc-700 rounded w-[18px] h-6 flex items-center justify-center text-gray-400/50 hover:text-gray-400 select-none"
             }
