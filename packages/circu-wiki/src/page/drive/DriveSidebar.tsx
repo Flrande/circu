@@ -127,19 +127,6 @@ const DriveSidebar: React.FC = () => {
             signal={"shared"}
           ></DriveSidebarItem>
           <DriveSidebarItem
-            icon={
-              <DocumentFolder
-                theme="outline"
-                size="20"
-                fill="currentColor"
-                strokeLinejoin="bevel"
-                strokeLinecap="square"
-              />
-            }
-            message={"知识库"}
-            signal={"wiki"}
-          ></DriveSidebarItem>
-          <DriveSidebarItem
             icon={<Star theme="outline" size="20" fill="currentColor" strokeLinejoin="bevel" strokeLinecap="square" />}
             message={"收藏"}
             signal={"favorites"}
