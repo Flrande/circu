@@ -1,6 +1,6 @@
 # Circu
 
-本项目是一个支持多人协同的在线文档应用，仓库主体是基于 pnpm Workspace 配置的 monorepo，包含以下4个包：
+本项目是一个支持多人协同的在线文档应用，仓库主体是基于 pnpm Workspace 配置的 monorepo，包含以下 4 个包：
 
 - circu-editor - 富文本编辑器模块
 - circu-server - 应用后端
