@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Doc from "./page/doc/Doc"
 import Drive from "./page/drive/Drive"
-import DriveWiki from "./page/drive/DriveWiki/DriveWiki"
 import Favorites from "./page/drive/favorites/Favorites"
 import Home from "./page/drive/home/Home"
 import Me from "./page/drive/me/Me"
@@ -19,11 +19,11 @@ const App: React.FC = () => {
             <Route path={"me"} element={<Me></Me>}></Route>
             <Route path={"shared"} element={<Shared></Shared>}></Route>
             <Route path={"favorites"} element={<Favorites></Favorites>}></Route>
-            <Route path={"wiki"} element={<DriveWiki></DriveWiki>}></Route>
             <Route path={"trash"} element={<Trash></Trash>}></Route>
             <Route index element={<NotFound></NotFound>}></Route>
           </Route>
           <Route path={"/wiki"} element={<Wiki></Wiki>}></Route>
+          <Route path={"/doc"} element={<Doc></Doc>}></Route>
           <Route path={"*"} element={<NotFound></NotFound>}></Route>
         </Routes>
       </BrowserRouter>

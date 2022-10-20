@@ -76,7 +76,12 @@ const FoldButton: React.FC = () => {
                       20 -
                       document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left
                 }px`,
-                top: `${rect.top + window.scrollY + 1}px`,
+                top: `${
+                  rect.top +
+                  window.scrollY +
+                  4 -
+                  document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().top
+                }px`,
                 userSelect: "none",
               }}
               contentEditable={false}
