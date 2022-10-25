@@ -10,5 +10,6 @@ import { GeneralDocController } from "./controller/general-doc.controller"
 @Module({
   controllers: [GeneralDocController, FolderController],
   providers: [GeneralDocService, GeneralDocAuthService, FolderService, FolderAuthService, PrismaService],
+  exports: [GeneralDocService, GeneralDocAuthService, FolderService, FolderAuthService],
 })
 export class DocModule {}
