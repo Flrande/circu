@@ -26,8 +26,9 @@ const Doc: React.FC = () => {
   ])
 
   return (
-    <div className={"flex-1 bg-transparent h-full relative"}>
-      <div className={"h-full pt-14"}>
+    <div className={"grid grid-rows-[56px_auto] h-full"}>
+      <div className={"bg-[#1a1a1a] border-b border-[#5f5f5f]"}></div>
+      <div>
         <CircuEditor editor={editor} value={value} onChange={(newValue) => setValue(newValue)}></CircuEditor>
       </div>
     </div>
