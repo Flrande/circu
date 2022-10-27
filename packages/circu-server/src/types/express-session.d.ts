@@ -5,11 +5,3 @@ declare module "express-session" {
     userid: string
   }
 }
-
-declare module "http" {
-  interface IncomingMessage {
-    session: {
-      userid: string
-    }
-  }
-}
