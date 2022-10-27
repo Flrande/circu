@@ -7,6 +7,13 @@
 - circu-wiki - 应用前端
 - slate-react - circu-editor 的渲染层部分, 主要代码来自于 [Slate.js 官方](https://github.com/ianstormtaylor/slate)
 
+## Usage
+
+本项目仍处在开发阶段，目前只有富文本编辑器部分完成度较高，可以通过以下步骤尝试使用，若发现 bug 非常欢迎提 issue。
+
+1. `pnpm install`
+2. `pnpm editor:dev`
+
 ## Roadmap
 
 ### circu-editor
@@ -19,6 +26,7 @@
 - [ ] 支持块级分隔线
 - [ ] 支持文档目录功能，通过多级标题生成文档目录，点击对目录文档可以跳转到对应位置
 - [ ] 图片及动态图支持
+- [ ] 单元测试
 
 ### circu-server
 
