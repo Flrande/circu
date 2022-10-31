@@ -5,11 +5,10 @@ import * as encoding from "lib0/encoding"
 import { CustomSocket } from "src/types/socket-io"
 import { Socket } from "socket.io"
 import { MESSAGE_AWARENESS, MESSAGE_SYNC, SLATE_VALUE_YDOC_KEY } from "./constants"
-import { Prisma, PrismaClient } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import { slateNodesToInsertDelta, yTextToSlateElement } from "@slate-yjs/core"
 import { Node } from "slate"
-
-const prisma = new PrismaClient()
+import { crdtPrisma } from "./crdt-prisma"
 
 export class WSSharedDoc extends Y.Doc {
   id: string
@@ -67,7 +66,7 @@ export class WSSharedDoc extends Y.Doc {
         })
 
         // 持久化
-        const dbDoc = await prisma.doc.findUnique({
+        const dbDoc = await crdtPrisma.doc.findUnique({
           where: {
             id,
           },
@@ -89,7 +88,7 @@ export class WSSharedDoc extends Y.Doc {
           const newDbDocValue = yTextToSlateElement(YDocXmlText)
 
           // 更新数据库中的文档
-          await prisma.doc.update({
+          await crdtPrisma.doc.update({
             where: {
               id,
             },

@@ -1,3 +1,4 @@
+import * as Y from "yjs"
 import * as encoding from "lib0/encoding"
 import * as decoding from "lib0/decoding"
 import * as syncProtocol from "y-protocols/sync.js"
@@ -8,7 +9,10 @@ import { GeneralDocService } from "src/doc/service/general-doc.service"
 import { CustomSocket } from "src/types/socket-io"
 import { URL } from "url"
 import { WSSharedDoc } from "./WSSharedDoc"
-import { MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
+import { MESSAGE_AWARENESS, MESSAGE_SYNC, SLATE_VALUE_YDOC_KEY } from "./constants"
+import { crdtPrisma } from "./crdt-prisma"
+import { slateNodesToInsertDelta } from "@slate-yjs/core"
+import { Node } from "slate"
 
 //TODO: 通过 y-leveldb 降低占用内存?
 // https://discuss.yjs.dev/t/scalability-of-y-websocket-server/274
@@ -55,6 +59,24 @@ export class CrdtService {
       const [YDoc, isNew] = getYDoc(doc.id)
       YDoc.conns.set(socket, new Set())
 
+      // 若出现新注册的文档, 要先将数据库内的数据载入
+      if (isNew) {
+        const dbDoc = await crdtPrisma.doc.findUnique({
+          where: {
+            id: docId,
+          },
+          select: {
+            value: true,
+          },
+        })
+        if (dbDoc && dbDoc.value) {
+          // 取出数据库中的 slate 格式数据, 载入到 Y.Doc 中
+          const YDocXmlText = YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText
+          const dbDocDelta = slateNodesToInsertDelta(dbDoc.value as unknown as Node[])
+          YDocXmlText.applyDelta(dbDocDelta)
+        }
+      }
+
       const messageListener = async (conn: CustomSocket, doc: WSSharedDoc, message: Uint8Array) => {
         const encoder = encoding.createEncoder()
         const decoder = decoding.createDecoder(message)
@@ -82,8 +104,6 @@ export class CrdtService {
       }
 
       socket.on("message", (message) => messageListener(socket, YDoc, message))
-
-      //TODO: 若 isNew 为真, 取出数据库及 Redis 中的数据, 载入到 YDoc 中
 
       socket.on("disconnect", () => {
         //TODO: 连接关闭的回调
