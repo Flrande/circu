@@ -14,6 +14,20 @@ import { crdtPrisma } from "./crdt-prisma"
 import { slateNodesToInsertDelta } from "@slate-yjs/core"
 import { Node } from "slate"
 
+/**
+ * 交互协议:
+ *    文档数据同步:
+ *      [MESSAGE_SYNC, messageYjsSyncStep1 = 0, ...]:
+ *          包含发送方的版本向量, 接收方通过 Y.encodeStateAsUpdate(接收方的 Y.Doc, 发送方的的版本向量) 生成 diff
+ *          数据, 返回 YjsSyncStep2
+ *      [MESSAGE_SYNC, messageYjsSyncStep2 = 1, ...]:
+ *      [MESSAGE_SYNC, messageYjsUpdate = 2, ...]:
+ *          包含发送方与接收方的 diff 数据, 接收方读取 diff 数据并将其载入自己的 Y.doc 中
+ *    文档数据之外得数据(如光标位置)同步:
+ *      [MESSAGE_AWARENESS, ...]:
+ *          包含更新所需的数据, 接收方可用于更新
+ */
+
 //TODO: 通过 y-leveldb 降低占用内存?
 // https://discuss.yjs.dev/t/scalability-of-y-websocket-server/274
 // https://discuss.yjs.dev/t/understanding-memory-requirements-for-production-usage/198
@@ -87,6 +101,7 @@ export class CrdtService {
             encoding.writeVarUint(encoder, MESSAGE_SYNC)
             syncProtocol.readSyncMessage(decoder, encoder, doc, conn)
 
+            // 如果载荷长度大于 1, 说明有需要回复的数据
             if (encoding.length(encoder) > 1) {
               socket.emit("message", encoding.toUint8Array(encoder))
             }
