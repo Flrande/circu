@@ -47,6 +47,27 @@ if (import.meta.env.VITE_INITIAL_VALUE_MODE === "dev") {
       ],
     })
   }
+} else if (import.meta.env.VITE_INITIAL_VALUE_MODE === "empty") {
+  initialValue = [
+    {
+      type: "title",
+      children: [
+        {
+          type: "__block-element-content",
+          children: [
+            {
+              type: "text-line",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ]
 } else if (import.meta.env.VITE_INITIAL_VALUE_MODE === "huge") {
   let k = 0
   for (let i = 0; i < 100; i++) {

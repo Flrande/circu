@@ -6,6 +6,7 @@
   "scripts": {
     "editor:dev": "cd ./packages/circu-editor && pnpm vite",
     "editor:dev:huge": "cd ./packages/circu-editor && pnpm vite --mode huge-document",
+    "editor:dev:empty": "cd ./packages/circu-editor && pnpm vite --mode empty",
     "editor:build": "cd ./packages/circu-editor && pnpm vite build",
     "editor:build:huge": "cd ./packages/circu-editor && pnpm vite build --mode huge-document",
     "editor:preview": "cd ./packages/circu-editor && pnpm vite preview",
