@@ -6,14 +6,3 @@ declare module "http" {
     session: SessionData
   }
 }
-
-export interface ServerToClientEvents {
-  message: (payload: Uint8Array) => void
-  crdtError: (message: string) => void
-}
-
-export interface ClientToServerEvents {
-  message: (payload: Uint8Array) => void
-}
-
-export type CustomSocket = Socket<ClientToServerEvents, ServerToClientEvents>

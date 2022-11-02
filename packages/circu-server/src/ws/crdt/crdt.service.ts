@@ -6,10 +6,16 @@ import * as awarenessProtocol from "y-protocols/awareness"
 import { Injectable } from "@nestjs/common"
 import { Server } from "socket.io"
 import { GeneralDocService } from "src/doc/service/general-doc.service"
-import { CustomSocket } from "src/types/socket-io"
 import { URL } from "url"
 import { WSSharedDoc } from "./WSSharedDoc"
-import { MESSAGE_AWARENESS, MESSAGE_SYNC, SLATE_VALUE_YDOC_KEY } from "./constants"
+import {
+  CRDT_ERROR_EVENT,
+  CRDT_MESSAGE_EVENT,
+  CustomSocket,
+  MESSAGE_AWARENESS,
+  MESSAGE_SYNC,
+  SLATE_VALUE_YDOC_KEY,
+} from "./constants"
 import { crdtPrisma } from "./crdt-prisma"
 import { slateNodesToInsertDelta } from "@slate-yjs/core"
 import { Node } from "slate"
@@ -56,13 +62,13 @@ export class CrdtService {
     const userId = socket.request.session.userid
 
     if (!userId) {
-      socket.emit("crdtError", "未认证")
+      socket.emit(CRDT_ERROR_EVENT, "未认证")
       socket.disconnect()
       return
     }
 
     if (!docId) {
-      socket.emit("crdtError", "未发现文档 id")
+      socket.emit(CRDT_ERROR_EVENT, "未发现文档 id")
       socket.disconnect()
       return
     }
@@ -105,7 +111,7 @@ export class CrdtService {
 
             // 如果载荷长度大于 1, 说明有需要回复的数据
             if (encoding.length(encoder) > 1) {
-              socket.emit("message", encoding.toUint8Array(encoder))
+              socket.emit(CRDT_MESSAGE_EVENT, encoding.toUint8Array(encoder))
             }
             break
           }
@@ -134,7 +140,7 @@ export class CrdtService {
         }
       }
 
-      socket.on("message", (message) => messageListener(socket, YDoc, message))
+      socket.on(CRDT_MESSAGE_EVENT, (message) => messageListener(socket, YDoc, message))
 
       socket.on("disconnect", closeConn)
 
@@ -145,7 +151,7 @@ export class CrdtService {
         const encoder = encoding.createEncoder()
         encoding.writeVarUint(encoder, MESSAGE_SYNC)
         syncProtocol.writeSyncStep1(encoder, YDoc)
-        socket.emit("message", encoding.toUint8Array(encoder))
+        socket.emit(CRDT_MESSAGE_EVENT, encoding.toUint8Array(encoder))
 
         const awarenessStates = YDoc.awareness.getStates()
         if (awarenessStates.size > 0) {
@@ -155,11 +161,11 @@ export class CrdtService {
             encoder,
             awarenessProtocol.encodeAwarenessUpdate(YDoc.awareness, Array.from(awarenessStates.keys()))
           )
-          socket.emit("message", encoding.toUint8Array(encoder))
+          socket.emit(CRDT_MESSAGE_EVENT, encoding.toUint8Array(encoder))
         }
       }
     } catch (error) {
-      socket.emit("crdtError", "连接建立失败")
+      socket.emit(CRDT_ERROR_EVENT, "连接建立失败")
       socket.disconnect()
     }
   }

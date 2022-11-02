@@ -2,9 +2,8 @@ import * as Y from "yjs"
 import * as awarenessProtocol from "y-protocols/awareness"
 import * as syncProtocol from "y-protocols/sync"
 import * as encoding from "lib0/encoding"
-import { CustomSocket } from "src/types/socket-io"
 import { Socket } from "socket.io"
-import { MESSAGE_AWARENESS, MESSAGE_SYNC, SLATE_VALUE_YDOC_KEY } from "./constants"
+import { CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC, SLATE_VALUE_YDOC_KEY } from "./constants"
 import { Prisma } from "@prisma/client"
 import { slateNodesToInsertDelta, yTextToSlateElement } from "@slate-yjs/core"
 import { Node } from "slate"
@@ -47,7 +46,7 @@ export class WSSharedDoc extends Y.Doc {
       const buff = encoding.toUint8Array(encoder)
 
       this.conns.forEach((_, c) => {
-        c.emit("message", buff)
+        c.emit(CRDT_MESSAGE_EVENT, buff)
       })
     }
 
@@ -62,7 +61,7 @@ export class WSSharedDoc extends Y.Doc {
         const buff = encoding.toUint8Array(encoder)
 
         doc.conns.forEach((_, c) => {
-          c.emit("message", buff)
+          c.emit(CRDT_MESSAGE_EVENT, buff)
         })
 
         // 持久化
