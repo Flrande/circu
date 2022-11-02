@@ -32,16 +32,16 @@ import { Node } from "slate"
 // https://discuss.yjs.dev/t/scalability-of-y-websocket-server/274
 // https://discuss.yjs.dev/t/understanding-memory-requirements-for-production-usage/198
 // https://discuss.yjs.dev/t/how-is-y-leveldb-coming-along/126
-const docs = new Map<string, WSSharedDoc>()
+const YDocs = new Map<string, WSSharedDoc>()
 
 const getYDoc = (docId: string): [WSSharedDoc, boolean] => {
-  const doc = docs.get(docId)
+  const doc = YDocs.get(docId)
   if (doc) {
     return [doc, false]
   }
 
   const newDoc = new WSSharedDoc(docId)
-  docs.set(docId, newDoc)
+  YDocs.set(docId, newDoc)
 
   return [newDoc, true]
 }
@@ -57,11 +57,13 @@ export class CrdtService {
 
     if (!userId) {
       socket.emit("crdtError", "未认证")
+      socket.disconnect()
       return
     }
 
     if (!docId) {
       socket.emit("crdtError", "未发现文档 id")
+      socket.disconnect()
       return
     }
 
@@ -69,8 +71,8 @@ export class CrdtService {
     //TODO: 区分只读用户和可写用户
 
     try {
-      const doc = await this.generalDocService.getDocMetaDataById(userId, docId)
-      const [YDoc, isNew] = getYDoc(doc.id)
+      const docMeta = await this.generalDocService.getDocMetaDataById(userId, docId)
+      const [YDoc, isNew] = getYDoc(docMeta.id)
       YDoc.conns.set(socket, new Set())
 
       // 若出现新注册的文档, 要先将数据库内的数据载入
@@ -118,11 +120,23 @@ export class CrdtService {
         }
       }
 
+      const closeConn = () => {
+        const controlledId = YDoc.conns.get(socket)
+
+        if (controlledId) {
+          YDoc.conns.delete(socket)
+          awarenessProtocol.removeAwarenessStates(YDoc.awareness, Array.from(controlledId), null)
+
+          if (YDoc.conns.size === 0) {
+            YDoc.destroy()
+            YDocs.delete(YDoc.id)
+          }
+        }
+      }
+
       socket.on("message", (message) => messageListener(socket, YDoc, message))
 
-      socket.on("disconnect", () => {
-        //TODO: 连接关闭的回调
-      })
+      socket.on("disconnect", closeConn)
 
       // put the following in a variables in a block so the interval handlers don't keep them in
       // scope
@@ -145,8 +159,8 @@ export class CrdtService {
         }
       }
     } catch (error) {
-      //TODO: 错误处理, 记录
       socket.emit("crdtError", "连接建立失败")
+      socket.disconnect()
     }
   }
 }
