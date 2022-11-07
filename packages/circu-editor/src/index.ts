@@ -1,4 +1,4 @@
-export * from "./slate/hooks/useCircuEditor"
+export * from "./slate/utils/createCircuEditor"
 export * from "./CircuEditor"
 
 export * from "./slate/types/interface"
