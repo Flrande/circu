@@ -23,7 +23,7 @@ Table folder {
 Table doc {
   id String [pk]
   lastModify DateTime [not null]
-  value Json [not null]
+  value Bytes [not null]
   survivalStatus SurvivalStatus [not null, default: 'ALIVE']
   lastDeleted DateTime
   docType DocType [not null]

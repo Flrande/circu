@@ -1,5 +1,5 @@
 import { MenuFoldOne } from "@icon-park/react"
-import { CircuEditor, CustomElement, CustomText, useCircuEditor } from "circu-editor"
+import { CircuEditor, createCircuEditor, CustomElement, CustomText } from "circu-editor"
 import type { ITitle } from "circu-editor/src/slate/components/Nodes/Block/Title/types"
 import { useEffect, useRef, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
@@ -9,7 +9,7 @@ import Doc from "../WikiSdeBar/Doc"
 import { sidebarState } from "../WikiSdeBar/state"
 
 const WikiEditor: React.FC = () => {
-  const editor = useCircuEditor()
+  const [editor] = useState(createCircuEditor())
 
   // 拿到最顶部的文档数据
   const { data, error } = useTopWikiDocs()

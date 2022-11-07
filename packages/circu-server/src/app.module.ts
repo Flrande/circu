@@ -4,11 +4,13 @@ import { APP_FILTER } from "@nestjs/core"
 import { DocModule } from "./doc/doc.module"
 import { HttpExceptionFilter } from "./exception/http-exception.filter"
 import { UserModule } from "./user/user.module"
+import { WsModule } from "./ws/ws.module"
 
 @Module({
   imports: [
     UserModule,
     DocModule,
+    WsModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

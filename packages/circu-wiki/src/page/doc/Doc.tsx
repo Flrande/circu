@@ -1,33 +1,49 @@
-import { CircuEditor, CustomElement, CustomText, useCircuEditor } from "circu-editor"
-import { useState } from "react"
+import * as Y from "yjs"
+import { withYjs, YjsEditor } from "@slate-yjs/core"
+import { CircuEditor, createCircuEditor, CustomElement, CustomText } from "circu-editor"
+import { useEffect, useMemo, useState } from "react"
+import { createSocketIoProvider } from "../../crdt/provider"
+import { SLATE_VALUE_YDOC_KEY } from "../../crdt/constants"
+import { useParams } from "react-router-dom"
+import { subscribeKey } from "valtio/utils"
+import { Button } from "@arco-design/web-react"
 
 const Doc: React.FC = () => {
-  const editor = useCircuEditor()
+  const { docId } = useParams()
 
-  const [value, setValue] = useState<(CustomElement | CustomText)[]>([
-    {
-      type: "title",
-      children: [
-        {
-          type: "__block-element-content",
-          children: [
-            {
-              type: "text-line",
-              children: [
-                {
-                  text: "Demo",
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ])
+  const YDoc = useMemo(() => new Y.Doc(), [])
+
+  const [value, setValue] = useState<(CustomElement | CustomText)[]>([])
+
+  //TODO: 地址 -> 环境变量
+  const [providerMethod, providerStore] = useMemo(() => createSocketIoProvider("localhost:8000", YDoc, docId!), [])
+
+  const editor = useMemo(() => withYjs(createCircuEditor(), YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText), [])
+
+  useEffect(() => {
+    const unsub = subscribeKey(providerStore, "sync", () => {
+      YjsEditor.connect(editor)
+    })
+
+    return () => {
+      unsub()
+      YjsEditor.disconnect(editor)
+    }
+  }, [editor, providerStore])
 
   return (
-    <div className={"grid grid-rows-[56px_auto] h-full"}>
-      <div className={"bg-[#1a1a1a] border-b border-[#5f5f5f]"}></div>
+    <div className={"bg-[#1a1a1a] grid grid-rows-[56px_auto] h-full"}>
+      <div className={"border-b border-[#5f5f5f]"}>
+        <Button
+          onClick={() => {
+            if (providerStore.connected || providerStore.connecting) {
+              providerMethod.disconnect()
+            } else {
+              providerMethod.connect()
+            }
+          }}
+        ></Button>
+      </div>
       <div>
         <CircuEditor editor={editor} value={value} onChange={(newValue) => setValue(newValue)}></CircuEditor>
       </div>

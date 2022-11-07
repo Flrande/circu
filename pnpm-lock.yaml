@@ -152,6 +152,7 @@ importers:
       "@arco-design/web-react": ^2.32.2
       "@arco-plugins/vite-react": ^1.1.0
       "@icon-park/react": ^1.4.2
+      "@slate-yjs/core": ^0.3.1
       "@types/react": ^18.0.15
       "@types/react-dom": ^18.0.6
       "@vitejs/plugin-react": ^2.0.0
@@ -174,6 +175,7 @@ importers:
     dependencies:
       "@arco-design/web-react": 2.39.3_nylzxt5ale4dsv666zkb25cgtm
       "@icon-park/react": 1.4.2_biqbaboplfbrettd7655fr4n2y
+      "@slate-yjs/core": 0.3.1_yjs@13.5.42
       circu-editor: link:../circu-editor
       lib0: 0.2.52
       react: 18.2.0
@@ -2032,6 +2034,17 @@ packages:
       yjs: ^13.5.29
     dependencies:
       slate: 0.81.3
+      y-protocols: 1.0.5
+      yjs: 13.5.42
+    dev: false
+
+  /@slate-yjs/core/0.3.1_yjs@13.5.42:
+    resolution:
+      { integrity: sha512-8nvS9m5FhMNONgydAfzwDCUhuoWbgzx5Bvw1/foSe+JO331UOT1xAKbUX5FzGCOunUcbRjMPXSdNyiPc0dodJg== }
+    peerDependencies:
+      slate: ">=0.70.0"
+      yjs: ^13.5.29
+    dependencies:
       y-protocols: 1.0.5
       yjs: 13.5.42
     dev: false

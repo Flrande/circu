@@ -5,7 +5,7 @@ import * as decoding from "lib0/decoding"
 import * as syncProtocol from "y-protocols/sync"
 import { proxy } from "valtio"
 import { io } from "socket.io-client"
-import { CRDT_ERROR_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
+import { CRDT_ERROR_EVENT, CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
 
 export type SocketIoProviderState = {
   connecting: boolean
@@ -22,6 +22,7 @@ export type SocketIoProviderMethod = {
 export const createSocketIoProvider: (
   serverUrl: string,
   YDoc: Y.Doc,
+  docId: string,
   options?: {
     awareness?: Awareness
     autoConnect?: boolean
@@ -29,6 +30,7 @@ export const createSocketIoProvider: (
 ) => [SocketIoProviderMethod, SocketIoProviderState] = (
   serverUrl,
   YDoc,
+  docId,
   { awareness = new Awareness(YDoc), autoConnect = true } = {}
 ) => {
   const store = proxy<SocketIoProviderState>({
@@ -39,6 +41,10 @@ export const createSocketIoProvider: (
   })
   const socket: CustomSocket = io(serverUrl, {
     autoConnect,
+    path: "/crdt/",
+    query: {
+      docId,
+    },
   })
 
   socket.on(CRDT_ERROR_EVENT, (msg) => {
@@ -55,27 +61,28 @@ export const createSocketIoProvider: (
   })
 
   socket.on("connect", () => {
+    // send sync step 1 when connected
+    const encoder = encoding.createEncoder()
+    encoding.writeVarUint(encoder, MESSAGE_SYNC)
+    syncProtocol.writeSyncStep1(encoder, YDoc)
+    socket.emit("crdt:message", encoding.toUint8Array(encoder))
+
+    // broadcast local awareness state
+    // console.log(awareness.getLocalState())
+    // if (awareness.getLocalState() !== null) {
+    //   const encoderAwarenessState = encoding.createEncoder()
+    //   encoding.writeVarUint(encoderAwarenessState, MESSAGE_AWARENESS)
+    //   encoding.writeUint8Array(encoderAwarenessState, encodeAwarenessUpdate(awareness, [YDoc.clientID]))
+    //   socket.emit("crdt:message", encoding.toUint8Array(encoderAwarenessState))
+    // }
+
     store.connecting = false
     store.connected = true
     store.error = null
   })
 
-  // send sync step 1 when connected
-  const encoder = encoding.createEncoder()
-  encoding.writeVarUint(encoder, MESSAGE_SYNC)
-  syncProtocol.writeSyncStep1(encoder, YDoc)
-  socket.emit("crdt:message", encoding.toUint8Array(encoder))
-
-  // broadcast local awareness state
-  if (awareness.getLocalState() !== null) {
-    const encoderAwarenessState = encoding.createEncoder()
-    encoding.writeVarUint(encoderAwarenessState, MESSAGE_AWARENESS)
-    encoding.writeUint8Array(encoderAwarenessState, encodeAwarenessUpdate(awareness, [YDoc.clientID]))
-    socket.emit("crdt:message", encoding.toUint8Array(encoderAwarenessState))
-  }
-
   socket.on("crdt:message", (buffer) => {
-    const decoder = decoding.createDecoder(buffer)
+    const decoder = decoding.createDecoder(new Uint8Array(buffer))
     const encoder = encoding.createEncoder()
     const messageType = decoding.readVarUint(decoder)
 
@@ -91,6 +98,21 @@ export const createSocketIoProvider: (
     // 同步文档数据之外的数据
     if (messageType === MESSAGE_AWARENESS) {
       applyAwarenessUpdate(awareness, decoding.readVarUint8Array(decoder), socket)
+    }
+
+    if (encoding.length(encoder) > 1) {
+      socket.emit(CRDT_MESSAGE_EVENT, encoding.toUint8Array(encoder))
+    }
+  })
+
+  YDoc.on("update", (update: Uint8Array, origin: CustomSocket) => {
+    if (origin !== socket) {
+      const encoder = encoding.createEncoder()
+      encoding.writeVarUint(encoder, MESSAGE_SYNC)
+      syncProtocol.writeUpdate(encoder, update)
+      if (socket.connected) {
+        socket.emit(CRDT_MESSAGE_EVENT, encoding.toUint8Array(encoder))
+      }
     }
   })
 

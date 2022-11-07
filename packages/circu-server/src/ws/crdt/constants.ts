@@ -14,7 +14,7 @@ export type ServerToClientEvents = {
 }
 
 export interface ClientToServerEvents {
-  "crdt:message": (payload: Uint8Array) => void
+  "crdt:message": (payload: Buffer) => void
 }
 
 export type CustomSocket = Socket<ClientToServerEvents, ServerToClientEvents>

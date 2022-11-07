@@ -1,3 +1,4 @@
+import * as Y from "yjs"
 import { Injectable } from "@nestjs/common"
 import { Doc, DocType, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
@@ -5,6 +6,8 @@ import { CommonException } from "src/exception/common.exception"
 import { DELETE_EXPIRE_DAY_TIME, DocExceptionCode } from "../doc.constant"
 import { FolderAuthService } from "./auth/folder-auth.service"
 import { GeneralDocAuthService } from "./auth/general-doc-auth.service"
+import { SLATE_VALUE_YDOC_KEY } from "src/ws/crdt/constants"
+import { slateNodesToInsertDelta } from "@slate-yjs/core"
 
 @Injectable()
 export class GeneralDocService {
@@ -220,7 +223,32 @@ export class GeneralDocService {
           },
         ],
       },
+      {
+        type: "paragraph",
+        children: [
+          {
+            type: "__block-element-content",
+            children: [
+              {
+                type: "text-line",
+                children: [
+                  {
+                    text: "",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     ]
+    const YDoc = new Y.Doc()
+    const YDocXmlText = YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText
+    const initialDelta = slateNodesToInsertDelta(initialValue)
+    YDoc.transact(() => {
+      YDocXmlText.applyDelta(initialDelta)
+    }, userId)
+    const initialBuffer = Buffer.from(Y.encodeStateAsUpdate(YDoc))
 
     const author = await this.prismaService.user.findUnique({
       where: {
@@ -240,7 +268,7 @@ export class GeneralDocService {
 
     const createPayload: Prisma.DocCreateInput = {
       lastModify: new Date(),
-      value: initialValue,
+      value: initialBuffer,
       docType: DocType.GENERAL,
       author: {
         connect: {

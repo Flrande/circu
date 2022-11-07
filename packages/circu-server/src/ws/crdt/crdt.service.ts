@@ -1,24 +1,13 @@
 import * as Y from "yjs"
 import * as encoding from "lib0/encoding"
 import * as decoding from "lib0/decoding"
-import * as syncProtocol from "y-protocols/sync.js"
+import * as syncProtocol from "y-protocols/sync"
 import * as awarenessProtocol from "y-protocols/awareness"
 import { Injectable } from "@nestjs/common"
-import { Server } from "socket.io"
 import { GeneralDocService } from "src/doc/service/general-doc.service"
-import { URL } from "url"
-import { WSSharedDoc } from "./WSSharedDoc"
-import {
-  CRDT_ERROR_EVENT,
-  CRDT_MESSAGE_EVENT,
-  CustomSocket,
-  MESSAGE_AWARENESS,
-  MESSAGE_SYNC,
-  SLATE_VALUE_YDOC_KEY,
-} from "./constants"
+import { socketToUserId, WSSharedDoc } from "./WSSharedDoc"
+import { CRDT_ERROR_EVENT, CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
 import { crdtPrisma } from "./crdt-prisma"
-import { slateNodesToInsertDelta } from "@slate-yjs/core"
-import { Node } from "slate"
 
 /**
  * 交互协议:
@@ -34,20 +23,22 @@ import { Node } from "slate"
  *          包含更新所需的数据, 接收方可用于更新
  */
 
+//TODO: 文档数据改回用二进制存储
+//TODO: origin 改成用户 id 用于追踪更新
 //TODO: 通过 y-leveldb 降低占用内存?
 // https://discuss.yjs.dev/t/scalability-of-y-websocket-server/274
 // https://discuss.yjs.dev/t/understanding-memory-requirements-for-production-usage/198
 // https://discuss.yjs.dev/t/how-is-y-leveldb-coming-along/126
-const YDocs = new Map<string, WSSharedDoc>()
+const WSDocs = new Map<string, WSSharedDoc>()
 
-const getYDoc = (docId: string): [WSSharedDoc, boolean] => {
-  const doc = YDocs.get(docId)
+const getWSDoc = (docId: string): [WSSharedDoc, boolean] => {
+  const doc = WSDocs.get(docId)
   if (doc) {
     return [doc, false]
   }
 
   const newDoc = new WSSharedDoc(docId)
-  YDocs.set(docId, newDoc)
+  WSDocs.set(docId, newDoc)
 
   return [newDoc, true]
 }
@@ -56,10 +47,16 @@ const getYDoc = (docId: string): [WSSharedDoc, boolean] => {
 export class CrdtService {
   constructor(private readonly generalDocService: GeneralDocService) {}
 
-  async setupCRDT(server: Server, socket: CustomSocket): Promise<void> {
-    const url = new URL(socket.handshake.address)
-    const docId = url.pathname.split("/").at(-1)
-    const userId = socket.request.session.userid
+  async setupCRDT(socket: CustomSocket): Promise<void> {
+    if (!socket.handshake.query["docId"]) {
+      socket.emit(CRDT_ERROR_EVENT, "需要文档 id")
+      socket.disconnect()
+      return
+    }
+    const docId = socket.handshake.query["docId"] as string
+    //FIXME: 先用一个已知 id 用于开发测试, 等待前端登录功能完成
+    // const userId = socket.request.session.userid
+    const userId = "cla68my2i0000undojkj0kaoi"
 
     if (!userId) {
       socket.emit(CRDT_ERROR_EVENT, "未认证")
@@ -75,11 +72,15 @@ export class CrdtService {
 
     //TODO: 校验用户是否有读权限
     //TODO: 区分只读用户和可写用户
-
     try {
       const docMeta = await this.generalDocService.getDocMetaDataById(userId, docId)
-      const [YDoc, isNew] = getYDoc(docMeta.id)
-      YDoc.conns.set(socket, new Set())
+
+      // 设置共享文档
+      const [WSDoc, isNew] = getWSDoc(docMeta.id)
+
+      // 将共享文档与 socket, socket 与用户 id 对应
+      WSDoc.conns.set(socket, new Set())
+      socketToUserId.set(socket, userId)
 
       // 若出现新注册的文档, 要先将数据库内的数据载入
       if (isNew) {
@@ -92,22 +93,20 @@ export class CrdtService {
           },
         })
         if (dbDoc && dbDoc.value) {
-          // 取出数据库中的 slate 格式数据, 载入到 Y.Doc 中
-          const YDocXmlText = YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText
-          const dbDocDelta = slateNodesToInsertDelta(dbDoc.value as unknown as Node[])
-          YDocXmlText.applyDelta(dbDocDelta)
+          // 取出数据库中的数据, 载入到 Y.Doc 中, 注意要添加 origin
+          Y.applyUpdate(WSDoc, dbDoc.value, socket)
         }
       }
 
-      const messageListener = async (conn: CustomSocket, doc: WSSharedDoc, message: Uint8Array) => {
+      const messageListener = async (message: Uint8Array) => {
         const encoder = encoding.createEncoder()
         const decoder = decoding.createDecoder(message)
         const messageType = decoding.readVarUint(decoder)
-
+        console.log("server get message", messageType)
         switch (messageType) {
           case MESSAGE_SYNC: {
             encoding.writeVarUint(encoder, MESSAGE_SYNC)
-            syncProtocol.readSyncMessage(decoder, encoder, doc, conn)
+            syncProtocol.readSyncMessage(decoder, encoder, WSDoc, socket)
 
             // 如果载荷长度大于 1, 说明有需要回复的数据
             if (encoding.length(encoder) > 1) {
@@ -118,7 +117,7 @@ export class CrdtService {
           case MESSAGE_AWARENESS: {
             //TODO: Redis 广播 awareness 信息
             const update = decoding.readVarUint8Array(decoder)
-            awarenessProtocol.applyAwarenessUpdate(doc.awareness, update, conn)
+            awarenessProtocol.applyAwarenessUpdate(WSDoc.awareness, update, socket)
             break
           }
           default:
@@ -127,20 +126,22 @@ export class CrdtService {
       }
 
       const closeConn = () => {
-        const controlledId = YDoc.conns.get(socket)
+        socketToUserId.delete(socket)
+
+        const controlledId = WSDoc.conns.get(socket)
 
         if (controlledId) {
-          YDoc.conns.delete(socket)
-          awarenessProtocol.removeAwarenessStates(YDoc.awareness, Array.from(controlledId), null)
+          WSDoc.conns.delete(socket)
+          awarenessProtocol.removeAwarenessStates(WSDoc.awareness, Array.from(controlledId), null)
 
-          if (YDoc.conns.size === 0) {
-            YDoc.destroy()
-            YDocs.delete(YDoc.id)
+          if (WSDoc.conns.size === 0) {
+            WSDoc.destroy()
+            WSDocs.delete(WSDoc.id)
           }
         }
       }
 
-      socket.on(CRDT_MESSAGE_EVENT, (message) => messageListener(socket, YDoc, message))
+      socket.on(CRDT_MESSAGE_EVENT, (message) => messageListener(new Uint8Array(message)))
 
       socket.on("disconnect", closeConn)
 
@@ -150,16 +151,16 @@ export class CrdtService {
         // send sync step 1
         const encoder = encoding.createEncoder()
         encoding.writeVarUint(encoder, MESSAGE_SYNC)
-        syncProtocol.writeSyncStep1(encoder, YDoc)
+        syncProtocol.writeSyncStep1(encoder, WSDoc)
         socket.emit(CRDT_MESSAGE_EVENT, encoding.toUint8Array(encoder))
 
-        const awarenessStates = YDoc.awareness.getStates()
+        const awarenessStates = WSDoc.awareness.getStates()
         if (awarenessStates.size > 0) {
           const encoder = encoding.createEncoder()
           encoding.writeVarUint(encoder, MESSAGE_AWARENESS)
           encoding.writeVarUint8Array(
             encoder,
-            awarenessProtocol.encodeAwarenessUpdate(YDoc.awareness, Array.from(awarenessStates.keys()))
+            awarenessProtocol.encodeAwarenessUpdate(WSDoc.awareness, Array.from(awarenessStates.keys()))
           )
           socket.emit(CRDT_MESSAGE_EVENT, encoding.toUint8Array(encoder))
         }

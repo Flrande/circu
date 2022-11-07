@@ -2,22 +2,24 @@ import * as Y from "yjs"
 import * as awarenessProtocol from "y-protocols/awareness"
 import * as syncProtocol from "y-protocols/sync"
 import * as encoding from "lib0/encoding"
-import { Socket } from "socket.io"
-import { CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC, SLATE_VALUE_YDOC_KEY } from "./constants"
-import { Prisma } from "@prisma/client"
-import { slateNodesToInsertDelta, yTextToSlateElement } from "@slate-yjs/core"
-import { Node } from "slate"
+import { CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
 import { crdtPrisma } from "./crdt-prisma"
+import { Socket } from "socket.io"
+
+/**
+ * 多个 socket 对应一个用户 id
+ */
+export const socketToUserId: Map<CustomSocket, string> = new Map()
 
 export class WSSharedDoc extends Y.Doc {
   id: string
   awarenessChannel: string
+  // 每一个连接到当前文档的 socket 对应一组 Y.Doc 实例的 id, 据此对应一组 awareness
   conns: Map<CustomSocket, Set<number>>
   awareness: awarenessProtocol.Awareness
 
   constructor(id: string) {
     super()
-
     this.id = id
     this.awarenessChannel = `${id}-awareness`
     this.conns = new Map()
@@ -50,51 +52,54 @@ export class WSSharedDoc extends Y.Doc {
       })
     }
 
-    const updateHandler = async (update: Uint8Array, origin: any, doc: WSSharedDoc) => {
-      const isOriginWSConn = origin instanceof Socket && doc.conns.has(origin)
+    const updateHandler = async (_: Uint8Array, origin: any, doc: WSSharedDoc) => {
+      console.log(
+        "server doc get update from",
+        (origin as CustomSocket).id,
+        "server doc conns",
+        [...doc.conns.keys()].map((s) => s.id)
+      )
+      // origin 预期为 socket, 这里要重新生成一组 origin 为用户 id 的 update
+      const userId = origin instanceof Socket ? socketToUserId.get(origin) : null
+      if (userId) {
+        const YDoc = new Y.Doc()
+        const totalUpdate = Y.encodeStateAsUpdate(this)
+        Y.applyUpdate(YDoc, totalUpdate, userId)
 
-      if (isOriginWSConn) {
-        //TODO: 通过 Redis 异步广播
-        const encoder = encoding.createEncoder()
-        encoding.writeVarUint(encoder, MESSAGE_SYNC)
-        syncProtocol.writeUpdate(encoder, update)
-        const buff = encoding.toUint8Array(encoder)
+        // 得到 origin 为用户 id 的 update
+        const goalUpdate = Y.encodeStateAsUpdate(YDoc)
 
-        doc.conns.forEach((_, c) => {
-          c.emit(CRDT_MESSAGE_EVENT, buff)
-        })
+        if (doc.conns.has(origin)) {
+          //TODO: 通过 Redis 异步广播
+          const encoder = encoding.createEncoder()
+          encoding.writeVarUint(encoder, MESSAGE_SYNC)
+          syncProtocol.writeUpdate(encoder, goalUpdate)
+          const buff = encoding.toUint8Array(encoder)
 
-        // 持久化
-        const dbDoc = await crdtPrisma.doc.findUnique({
-          where: {
-            id,
-          },
-          select: {
-            value: true,
-          },
-        })
-        if (dbDoc && dbDoc.value) {
-          // 取出数据库中的 slate 格式数据, 载入到一个 Y.Doc 中以用于合并
-          const YDoc = new Y.Doc()
-          const YDocXmlText = YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText
-          const dbDocDelta = slateNodesToInsertDelta(dbDoc.value as unknown as Node[])
-          YDocXmlText.applyDelta(dbDocDelta)
+          doc.conns.forEach((_, c) => {
+            c.emit(CRDT_MESSAGE_EVENT, buff)
+          })
 
-          // 合并更新
-          Y.applyUpdate(YDoc, update)
-
-          // 将合并后的的 Y.Doc 转换为 slate 格式数据
-          const newDbDocValue = yTextToSlateElement(YDocXmlText)
-
-          // 更新数据库中的文档
-          await crdtPrisma.doc.update({
+          // 持久化
+          const dbDoc = await crdtPrisma.doc.findUnique({
             where: {
               id,
             },
-            data: {
-              value: newDbDocValue as unknown as Array<Prisma.JsonObject>,
+            select: {
+              value: true,
             },
           })
+          if (dbDoc) {
+            // 更新数据库
+            await crdtPrisma.doc.update({
+              where: {
+                id,
+              },
+              data: {
+                value: Buffer.from(goalUpdate),
+              },
+            })
+          }
         }
       }
     }
