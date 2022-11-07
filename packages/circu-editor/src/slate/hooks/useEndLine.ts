@@ -10,7 +10,7 @@ export const useEndLine = () => {
   const lastChild = editor.children[editor.children.length - 1] as SlateElement
 
   useEffect(() => {
-    if (lastChild.type !== "paragraph") {
+    if (editor.children.length > 1 && lastChild.type !== "paragraph") {
       // 如果最后一个标题为折叠状态, 不添加新行
       const previousHeads = Array.from(
         Editor.nodes(editor, {
