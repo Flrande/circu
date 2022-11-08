@@ -5,7 +5,7 @@ import * as syncProtocol from "y-protocols/sync"
 import * as awarenessProtocol from "y-protocols/awareness"
 import { Injectable } from "@nestjs/common"
 import { GeneralDocService } from "src/doc/service/general-doc.service"
-import { socketToUserId, WSSharedDoc } from "./WSSharedDoc"
+import { WSSharedDoc } from "./WSSharedDoc"
 import { CRDT_ERROR_EVENT, CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
 import { crdtPrisma } from "./crdt-prisma"
 
@@ -23,8 +23,6 @@ import { crdtPrisma } from "./crdt-prisma"
  *          包含更新所需的数据, 接收方可用于更新
  */
 
-//TODO: 文档数据改回用二进制存储
-//TODO: origin 改成用户 id 用于追踪更新
 //TODO: 通过 y-leveldb 降低占用内存?
 // https://discuss.yjs.dev/t/scalability-of-y-websocket-server/274
 // https://discuss.yjs.dev/t/understanding-memory-requirements-for-production-usage/198
@@ -78,9 +76,8 @@ export class CrdtService {
       // 设置共享文档
       const [WSDoc, isNew] = getWSDoc(docMeta.id)
 
-      // 将共享文档与 socket, socket 与用户 id 对应
+      // 将共享文档与 socket 对应
       WSDoc.conns.set(socket, new Set())
-      socketToUserId.set(socket, userId)
 
       // 若出现新注册的文档, 要先将数据库内的数据载入
       if (isNew) {
@@ -126,8 +123,6 @@ export class CrdtService {
       }
 
       const closeConn = () => {
-        socketToUserId.delete(socket)
-
         const controlledId = WSDoc.conns.get(socket)
 
         if (controlledId) {

@@ -4,12 +4,6 @@ import * as syncProtocol from "y-protocols/sync"
 import * as encoding from "lib0/encoding"
 import { CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
 import { crdtPrisma } from "./crdt-prisma"
-import { Socket } from "socket.io"
-
-/**
- * 多个 socket 对应一个用户 id
- */
-export const socketToUserId: Map<CustomSocket, string> = new Map()
 
 export class WSSharedDoc extends Y.Doc {
   id: string
@@ -52,54 +46,43 @@ export class WSSharedDoc extends Y.Doc {
       })
     }
 
-    const updateHandler = async (_: Uint8Array, origin: any, doc: WSSharedDoc) => {
+    const updateHandler = async (update: Uint8Array, origin: any, doc: WSSharedDoc) => {
       console.log(
         "server doc get update from",
         (origin as CustomSocket).id,
         "server doc conns",
         [...doc.conns.keys()].map((s) => s.id)
       )
-      // origin 预期为 socket, 这里要重新生成一组 origin 为用户 id 的 update
-      const userId = origin instanceof Socket ? socketToUserId.get(origin) : null
-      if (userId) {
-        const YDoc = new Y.Doc()
-        const totalUpdate = Y.encodeStateAsUpdate(this)
-        Y.applyUpdate(YDoc, totalUpdate, userId)
+      if (doc.conns.has(origin)) {
+        //TODO: 通过 Redis 异步广播
+        const encoder = encoding.createEncoder()
+        encoding.writeVarUint(encoder, MESSAGE_SYNC)
+        syncProtocol.writeUpdate(encoder, update)
+        const buff = encoding.toUint8Array(encoder)
 
-        // 得到 origin 为用户 id 的 update
-        const goalUpdate = Y.encodeStateAsUpdate(YDoc)
+        doc.conns.forEach((_, c) => {
+          c.emit(CRDT_MESSAGE_EVENT, buff)
+        })
 
-        if (doc.conns.has(origin)) {
-          //TODO: 通过 Redis 异步广播
-          const encoder = encoding.createEncoder()
-          encoding.writeVarUint(encoder, MESSAGE_SYNC)
-          syncProtocol.writeUpdate(encoder, goalUpdate)
-          const buff = encoding.toUint8Array(encoder)
-
-          doc.conns.forEach((_, c) => {
-            c.emit(CRDT_MESSAGE_EVENT, buff)
-          })
-
-          // 持久化
-          const dbDoc = await crdtPrisma.doc.findUnique({
+        // 持久化
+        const dbDoc = await crdtPrisma.doc.findUnique({
+          where: {
+            id,
+          },
+          select: {
+            value: true,
+          },
+        })
+        if (dbDoc) {
+          // 更新数据库
+          await crdtPrisma.doc.update({
             where: {
               id,
             },
-            select: {
-              value: true,
+            data: {
+              value: Buffer.from(Y.encodeStateAsUpdate(this)),
             },
           })
-          if (dbDoc) {
-            // 更新数据库
-            await crdtPrisma.doc.update({
-              where: {
-                id,
-              },
-              data: {
-                value: Buffer.from(goalUpdate),
-              },
-            })
-          }
         }
       }
     }
