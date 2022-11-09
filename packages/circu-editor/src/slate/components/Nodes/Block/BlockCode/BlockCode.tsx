@@ -9,11 +9,14 @@ import Scrollbar from "smooth-scrollbar"
 import { useScrollbar } from "../../../../hooks/useScrollbar"
 import { useDropBlock } from "../../../Draggable/useDropBlock"
 import DragMarkLine from "../../../Draggable/DragMarkLine"
+import { useMouseXBlockDetect } from "../../../../state/mouse"
 
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
   const editor = useSlateStatic()
   const blockCodePath = ReactEditor.findPath(editor, element)
+
+  const { onMouseEnterForDrag, onMouseLeaveForDrag } = useMouseXBlockDetect(element)
 
   const orderNumbersWrapperDom = useRef<HTMLDivElement | null>(null)
   // TODO: 云端保留用户设置, 根据服务器响应赋初始值
@@ -72,6 +75,8 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
       data-circu-node="block"
       {...newAttributes}
       onDragOver={onDragOver}
+      onMouseEnter={onMouseEnterForDrag}
+      onMouseLeave={onMouseLeaveForDrag}
       style={{
         border: isSelected ? "1px solid #5a87f7" : undefined,
         display: element.isHidden ? "none" : undefined,

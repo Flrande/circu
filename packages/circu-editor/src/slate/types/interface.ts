@@ -45,6 +45,8 @@ type BaseBlockElementWithoutChildren = {
 type BlockElementWithoutChildrenDetector<T extends BaseBlockElementWithoutChildren> = T
 export type BlockElementWithoutChildren = BlockElementWithoutChildrenDetector<IBlockCode | IQuote>
 
+// 该类节点有一个名为"节点间隔"的部分(quote 除外), 用 data-circu-node="block-space" 标记,
+// 主要用于顺滑检测鼠标水平方向对应的块级节点
 // 1, 2类块级节点
 export type BlockElementExceptTextLine = BlockElementWithChildren | BlockElementWithoutChildren
 

@@ -1,5 +1,6 @@
 import { Editor, Path } from "slate"
 import { ReactEditor, useSelected, useSlateStatic } from "slate-react"
+import { useMouseXBlockDetect } from "../../../../state/mouse"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import DragMarkLine from "../../../Draggable/DragMarkLine"
 import { useDropBlock } from "../../../Draggable/useDropBlock"
@@ -11,6 +12,8 @@ const Paragraph: React.FC<CustomRenderElementProps<IParagraph>> = ({ attributes,
 
   const paragraphPath = ReactEditor.findPath(editor, element)
 
+  const { onMouseEnterForDrag, onMouseLeaveForDrag } = useMouseXBlockDetect(element)
+
   const { newAttributes, onDragOver, dragActiveLine } = useDropBlock(element, attributes)
 
   return (
@@ -18,6 +21,8 @@ const Paragraph: React.FC<CustomRenderElementProps<IParagraph>> = ({ attributes,
       data-circu-node="block"
       {...newAttributes}
       onDragOver={onDragOver}
+      onMouseEnter={onMouseEnterForDrag}
+      onMouseLeave={onMouseLeaveForDrag}
       className={"my-2 relative"}
       style={{
         display: element.isHidden ? "none" : undefined,

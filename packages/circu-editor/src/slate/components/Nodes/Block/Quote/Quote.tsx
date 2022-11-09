@@ -1,5 +1,6 @@
 import { Transforms } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
+import { useMouseXBlockDetect } from "../../../../state/mouse"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import type { IQuote } from "./types"
 
@@ -7,9 +8,13 @@ const Quote: React.FC<CustomRenderElementProps<IQuote>> = ({ attributes, childre
   const editor = useSlateStatic()
   const quotePath = ReactEditor.findPath(editor, element)
 
+  const { onMouseEnterForDrag, onMouseLeaveForDrag } = useMouseXBlockDetect(element)
+
   return (
     <div
       {...attributes}
+      onMouseEnter={onMouseEnterForDrag}
+      onMouseLeave={onMouseLeaveForDrag}
       className={"my-2 pl-[14px] relative text-zinc-400"}
       style={{
         display: element.isHidden ? "none" : undefined,

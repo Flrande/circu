@@ -2,7 +2,8 @@ import { useAtomValue } from "jotai"
 import { useRef } from "react"
 import { Editor, Path } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
-import { mouseXStateAtom } from "../../state/mouse"
+import { useSnapshot } from "valtio"
+import { mouseXStateStore } from "../../state/mouse"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "../../types/constant"
 import type { BlockElementExceptTextLine } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
@@ -14,28 +15,24 @@ import { useDragBlock } from "./useDragBlock"
 const Draggable: React.FC = () => {
   const editor = useSlateStatic()
 
-  const mouseXState = useAtomValue(mouseXStateAtom)
+  const mouseXStateStoreSnap = useSnapshot(mouseXStateStore)
+  const xBlockPath = mouseXStateStoreSnap.xBlockPath as Path
+
   const isFoldButtonActive = useAtomValue(isFoldButtonActiveAtom)
   const toolBarState = useAtomValue(toolBarStateAtom)
 
   const xDomRef = useRef<HTMLElement | null>(null)
   const tmpXPath = useRef<Path | null>(null)
-  if (
-    tmpXPath.current &&
-    mouseXState.xBlockPath &&
-    !Path.equals(tmpXPath.current, mouseXState.xBlockPath) &&
-    xDomRef.current
-  ) {
+  if (tmpXPath.current && xBlockPath && !Path.equals(tmpXPath.current, xBlockPath) && xDomRef.current) {
     xDomRef.current.style.removeProperty("background-color")
     xDomRef.current.style.removeProperty("border-radius")
   }
-  tmpXPath.current = mouseXState.xBlockPath
+  tmpXPath.current = xBlockPath
 
   const { dragRef, onDragStart } = useDragBlock()
 
-  if (mouseXState.xBlockPath && (!toolBarState || !toolBarState.isActive)) {
+  if (xBlockPath && (!toolBarState || !toolBarState.isActive)) {
     try {
-      const xBlockPath = mouseXState.xBlockPath
       const [node] = Editor.node(editor, xBlockPath)
 
       if (SlateElement.isElement(node) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, node.type)) {
@@ -88,9 +85,7 @@ const Draggable: React.FC = () => {
             }
             style={{
               left: `${left}px`,
-              top: `${
-                rect.top + window.scrollY + 1 - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().top
-              }px`,
+              top: `${rect.top + 1 - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().top}px`,
             }}
             contentEditable={false}
           >

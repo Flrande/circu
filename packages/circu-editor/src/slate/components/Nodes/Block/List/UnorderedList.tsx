@@ -1,4 +1,5 @@
 import { ReactEditor, useSlateStatic } from "slate-react"
+import { useMouseXBlockDetect } from "../../../../state/mouse"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import DragMarkLine from "../../../Draggable/DragMarkLine"
 import { useDropBlock } from "../../../Draggable/useDropBlock"
@@ -8,6 +9,8 @@ import type { IUnorderedList } from "./types"
 const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ attributes, children, element }) => {
   const editor = useSlateStatic()
   const listPath = ReactEditor.findPath(editor, element)
+
+  const { onMouseEnterForDrag, onMouseLeaveForDrag } = useMouseXBlockDetect(element)
 
   const { newAttributes, onDragOver, dragActiveLine } = useDropBlock(element, attributes)
 
@@ -19,6 +22,8 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
       data-circu-node="block"
       {...newAttributes}
       onDragOver={onDragOver}
+      onMouseEnter={onMouseEnterForDrag}
+      onMouseLeave={onMouseLeaveForDrag}
       className={"my-2 relative"}
       style={{
         display: element.isHidden ? "none" : undefined,

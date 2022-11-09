@@ -1,4 +1,5 @@
 import { ReactEditor, useSlateStatic } from "slate-react"
+import { useMouseXBlockDetect } from "../../../../state/mouse"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import DragMarkLine from "../../../Draggable/DragMarkLine"
 import { useDropBlock } from "../../../Draggable/useDropBlock"
@@ -7,6 +8,8 @@ import type { IHead } from "./types"
 const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children, element }) => {
   const editor = useSlateStatic()
   const headPath = ReactEditor.findPath(editor, element)
+
+  const { onMouseEnterForDrag, onMouseLeaveForDrag } = useMouseXBlockDetect(element)
 
   const { newAttributes, onDragOver, dragActiveLine } = useDropBlock(element, attributes)
 
@@ -39,6 +42,8 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
       data-circu-node="block"
       {...newAttributes}
       onDragOver={onDragOver}
+      onMouseEnter={onMouseEnterForDrag}
+      onMouseLeave={onMouseLeaveForDrag}
       className={`${className} relative`}
       style={{
         display: element.isHidden ? "none" : undefined,

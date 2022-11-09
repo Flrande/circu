@@ -31,7 +31,6 @@ const Link: React.FC<CustomRenderElementProps<ILink>> = ({ attributes, children,
       const docXPadding = (document.getElementById(EDITOR_ROOT_DOM_ID)!.clientWidth - DOC_WIDTH) / 2
       const top = window.scrollY + linkDom.getBoundingClientRect().top + 28
       const left =
-        window.scrollX +
         linkDom.getBoundingClientRect().left -
         docXPadding -
         document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left

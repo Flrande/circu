@@ -1,8 +1,9 @@
 import { useAtomValue, useSetAtom } from "jotai"
 import { useEffect, useRef } from "react"
-import { Editor } from "slate"
+import { Editor, Path } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
-import { mouseXStateAtom } from "../../state/mouse"
+import { useSnapshot } from "valtio"
+import { mouseXStateStore } from "../../state/mouse"
 import { BLOCK_ELEMENTS_WITH_CHILDREN, DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "../../types/constant"
 import type { BlockElementWithChildren } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
@@ -14,7 +15,9 @@ import { isFoldButtonActiveAtom } from "./state"
 const FoldButton: React.FC = () => {
   const editor = useSlateStatic()
 
-  const mouseXState = useAtomValue(mouseXStateAtom)
+  const mouseXStateStoreSnap = useSnapshot(mouseXStateStore)
+  const xBlockPath = mouseXStateStoreSnap.xBlockPath as Path
+
   const setIsFoldButtonActive = useSetAtom(isFoldButtonActiveAtom)
   const isDragging = useAtomValue(isDraggingAtom)
 
@@ -25,8 +28,7 @@ const FoldButton: React.FC = () => {
     setIsFoldButtonActive(setActiveFlag.current)
   })
 
-  if (mouseXState.xBlockPath && !isDragging) {
-    const xBlockPath = mouseXState.xBlockPath
+  if (xBlockPath && !isDragging) {
     try {
       const [node] = Editor.node(editor, xBlockPath)
 
@@ -76,12 +78,7 @@ const FoldButton: React.FC = () => {
                       20 -
                       document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left
                 }px`,
-                top: `${
-                  rect.top +
-                  window.scrollY +
-                  4 -
-                  document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().top
-                }px`,
+                top: `${rect.top + 4 - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().top}px`,
                 userSelect: "none",
               }}
               contentEditable={false}
