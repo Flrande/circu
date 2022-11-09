@@ -32,7 +32,11 @@ export const useDropBlock = (
           Editor.withoutNormalizing(editor, () => {
             const { path, direction } = dropPosition
 
-            if (direction === "top") {
+            if ((Path.equals(Path.next(xBlockPath), path) && direction === "top") || Path.equals(xBlockPath, path)) {
+              return
+            }
+
+            if (Path.isBefore(xBlockPath, path) || direction === "top") {
               Transforms.moveNodes(editor, {
                 at: xBlockPath,
                 to: path,
