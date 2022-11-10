@@ -1,5 +1,5 @@
 import * as Y from "yjs"
-import { withYjs, YjsEditor } from "@slate-yjs/core"
+import { withYHistory, withYjs, YjsEditor } from "@slate-yjs/core"
 import { CircuEditor, createCircuEditor, CustomElement, CustomText } from "circu-editor"
 import { useEffect, useMemo, useState } from "react"
 import { createSocketIoProvider } from "../../crdt/provider"
@@ -8,6 +8,8 @@ import { useParams } from "react-router-dom"
 import { subscribeKey } from "valtio/utils"
 import { Button } from "@arco-design/web-react"
 
+//TODO: 规范快捷键
+//FIXME?: 热更新抛错
 const Doc: React.FC = () => {
   const { docId } = useParams()
 
@@ -18,7 +20,10 @@ const Doc: React.FC = () => {
   //TODO: 地址 -> 环境变量
   const [providerMethod, providerStore] = useMemo(() => createSocketIoProvider("localhost:8000", YDoc, docId!), [])
 
-  const editor = useMemo(() => withYjs(createCircuEditor(), YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText), [])
+  const editor = useMemo(
+    () => withYHistory(withYjs(createCircuEditor(), YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText)),
+    []
+  )
 
   useEffect(() => {
     const unsub = subscribeKey(providerStore, "sync", () => {
