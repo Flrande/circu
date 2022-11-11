@@ -1,4 +1,4 @@
-import type * as Y from "yjs"
+import * as Y from "yjs"
 import { Awareness, encodeAwarenessUpdate, applyAwarenessUpdate } from "y-protocols/awareness"
 import * as encoding from "lib0/encoding"
 import * as decoding from "lib0/decoding"
@@ -14,24 +14,25 @@ export type SocketIoProviderState = {
   error: string | null
 }
 
-export type SocketIoProviderMethod = {
+export type SocketIoProvider = {
+  YDoc: Y.Doc
+  awareness: Awareness
   connect: () => void
   disconnect: () => void
 }
 
 export const createSocketIoProvider: (
   serverUrl: string,
-  YDoc: Y.Doc,
   docId: string,
   options?: {
+    YDoc?: Y.Doc
     awareness?: Awareness
     autoConnect?: boolean
   }
-) => [SocketIoProviderMethod, SocketIoProviderState] = (
+) => [SocketIoProvider, SocketIoProviderState] = (
   serverUrl,
-  YDoc,
   docId,
-  { awareness = new Awareness(YDoc), autoConnect = true } = {}
+  { YDoc = new Y.Doc(), awareness = new Awareness(YDoc), autoConnect = true } = {}
 ) => {
   const store = proxy<SocketIoProviderState>({
     connecting: false,
@@ -118,6 +119,8 @@ export const createSocketIoProvider: (
 
   return [
     {
+      YDoc,
+      awareness,
       connect: () => {
         if (!store.connecting && !store.connected) {
           store.connecting = true

@@ -9,19 +9,18 @@ import { subscribeKey } from "valtio/utils"
 import { Button } from "@arco-design/web-react"
 
 //TODO: 规范快捷键
+//TODO: 错误边界, 兜底, 监控
 //FIXME?: 热更新抛错
 const Doc: React.FC = () => {
   const { docId } = useParams()
 
-  const YDoc = useMemo(() => new Y.Doc(), [])
-
   const [value, setValue] = useState<(CustomElement | CustomText)[]>([])
 
   //TODO: 地址 -> 环境变量
-  const [providerMethod, providerStore] = useMemo(() => createSocketIoProvider("localhost:8000", YDoc, docId!), [])
+  const [provider, providerStore] = useMemo(() => createSocketIoProvider("localhost:8000", docId!), [docId])
 
   const editor = useMemo(
-    () => withYHistory(withYjs(createCircuEditor(), YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText)),
+    () => withYHistory(withYjs(createCircuEditor(), provider.YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText)),
     []
   )
 
@@ -42,9 +41,9 @@ const Doc: React.FC = () => {
         <Button
           onClick={() => {
             if (providerStore.connected || providerStore.connecting) {
-              providerMethod.disconnect()
+              provider.disconnect()
             } else {
-              providerMethod.connect()
+              provider.connect()
             }
           }}
         ></Button>
