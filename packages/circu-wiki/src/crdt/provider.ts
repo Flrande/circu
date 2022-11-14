@@ -1,5 +1,5 @@
 import * as Y from "yjs"
-import { Awareness, encodeAwarenessUpdate, applyAwarenessUpdate } from "y-protocols/awareness"
+import { Awareness, encodeAwarenessUpdate, applyAwarenessUpdate, removeAwarenessStates } from "y-protocols/awareness"
 import * as encoding from "lib0/encoding"
 import * as decoding from "lib0/decoding"
 import * as syncProtocol from "y-protocols/sync"
@@ -48,17 +48,24 @@ export const createSocketIoProvider: (
     },
   })
 
-  socket.on(CRDT_ERROR_EVENT, (msg) => {
+  socket.on("connect_error", (err) => {
     store.connected = false
     store.connecting = false
     store.sync = false
-    store.error = msg
+    store.error = err.message
   })
 
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason) => {
+    removeAwarenessStates(
+      awareness,
+      Array.from(awareness.getStates().keys()).filter((client) => client !== YDoc.clientID),
+      socket
+    )
+
     store.connected = false
     store.connecting = false
     store.sync = false
+    store.error = reason
   })
 
   socket.on("connect", () => {
@@ -69,7 +76,6 @@ export const createSocketIoProvider: (
     socket.emit("crdt:message", encoding.toUint8Array(encoder))
 
     // broadcast local awareness state
-    // console.log(awareness.getLocalState())
     // if (awareness.getLocalState() !== null) {
     //   const encoderAwarenessState = encoding.createEncoder()
     //   encoding.writeVarUint(encoderAwarenessState, MESSAGE_AWARENESS)
@@ -82,7 +88,14 @@ export const createSocketIoProvider: (
     store.error = null
   })
 
-  socket.on("crdt:message", (buffer) => {
+  socket.on(CRDT_ERROR_EVENT, (msg) => {
+    store.connected = false
+    store.connecting = false
+    store.sync = false
+    store.error = msg
+  })
+
+  socket.on(CRDT_MESSAGE_EVENT, (buffer) => {
     const decoder = decoding.createDecoder(new Uint8Array(buffer))
     const encoder = encoding.createEncoder()
     const messageType = decoding.readVarUint(decoder)
@@ -116,6 +129,21 @@ export const createSocketIoProvider: (
       }
     }
   })
+
+  awareness.on(
+    "update",
+    ({ added, updated, removed }: { added: number[]; updated: number[]; removed: number[] }, origin: CustomSocket) => {
+      const changedClients = added.concat(updated, removed)
+      const encoder = encoding.createEncoder()
+      encoding.writeVarUint(encoder, MESSAGE_AWARENESS)
+      encoding.writeVarUint8Array(encoder, encodeAwarenessUpdate(awareness, changedClients))
+      const buff = encoding.toUint8Array(encoder)
+
+      if (socket.connected) {
+        socket.emit(CRDT_MESSAGE_EVENT, buff)
+      }
+    }
+  )
 
   return [
     {

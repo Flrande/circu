@@ -1,5 +1,6 @@
 import { MenuFoldOne } from "@icon-park/react"
-import { CircuEditor, createCircuEditor, CustomElement, CustomText } from "circu-editor"
+import { CircuEditable, createCircuEditor, CustomElement, CustomText } from "circu-editor"
+import CircuProvider from "circu-editor/src/CircuProvider"
 import type { ITitle } from "circu-editor/src/slate/components/Nodes/Block/Title/types"
 import { useEffect, useRef, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
@@ -121,7 +122,9 @@ const WikiEditor: React.FC = () => {
       </div>
 
       <div ref={editorRootDom} className={"h-full pt-14"}>
-        <CircuEditor editor={editor} value={value} onChange={(newValue) => setValue(newValue)}></CircuEditor>
+        <CircuProvider editor={editor} value={value} onChange={(newValue) => setValue(newValue)}>
+          <CircuEditable></CircuEditable>
+        </CircuProvider>
       </div>
     </div>
   )

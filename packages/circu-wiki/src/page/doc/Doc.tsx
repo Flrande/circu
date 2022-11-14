@@ -1,12 +1,21 @@
 import * as Y from "yjs"
-import { withYHistory, withYjs, YjsEditor } from "@slate-yjs/core"
-import { CircuEditor, createCircuEditor, CustomElement, CustomText } from "circu-editor"
+import randomColor from "randomcolor"
+import { withCursors, withYHistory, withYjs, YjsEditor } from "@slate-yjs/core"
+import { createCircuEditor, CustomElement, CustomText } from "circu-editor"
 import { useEffect, useMemo, useState } from "react"
 import { createSocketIoProvider } from "../../crdt/provider"
 import { SLATE_VALUE_YDOC_KEY } from "../../crdt/constants"
 import { useParams } from "react-router-dom"
 import { subscribeKey } from "valtio/utils"
 import { Button } from "@arco-design/web-react"
+import type { Editor } from "slate"
+import CircuProvider from "circu-editor/src/CircuProvider"
+import DocEditable from "./DocEditable"
+
+export type CursorData = {
+  color: string
+  name: string
+}
 
 //TODO: 规范快捷键
 //TODO: 错误边界, 兜底, 监控
@@ -20,8 +29,23 @@ const Doc: React.FC = () => {
   const [provider, providerStore] = useMemo(() => createSocketIoProvider("localhost:8000", docId!), [docId])
 
   const editor = useMemo(
-    () => withYHistory(withYjs(createCircuEditor(), provider.YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText)),
-    []
+    () =>
+      withCursors<CursorData, YjsEditor>(
+        withYHistory(withYjs(createCircuEditor(), provider.YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText)),
+        provider.awareness,
+        {
+          data: {
+            color: randomColor({
+              luminosity: "dark",
+              alpha: 1,
+              format: "hex",
+            }),
+            //TODO: 获取当前登录用户的名字
+            name: "Tom",
+          },
+        }
+      ),
+    [provider]
   )
 
   useEffect(() => {
@@ -49,7 +73,9 @@ const Doc: React.FC = () => {
         ></Button>
       </div>
       <div>
-        <CircuEditor editor={editor} value={value} onChange={(newValue) => setValue(newValue)}></CircuEditor>
+        <CircuProvider editor={editor as unknown as Editor} value={value} onChange={(newValue) => setValue(newValue)}>
+          <DocEditable></DocEditable>
+        </CircuProvider>
       </div>
     </div>
   )
