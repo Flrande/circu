@@ -1,5 +1,4 @@
 import { atom, useSetAtom } from "jotai"
-import { atomWithProxy } from "jotai/valtio"
 import { useEffect } from "react"
 import { Editor } from "slate"
 import { useSlateStatic } from "slate-react"
@@ -23,12 +22,9 @@ export const unActiveToolBar = () => {
   toolBarStateStore.position = null
 }
 
-export const toolBarStateAtom = atomWithProxy(toolBarStateStore)
-
 export const useToolBar = () => {
   const editor = useSlateStatic()
 
-  const setToolBarState = useSetAtom(toolBarStateAtom)
   const setActiveButton = useSetAtom(activeButtonAtom)
 
   useEffect(() => {
@@ -37,10 +33,8 @@ export const useToolBar = () => {
     document.getElementById(EDITOR_ROOT_DOM_ID)!.addEventListener(
       "mousedown",
       () => {
-        setToolBarState({
-          isActive: false,
-          position: null,
-        })
+        toolBarStateStore.isActive = false
+        toolBarStateStore.position = null
 
         document.getElementById(EDITOR_ROOT_DOM_ID)!.addEventListener(
           "mouseup",
@@ -77,14 +71,12 @@ export const useToolBar = () => {
                   y += window.scrollY
                 }
 
-                setToolBarState({
-                  isActive: true,
-                  position: {
-                    x: x - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left,
-                    y,
-                    translateY: event.clientY < 80 ? -10 : 10,
-                  },
-                })
+                toolBarStateStore.isActive = true
+                toolBarStateStore.position = {
+                  x: x - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left,
+                  y,
+                  translateY: event.clientY < 80 ? -10 : 10,
+                }
                 // 重置 activeButtonAtom 状态
                 setActiveButton("no-active")
               }
@@ -104,7 +96,7 @@ export const useToolBar = () => {
     return () => {
       mouseDownController.abort()
     }
-  }, [setToolBarState])
+  }, [])
 }
 
 // 记录当前主工具栏中"活跃"的按钮, 即用户最近移入的按钮

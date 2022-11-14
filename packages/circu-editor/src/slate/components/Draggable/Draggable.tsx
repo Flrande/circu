@@ -9,7 +9,7 @@ import type { BlockElementExceptTextLine } from "../../types/interface"
 import { SlateElement } from "../../types/slate"
 import { arrayIncludes } from "../../utils/general"
 import { isFoldButtonActiveAtom } from "../FoldButton/state"
-import { toolBarStateAtom } from "../ToolBar/state"
+import { toolBarStateStore } from "../ToolBar/state"
 import { useDragBlock } from "./useDragBlock"
 
 const Draggable: React.FC = () => {
@@ -19,7 +19,8 @@ const Draggable: React.FC = () => {
   const xBlockPath = mouseXStateStoreSnap.xBlockPath as Path
 
   const isFoldButtonActive = useAtomValue(isFoldButtonActiveAtom)
-  const toolBarState = useAtomValue(toolBarStateAtom)
+
+  const toolBarStateStoreSnap = useSnapshot(toolBarStateStore)
 
   const xDomRef = useRef<HTMLElement | null>(null)
   const tmpXPath = useRef<Path | null>(null)
@@ -31,7 +32,7 @@ const Draggable: React.FC = () => {
 
   const { dragRef, onDragStart } = useDragBlock()
 
-  if (xBlockPath && (!toolBarState || !toolBarState.isActive)) {
+  if (xBlockPath && !toolBarStateStoreSnap.isActive) {
     try {
       const [node] = Editor.node(editor, xBlockPath)
 

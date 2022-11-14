@@ -1,4 +1,3 @@
-import { useAtomValue } from "jotai"
 import type React from "react"
 import BoldButton from "./components/Bold/BoldButton"
 import StrikeButton from "./components/Strike/StrikeButton"
@@ -6,19 +5,20 @@ import InlineCodeButton from "./components/InlineCode/InlineCodeButton"
 import BlockCodeButton from "./components/BlockCode/BlockCodeButton"
 import ColorButton from "./components/Color/ColorButton"
 import ItalicButton from "./components/Italic/ItalicButton"
-import { toolBarStateAtom } from "./state"
 import LinkButton from "./components/Link/LinkButton"
 import OrderedListButton from "./components/OrderedList/OrderedListButton"
 import UnorderedListButton from "./components/UnorderedList/UnorderedListButton"
 import HeadButton from "./components/Head/HeadButton"
 import UnderlineButton from "./components/Underline/UnderlineButton"
 import QuoteButton from "./components/Quote/QuoteButton"
+import { toolBarStateStore } from "./state"
+import { useSnapshot } from "valtio"
 
 const ToolBar: React.FC = () => {
-  const toolBarState = useAtomValue(toolBarStateAtom)
+  const toolBarStateStoreSnap = useSnapshot(toolBarStateStore)
 
-  const isActive = toolBarState.isActive
-  const position = toolBarState.position
+  const isActive = toolBarStateStoreSnap.isActive
+  const position = toolBarStateStoreSnap.position
 
   if (isActive && position) {
     const toolBarStyle: React.CSSProperties = {

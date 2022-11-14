@@ -2,7 +2,7 @@ import { useSetAtom } from "jotai"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "../../../../types/constant"
 import { isLinkActive } from "../../../Nodes/Inline/Link/linkHelper"
-import { activeButtonAtom, toolBarStateAtom } from "../../state"
+import { activeButtonAtom, toolBarStateStore } from "../../state"
 import ToolBarItem from "../ToolBarItem/ToolBarItem"
 import { linkButtonBarStateAtom } from "./LinkButtonBar"
 import LinkIcon from "./LinkIcon"
@@ -12,7 +12,6 @@ const LinkButton: React.FC = () => {
   const editor = useSlateStatic()
   const isActive = isLinkActive(editor)
 
-  const setToolBarState = useSetAtom(toolBarStateAtom)
   const setLinkButtonState = useSetAtom(linkButtonBarStateAtom)
   const setActiveButton = useSetAtom(activeButtonAtom)
 
@@ -28,10 +27,8 @@ const LinkButton: React.FC = () => {
     const left = rect.left - docXPadding - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().left
     const top = rect.top + 30 + window.scrollY
 
-    setToolBarState({
-      isActive: false,
-      position: null,
-    })
+    toolBarStateStore.isActive = false
+    toolBarStateStore.position = null
     setLinkButtonState({
       isActive: true,
       position: {
