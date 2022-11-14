@@ -1,5 +1,6 @@
 import { useCallback } from "react"
-import { Editable } from "slate-react"
+import type { BaseRange, NodeEntry } from "slate"
+import { Editable, RenderLeafProps } from "slate-react"
 import { useToolBar } from "./components/ToolBar/state"
 import { useOnKeyDown } from "./hooks/hotKeysHooks"
 import { useRenderLeaf, useRenderElement } from "./hooks/renderHooks"
@@ -7,12 +8,29 @@ import { useDecorate } from "./hooks/useDecorate"
 import { useEndLine } from "./hooks/useEndLine"
 import { useOnCopy } from "./hooks/useOnCopy"
 
-const SlateEditable: React.FC = () => {
-  const renderLeaf = useRenderLeaf()
+const CircuEditable: React.FC<{
+  customDecorate?: (entry: NodeEntry) => BaseRange[]
+  custonRenderLeafProps?: (props: RenderLeafProps) => RenderLeafProps
+}> = ({ customDecorate, custonRenderLeafProps }) => {
   const renderElement = useRenderElement()
   const onKeyDown = useOnKeyDown()
   const onCopy = useOnCopy()
-  const decorate = useDecorate()
+
+  const baseDecorate = useDecorate()
+  let decorate: (entry: NodeEntry) => BaseRange[]
+  if (customDecorate) {
+    decorate = (entry) => [...baseDecorate(entry), ...customDecorate(entry)]
+  } else {
+    decorate = baseDecorate
+  }
+
+  const baseRenderLeaf = useRenderLeaf()
+  let renderLeaf: (props: RenderLeafProps) => JSX.Element
+  if (custonRenderLeafProps) {
+    renderLeaf = (props: RenderLeafProps) => baseRenderLeaf(custonRenderLeafProps(props))
+  } else {
+    renderLeaf = baseRenderLeaf
+  }
 
   useToolBar()
   useEndLine()
@@ -34,4 +52,4 @@ const SlateEditable: React.FC = () => {
   )
 }
 
-export default SlateEditable
+export { CircuEditable }

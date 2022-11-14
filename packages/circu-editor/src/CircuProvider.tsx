@@ -1,9 +1,8 @@
-import { useEffect, useRef } from "react"
+import { PropsWithChildren, useEffect, useRef } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import type { Descendant, Editor } from "slate"
 import { Slate } from "slate-react"
-import { CircuEditable } from "./slate/CircuEditable"
 import Draggable from "./slate/components/Draggable/Draggable"
 import FoldButton from "./slate/components/FoldButton/FoldButton"
 import OrderedListBar from "./slate/components/Nodes/Block/List/ListBar/OrderedListBar"
@@ -14,11 +13,13 @@ import LinkButtonBar from "./slate/components/ToolBar/components/Link/LinkButton
 import ToolBar from "./slate/components/ToolBar/ToolBar"
 import { DOC_WIDTH, EDITOR_ROOT_DOM_ID } from "./slate/types/constant"
 
-export const CircuEditor: React.FC<{
-  editor: Editor
-  value: Descendant[]
-  onChange: (value: Descendant[]) => void
-}> = ({ editor, value, onChange }) => {
+const CircuProvider: React.FC<
+  PropsWithChildren<{
+    editor: Editor
+    value: Descendant[]
+    onChange: (value: Descendant[]) => void
+  }>
+> = ({ editor, value, onChange, children }) => {
   const barContainerDom = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -66,7 +67,7 @@ export const CircuEditor: React.FC<{
             }}
           >
             <Slate editor={editor} value={value} onChange={onChange}>
-              <CircuEditable></CircuEditable>
+              {children}
               <div ref={barContainerDom}>
                 <ToolBar></ToolBar>
                 <LinkButtonBar></LinkButtonBar>
@@ -84,3 +85,5 @@ export const CircuEditor: React.FC<{
     </DndProvider>
   )
 }
+
+export default CircuProvider
