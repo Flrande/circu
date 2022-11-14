@@ -127,7 +127,7 @@ export class CrdtService {
 
         if (controlledId) {
           WSDoc.conns.delete(socket)
-          awarenessProtocol.removeAwarenessStates(WSDoc.awareness, Array.from(controlledId), null)
+          awarenessProtocol.removeAwarenessStates(WSDoc.awareness, Array.from(controlledId), socket)
 
           if (WSDoc.conns.size === 0) {
             WSDoc.destroy()

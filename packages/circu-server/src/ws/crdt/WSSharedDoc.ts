@@ -24,6 +24,7 @@ export class WSSharedDoc extends Y.Doc {
       { added, updated, removed }: { added: number[]; updated: number[]; removed: number[] },
       origin: CustomSocket
     ) => {
+      console.log("awareness get update from", (origin as CustomSocket).id)
       const changedClients = added.concat(updated, removed)
       const connControlledIds = this.conns.get(origin)
 
@@ -49,9 +50,9 @@ export class WSSharedDoc extends Y.Doc {
     const updateHandler = async (update: Uint8Array, origin: any, doc: WSSharedDoc) => {
       console.log(
         "server doc get update from",
-        (origin as CustomSocket).id,
-        "server doc conns",
-        [...doc.conns.keys()].map((s) => s.id)
+        (origin as CustomSocket).id
+        // "server doc conns",
+        // [...doc.conns.keys()].map((s) => s.id)
       )
       if (doc.conns.has(origin)) {
         //TODO: 通过 Redis 异步广播
