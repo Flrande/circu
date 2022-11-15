@@ -104,13 +104,11 @@ export const createSocketIoProvider: (
     if (messageType === MESSAGE_SYNC) {
       encoding.writeVarInt(encoder, MESSAGE_SYNC)
       const syncMessageType = syncProtocol.readSyncMessage(decoder, encoder, YDoc, socket)
-      if (syncMessageType === syncProtocol.messageYjsSyncStep2 && !store.sync) {
+      if (syncMessageType !== syncProtocol.messageYjsSyncStep1 && !store.sync) {
         store.sync = true
       }
-    }
-
-    // 同步文档数据之外的数据
-    if (messageType === MESSAGE_AWARENESS) {
+    } else if (messageType === MESSAGE_AWARENESS) {
+      // 同步文档数据之外的数据
       applyAwarenessUpdate(awareness, decoding.readVarUint8Array(decoder), socket)
     }
 
