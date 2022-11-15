@@ -72,7 +72,7 @@ const Doc: React.FC = () => {
           }}
         ></Button>
       </div>
-      <div>
+      <div className={"editor-container overflow-y-scroll"}>
         <CircuProvider editor={editor as unknown as Editor} value={value} onChange={(newValue) => setValue(newValue)}>
           <DocEditable></DocEditable>
         </CircuProvider>
