@@ -4,6 +4,8 @@ import type { Descendant } from "slate"
 import { CircuEditor } from "./CircuEditor"
 import { useCircuEditor } from "./slate/hooks/useCircuEditor"
 
+import "@icon-park/react/styles/index.css"
+
 let initialValue: Descendant[] = [
   {
     type: "title",

@@ -8,6 +8,7 @@ import { SlateElement } from "../types/slate"
 import { arrayIncludes } from "../utils/general"
 import { getSelectedBlocks } from "../components/Nodes/Block/utils/getSelectedBlocks"
 import type { BlockElementWithChildren } from "../types/interface"
+import { toggleTaskList } from "../components/Nodes/Block/TaskList/taskListHelper"
 
 export const useOnKeyDown = () => {
   const editor = useSlateStatic()
@@ -37,23 +38,24 @@ export const useOnKeyDown = () => {
       // Editor.withoutNormalizing(editor, () => {
       //   decreaseIndent(editor)
       // })
-      const selectedBlocksEntry = Array.from(
-        Editor.nodes(editor, {
-          at: selection.anchor,
-          match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
-          mode: "lowest",
-        })
-      ) as NodeEntry<BlockElementWithChildren>[]
-      Transforms.insertNodes(
-        editor,
-        {
-          type: "divider",
-          children: [{ text: "" }],
-        },
-        {
-          at: selectedBlocksEntry[0][1],
-        }
-      )
+      // const selectedBlocksEntry = Array.from(
+      //   Editor.nodes(editor, {
+      //     at: selection.anchor,
+      //     match: (n) => SlateElement.isElement(n) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, n.type),
+      //     mode: "lowest",
+      //   })
+      // ) as NodeEntry<BlockElementWithChildren>[]
+      // Transforms.insertNodes(
+      //   editor,
+      //   {
+      //     type: "divider",
+      //     children: [{ text: "" }],
+      //   },
+      //   {
+      //     at: selectedBlocksEntry[0][1],
+      //   }
+      // )
+      toggleTaskList(editor)
 
       return
     }

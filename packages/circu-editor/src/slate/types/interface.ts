@@ -7,6 +7,7 @@ import type { IHead } from "../components/Nodes/Block/Head/types"
 import type { IOrderedList, IUnorderedList } from "../components/Nodes/Block/List/types"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import type { IQuote } from "../components/Nodes/Block/Quote/types"
+import type { ITaskList } from "../components/Nodes/Block/TaskList/types"
 import type { ITextLine } from "../components/Nodes/Block/TextLine/types"
 import type { ITitle } from "../components/Nodes/Block/Title/types"
 import type { IInlineCode } from "../components/Nodes/Inline/InlineCode/types"
@@ -32,7 +33,7 @@ type BaseBlockElementWithChildren = {
 }
 type BlockElementWithChildrenDetector<T extends BaseBlockElementWithChildren> = T
 export type BlockElementWithChildren = BlockElementWithChildrenDetector<
-  IParagraph | IOrderedList | IUnorderedList | IHead
+  IParagraph | IOrderedList | IUnorderedList | IHead | ITaskList
 >
 
 // 2类块级节点

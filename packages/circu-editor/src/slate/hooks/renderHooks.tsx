@@ -16,6 +16,8 @@ import Paragraph from "../components/Nodes/Block/Paragraph/Paragraph"
 import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import Quote from "../components/Nodes/Block/Quote/Quote"
 import type { IQuote } from "../components/Nodes/Block/Quote/types"
+import TaskList from "../components/Nodes/Block/TaskList/TaskList"
+import type { ITaskList } from "../components/Nodes/Block/TaskList/types"
 import TextLine from "../components/Nodes/Block/TextLine/TextLine"
 import type { ITextLine } from "../components/Nodes/Block/TextLine/types"
 import Title from "../components/Nodes/Block/Title/Title"
@@ -60,6 +62,8 @@ export const useRenderElement = () => {
         return <Quote {...(props as CustomRenderElementProps<IQuote>)}></Quote>
       case "divider":
         return <Divider {...(props as CustomRenderElementProps<IDivider>)}></Divider>
+      case "task-list":
+        return <TaskList {...(props as CustomRenderElementProps<ITaskList>)}></TaskList>
     }
   }, [])
 }

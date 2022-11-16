@@ -8,6 +8,7 @@ import type {
 } from "./interface"
 import type { KeysUnion } from "./utils"
 
+//TODO: 用类型体操生成元组类型提高安全性
 // 文档根部 dom 元素的 id
 export const EDITOR_ROOT_DOM_ID = "circu-editor-root"
 
@@ -23,6 +24,7 @@ export const BLOCK_ELEMENTS_WITH_CHILDREN: Array<BlockElementWithChildren["type"
   "ordered-list",
   "unordered-list",
   "head",
+  "task-list",
 ]
 
 // 2类块级节点, 仅支持包含自身内容, 没有子节点块
@@ -36,6 +38,7 @@ export const BLOCK_ELEMENTS_EXCEPT_TEXT_LINE: Array<BlockElementExceptTextLine["
   "head",
   "block-code",
   "quote",
+  "task-list",
 ]
 
 // 自定义元素中除了 children 以外的所有 prop, 用于转换节点类型时 unset
