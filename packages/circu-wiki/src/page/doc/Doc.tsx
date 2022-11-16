@@ -19,7 +19,7 @@ export type CursorData = {
 }
 
 //TODO: 规范快捷键
-//TODO: 离线提示
+//TODO: 离线提示, 若尚未同步用户便关闭窗口, 提醒用户有修改未保存
 const Doc: React.FC = () => {
   const { docId } = useParams()
 
