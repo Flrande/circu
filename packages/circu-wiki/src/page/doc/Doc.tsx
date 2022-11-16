@@ -11,6 +11,7 @@ import { Button } from "@arco-design/web-react"
 import type { Editor } from "slate"
 import CircuProvider from "circu-editor/src/CircuProvider"
 import DocEditable from "./DocEditable"
+import { useSnapshot } from "valtio"
 
 export type CursorData = {
   color: string
@@ -26,6 +27,7 @@ const Doc: React.FC = () => {
 
   //TODO: 地址 -> 环境变量
   const [provider, providerStore] = useMemo(() => createSocketIoProvider("localhost:8000", docId!), [docId])
+  const providerStoreSnap = useSnapshot(providerStore)
 
   const editor = useMemo(() => {
     const editor = withCursors<CursorData, YjsEditor>(
@@ -70,7 +72,12 @@ const Doc: React.FC = () => {
           }}
         ></Button>
       </div>
-      <div className={"editor-container overflow-y-scroll"}>
+      <div
+        className={"editor-container overflow-y-scroll"}
+        style={{
+          pointerEvents: providerStoreSnap.sync ? undefined : "none",
+        }}
+      >
         <CircuProvider editor={editor as unknown as Editor} value={value} onChange={(newValue) => setValue(newValue)}>
           <DocEditable></DocEditable>
         </CircuProvider>
