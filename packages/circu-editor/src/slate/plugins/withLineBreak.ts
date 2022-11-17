@@ -2,6 +2,7 @@ import { Editor, NodeEntry, Point, Transforms } from "slate"
 import { headLineBreakHandler } from "../components/Nodes/Block/Head/headLineBreakHandler"
 import { listLineBreakHandler } from "../components/Nodes/Block/List/listLineBreakHandler"
 import { paragraphLineBreakHandler } from "../components/Nodes/Block/Paragraph/paragraphLineBreakHandler"
+import { taskListLineBreakHandler } from "../components/Nodes/Block/TaskList/taskListLineBreakHandler"
 import { titleLineBreakHandler } from "../components/Nodes/Block/Title/titleLineBreakHandler"
 import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../types/constant"
 import type { BlockElementExceptTextLine } from "../types/interface"
@@ -46,6 +47,10 @@ export const withLineBreak = (editor: Editor) => {
         ) as NodeEntry<BlockElementExceptTextLine>[]
 
         if (listLineBreakHandler(editor, selectedBlock)) {
+          return
+        }
+
+        if (taskListLineBreakHandler(editor, selectedBlock)) {
           return
         }
 
