@@ -1,4 +1,5 @@
 import { CheckSmall } from "@icon-park/react"
+import { Transforms } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { useMouseXBlockDetect } from "../../../../state/mouse"
 import type { CustomRenderElementProps } from "../../../../types/utils"
@@ -35,11 +36,29 @@ const TaskList: React.FC<CustomRenderElementProps<ITaskList>> = ({ attributes, c
           className={"absolute left-0 -top-2 w-full h-2 select-none"}
         ></div>
       )}
-      <div className={"grid grid-cols-[20px_1fr]"}>
-        <div>
+      <div
+        className={"grid grid-cols-[22px_1fr]"}
+        style={{
+          textDecoration: element.isCompleted ? "line-through" : undefined,
+          color: element.isCompleted ? "#808080" : undefined,
+        }}
+      >
+        <div className={"select-none"} contentEditable={false}>
           <div
+            onClick={(event) => {
+              event.preventDefault()
+              Transforms.setNodes(
+                editor,
+                {
+                  isCompleted: element.isCompleted ? undefined : true,
+                },
+                {
+                  at: listPath,
+                }
+              )
+            }}
             className={
-              "w-[16px] h-[16px] mt-1 border rounded border-[#757575] hover:border-[#5a87f7] grid justify-center align-middle cursor-pointer"
+              "w-[17px] h-[17px] mt-1 border rounded border-[#757575] hover:border-[#5a87f7] grid justify-center align-middle cursor-pointer"
             }
           >
             {element.isCompleted && (

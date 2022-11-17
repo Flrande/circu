@@ -38,7 +38,7 @@ const UnorderedList: React.FC<CustomRenderElementProps<IUnorderedList>> = ({ att
       )}
       <div>
         <span contentEditable={false} className={"select-none text-blue-500 min-w-[22px] absolute"}>
-          {indexSymbol}
+          <div className={"ml-[2px]"}>{indexSymbol}</div>
         </span>
         <div
           style={{

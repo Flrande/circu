@@ -235,7 +235,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
         </span>
         <div
           style={{
-            paddingLeft: `${spanWidth}px`,
+            paddingLeft: `${spanWidth + 2}px`,
           }}
         >
           {children}
