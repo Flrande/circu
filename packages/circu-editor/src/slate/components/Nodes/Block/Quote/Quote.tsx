@@ -15,7 +15,7 @@ const Quote: React.FC<CustomRenderElementProps<IQuote>> = ({ attributes, childre
       {...attributes}
       onMouseEnter={onMouseEnterForDrag}
       onMouseLeave={onMouseLeaveForDrag}
-      className={"my-2 pl-[14px] relative text-zinc-400"}
+      className={"pl-[14px] relative text-zinc-400"}
       style={{
         display: element.isHidden ? "none" : undefined,
       }}

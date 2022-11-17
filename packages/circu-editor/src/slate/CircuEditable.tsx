@@ -48,6 +48,7 @@ const CircuEditable: React.FC<{
       onDrop={useCallback<React.DragEventHandler>((event) => {
         event.preventDefault()
       }, [])}
+      className={"grid gap-y-2"}
     ></Editable>
   )
 }

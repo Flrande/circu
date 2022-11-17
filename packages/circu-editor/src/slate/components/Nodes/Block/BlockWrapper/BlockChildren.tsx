@@ -16,10 +16,13 @@ const BlockChildren: React.FC<CustomRenderElementProps<__IBlockElementChildren>>
   return (
     <div
       {...attributes}
+      className={"circu-block-children"}
       style={{
         paddingLeft:
           SlateElement.isElement(parentNode) &&
-          (parentNode.type === "ordered-list" || parentNode.type === "unordered-list")
+          (parentNode.type === "ordered-list" ||
+            parentNode.type === "unordered-list" ||
+            parentNode.type === "task-list")
             ? undefined
             : "25px",
       }}

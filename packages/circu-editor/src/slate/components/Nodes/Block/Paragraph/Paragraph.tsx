@@ -23,7 +23,7 @@ const Paragraph: React.FC<CustomRenderElementProps<IParagraph>> = ({ attributes,
       onDragOver={onDragOver}
       onMouseEnter={onMouseEnterForDrag}
       onMouseLeave={onMouseLeaveForDrag}
-      className={"my-2 relative"}
+      className={"relative"}
       style={{
         display: element.isHidden ? "none" : undefined,
       }}

@@ -3,7 +3,7 @@ import type { IDivider } from "./types"
 
 const Divider: React.FC<CustomRenderElementProps<IDivider>> = ({ attributes, children }) => {
   return (
-    <div contentEditable={false} {...attributes} className={"my-2"}>
+    <div contentEditable={false} {...attributes}>
       {children}
       <div className={"py-3"}>
         <div className={"h-[2px] bg-gray-700"}></div>

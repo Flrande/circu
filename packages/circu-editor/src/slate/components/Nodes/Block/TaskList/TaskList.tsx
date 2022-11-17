@@ -24,7 +24,7 @@ const TaskList: React.FC<CustomRenderElementProps<ITaskList>> = ({ attributes, c
       onDragOver={onDragOver}
       onMouseEnter={onMouseEnterForDrag}
       onMouseLeave={onMouseLeaveForDrag}
-      className={"my-2 relative"}
+      className={"relative"}
       style={{
         display: element.isHidden ? "none" : undefined,
       }}
@@ -66,7 +66,7 @@ const TaskList: React.FC<CustomRenderElementProps<ITaskList>> = ({ attributes, c
             )}
           </div>
         </div>
-        {children}
+        <div>{children}</div>
       </div>
       <DragMarkLine activeDirection={dragActiveLine}></DragMarkLine>
     </div>

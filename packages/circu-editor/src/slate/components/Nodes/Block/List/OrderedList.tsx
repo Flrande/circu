@@ -205,7 +205,7 @@ const OrderedList: React.FC<CustomRenderElementProps<IOrderedList>> = ({ attribu
       onDragOver={onDragOver}
       onMouseEnter={onMouseEnterForDrag}
       onMouseLeave={onMouseLeaveForDrag}
-      className={"my-2 relative"}
+      className={"relative"}
       style={{
         display: element.isHidden ? "none" : undefined,
       }}

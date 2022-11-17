@@ -81,7 +81,7 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
         border: isSelected ? "1px solid #5a87f7" : undefined,
         display: element.isHidden ? "none" : undefined,
       }}
-      className={"bg-zinc-800 my-2 text-sm font-normal rounded relative"}
+      className={"bg-zinc-800 text-sm font-normal rounded relative"}
     >
       {blockCodePath.at(-1) !== 0 && (
         <div

@@ -1,0 +1,8 @@
+.circu-block-children {
+  display: grid;
+  row-gap: 8px;
+}
+
+.circu-block-children > div:first-child {
+  margin-top: 8px;
+}

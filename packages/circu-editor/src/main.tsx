@@ -4,7 +4,10 @@ import App from "./App"
 
 import "./normalize.css"
 import "./scrollbar.css"
-import "./index.css"
+import "@icon-park/react/styles/index.css"
+import "./slate/components/Nodes/Block/Head/head.css"
+import "./styles/index.css"
+import "./editor.css"
 
 document.body.setAttribute("arco-theme", "dark")
 

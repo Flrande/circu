@@ -1,0 +1,6 @@
+@import url("../slate/components/Nodes/Block/Head/head.css");
+@import url("../slate/components/Nodes/Block/BlockWrapper/block-children.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
