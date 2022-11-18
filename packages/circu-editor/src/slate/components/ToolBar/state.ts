@@ -65,10 +65,10 @@ export const useToolBar = () => {
                   x = x >= 650 ? 650 : x
                 }
                 if (y < 80) {
-                  y += 50 + window.scrollY
+                  y += 50 - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().top
                 } else {
                   y -= 80
-                  y += window.scrollY
+                  y -= document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().top
                 }
 
                 toolBarStateStore.isActive = true
