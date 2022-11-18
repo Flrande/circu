@@ -86,4 +86,4 @@ const CircuProvider: React.FC<
   )
 }
 
-export default CircuProvider
+export { CircuProvider }
