@@ -1,6 +1,5 @@
 import { MenuFoldOne } from "@icon-park/react"
-import { CircuEditable, createCircuEditor, CustomElement, CustomText } from "circu-editor"
-import CircuProvider from "circu-editor/src/CircuProvider"
+import { CircuEditable, CircuProvider, createCircuEditor, CustomElement, CustomText } from "circu-editor"
 import type { ITitle } from "circu-editor/src/slate/components/Nodes/Block/Title/types"
 import { useEffect, useRef, useState } from "react"
 import ScrollBar from "smooth-scrollbar"
