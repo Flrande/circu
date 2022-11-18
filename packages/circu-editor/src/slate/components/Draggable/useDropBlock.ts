@@ -32,20 +32,62 @@ export const useDropBlock = (
           Editor.withoutNormalizing(editor, () => {
             const { path, direction } = dropPosition
 
-            if ((Path.equals(Path.next(xBlockPath), path) && direction === "top") || Path.equals(xBlockPath, path)) {
+            if (Path.equals(xBlockPath, path)) {
               return
             }
 
-            if (Path.isBefore(xBlockPath, path) || direction === "top") {
-              Transforms.moveNodes(editor, {
-                at: xBlockPath,
-                to: path,
-              })
+            if (Path.isBefore(xBlockPath, path)) {
+              if (Path.isSibling(xBlockPath, path)) {
+                if (direction === "top") {
+                  Transforms.moveNodes(editor, {
+                    at: xBlockPath,
+                    to: Path.previous(path),
+                  })
+                } else {
+                  Transforms.moveNodes(editor, {
+                    at: xBlockPath,
+                    to: path,
+                  })
+                }
+              } else {
+                if (direction === "top") {
+                  Transforms.moveNodes(editor, {
+                    at: xBlockPath,
+                    to: path,
+                  })
+                } else {
+                  Transforms.moveNodes(editor, {
+                    at: xBlockPath,
+                    to: Path.next(path),
+                  })
+                }
+              }
             } else {
-              Transforms.moveNodes(editor, {
-                at: xBlockPath,
-                to: Path.next(path),
-              })
+              if (Path.isSibling(xBlockPath, path)) {
+                if (direction === "top") {
+                  Transforms.moveNodes(editor, {
+                    at: xBlockPath,
+                    to: path,
+                  })
+                } else {
+                  Transforms.moveNodes(editor, {
+                    at: xBlockPath,
+                    to: Path.next(path),
+                  })
+                }
+              } else {
+                if (direction === "top") {
+                  Transforms.moveNodes(editor, {
+                    at: xBlockPath,
+                    to: path,
+                  })
+                } else {
+                  Transforms.moveNodes(editor, {
+                    at: xBlockPath,
+                    to: Path.next(path),
+                  })
+                }
+              }
             }
 
             // 判断 xBlockPath 是否是父块级节点唯一子节点, 若是, 删除该子节点块
