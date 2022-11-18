@@ -13,28 +13,28 @@ const Head: React.FC<CustomRenderElementProps<IHead>> = ({ attributes, children,
 
   const { newAttributes, onDragOver, dragActiveLine } = useDropBlock(element, attributes)
 
-  let className: "head-1" | "head-2" | "head-3" | "head-4" | "head-5" | "head-6"
+  let className: "circu-head-1" | "circu-head-2" | "circu-head-3" | "circu-head-4" | "circu-head-5" | "circu-head-6"
   switch (element.headGrade) {
     case "1":
-      className = "head-1"
+      className = "circu-head-1"
       break
     case "2":
-      className = "head-2"
+      className = "circu-head-2"
       break
     case "3":
-      className = "head-3"
+      className = "circu-head-3"
       break
     case "4":
-      className = "head-4"
+      className = "circu-head-4"
       break
     case "5":
-      className = "head-5"
+      className = "circu-head-5"
       break
     case "6":
-      className = "head-6"
+      className = "circu-head-6"
       break
     default:
-      className = "head-1"
+      className = "circu-head-1"
   }
 
   return (

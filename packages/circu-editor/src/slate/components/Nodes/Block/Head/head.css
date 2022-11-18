@@ -1,35 +1,35 @@
-.head-1 > :nth-child(1) {
+.circu-head-1 > :nth-child(1) {
   @apply -top-4 h-4;
 }
 
-.head-2 > :nth-child(1),
-.head-3 > :nth-child(1),
-.head-4 > :nth-child(1),
-.head-5 > :nth-child(1),
-.head-6 > :nth-child(1) {
+.circu-head-2 > :nth-child(1),
+.circu-head-3 > :nth-child(1),
+.circu-head-4 > :nth-child(1),
+.circu-head-5 > :nth-child(1),
+.circu-head-6 > :nth-child(1) {
   @apply -top-3 h-3;
 }
 
-.head-1 > :nth-child(2) {
+.circu-head-1 > :nth-child(2) {
   @apply text-3xl mb-1 mt-2 font-semibold tracking-wide;
 }
 
-.head-2 > :nth-child(2) {
+.circu-head-2 > :nth-child(2) {
   @apply text-2xl mt-1 font-semibold tracking-wide;
 }
 
-.head-3 > :nth-child(2) {
+.circu-head-3 > :nth-child(2) {
   @apply text-xl mt-1 font-semibold tracking-wide;
 }
 
-.head-4 > :nth-child(2) {
+.circu-head-4 > :nth-child(2) {
   @apply text-lg mt-1 font-semibold tracking-wide;
 }
 
-.head-5 > :nth-child(2) {
+.circu-head-5 > :nth-child(2) {
   @apply text-base mt-1 font-semibold tracking-wide;
 }
 
-.head-6 > :nth-child(2) {
+.circu-head-6 > :nth-child(2) {
   @apply text-base mt-1 font-semibold tracking-wide;
 }
