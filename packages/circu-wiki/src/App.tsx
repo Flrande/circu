@@ -6,6 +6,7 @@ import Home from "./page/drive/home/Home"
 import Me from "./page/drive/me/Me"
 import Shared from "./page/drive/shared/Shared"
 import Trash from "./page/drive/trash/Trash"
+import Login from "./page/login/Login"
 import NotFound from "./page/notFound/NotFound"
 import Wiki from "./page/wiki/Wiki"
 
@@ -15,6 +16,7 @@ const App: React.FC = () => {
     <div className={"h-screen overflow-hidden"}>
       <BrowserRouter>
         <Routes>
+          <Route path={"/login"} element={<Login></Login>}></Route>
           <Route path={"drive"} element={<Drive></Drive>}>
             <Route path={"home"} element={<Home></Home>}></Route>
             <Route path={"me"} element={<Me></Me>}></Route>
