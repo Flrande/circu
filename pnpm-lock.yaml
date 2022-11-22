@@ -163,6 +163,7 @@ importers:
       autoprefixer: ^10.4.7
       circu-editor: workspace:0.0.1
       lib0: ^0.2.52
+      lxgw-wenkai-webfont: ^1.6.0
       postcss: ^8.4.14
       postcss-import: ^15.0.0
       randomcolor: ^0.6.2
@@ -189,6 +190,7 @@ importers:
       "@slate-yjs/react": 0.3.0_mwlsbxwezdizwrp4qws22edl6y
       circu-editor: link:../circu-editor
       lib0: 0.2.53
+      lxgw-wenkai-webfont: 1.6.0
       randomcolor: 0.6.2
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -6056,6 +6058,11 @@ packages:
     dependencies:
       yallist: 4.0.0
     dev: true
+
+  /lxgw-wenkai-webfont/1.6.0:
+    resolution:
+      { integrity: sha512-EIHhaQayMEqbOJBWi22lwzwVxsfJtAdNbKljx4WXbuPLLkU57qEBN/aQSUl+sqhicqkasR5e1vgdFbBsEzFHxg== }
+    dev: false
 
   /macos-release/2.5.0:
     resolution:
