@@ -1,7 +1,8 @@
 import { CheckSmall } from "@icon-park/react"
-import { Transforms } from "slate"
+import { Path, Transforms } from "slate"
 import { ReactEditor, useSlateStatic } from "slate-react"
 import { useMouseXBlockDetect } from "../../../../state/mouse"
+import { SlateElement } from "../../../../types/slate"
 import type { CustomRenderElementProps } from "../../../../types/utils"
 import DragMarkLine from "../../../Draggable/DragMarkLine"
 import { useDropBlock } from "../../../Draggable/useDropBlock"
@@ -54,6 +55,9 @@ const TaskList: React.FC<CustomRenderElementProps<ITaskList>> = ({ attributes, c
                 },
                 {
                   at: listPath,
+                  match: (n, p) => Path.isCommon(listPath, p) && SlateElement.isElement(n) && n.type === "task-list",
+                  // 默认值是 lowest
+                  mode: "all",
                 }
               )
             }}
