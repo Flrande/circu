@@ -10,14 +10,14 @@ const InlineChromiumBugfix = () => (
 
 const InlineCode: React.FC<CustomRenderElementProps<IInlineCode>> = ({ attributes, children }) => {
   return (
-    <span
+    <code
       {...attributes}
       className={"border border-solid border-zinc-700 rounded-[4px] mx-[2px] px-1 font-normal tracking-wider"}
     >
       <InlineChromiumBugfix></InlineChromiumBugfix>
       {children}
       <InlineChromiumBugfix></InlineChromiumBugfix>
-    </span>
+    </code>
   )
 }
 

@@ -48,13 +48,7 @@ const CircuProvider: React.FC<
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div
-        id={EDITOR_ROOT_DOM_ID}
-        className={"flex justify-center bg-transparent h-full"}
-        style={{
-          fontFamily: '"Source Code Pro", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", "Microsoft Yahei"',
-        }}
-      >
+      <div id={EDITOR_ROOT_DOM_ID} className={"flex justify-center bg-transparent h-full"}>
         <div
           style={{
             padding: "0 96px 0 96px",

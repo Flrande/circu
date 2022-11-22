@@ -208,14 +208,15 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
           })}
         </div>
         <div className={`block-code-area-${ReactEditor.findKey(editor, element).id}`}>
-          <div
+          <code
             style={{
               whiteSpace: !isWrap ? "nowrap" : undefined,
               marginBottom: "16px",
+              display: "block",
             }}
           >
             {children}
-          </div>
+          </code>
         </div>
       </div>
       <DragMarkLine activeDirection={dragActiveLine}></DragMarkLine>

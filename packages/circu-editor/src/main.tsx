@@ -2,6 +2,7 @@
 import * as ReactDOMClient from "react-dom/client"
 import App from "./App"
 
+import "lxgw-wenkai-webfont/style.css"
 import "./normalize.css"
 import "./scrollbar.css"
 import "@icon-park/react/styles/index.css"

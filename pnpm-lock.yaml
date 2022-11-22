@@ -21,6 +21,7 @@ importers:
       "@vitejs/plugin-react": ^1.3.2
       autoprefixer: ^10.4.7
       jotai: ^1.6.6
+      lxgw-wenkai-webfont: ^1.6.0
       postcss: ^8.4.14
       prismjs: ^1.28.0
       react: ^18.1.0
@@ -51,6 +52,7 @@ importers:
       "@types/react-dom": 18.0.6
       "@vitejs/plugin-react": 1.3.2
       autoprefixer: 10.4.8_postcss@8.4.16
+      lxgw-wenkai-webfont: 1.6.0
       postcss: 8.4.16
       slate: 0.81.3
       slate-react: link:../slate-react
@@ -6062,7 +6064,6 @@ packages:
   /lxgw-wenkai-webfont/1.6.0:
     resolution:
       { integrity: sha512-EIHhaQayMEqbOJBWi22lwzwVxsfJtAdNbKljx4WXbuPLLkU57qEBN/aQSUl+sqhicqkasR5e1vgdFbBsEzFHxg== }
-    dev: false
 
   /macos-release/2.5.0:
     resolution:
