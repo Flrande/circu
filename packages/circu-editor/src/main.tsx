@@ -2,11 +2,10 @@
 import * as ReactDOMClient from "react-dom/client"
 import App from "./App"
 
+import "overlayscrollbars/overlayscrollbars.css"
 import "lxgw-wenkai-webfont/style.css"
 import "./normalize.css"
-import "./scrollbar.css"
 import "@icon-park/react/styles/index.css"
-import "./slate/components/Nodes/Block/Head/head.css"
 import "./styles/index.css"
 import "./editor.css"
 

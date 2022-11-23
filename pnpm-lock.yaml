@@ -22,6 +22,7 @@ importers:
       autoprefixer: ^10.4.7
       jotai: ^1.6.6
       lxgw-wenkai-webfont: ^1.6.0
+      overlayscrollbars: ^2.0.1
       postcss: ^8.4.14
       prismjs: ^1.28.0
       react: ^18.1.0
@@ -30,7 +31,6 @@ importers:
       react-dom: ^18.1.0
       slate: ^0.81.0
       slate-react: workspace:0.0.1
-      smooth-scrollbar: ^8.7.4
       tailwindcss: ^3.1.6
       valtio: ^1.6.0
       vite: ^2.9.15
@@ -53,10 +53,10 @@ importers:
       "@vitejs/plugin-react": 1.3.2
       autoprefixer: 10.4.8_postcss@8.4.16
       lxgw-wenkai-webfont: 1.6.0
+      overlayscrollbars: 2.0.1
       postcss: 8.4.16
       slate: 0.81.3
       slate-react: link:../slate-react
-      smooth-scrollbar: 8.7.5
       tailwindcss: 3.1.8
       vite: 2.9.15
 
@@ -3578,12 +3578,6 @@ packages:
       { integrity: sha512-JxbCBUdrfr6AQjOXrxoTvAMJO4HBTUIlBzslcJPAz+/KT8yk53fXun51u+RenNYvad/+Vc2DIz5o9UxlCDymFQ== }
     dev: true
 
-  /core-js/3.25.1:
-    resolution:
-      { integrity: sha512-sr0FY4lnO1hkQ4gLDr24K0DGnweGO1QwSj5BpfQjpSJPdqWalja4cTps29Y/PJVG/P7FYlPDkH3hO+Tr0CvDgQ== }
-    requiresBuild: true
-    dev: true
-
   /core-js/3.26.0:
     resolution:
       { integrity: sha512-+DkDrhoR4Y0PxDz6rurahuB+I45OsEUv8E1maPTB6OuHRohMMcznBq9TMpdpDMm/hUPob/mJJS3PqgbHpMTQgw== }
@@ -5979,11 +5973,6 @@ packages:
       p-locate: 5.0.0
     dev: true
 
-  /lodash-es/4.17.21:
-    resolution:
-      { integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw== }
-    dev: true
-
   /lodash.clamp/4.0.3:
     resolution:
       { integrity: sha512-HvzRFWjtcguTW7yd8NJBshuNaCa8aqNFtnswdT7f/cMd/1YKy5Zzoq4W/Oxvnx9l7aeY258uSdDfM793+eLsVg== }
@@ -6448,6 +6437,11 @@ packages:
     resolution:
       { integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g== }
     engines: { node: ">=0.10.0" }
+    dev: true
+
+  /overlayscrollbars/2.0.1:
+    resolution:
+      { integrity: sha512-tER9iKasFqcJiYdtspHbzlhJJg8kicyj/Oag/GRAK658rDouat2BGFfSFg3AgIw/Yc9CQ78AuX6ieHgg1wQw7Q== }
     dev: true
 
   /p-filter/2.1.0:
@@ -7548,15 +7542,6 @@ packages:
       ansi-styles: 4.3.0
       astral-regex: 2.0.0
       is-fullwidth-code-point: 3.0.0
-    dev: true
-
-  /smooth-scrollbar/8.7.5:
-    resolution:
-      { integrity: sha512-eH3SdXfZQLscgAl5dRZ+L24ALffXkPLuB9us03Kaf/kJO0JfYtsZ398WD36139Sv4GYIQQHgzYPCkQpeV0tJAQ== }
-    dependencies:
-      core-js: 3.25.1
-      lodash-es: 4.17.21
-      tslib: 1.14.1
     dev: true
 
   /smooth-scrollbar/8.8.1:

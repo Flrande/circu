@@ -5,11 +5,10 @@ import { Button, Select } from "@arco-design/web-react"
 import { Transforms } from "slate"
 import { codeAreaLangMap } from "./constant"
 import React, { useEffect, useRef, useState } from "react"
-import Scrollbar from "smooth-scrollbar"
-import { useScrollbar } from "../../../../hooks/useScrollbar"
 import { useDropBlock } from "../../../Draggable/useDropBlock"
 import DragMarkLine from "../../../Draggable/DragMarkLine"
 import { useMouseXBlockDetect } from "../../../../state/mouse"
+import { OverlayScrollbars } from "overlayscrollbars"
 
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
@@ -26,6 +25,9 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
   const { newAttributes, onDragOver, dragActiveLine } = useDropBlock(element, attributes)
 
   const langOptions: KeysUnion<ICodeAreaLangMap>[] = Object.keys(codeAreaLangMap) as KeysUnion<ICodeAreaLangMap>[]
+
+  const selectorOsInstanceRef = useRef<OverlayScrollbars | undefined>()
+  const codeOsInstanceRef = useRef<OverlayScrollbars | undefined>()
 
   useEffect(() => {
     const codeLinesWrapperDom = ReactEditor.toDOMNode(editor, element.children[0])
@@ -46,29 +48,13 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
     }
   }, [element.children[0], isWrap])
 
-  // 卸载组件时删除语言选择器的滚动条实例
-  useEffect(() => {
-    return () => {
-      const dom = document.querySelector<HTMLElement>(`.block-code-selector-${ReactEditor.findKey(editor, element).id}`)
-      if (dom) {
-        Scrollbar.destroy(dom)
-      }
-    }
-  }, [])
-
   // 设置代码区域的滚动条
   useEffect(() => {
     const dom = document.querySelector<HTMLElement>(`.block-code-area-${ReactEditor.findKey(editor, element).id}`)
-    if (dom && !isWrap) {
-      Scrollbar.init(dom)
-
-      return () => {
-        Scrollbar.destroy(dom)
-      }
+    if (dom) {
+      codeOsInstanceRef.current = OverlayScrollbars(dom, {})
     }
   }, [])
-
-  useScrollbar()
 
   return (
     <div
@@ -148,17 +134,10 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
               const dom = document.querySelector<HTMLElement>(
                 `.block-code-selector-${ReactEditor.findKey(editor, element).id}`
               )
-              if (visible && dom) {
-                Scrollbar.init(dom)
+              if (dom && visible) {
+                selectorOsInstanceRef.current = OverlayScrollbars(dom, {})
               }
             })
-
-            const dom = document.querySelector<HTMLElement>(
-              `.block-code-selector-${ReactEditor.findKey(editor, element).id}`
-            )
-            if (!visible && dom) {
-              Scrollbar.destroy(dom)
-            }
           }}
         >
           {langOptions.map((option) => (
@@ -180,12 +159,10 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
                 // 取消换行, 初始化滚动条
                 setIsWrap(false)
                 setIsWrapMessage("启用自动换行")
-                Scrollbar.init(dom)
               } else {
                 // 启动换行, 卸载滚动条
                 setIsWrap(true)
                 setIsWrapMessage("取消自动换行")
-                Scrollbar.destroy(dom)
               }
             }
           }}
@@ -207,7 +184,7 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
             return <span key={(i + 1).toString()}>{i + 1}</span>
           })}
         </div>
-        <div className={`block-code-area-${ReactEditor.findKey(editor, element).id}`}>
+        <div className={`block-code-area-${ReactEditor.findKey(editor, element).id} grid`}>
           <code
             style={{
               whiteSpace: !isWrap ? "nowrap" : undefined,
