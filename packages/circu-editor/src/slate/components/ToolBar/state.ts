@@ -58,11 +58,11 @@ export const useToolBar = () => {
                 if (x <= docXPadding) {
                   x = 0
                 } else if (x >= docXPadding + DOC_WIDTH) {
-                  x = 650
+                  x = DOC_WIDTH / 2
                 } else {
                   x -= docXPadding
                   x += 20
-                  x = x >= 650 ? 650 : x
+                  x = x >= DOC_WIDTH / 2 ? DOC_WIDTH / 2 : x
                 }
                 if (y < 80) {
                   y += 50 - document.getElementById(EDITOR_ROOT_DOM_ID)!.getBoundingClientRect().top
