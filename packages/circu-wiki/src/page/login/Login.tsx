@@ -13,7 +13,7 @@ const Login: React.FC = () => {
       <div
         className={"h-full w-full absolute"}
         style={{
-          background: "linear-gradient(68deg, rgba(40,42,54,1) 0%, rgba(40,42,54,1) 55%, rgba(40,42,54,0.65) 100%)",
+          backdropFilter: "blur(2px)",
         }}
       ></div>
       <div className={"relative h-full w-full grid py-14 px-44 grid-rows-[80px_minmax(600px,1fr)]"}>
@@ -22,14 +22,14 @@ const Login: React.FC = () => {
             <img src={`${logoUrl}`} alt={"logo"} className={"w-12 h-12"}></img>
           </div>
           <div className={"grid items-end"}>
-            <span className={"text-[38px] font-medium ml-2 text-white"}>Circu</span>
+            <span className={"text-[38px] font-medium ml-2 text-gray-800"}>Circu</span>
           </div>
-          <div className={"grid grid-cols-[22px_22px] items-end text-[20px] font-medium ml-2 mb-1 text-white"}>
+          <div className={"grid grid-cols-[22px_22px] items-end text-[20px] font-medium ml-2 mb-1 text-gray-800"}>
             <GithubOne
               className={"mb-1"}
               theme="filled"
               size="20"
-              fill="#ffffff"
+              fill="#212936"
               strokeLinejoin="bevel"
               strokeLinecap="square"
             />
