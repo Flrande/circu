@@ -166,6 +166,7 @@ importers:
       circu-editor: workspace:0.0.1
       lib0: ^0.2.52
       lxgw-wenkai-webfont: ^1.6.0
+      overlayscrollbars: ^2.0.1
       postcss: ^8.4.14
       postcss-import: ^15.0.0
       randomcolor: ^0.6.2
@@ -175,7 +176,6 @@ importers:
       react-router-dom: "6"
       slate: ^0.81.0
       slate-react: workspace:0.0.1
-      smooth-scrollbar: ^8.7.4
       socket.io-client: ^4.5.3
       swr: ^1.3.0
       tailwindcss: ^3.1.6
@@ -193,6 +193,7 @@ importers:
       circu-editor: link:../circu-editor
       lib0: 0.2.53
       lxgw-wenkai-webfont: 1.6.0
+      overlayscrollbars: 2.0.1
       randomcolor: 0.6.2
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -200,7 +201,6 @@ importers:
       react-router-dom: 6.4.3_biqbaboplfbrettd7655fr4n2y
       slate: 0.81.3
       slate-react: link:../slate-react
-      smooth-scrollbar: 8.8.1
       socket.io-client: 4.5.3
       swr: 1.3.0_react@18.2.0
       valtio: 1.7.5_react@18.2.0+vite@2.9.15
@@ -3578,12 +3578,6 @@ packages:
       { integrity: sha512-JxbCBUdrfr6AQjOXrxoTvAMJO4HBTUIlBzslcJPAz+/KT8yk53fXun51u+RenNYvad/+Vc2DIz5o9UxlCDymFQ== }
     dev: true
 
-  /core-js/3.26.0:
-    resolution:
-      { integrity: sha512-+DkDrhoR4Y0PxDz6rurahuB+I45OsEUv8E1maPTB6OuHRohMMcznBq9TMpdpDMm/hUPob/mJJS3PqgbHpMTQgw== }
-    requiresBuild: true
-    dev: false
-
   /core-util-is/1.0.3:
     resolution:
       { integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ== }
@@ -5973,16 +5967,6 @@ packages:
       p-locate: 5.0.0
     dev: true
 
-  /lodash.clamp/4.0.3:
-    resolution:
-      { integrity: sha512-HvzRFWjtcguTW7yd8NJBshuNaCa8aqNFtnswdT7f/cMd/1YKy5Zzoq4W/Oxvnx9l7aeY258uSdDfM793+eLsVg== }
-    dev: false
-
-  /lodash.debounce/4.0.8:
-    resolution:
-      { integrity: sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow== }
-    dev: false
-
   /lodash.defaults/4.2.0:
     resolution:
       { integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ== }
@@ -6442,7 +6426,6 @@ packages:
   /overlayscrollbars/2.0.1:
     resolution:
       { integrity: sha512-tER9iKasFqcJiYdtspHbzlhJJg8kicyj/Oag/GRAK658rDouat2BGFfSFg3AgIw/Yc9CQ78AuX6ieHgg1wQw7Q== }
-    dev: true
 
   /p-filter/2.1.0:
     resolution:
@@ -7544,16 +7527,6 @@ packages:
       is-fullwidth-code-point: 3.0.0
     dev: true
 
-  /smooth-scrollbar/8.8.1:
-    resolution:
-      { integrity: sha512-FQDRtdLTRye8LdRHohNAxh0hyo7gl8+APfA+8Qu5S38MBqR8/WqOoRVzjizH6FTdbU1qGsB7gs8LhMeFJ4Jr8g== }
-    dependencies:
-      core-js: 3.26.0
-      lodash.clamp: 4.0.3
-      lodash.debounce: 4.0.8
-      tslib: 1.14.1
-    dev: false
-
   /socket.io-adapter/2.4.0:
     resolution:
       { integrity: sha512-W4N+o69rkMEGVuk2D/cvca3uYsvGlMwsySWV447y99gUPghxq42BxqLNMndb+a1mm/5/7NeXVQS7RLa2XyXvYg== }
@@ -8195,6 +8168,7 @@ packages:
   /tslib/1.14.1:
     resolution:
       { integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg== }
+    dev: true
 
   /tslib/2.4.0:
     resolution:

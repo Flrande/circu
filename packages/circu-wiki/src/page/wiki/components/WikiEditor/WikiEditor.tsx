@@ -1,8 +1,8 @@
 import { MenuFoldOne } from "@icon-park/react"
 import { CircuEditable, CircuProvider, createCircuEditor, CustomElement, CustomText } from "circu-editor"
 import type { ITitle } from "circu-editor/src/slate/components/Nodes/Block/Title/types"
+import { OverlayScrollbars } from "overlayscrollbars"
 import { useEffect, useRef, useState } from "react"
-import ScrollBar from "smooth-scrollbar"
 import { useSnapshot } from "valtio"
 import { useTopWikiDocs } from "../../../../server/wiki-doc"
 import Doc from "../WikiSdeBar/Doc"
@@ -41,12 +41,16 @@ const WikiEditor: React.FC = () => {
 
   const editorRootDom = useRef<HTMLDivElement | null>(null)
   const sidebarListDom = useRef<HTMLDivElement | null>(null)
+
+  const editorOsInstanceRef = useRef<OverlayScrollbars>()
+  const sideBarOsInstanceRef = useRef<OverlayScrollbars>()
+
   useEffect(() => {
     if (editorRootDom.current) {
-      ScrollBar.init(editorRootDom.current)
+      editorOsInstanceRef.current = OverlayScrollbars(editorRootDom.current)
     }
     if (sidebarListDom.current) {
-      ScrollBar.init(sidebarListDom.current)
+      sideBarOsInstanceRef.current = OverlayScrollbars(sidebarListDom.current)
     }
   }, [])
 

@@ -1,6 +1,5 @@
 @import url("../page/doc/editor.css");
 @import url("./normalize.css");
-@import url("./scrollbar.css");
 
 @tailwind base;
 @tailwind components;

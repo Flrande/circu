@@ -1,8 +1,8 @@
 import { DocDetail, Down, FolderClose } from "@icon-park/react"
+import { OverlayScrollbars } from "overlayscrollbars"
 import { useEffect, useRef, useState } from "react"
 import DocList from "../components/DocList/DocList"
 import FolderBlock from "../components/FolderBlock/FolderBlock"
-import ScrollBar from "smooth-scrollbar"
 
 const Home: React.FC = () => {
   const [isButtonHover, setIsButtonHover] = useState(false)
@@ -10,10 +10,12 @@ const Home: React.FC = () => {
   const buttonDom = useRef<HTMLButtonElement>(null)
   const rootDom = useRef<HTMLDivElement>(null)
 
+  const osInstanceRef = useRef<OverlayScrollbars>()
+
   useEffect(() => {
     //TODO: 粘性布局
     if (rootDom.current) {
-      ScrollBar.init(rootDom.current)
+      osInstanceRef.current = OverlayScrollbars(rootDom.current)
     }
   })
 

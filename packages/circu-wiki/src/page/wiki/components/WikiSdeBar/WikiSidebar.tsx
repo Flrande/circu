@@ -1,6 +1,6 @@
 import { MenuUnfoldOne } from "@icon-park/react"
+import { OverlayScrollbars } from "overlayscrollbars"
 import { useEffect, useRef, useState } from "react"
-import ScrollBar from "smooth-scrollbar"
 import { useSnapshot } from "valtio"
 import { useTopWikiDocs } from "../../../../server/wiki-doc"
 import Doc from "./Doc"
@@ -56,9 +56,12 @@ export const WikiSidebar: React.FC = () => {
   }, [isResizeColDrag])
 
   const sidebarListDom = useRef<HTMLDivElement | null>(null)
+
+  const sidebarOsInstanceRef = useRef<OverlayScrollbars>()
+
   useEffect(() => {
     if (sidebarListDom.current) {
-      ScrollBar.init(sidebarListDom.current)
+      sidebarOsInstanceRef.current = OverlayScrollbars(sidebarListDom.current)
     }
   }, [])
 
