@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { User } from "@prisma/client"
+import { Request } from "express"
 import { AuthService } from "src/auth/auth.service"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
@@ -22,7 +23,7 @@ export class UserService {
     })
     if (existingUser) {
       throw new CommonException({
-        code: UserExceptionCode.USER_IS_EXISTING,
+        code: UserExceptionCode.USER_IS_EXIST,
         message: "用户名已存在",
         isFiltered: false,
       })
@@ -67,5 +68,55 @@ export class UserService {
     }
 
     return result
+  }
+
+  /**
+   * 用于登录的函数, 接受用户输入的用户名及密码和当前的请求对象, 校验通过后持久化会话信息
+   *
+   * @param payload.ifCarrySession 若为真, 将用户会话保存7天
+   *
+   */
+  async login(
+    payload: {
+      username: string
+      password: string
+      ifCarrySession: boolean
+    },
+    req: Request
+  ): Promise<void> {
+    const user = await this.prismaService.user.findFirst({
+      where: {
+        username: payload.username,
+      },
+      select: {
+        id: true,
+        password: true,
+      },
+    })
+
+    if (!user) {
+      throw new CommonException({
+        code: UserExceptionCode.USER_NOT_FOUND,
+        message: `未能找到用户名为${payload.username}的用户`,
+        isFiltered: false,
+      })
+    }
+
+    const result = await this.authService.comparePassword(payload.password, user.password)
+
+    if (!result) {
+      throw new CommonException({
+        code: UserExceptionCode.PASSWORD_NOT_MATCH,
+        message: "密码错误",
+        isFiltered: false,
+      })
+    }
+
+    req.session.userid = user.id
+
+    if (payload.ifCarrySession) {
+      // 7天
+      req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 7
+    }
   }
 }
