@@ -19,6 +19,11 @@ async function bootstrap() {
     secret: configService.getOrThrow("SESSION_SECRET"),
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      sameSite: true,
+      //TODO: HTTPS 支持
+      // secure: true
+    },
   })
 
   app.useGlobalPipes(
