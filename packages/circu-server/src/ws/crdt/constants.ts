@@ -13,7 +13,7 @@ export type ServerToClientEvents = {
   "crdt:error": (message: string) => void
 }
 
-export interface ClientToServerEvents {
+export type ClientToServerEvents = {
   "crdt:message": (payload: Buffer) => void
 }
 
