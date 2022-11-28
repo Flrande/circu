@@ -17,11 +17,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     // 开发环境下不过滤
     if (excRes.isFiltered && this.configService.get<string>("NODE_ENV") !== "DEV") {
-      const newRes: ICommonException = {
+      const newRes: Omit<ICommonException, "isFiltered"> = {
         code: GlobalExceptionCode.COMMON_EXCEPTION_CODE,
         message: "Error",
         data: {},
-        isFiltered: true,
       }
       expRes.status(HttpStatus.OK).json(newRes)
     } else {
