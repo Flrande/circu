@@ -158,12 +158,14 @@ importers:
       "@icon-park/react": ^1.4.2
       "@slate-yjs/core": ^0.3.1
       "@slate-yjs/react": ^0.3.0
+      "@tanstack/react-query": ^4.17.1
       "@types/randomcolor": ^0.5.6
       "@types/react": ^18.0.15
       "@types/react-dom": ^18.0.6
       "@vitejs/plugin-react": ^1.3.2
       autoprefixer: ^10.4.7
       circu-editor: workspace:0.0.1
+      ky: ^0.32.2
       lib0: ^0.2.52
       lxgw-wenkai-webfont: ^1.6.0
       overlayscrollbars: ^2.0.1
@@ -190,7 +192,9 @@ importers:
       "@icon-park/react": 1.4.2_biqbaboplfbrettd7655fr4n2y
       "@slate-yjs/core": 0.3.1_slate@0.81.3+yjs@13.5.42
       "@slate-yjs/react": 0.3.0_mwlsbxwezdizwrp4qws22edl6y
+      "@tanstack/react-query": 4.17.1_biqbaboplfbrettd7655fr4n2y
       circu-editor: link:../circu-editor
+      ky: 0.32.2
       lib0: 0.2.53
       lxgw-wenkai-webfont: 1.6.0
       overlayscrollbars: 2.0.1
@@ -215,7 +219,7 @@ importers:
       autoprefixer: 10.4.13_postcss@8.4.19
       postcss: 8.4.19
       postcss-import: 15.0.0_postcss@8.4.19
-      tailwindcss: 3.2.4
+      tailwindcss: 3.2.4_postcss@8.4.19
       vite: 2.9.15
       vite-plugin-full-reload: 1.0.4_vite@2.9.15
       vite-plugin-importus: 1.0.4_vite@2.9.15
@@ -1988,7 +1992,7 @@ packages:
       "@slate-yjs/core": 0.3.1_slate@0.81.3+yjs@13.5.42
       react: 18.2.0
       slate: 0.81.3
-      slate-react: link:packages\slate-react
+      slate-react: link:packages/slate-react
       use-sync-external-store: 1.2.0_react@18.2.0
       y-protocols: 1.0.5
       yjs: 13.5.42
@@ -1997,6 +2001,30 @@ packages:
   /@socket.io/component-emitter/3.1.0:
     resolution:
       { integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg== }
+
+  /@tanstack/query-core/4.15.1:
+    resolution:
+      { integrity: sha512-+UfqJsNbPIVo0a9ANW0ZxtjiMfGLaaoIaL9vZeVycvmBuWywJGtSi7fgPVMCPdZQFOzMsaXaOsDtSKQD5xLRVQ== }
+    dev: false
+
+  /@tanstack/react-query/4.17.1_biqbaboplfbrettd7655fr4n2y:
+    resolution:
+      { integrity: sha512-0AAC1DerbNmmmR4EB6fkILhgTVao7nRPp8jDNHUq1m6AHaDdNV9VKy+h9fsTnBbiHBbcr3erfF//KEO3y3HojA== }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-native: "*"
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      "@tanstack/query-core": 4.15.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
+    dev: false
 
   /@timsuchanek/copy/1.4.5:
     resolution:
@@ -5891,6 +5919,12 @@ packages:
     engines: { node: ">=6" }
     dev: true
 
+  /ky/0.32.2:
+    resolution:
+      { integrity: sha512-eBJeF6IXNwX5rksdwBrE2rIJrU2d84GoTvdM7OmmTIwUVXEMd72wIwvT+nyhrqtv7AzbSNsWz7yRsHgVhj1uog== }
+    engines: { node: ">=14.16" }
+    dev: false
+
   /lazystream/1.0.1:
     resolution:
       { integrity: sha512-b94GiNHQNy6JNTrt5w6zNyffMrNkXZb3KTkCZJb2V1xaEGCk093vkZ2jk3tpaeP33/OiXC+WvK9AxUebnf5nbw== }
@@ -7850,11 +7884,13 @@ packages:
       - ts-node
     dev: true
 
-  /tailwindcss/3.2.4:
+  /tailwindcss/3.2.4_postcss@8.4.19:
     resolution:
       { integrity: sha512-AhwtHCKMtR71JgeYDaswmZXhPcW9iuI9Sp2LvZPo9upDZ7231ZJ7eA9RaURbhpXGVlrjX4cFNlB4ieTetEb7hQ== }
     engines: { node: ">=12.13.0" }
     hasBin: true
+    peerDependencies:
+      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3

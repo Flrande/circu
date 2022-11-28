@@ -1,8 +1,29 @@
 import loginPageBgUrl from "./global-bg.jpg"
 import logoUrl from "../../styles/logo.png"
 import { GithubOne } from "@icon-park/react"
+import { useMutation } from "@tanstack/react-query"
+import { Login, login, LoginData, LoginError, LoginProps } from "../../server/login"
+import { proxy } from "valtio"
+
+type LoginStateStore = {
+  loginPayload: LoginProps
+}
+
+const loginStateStore = proxy<LoginStateStore>({
+  loginPayload: {
+    username: "",
+    password: "",
+    options: {
+      ifCarrySession: false,
+    },
+  },
+})
 
 const Login: React.FC = () => {
+  const loginMutation = useMutation<LoginData, LoginError, LoginProps>({
+    mutationFn: ({ username, password, options }) => login(username, password, options),
+  })
+
   return (
     <div
       className={"h-full w-full bg-cover bg-center"}
@@ -45,8 +66,11 @@ const Login: React.FC = () => {
               <div className={"text-xl text-white"}>邮箱或用户名</div>
               <div className={"py-1"}>
                 <input
+                  onChange={(event) => {
+                    loginStateStore.loginPayload.username = event.target.value
+                  }}
                   type={"text"}
-                  className="w-full h-full px-3 text-lg text-white rounded-md bg-[#323645] focus:border border-[#467cab]"
+                  className="w-full h-full px-3 text-lg text-white rounded-md bg-[#343435] hover:bg-[#3e3e3f] focus:bg-[#232324] focus:border border-[#467cab]"
                 ></input>
               </div>
             </div>
@@ -54,8 +78,11 @@ const Login: React.FC = () => {
               <div className={"text-xl text-white"}>密码</div>
               <div className={"py-1"}>
                 <input
+                  onChange={(event) => {
+                    loginStateStore.loginPayload.password = event.target.value
+                  }}
                   type={"text"}
-                  className="w-full h-full px-3 text-lg text-white rounded-md bg-[#323645] focus:border border-[#467cab]"
+                  className="w-full h-full px-3 text-lg text-white rounded-md bg-[#343435] hover:bg-[#3e3e3f] focus:bg-[#232324] focus:border border-[#467cab]"
                 ></input>
               </div>
             </div>
@@ -72,14 +99,18 @@ const Login: React.FC = () => {
             </div>
             <div className={"px-2 py-3"}>
               <div
-                className={"w-full h-full rounded-md bg-[#467cab] grid justify-center items-center text-xl text-white"}
+                className={
+                  "w-full h-full rounded-md bg-[#416ef6] hover:bg-[#467cab] grid justify-center items-center text-xl text-white cursor-pointer"
+                }
               >
                 <span>登录</span>
               </div>
             </div>
             <div className={"px-2 py-3"}>
               <div
-                className={"w-full h-full rounded-md bg-[#545b69] grid justify-center items-center text-xl text-white"}
+                className={
+                  "w-full h-full rounded-md bg-[#343435] hover:bg-[#3e3e3f] grid justify-center items-center text-xl text-white cursor-pointer"
+                }
               >
                 <span>注册</span>
               </div>
