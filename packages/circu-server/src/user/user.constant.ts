@@ -1,6 +1,10 @@
-// user 相关错误范围 1000-1199
-export const UserExceptionCode = {
-  USER_NOT_FOUND: 1000,
-  USER_IS_EXIST: 1001,
-  PASSWORD_NOT_MATCH: 1002,
-} as const
+export const USER_ROUTE = "/user"
+
+export enum UserExceptionCode {
+  // 用户名已存在
+  REGISTER_USERNAME_REPEAT = 1,
+  // 未能找到用户信息
+  GET_USER_INFO_NOT_FOUND,
+  // 密码错误
+  LOGIN_PASSWORD_ERROR,
+}

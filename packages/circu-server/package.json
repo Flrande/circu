@@ -41,7 +41,8 @@
     "slate": "^0.81.0",
     "socket.io": "^4.5.3",
     "y-protocols": "^1.0.5",
-    "yjs": "^13.5.42"
+    "yjs": "^13.5.42",
+    "zod": "^3.19.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

@@ -1,9 +1,10 @@
-import { Injectable } from "@nestjs/common"
+import { HttpStatus, Injectable } from "@nestjs/common"
 import { User } from "@prisma/client"
 import { Request } from "express"
 import { AuthService } from "src/auth/auth.service"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
+import { ControllerPrefix } from "src/exception/types"
 import { UserExceptionCode } from "./user.constant"
 
 @Injectable()
@@ -22,11 +23,14 @@ export class UserService {
       },
     })
     if (existingUser) {
-      throw new CommonException({
-        code: UserExceptionCode.USER_IS_EXIST,
-        message: "用户名已存在",
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${UserExceptionCode.REGISTER_USERNAME_REPEAT}_${ControllerPrefix.USER}`,
+          message: "用户名已存在",
+          isFiltered: false,
+        },
+        HttpStatus.BAD_REQUEST
+      )
     }
 
     const hashPassword = await this.authService.hashPassword(data.password)
@@ -48,7 +52,7 @@ export class UserService {
     return result
   }
 
-  async findUserById(id: User["id"]): Promise<Pick<User, "id" | "nickname" | "username">> {
+  async getUserInfo(id: User["id"]): Promise<Pick<User, "id" | "nickname" | "username">> {
     const result = await this.prismaService.user.findUnique({
       where: {
         id,
@@ -61,10 +65,13 @@ export class UserService {
     })
 
     if (!result) {
-      throw new CommonException({
-        code: UserExceptionCode.USER_NOT_FOUND,
-        message: `未能找到用户信息(id: ${id})`,
-      })
+      throw new CommonException(
+        {
+          code: `${UserExceptionCode.GET_USER_INFO_NOT_FOUND}_${ControllerPrefix.USER}`,
+          message: `未能找到用户信息(id: ${id})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     return result
@@ -95,21 +102,26 @@ export class UserService {
     })
 
     if (!user) {
-      throw new CommonException({
-        code: UserExceptionCode.USER_NOT_FOUND,
-        message: `未能找到用户名为${payload.username}的用户`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${UserExceptionCode.GET_USER_INFO_NOT_FOUND}_${ControllerPrefix.USER}`,
+          message: `未能找到用户信息(username: ${payload.username})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     const result = await this.authService.comparePassword(payload.password, user.password)
 
     if (!result) {
-      throw new CommonException({
-        code: UserExceptionCode.PASSWORD_NOT_MATCH,
-        message: "密码错误",
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${UserExceptionCode.LOGIN_PASSWORD_ERROR}_${ControllerPrefix.USER}`,
+          message: "密码错误",
+          isFiltered: false,
+        },
+        HttpStatus.BAD_REQUEST
+      )
     }
 
     req.session.userid = user.id

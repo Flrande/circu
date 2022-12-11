@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nes
 import { Folder } from "@prisma/client"
 import { Request } from "express"
 import { UserAuthGuard } from "src/guards/user-auth.guard"
-import { ISuccessResponse } from "src/interfaces/response"
 import { CreateFolderDto } from "../dto/create-folder.dto"
 import { IdDto } from "../dto/id.dto"
 import { FolderService } from "../service/folder.service"

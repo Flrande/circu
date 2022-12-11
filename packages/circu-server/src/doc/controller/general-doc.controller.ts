@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nes
 import { Doc } from "@prisma/client"
 import { Request } from "express"
 import { UserAuthGuard } from "src/guards/user-auth.guard"
-import { ISuccessResponse } from "src/interfaces/response"
+import { ISuccessResponse } from "src/interfaces/response/response"
 import { CreateGeneralDocDto } from "../dto/create-doc.dto"
 import { IdDto } from "../dto/id.dto"
 import { GeneralDocService } from "../service/general-doc.service"

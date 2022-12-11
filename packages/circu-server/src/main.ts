@@ -1,4 +1,3 @@
-import { ValidationPipe } from "@nestjs/common"
 import { NestFactory } from "@nestjs/core"
 import { AppModule } from "./app.module"
 import session from "express-session"
@@ -25,15 +24,6 @@ async function bootstrap() {
       // secure: true
     },
   })
-
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      disableErrorMessages: configService.getOrThrow("NODE_ENV") === "DEV" ? false : true,
-      dismissDefaultMessages: configService.getOrThrow("NODE_ENV") === "DEV" ? false : true,
-    })
-  )
 
   app.use(sessionMiddleware)
 

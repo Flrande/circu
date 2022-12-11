@@ -1,13 +1,16 @@
 import { Controller, Get, Post, Body, Req, Param } from "@nestjs/common"
-import { User } from "@prisma/client"
 import { Request } from "express"
-import { ISuccessResponse } from "src/interfaces/response"
-import { CreateUserDto } from "./dto/create-user.dto"
-import { UserIdQueryDto } from "./dto/get-user.dto"
-import { UserLoginDto } from "./dto/login.dto"
+import { ControllerMeta } from "src/decorators/set-controller-meta.decorator"
+import { ControllerPrefix } from "src/exception/types"
+import { BodyZodSchema, ParamsZodSchema } from "src/interceptor/zod/set-zod-schema.decorator"
+import { GetUserInfoOutput, GetUserInfoParams } from "./schemas/get-user-info.schema"
+import { LoginBody, LoginOutput } from "./schemas/login.schema"
+import { RegisterBody, RegisterOutput } from "./schemas/register.schema"
+import { USER_ROUTE } from "./user.constant"
 import { UserService } from "./user.service"
 
-@Controller("api/user")
+@Controller(USER_ROUTE)
+@ControllerMeta(ControllerPrefix.USER)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -15,10 +18,9 @@ export class UserController {
    * 注册新用户, 需提供用户名, 用户昵称, 用户密码
    */
   @Post("register")
-  async register(
-    @Body() createUserDto: CreateUserDto
-  ): Promise<ISuccessResponse<Pick<User, "id" | "username" | "nickname">>> {
-    const result = await this.userService.createUser(createUserDto)
+  @BodyZodSchema(RegisterBody)
+  async register(@Body() body: RegisterBody): Promise<RegisterOutput> {
+    const result = await this.userService.createUser(body.userInfo)
 
     return {
       code: 0,
@@ -31,10 +33,9 @@ export class UserController {
    * 根据用户 id 查询用户基本信息
    */
   @Get("data/:id")
-  async getUserById(
-    @Param() params: UserIdQueryDto
-  ): Promise<ISuccessResponse<Pick<User, "id" | "username" | "nickname">>> {
-    const result = await this.userService.findUserById(params.id)
+  @ParamsZodSchema(GetUserInfoParams)
+  async getUserInfo(@Param() params: GetUserInfoParams): Promise<GetUserInfoOutput> {
+    const result = await this.userService.getUserInfo(params.userId)
 
     return {
       code: 0,
@@ -47,8 +48,9 @@ export class UserController {
    * 登录, 并将用户会话信息持久化到内存数据库中
    */
   @Post("login")
-  async login(@Body() body: UserLoginDto, @Req() req: Request): Promise<ISuccessResponse<{}>> {
-    await this.userService.login(body, req)
+  @BodyZodSchema(LoginBody)
+  async login(@Body() body: LoginBody, @Req() req: Request): Promise<LoginOutput> {
+    await this.userService.login(body.loginPayload, req)
 
     return {
       code: 0,
