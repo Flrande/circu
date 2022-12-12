@@ -1,19 +1,20 @@
 import * as Y from "yjs"
-import { Injectable } from "@nestjs/common"
+import { HttpStatus, Injectable } from "@nestjs/common"
 import { Doc, DocType, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
-import { DELETE_EXPIRE_DAY_TIME, DocExceptionCode } from "../doc.constant"
-import { FolderAuthService } from "./auth/folder-auth.service"
-import { GeneralDocAuthService } from "./auth/general-doc-auth.service"
 import { SLATE_VALUE_YDOC_KEY } from "src/ws/crdt/constants"
 import { slateNodesToInsertDelta } from "@slate-yjs/core"
+import { DocAuthService } from "./doc-auth.service"
+import { DocExceptionCode, DOC_DELETE_EXPIRE_DAY_TIME } from "./doc.constant"
+import { ControllerPrefix } from "src/exception/types"
+import { FolderAuthService } from "src/folder/folder-auth.service"
 
 @Injectable()
-export class GeneralDocService {
+export class DocService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly generalDocAuthService: GeneralDocAuthService,
+    private readonly docAuthService: DocAuthService,
     private readonly folderAuthService: FolderAuthService
   ) {}
 
@@ -22,18 +23,21 @@ export class GeneralDocService {
    *
    * 需要操作者的用户 id, 用于判断操作者是否有权限获得文档信息
    */
-  async getDocMetaDataById(
+  async getDocMetaInfo(
     userId: User["id"],
     docId: Doc["id"]
-  ): Promise<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">> {
+  ): Promise<Pick<Doc, "id" | "lastModified" | "lastDeleted" | "authorId" | "parentFolderId">> {
     // 校验权限
-    const flag = await this.generalDocAuthService.verifyUserReadGeneralDoc(userId, docId)
+    const flag = await this.docAuthService.verifyUserReadGeneralDoc(userId, docId)
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC,
-        message: `当前用户无权阅读文档(文档id: ${docId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.DOC}`,
+          message: `当前用户无权访问该文件(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     const result = await this.prismaService.doc.findUnique({
@@ -42,7 +46,7 @@ export class GeneralDocService {
       },
       select: {
         id: true,
-        lastModify: true,
+        lastModified: true,
         lastDeleted: true,
         survivalStatus: true,
         authorId: true,
@@ -51,23 +55,29 @@ export class GeneralDocService {
     })
 
     if (!result) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_READ_BUT_DOC_NOT_FOUND,
-        message: `未能找到文档信息(文档id: ${docId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          message: `未能找到文件信息(文件id: ${docId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     if (result.survivalStatus !== SurvivalStatus.ALIVE) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_READ_BUT_DOC_DELETED,
-        message: `该文档已被删除(文档id: ${docId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_DELETED}_${ControllerPrefix.DOC}`,
+          message: `该文件已被删除(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     return {
       id: result.id,
-      lastModify: result.lastModify,
+      lastModified: result.lastModified,
       lastDeleted: result.lastDeleted,
       authorId: result.authorId,
       parentFolderId: result.parentFolderId,
@@ -77,7 +87,7 @@ export class GeneralDocService {
   /**
    * 接受用户 id, 返回该用户个人空间的顶部文档
    */
-  async getTopDocs(userId: User["id"]): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]> {
+  async getTopDocs(userId: User["id"]): Promise<Pick<Doc, "id" | "lastModified" | "authorId" | "parentFolderId">[]> {
     const result = await this.prismaService.doc.findMany({
       where: {
         authorId: userId,
@@ -87,7 +97,7 @@ export class GeneralDocService {
       },
       select: {
         id: true,
-        lastModify: true,
+        lastModified: true,
         authorId: true,
         parentFolderId: true,
       },
@@ -101,7 +111,7 @@ export class GeneralDocService {
    */
   async getFastAccessDocs(
     userId: User["id"]
-  ): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]> {
+  ): Promise<Pick<Doc, "id" | "lastModified" | "authorId" | "parentFolderId">[]> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
@@ -110,7 +120,7 @@ export class GeneralDocService {
         fastAccessDocs: {
           select: {
             id: true,
-            lastModify: true,
+            lastModified: true,
             authorId: true,
             parentFolderId: true,
           },
@@ -119,10 +129,13 @@ export class GeneralDocService {
     })
 
     if (!user) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_READ_FAST_ACCESS_BUT_USER_NOT_FOUND,
-        message: `未能找到用户信息(用户id: ${userId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          message: `未能找到用户信息(用户id: ${userId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     return user.fastAccessDocs
@@ -131,7 +144,9 @@ export class GeneralDocService {
   /**
    * 接受用户 id, 返回该用户收藏的文档
    */
-  async getFavoriteDocs(userId: User["id"]): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">[]> {
+  async getFavoriteDocs(
+    userId: User["id"]
+  ): Promise<Pick<Doc, "id" | "lastModified" | "authorId" | "parentFolderId">[]> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
@@ -140,7 +155,7 @@ export class GeneralDocService {
         favoriteDocs: {
           select: {
             id: true,
-            lastModify: true,
+            lastModified: true,
             authorId: true,
             parentFolderId: true,
           },
@@ -149,10 +164,13 @@ export class GeneralDocService {
     })
 
     if (!user) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_READ_FAVORITE_BUT_USER_NOT_FOUND,
-        message: `未能找到用户信息(用户id: ${userId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          message: `未能找到用户信息(用户id: ${userId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     return user.favoriteDocs
@@ -163,7 +181,7 @@ export class GeneralDocService {
    */
   async getDeletedDocs(
     userId: User["id"]
-  ): Promise<Pick<Doc, "id" | "lastModify" | "lastDeleted" | "authorId" | "parentFolderId">[]> {
+  ): Promise<Pick<Doc, "id" | "lastModified" | "lastDeleted" | "authorId" | "parentFolderId">[]> {
     const result = await this.prismaService.doc.findMany({
       where: {
         authorId: userId,
@@ -172,7 +190,7 @@ export class GeneralDocService {
       },
       select: {
         id: true,
-        lastModify: true,
+        lastModified: true,
         lastDeleted: true,
         authorId: true,
         parentFolderId: true,
@@ -190,17 +208,20 @@ export class GeneralDocService {
   async createDoc(
     userId: User["id"],
     data: Pick<Doc, "parentFolderId">
-  ): Promise<Pick<Doc, "id" | "lastModify" | "authorId" | "parentFolderId">> {
+  ): Promise<Pick<Doc, "id" | "lastModified" | "authorId" | "parentFolderId">> {
     // 校验权限
     const flag = data.parentFolderId
       ? await this.folderAuthService.verifyUserWriteFolder(userId, data.parentFolderId)
       : true
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER,
-        message: `当前用户无权写文件夹(文件夹id: ${data.parentFolderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.AUTH_MODIFY_DENIED}_${ControllerPrefix.DOC}`,
+          message: `当前用户无权修改该文件(文件id: ${data.parentFolderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     // 文档初始值
@@ -260,14 +281,17 @@ export class GeneralDocService {
     })
 
     if (!author) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_CREATE_BUT_USER_NOT_FOUND,
-        message: `未找到用户信息(id: ${userId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          message: `未能找到用户信息(用户id: ${userId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     const createPayload: Prisma.DocCreateInput = {
-      lastModify: new Date(),
+      lastModified: new Date(),
       value: initialBuffer,
       docType: DocType.GENERAL,
       author: {
@@ -289,10 +313,13 @@ export class GeneralDocService {
       })
 
       if (!folder) {
-        throw new CommonException({
-          code: DocExceptionCode.GENERAL_DOC_CREATE_BUT_PARENT_FOLDER_NOT_FOUND,
-          message: `未找到父文件夹信息(id: ${data.parentFolderId})`,
-        })
+        throw new CommonException(
+          {
+            code: `${DocExceptionCode.DOC_PARENT_NOT_FOUND}_${ControllerPrefix.DOC}`,
+            message: `未找到父文件夹信息(父文件夹id: ${data.parentFolderId})`,
+          },
+          HttpStatus.NOT_FOUND
+        )
       }
 
       const folderAdministratorRole = await this.prismaService.role.findFirst({
@@ -303,10 +330,13 @@ export class GeneralDocService {
       })
 
       if (!folderAdministratorRole) {
-        throw new CommonException({
-          code: DocExceptionCode.FOLDER_ADMINISTRATOR_ROLE_NOT_FOUND,
-          message: `未找到父文件夹对应的管理员权限(父文件夹id: ${data.parentFolderId})`,
-        })
+        throw new CommonException(
+          {
+            code: `${DocExceptionCode.PARENT_ADMINISTRATOR_ROLE_NOT_FOUND}_${ControllerPrefix.DOC}`,
+            message: `未找到父文件夹对应的管理员角色(父文件夹id: ${data.parentFolderId})`,
+          },
+          HttpStatus.NOT_FOUND
+        )
       }
 
       const folderCollaboratorRole = await this.prismaService.role.findFirst({
@@ -317,10 +347,13 @@ export class GeneralDocService {
       })
 
       if (!folderCollaboratorRole) {
-        throw new CommonException({
-          code: DocExceptionCode.FOLDER_COLLABORATOR_ROLE_NOT_FOUND,
-          message: `未找到父文件夹对应的协作者权限(父文件夹id: ${data.parentFolderId})`,
-        })
+        throw new CommonException(
+          {
+            code: `${DocExceptionCode.PARENT_COLLABORATOR_ROLE_NOT_FOUND}_${ControllerPrefix.DOC}`,
+            message: `未找到父文件夹对应的编辑者角色(父文件夹id: ${data.parentFolderId})`,
+          },
+          HttpStatus.NOT_FOUND
+        )
       }
 
       const folderReaderRole = await this.prismaService.role.findFirst({
@@ -331,10 +364,13 @@ export class GeneralDocService {
       })
 
       if (!folderReaderRole) {
-        throw new CommonException({
-          code: DocExceptionCode.FOLDER_READER_ROLE_NOT_FOUND,
-          message: `未找到父文件夹对应的阅读者权限(父文件夹id: ${data.parentFolderId})`,
-        })
+        throw new CommonException(
+          {
+            code: `${DocExceptionCode.PARENT_READER_ROLE_NOT_FOUND}_${ControllerPrefix.DOC}`,
+            message: `未找到父文件夹对应的阅读者权限(父文件夹id: ${data.parentFolderId})`,
+          },
+          HttpStatus.NOT_FOUND
+        )
       }
 
       // 将新文档与父文件夹关联
@@ -345,11 +381,11 @@ export class GeneralDocService {
       }
 
       // 新建文档
-      const createDocResult = await this.prismaService.doc.create({
+      const createdDocResult = await this.prismaService.doc.create({
         data: createPayload,
         select: {
           id: true,
-          lastModify: true,
+          lastModified: true,
           authorId: true,
           parentFolderId: true,
         },
@@ -357,12 +393,12 @@ export class GeneralDocService {
 
       // 添加新文档的三个角色
       // 管理者角色
-      const createAdministratorRoleResult = await this.prismaService.role.create({
+      const createdAdministratorRoleResult = await this.prismaService.role.create({
         data: {
           roleType: RoleType.ADMINISTRATOR,
           doc: {
             connect: {
-              id: createDocResult.id,
+              id: createdDocResult.id,
             },
           },
           parentRoles: {
@@ -379,16 +415,16 @@ export class GeneralDocService {
         },
       })
       // 协作者角色
-      const createCollaboratorRoleResult = await this.prismaService.role.create({
+      const createdCollaboratorRoleResult = await this.prismaService.role.create({
         data: {
           roleType: RoleType.COLLABORATOR,
           doc: {
             connect: {
-              id: createDocResult.id,
+              id: createdDocResult.id,
             },
           },
           parentRoles: {
-            connect: [{ id: folderCollaboratorRole.id }, { id: createAdministratorRoleResult.id }],
+            connect: [{ id: folderCollaboratorRole.id }, { id: createdAdministratorRoleResult.id }],
           },
         },
       })
@@ -398,23 +434,23 @@ export class GeneralDocService {
           roleType: RoleType.READER,
           doc: {
             connect: {
-              id: createDocResult.id,
+              id: createdDocResult.id,
             },
           },
           parentRoles: {
-            connect: [{ id: folderReaderRole.id }, { id: createCollaboratorRoleResult.id }],
+            connect: [{ id: folderReaderRole.id }, { id: createdCollaboratorRoleResult.id }],
           },
         },
       })
 
-      return createDocResult
+      return createdDocResult
     } else {
       // 新建文档
       const createDocResult = await this.prismaService.doc.create({
         data: createPayload,
         select: {
           id: true,
-          lastModify: true,
+          lastModified: true,
           authorId: true,
           parentFolderId: true,
         },
@@ -422,7 +458,7 @@ export class GeneralDocService {
 
       // 添加新文档的三个角色
       // 管理者角色
-      const createAdministratorRoleResult = await this.prismaService.role.create({
+      const createdAdministratorRoleResult = await this.prismaService.role.create({
         data: {
           roleType: RoleType.ADMINISTRATOR,
           doc: {
@@ -437,7 +473,7 @@ export class GeneralDocService {
         },
       })
       // 协作者角色
-      const createCollaboratorRoleResult = await this.prismaService.role.create({
+      const createdCollaboratorRoleResult = await this.prismaService.role.create({
         data: {
           roleType: RoleType.COLLABORATOR,
           doc: {
@@ -447,7 +483,7 @@ export class GeneralDocService {
           },
           parentRoles: {
             connect: {
-              id: createAdministratorRoleResult.id,
+              id: createdAdministratorRoleResult.id,
             },
           },
         },
@@ -463,7 +499,7 @@ export class GeneralDocService {
           },
           parentRoles: {
             connect: {
-              id: createCollaboratorRoleResult.id,
+              id: createdCollaboratorRoleResult.id,
             },
           },
         },
@@ -480,13 +516,16 @@ export class GeneralDocService {
    */
   async addFastAccessDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
     // 校验是否有读权限
-    const flag = await this.generalDocAuthService.verifyUserReadGeneralDoc(userId, docId)
+    const flag = await this.docAuthService.verifyUserReadGeneralDoc(userId, docId)
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC,
-        message: `当前用户无权阅读文档(文档id: ${docId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.DOC}`,
+          message: `当前用户无权访问该文件(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     const doc = await this.prismaService.doc.findUnique({
@@ -496,18 +535,24 @@ export class GeneralDocService {
     })
 
     if (!doc) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_NOT_FOUND,
-        message: `未能找到文档信息(文档id: ${docId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          message: `未能找到文件信息(文件id: ${docId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     if (doc.survivalStatus !== SurvivalStatus.ALIVE) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_DELETED,
-        message: `文档已被删除(文档id: ${docId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_DELETED}_${ControllerPrefix.DOC}`,
+          message: `文件已被删除(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     await this.prismaService.user.update({
@@ -531,13 +576,16 @@ export class GeneralDocService {
    */
   async addFavoriteDoc(userId: User["id"], docId: Doc["id"]): Promise<void> {
     // 校验是否有读权限
-    const flag = await this.generalDocAuthService.verifyUserReadGeneralDoc(userId, docId)
+    const flag = await this.docAuthService.verifyUserReadGeneralDoc(userId, docId)
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_GENERAL_DOC,
-        message: `当前用户无权阅读文档(文档id: ${docId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.DOC}`,
+          message: `当前用户无权访问该文件(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     const doc = await this.prismaService.doc.findUnique({
@@ -547,18 +595,24 @@ export class GeneralDocService {
     })
 
     if (!doc) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_CREATE_FAVORITE_BUT_DOC_NOT_FOUND,
-        message: `未能找到文档信息(文档id: ${docId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          message: `未能找到文件信息(文件id: ${docId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     if (doc.survivalStatus !== SurvivalStatus.ALIVE) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_CREATE_FAVORITE_BUT_DOC_DELETED,
-        message: `文档已被删除(文档id: ${docId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_DELETED}_${ControllerPrefix.DOC}`,
+          message: `文件已被删除(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     await this.prismaService.user.update({
@@ -624,20 +678,26 @@ export class GeneralDocService {
     })
 
     if (!docData) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_DELETE_BUT_DOC_NOT_FOUND,
-        message: `未能找到文档信息(文档id: ${docId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          message: `未能找到文件信息(id: ${docId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     // 校验权限
-    const flag = await this.generalDocAuthService.verifyUserAdministerGeneralDoc(userId, docId)
+    const flag = await this.docAuthService.verifyUserAdministerGeneralDoc(userId, docId)
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC,
-        message: `当前用户没有该文档的管理权限(文档id: ${docId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerPrefix.DOC}`,
+          message: `当前用户没有该文件的管理员权限(文件夹id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     await this.prismaService.doc.update({
@@ -664,42 +724,54 @@ export class GeneralDocService {
     })
 
     if (!docData) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_DELETE_REVERT_BUT_DOC_NOT_FOUND,
-        message: `未能找到文档信息(文档id: ${docId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          message: `未能找到文件信息(文件id: ${docId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     // 校验权限
-    const flag = await this.generalDocAuthService.verifyUserAdministerGeneralDoc(userId, docId)
+    const flag = await this.docAuthService.verifyUserAdministerGeneralDoc(userId, docId)
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_MANAGE_THIS_GENERAL_DOC,
-        message: `当前用户没有该文档的管理权限(文档id: ${docId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerPrefix.DOC}`,
+          message: `当前用户没有该文件的管理员权限(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     // 判断是否已彻底删除
     if (docData.survivalStatus === SurvivalStatus.COMPLETELY_DELETED) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_DELETE_REVERT_FAIL,
-        message: `文档已被彻底删除(文档id: ${docId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_PERMANENTLY_DELETED}_${ControllerPrefix.DOC}`,
+          message: `文件已被彻底删除(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     // 判断是否已过期
     const currentTime = new Date()
     if (
       docData.lastDeleted &&
-      (currentTime.getTime() - docData.lastDeleted.getTime()) / (1000 * 3600 * 24) > DELETE_EXPIRE_DAY_TIME
+      (currentTime.getTime() - docData.lastDeleted.getTime()) / (1000 * 3600 * 24) > DOC_DELETE_EXPIRE_DAY_TIME
     ) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_DELETE_REVERT_TOO_LATE,
-        message: `文档已过期(文档id: ${docId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_DELETED_EXPIRED}_${ControllerPrefix.DOC}`,
+          message: `被删除的文件已过期(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     await this.prismaService.doc.update({

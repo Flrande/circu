@@ -1,15 +1,13 @@
 import { Module } from "@nestjs/common"
 import { PrismaService } from "src/database/prisma.service"
-import { FolderController } from "./controller/folder.controller"
-import { FolderService } from "./service/folder.service"
-import { GeneralDocService } from "./service/general-doc.service"
-import { GeneralDocAuthService } from "./service/auth/general-doc-auth.service"
-import { FolderAuthService } from "./service/auth/folder-auth.service"
-import { GeneralDocController } from "./controller/general-doc.controller"
+import { FolderModule } from "src/folder/folder.module"
+import { DocAuthService } from "./doc-auth.service"
+import { DocController } from "./doc.controller"
+import { DocService } from "./doc.service"
 
 @Module({
-  controllers: [GeneralDocController, FolderController],
-  providers: [GeneralDocService, GeneralDocAuthService, FolderService, FolderAuthService, PrismaService],
-  exports: [GeneralDocService, GeneralDocAuthService, FolderService, FolderAuthService],
+  imports: [FolderModule],
+  controllers: [DocController],
+  providers: [DocService, DocAuthService, PrismaService],
 })
 export class DocModule {}

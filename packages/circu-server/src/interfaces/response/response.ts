@@ -1,4 +1,4 @@
-import { z, ZodLiteral, ZodObject, ZodString } from "zod"
+import { z, ZodArray, ZodLiteral, ZodObject, ZodString } from "zod"
 
 type SuccessResponseSchema<T = ZodObject<{}>> = {
   code: ZodLiteral<0>
@@ -6,7 +6,9 @@ type SuccessResponseSchema<T = ZodObject<{}>> = {
   data: T
 }
 
-export const successResponseSchemaFactory = <T extends ZodObject<{}>>(schema: T): ZodObject<SuccessResponseSchema<T>> =>
+export const successResponseSchemaFactory = <T extends ZodObject<{}> | ZodArray<ZodObject<{}>>>(
+  schema: T
+): ZodObject<SuccessResponseSchema<T>> =>
   z.object({
     code: z.literal(0),
     message: z.string(),

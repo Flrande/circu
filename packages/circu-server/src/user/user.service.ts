@@ -67,7 +67,7 @@ export class UserService {
     if (!result) {
       throw new CommonException(
         {
-          code: `${UserExceptionCode.GET_USER_INFO_NOT_FOUND}_${ControllerPrefix.USER}`,
+          code: `${UserExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.USER}`,
           message: `未能找到用户信息(id: ${id})`,
         },
         HttpStatus.NOT_FOUND
@@ -104,7 +104,7 @@ export class UserService {
     if (!user) {
       throw new CommonException(
         {
-          code: `${UserExceptionCode.GET_USER_INFO_NOT_FOUND}_${ControllerPrefix.USER}`,
+          code: `${UserExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.USER}`,
           message: `未能找到用户信息(username: ${payload.username})`,
         },
         HttpStatus.NOT_FOUND

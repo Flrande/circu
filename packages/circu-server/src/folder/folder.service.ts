@@ -1,9 +1,10 @@
-import { Injectable } from "@nestjs/common"
+import { HttpStatus, Injectable } from "@nestjs/common"
 import { Folder, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
-import { DELETE_EXPIRE_DAY_TIME, DocExceptionCode } from "../doc.constant"
-import { FolderAuthService } from "./auth/folder-auth.service"
+import { ControllerPrefix } from "src/exception/types"
+import { FolderAuthService } from "./folder-auth.service"
+import { FolderExceptionCode, FOLDER_DELETE_EXPIRE_DAY_TIME } from "./folder.constant"
 
 @Injectable()
 export class FolderService {
@@ -14,20 +15,23 @@ export class FolderService {
    *
    * 需要操作者的用户 id, 用于判断操作者是否有权限获得文件夹信息
    */
-  async getFolderById(
+  async getFolderInfo(
     userId: User["id"],
     folderId: Folder["id"]
   ): Promise<
-    Pick<Folder, "id" | "lastModify" | "title" | "description" | "lastDeleted" | "authorId" | "parentFolderId">
+    Pick<Folder, "id" | "lastModified" | "title" | "description" | "lastDeleted" | "authorId" | "parentFolderId">
   > {
     // 校验权限
     const flag = await this.folderAuthService.verifyUserReadFolder(userId, folderId)
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_FOLDER,
-        message: `当前用户无权阅读文件夹(文件夹id: ${folderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.FOLDER}`,
+          message: `当前用户无权访问该文件夹(文件夹id: ${folderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     const result = await this.prismaService.folder.findUnique({
@@ -36,7 +40,7 @@ export class FolderService {
       },
       select: {
         id: true,
-        lastModify: true,
+        lastModified: true,
         title: true,
         description: true,
         lastDeleted: true,
@@ -47,23 +51,29 @@ export class FolderService {
     })
 
     if (!result) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_READ_BUT_FOLDER_NOT_FOUND,
-        message: `未能找到文件夹信息(文件夹id: ${folderId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          message: `未能找到文件夹信息(文件夹id: ${folderId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     if (result.survivalStatus !== SurvivalStatus.ALIVE) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_READ_BUT_FOLDER_DELETED,
-        message: `该文件夹已被删除(文件夹id: ${folderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.FOLDER_DELETED}_${ControllerPrefix.FOLDER}`,
+          message: `该文件夹已被删除(文件夹id: ${folderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     return {
       id: result.id,
-      lastModify: result.lastModify,
+      lastModified: result.lastModified,
       title: result.title,
       description: result.authorId,
       lastDeleted: result.lastDeleted,
@@ -77,7 +87,7 @@ export class FolderService {
    */
   async getTopFolders(
     userId: User["id"]
-  ): Promise<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">[]> {
+  ): Promise<Pick<Folder, "id" | "lastModified" | "title" | "description" | "authorId" | "parentFolderId">[]> {
     const result = await this.prismaService.folder.findMany({
       where: {
         authorId: userId,
@@ -86,7 +96,7 @@ export class FolderService {
       },
       select: {
         id: true,
-        lastModify: true,
+        lastModified: true,
         title: true,
         description: true,
         authorId: true,
@@ -102,7 +112,7 @@ export class FolderService {
    */
   async getFastAccessFolders(
     userId: User["id"]
-  ): Promise<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">[]> {
+  ): Promise<Pick<Folder, "id" | "lastModified" | "title" | "description" | "authorId" | "parentFolderId">[]> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
@@ -111,7 +121,7 @@ export class FolderService {
         fastAccessFolders: {
           select: {
             id: true,
-            lastModify: true,
+            lastModified: true,
             title: true,
             description: true,
             authorId: true,
@@ -122,10 +132,13 @@ export class FolderService {
     })
 
     if (!user) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_READ_FAST_ACCESS_BUT_USER_NOT_FOUND,
-        message: `未能找到用户信息(用户id: ${userId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          message: `未能找到用户信息(用户id: ${userId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     return user.fastAccessFolders
@@ -136,7 +149,7 @@ export class FolderService {
    */
   async getFavoriteFolders(
     userId: User["id"]
-  ): Promise<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">[]> {
+  ): Promise<Pick<Folder, "id" | "lastModified" | "title" | "description" | "authorId" | "parentFolderId">[]> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
@@ -145,7 +158,7 @@ export class FolderService {
         favoriteFolders: {
           select: {
             id: true,
-            lastModify: true,
+            lastModified: true,
             title: true,
             description: true,
             authorId: true,
@@ -156,10 +169,13 @@ export class FolderService {
     })
 
     if (!user) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_READ_FAVORITE_BUT_USER_NOT_FOUND,
-        message: `未能找到用户信息(用户id: ${userId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          message: `未能找到用户信息(用户id: ${userId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     return user.favoriteFolders
@@ -171,7 +187,7 @@ export class FolderService {
   async getDeletedFolders(
     userId: User["id"]
   ): Promise<
-    Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "lastDeleted" | "parentFolderId">[]
+    Pick<Folder, "id" | "lastModified" | "title" | "description" | "authorId" | "lastDeleted" | "parentFolderId">[]
   > {
     const result = await this.prismaService.folder.findMany({
       where: {
@@ -180,7 +196,7 @@ export class FolderService {
       },
       select: {
         id: true,
-        lastModify: true,
+        lastModified: true,
         title: true,
         description: true,
         authorId: true,
@@ -200,17 +216,20 @@ export class FolderService {
   async createFolder(
     userId: User["id"],
     data: Pick<Folder, "title" | "description" | "parentFolderId">
-  ): Promise<Pick<Folder, "id" | "lastModify" | "title" | "description" | "authorId" | "parentFolderId">> {
+  ): Promise<Pick<Folder, "id" | "lastModified" | "title" | "description" | "authorId" | "parentFolderId">> {
     // 校验权限
     const flag = data.parentFolderId
       ? await this.folderAuthService.verifyUserWriteFolder(userId, data.parentFolderId)
       : true
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_WRITE_THIS_FOLDER,
-        message: `当前用户无权写文件夹(文件夹id: ${data.parentFolderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.AUTH_MODIFY_DENIED}_${ControllerPrefix.FOLDER}`,
+          message: `当前用户无权修改该文件夹(文件夹id: ${data.parentFolderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     const author = await this.prismaService.user.findUnique({
@@ -223,14 +242,17 @@ export class FolderService {
     })
 
     if (!author) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_CREATE_BUT_USER_NOT_FOUND,
-        message: `未找到用户信息(用户id: ${userId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          message: `未能找到用户信息(用户id: ${userId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     const createPayload: Prisma.FolderCreateInput = {
-      lastModify: new Date(),
+      lastModified: new Date(),
       title: data.title,
       description: data.description,
       author: {
@@ -250,10 +272,13 @@ export class FolderService {
       })
 
       if (!folder) {
-        throw new CommonException({
-          code: DocExceptionCode.FOLDER_CREATE_BUT_PARENT_FOLDER_NOT_FOUND,
-          message: `未找到父文件夹信息(父文件夹id: ${data.parentFolderId})`,
-        })
+        throw new CommonException(
+          {
+            code: `${FolderExceptionCode.FOLDER_PARENT_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+            message: `未找到父文件夹信息(父文件夹id: ${data.parentFolderId})`,
+          },
+          HttpStatus.NOT_FOUND
+        )
       }
 
       const folderAdministratorRole = await this.prismaService.role.findFirst({
@@ -264,10 +289,13 @@ export class FolderService {
       })
 
       if (!folderAdministratorRole) {
-        throw new CommonException({
-          code: DocExceptionCode.FOLDER_ADMINISTRATOR_ROLE_NOT_FOUND,
-          message: `未找到父文件夹对应的管理员权限(父文件夹id: ${data.parentFolderId})`,
-        })
+        throw new CommonException(
+          {
+            code: `${FolderExceptionCode.PARENT_ADMINISTRATOR_ROLE_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+            message: `未找到父文件夹对应的管理员角色(父文件夹id: ${data.parentFolderId})`,
+          },
+          HttpStatus.NOT_FOUND
+        )
       }
 
       const folderCollaboratorRole = await this.prismaService.role.findFirst({
@@ -278,10 +306,13 @@ export class FolderService {
       })
 
       if (!folderCollaboratorRole) {
-        throw new CommonException({
-          code: DocExceptionCode.FOLDER_COLLABORATOR_ROLE_NOT_FOUND,
-          message: `未找到父文件夹对应的协作者权限(父文件夹id: ${data.parentFolderId})`,
-        })
+        throw new CommonException(
+          {
+            code: `${FolderExceptionCode.PARENT_COLLABORATOR_ROLE_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+            message: `未找到父文件夹对应的编辑者角色(父文件夹id: ${data.parentFolderId})`,
+          },
+          HttpStatus.NOT_FOUND
+        )
       }
 
       const folderReaderRole = await this.prismaService.role.findFirst({
@@ -292,10 +323,13 @@ export class FolderService {
       })
 
       if (!folderReaderRole) {
-        throw new CommonException({
-          code: DocExceptionCode.FOLDER_READER_ROLE_NOT_FOUND,
-          message: `未找到父文件夹对应的阅读者权限(父文件夹id: ${data.parentFolderId})`,
-        })
+        throw new CommonException(
+          {
+            code: `${FolderExceptionCode.PARENT_READER_ROLE_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+            message: `未找到父文件夹对应的阅读者权限(父文件夹id: ${data.parentFolderId})`,
+          },
+          HttpStatus.NOT_FOUND
+        )
       }
 
       // 将新文件夹与父文件夹关联
@@ -306,11 +340,11 @@ export class FolderService {
       }
 
       // 新建文件夹
-      const createFolderResult = await this.prismaService.folder.create({
+      const createdFolderResult = await this.prismaService.folder.create({
         data: createPayload,
         select: {
           id: true,
-          lastModify: true,
+          lastModified: true,
           title: true,
           description: true,
           authorId: true,
@@ -320,12 +354,12 @@ export class FolderService {
 
       // 添加新文件夹的三个角色
       // 管理者角色
-      const createAdministratorRoleResult = await this.prismaService.role.create({
+      const createdAdministratorRoleResult = await this.prismaService.role.create({
         data: {
           roleType: RoleType.ADMINISTRATOR,
           folder: {
             connect: {
-              id: createFolderResult.id,
+              id: createdFolderResult.id,
             },
           },
           parentRoles: {
@@ -342,16 +376,16 @@ export class FolderService {
         },
       })
       // 协作者角色
-      const createCollaboratorRoleResult = await this.prismaService.role.create({
+      const createdCollaboratorRoleResult = await this.prismaService.role.create({
         data: {
           roleType: RoleType.COLLABORATOR,
           folder: {
             connect: {
-              id: createFolderResult.id,
+              id: createdFolderResult.id,
             },
           },
           parentRoles: {
-            connect: [{ id: folderCollaboratorRole.id }, { id: createAdministratorRoleResult.id }],
+            connect: [{ id: folderCollaboratorRole.id }, { id: createdAdministratorRoleResult.id }],
           },
         },
       })
@@ -361,22 +395,22 @@ export class FolderService {
           roleType: RoleType.READER,
           folder: {
             connect: {
-              id: createFolderResult.id,
+              id: createdFolderResult.id,
             },
           },
           parentRoles: {
-            connect: [{ id: folderReaderRole.id }, { id: createCollaboratorRoleResult.id }],
+            connect: [{ id: folderReaderRole.id }, { id: createdCollaboratorRoleResult.id }],
           },
         },
       })
 
-      return createFolderResult
+      return createdFolderResult
     } else {
-      const createFolderResult = await this.prismaService.folder.create({
+      const createdFolderResult = await this.prismaService.folder.create({
         data: createPayload,
         select: {
           id: true,
-          lastModify: true,
+          lastModified: true,
           title: true,
           description: true,
           authorId: true,
@@ -386,12 +420,12 @@ export class FolderService {
 
       // 添加新文件夹的三个角色
       // 管理者角色
-      const createAdministratorRoleResult = await this.prismaService.role.create({
+      const createdAdministratorRoleResult = await this.prismaService.role.create({
         data: {
           roleType: RoleType.ADMINISTRATOR,
           folder: {
             connect: {
-              id: createFolderResult.id,
+              id: createdFolderResult.id,
             },
           },
           // 将新文件夹的管理者角色和新文件夹作者相关联
@@ -403,17 +437,17 @@ export class FolderService {
         },
       })
       // 协作者角色
-      const createCollaboratorRoleResult = await this.prismaService.role.create({
+      const createdCollaboratorRoleResult = await this.prismaService.role.create({
         data: {
           roleType: RoleType.COLLABORATOR,
           folder: {
             connect: {
-              id: createFolderResult.id,
+              id: createdFolderResult.id,
             },
           },
           parentRoles: {
             connect: {
-              id: createAdministratorRoleResult.id,
+              id: createdAdministratorRoleResult.id,
             },
           },
         },
@@ -424,18 +458,18 @@ export class FolderService {
           roleType: RoleType.READER,
           folder: {
             connect: {
-              id: createFolderResult.id,
+              id: createdFolderResult.id,
             },
           },
           parentRoles: {
             connect: {
-              id: createCollaboratorRoleResult.id,
+              id: createdCollaboratorRoleResult.id,
             },
           },
         },
       })
 
-      return createFolderResult
+      return createdFolderResult
     }
   }
 
@@ -448,11 +482,14 @@ export class FolderService {
     // 校验是否有读权限
     const flag = await this.folderAuthService.verifyUserReadFolder(userId, folderId)
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_FOLDER,
-        message: `当前用户无权阅读文件夹(文件夹id: ${folderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.FOLDER}`,
+          message: `当前用户无权访问该文件夹(文件夹id: ${folderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     const folder = await this.prismaService.folder.findUnique({
@@ -462,18 +499,24 @@ export class FolderService {
     })
 
     if (!folder) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_CREATE_FAST_ACCESS_BUT_FOLDER_NOT_FOUND,
-        message: `未能找到文件夹信息(文件夹id: ${folderId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          message: `未能找到文件夹信息(文件夹id: ${folderId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     if (folder.survivalStatus !== SurvivalStatus.ALIVE) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_CREATE_FAST_ACCESS_BUT_DOC_DELETED,
-        message: `文件夹已被删除(文件夹id: ${folderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.FOLDER_DELETED}_${ControllerPrefix.FOLDER}`,
+          message: `文件夹已被删除(文件夹id: ${folderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     await this.prismaService.user.update({
@@ -499,11 +542,14 @@ export class FolderService {
     // 校验是否有读权限
     const flag = await this.folderAuthService.verifyUserReadFolder(userId, folderId)
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_READ_THIS_FOLDER,
-        message: `当前用户无权阅读文件夹(文件夹id: ${folderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.FOLDER}`,
+          message: `当前用户无权访问该文件夹(文件夹id: ${folderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     const folder = await this.prismaService.folder.findUnique({
@@ -513,18 +559,24 @@ export class FolderService {
     })
 
     if (!folder) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_CREATE_FAVORITE_BUT_FOLDER_NOT_FOUND,
-        message: `未能找到文件夹信息(文件夹id: ${folderId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          message: `未能找到文件夹信息(文件夹id: ${folderId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     if (folder.survivalStatus !== SurvivalStatus.ALIVE) {
-      throw new CommonException({
-        code: DocExceptionCode.GENERAL_DOC_CREATE_FAVORITE_BUT_DOC_DELETED,
-        message: `文件夹已被删除(文件夹id: ${folderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.FOLDER_DELETED}_${ControllerPrefix.FOLDER}`,
+          message: `文件夹已被删除(文件夹id: ${folderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     await this.prismaService.user.update({
@@ -590,20 +642,26 @@ export class FolderService {
     })
 
     if (!folderData) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_DELETE_BUT_FOLDER_NOT_FOUND,
-        message: `未能找到文件夹信息(id: ${folderId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          message: `未能找到文件夹信息(id: ${folderId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     // 校验权限
     const flag = await this.folderAuthService.verifyUserAdministerFolder(userId, folderId)
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER,
-        message: `当前用户没有该文件夹的管理权限(文件夹id: ${folderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerPrefix.FOLDER}`,
+          message: `当前用户没有该文件夹的管理员权限(文件夹id: ${folderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     // 删除文件夹时要连同文件夹下的所有子项删除
@@ -693,42 +751,54 @@ export class FolderService {
     })
 
     if (!folderData) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_DELETE_REVERT_BUT_FOLDER_NOT_FOUND,
-        message: `未能找到文件夹信息(文件夹id: ${folderId})`,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          message: `未能找到文件夹信息(文件夹id: ${folderId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
     }
 
     // 校验权限
     const flag = await this.folderAuthService.verifyUserAdministerFolder(userId, folderId)
     if (!flag) {
-      throw new CommonException({
-        code: DocExceptionCode.CURRENT_USER_CAN_NOT_MANAGE_THIS_FOLDER,
-        message: `当前用户没有该文件夹的管理权限(文件夹id: ${folderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerPrefix.FOLDER}`,
+          message: `当前用户没有该文件夹的管理员权限(文件夹id: ${folderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     // 判断是否彻底删除
     if (folderData.survivalStatus === SurvivalStatus.COMPLETELY_DELETED) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_DELETE_REVERT_FAIL,
-        message: `文件夹已被彻底删除(文件夹id: ${folderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.FOLDER_PERMANENTLY_DELETED}_${ControllerPrefix.FOLDER}`,
+          message: `文件夹已被彻底删除(文件夹id: ${folderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     // 判断是否已过期
     const currentTime = new Date()
     if (
       folderData.lastDeleted &&
-      (currentTime.getTime() - folderData.lastDeleted.getTime()) / (1000 * 3600 * 24) > DELETE_EXPIRE_DAY_TIME
+      (currentTime.getTime() - folderData.lastDeleted.getTime()) / (1000 * 3600 * 24) > FOLDER_DELETE_EXPIRE_DAY_TIME
     ) {
-      throw new CommonException({
-        code: DocExceptionCode.FOLDER_DELETE_REVERT_TOO_LATE,
-        message: `文件夹已过期(文件夹id: ${folderId})`,
-        isFiltered: false,
-      })
+      throw new CommonException(
+        {
+          code: `${FolderExceptionCode.FOLDER_DELETED_EXPIRED}_${ControllerPrefix.FOLDER}`,
+          message: `被删除的文件夹已过期(文件夹id: ${folderId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
     }
 
     // 恢复文件夹时要连同文件夹下的所有子项恢复

@@ -3,7 +3,7 @@ import { Doc, RoleType, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 
 @Injectable()
-export class GeneralDocAuthService {
+export class DocAuthService {
   constructor(private readonly prismaService: PrismaService) {}
 
   /**
