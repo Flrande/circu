@@ -37,7 +37,7 @@ enum RoleType {
 
 model Folder {
   id             String         @id @default(cuid()) @map("id")
-  lastModify     DateTime       @map("last_modify")
+  lastModified     DateTime       @map("last_modified")
   title          String         @map("title")
   description    String?        @map("description")
   survivalStatus SurvivalStatus @default(ALIVE) @map("survival_status")
@@ -63,7 +63,7 @@ model Folder {
 
 model Doc {
   id             String         @id @default(cuid()) @map("id")
-  lastModify     DateTime       @map("last_modify")
+  lastModified     DateTime       @map("last_modified")
   value          Bytes           @map("value")
   survivalStatus SurvivalStatus @default(ALIVE) @map("survival_status")
   lastDeleted    DateTime?      @map("last_deleted")

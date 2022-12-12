@@ -4,7 +4,7 @@
 
 Table folder {
   id String [pk]
-  lastModify DateTime [not null]
+  lastModified DateTime [not null]
   title String [not null]
   description String
   survivalStatus SurvivalStatus [not null, default: 'ALIVE']
@@ -22,7 +22,7 @@ Table folder {
 
 Table doc {
   id String [pk]
-  lastModify DateTime [not null]
+  lastModified DateTime [not null]
   value Bytes [not null]
   survivalStatus SurvivalStatus [not null, default: 'ALIVE']
   lastDeleted DateTime
