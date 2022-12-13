@@ -1,11 +1,3 @@
-export type SuccessResponse<D = object> = {
-  code: 0
-  message: string
-  data: D
-}
+import type { CommonExceptionResponse, SuccessResponse } from "circu-server"
 
-export type CommonException<D = object, C extends number = number> = {
-  code: C
-  message: string
-  data: D
-}
+export type ServerResponse<T extends SuccessResponse = SuccessResponse> = T | CommonExceptionResponse

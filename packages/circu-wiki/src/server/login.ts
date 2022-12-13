@@ -1,29 +1,20 @@
 import ky from "ky"
-import type { CommonException, SuccessResponse } from "./types"
+import type { ServerResponse } from "./types"
 
-export type LoginData = void
-//TODO: 异常类型错误码
-export type LoginError = CommonException | "登录失败, 请重试"
-export type LoginProps = {
+//FIXME: hack, https://stackoverflow.com/questions/74185198/typescript-losing-zod-and-trpc-types-across-monorepo-projects-types-result-in
+import type { LoginOutput } from "../../../circu-server/dist/index.d"
+import { ControllerOrModulePrefix, UserExceptionCode } from "circu-server"
+
+type Login = (arg: {
   username: string
   password: string
   options: {
     ifCarrySession: boolean
   }
-}
+}) => Promise<void>
 
-export type LoginRes = SuccessResponse<LoginData>
-
-export type Login = (
-  username: string,
-  password: string,
-  options: {
-    ifCarrySession: boolean
-  }
-) => Promise<void>
-
-export const login: Login = async (username, password, options) => {
-  const loginRes: LoginRes = await ky
+export const login: Login = async ({ username, password, options }) => {
+  const loginRes: ServerResponse<LoginOutput> = await ky
     .post(import.meta.env.VITE_CIRCU_SERVER_URL, {
       json: {
         username,
@@ -34,7 +25,12 @@ export const login: Login = async (username, password, options) => {
     .json()
 
   if (loginRes.code !== 0) {
-    //TODO: 根据错误码抛出登录错误信息
+    if (loginRes.code === `${UserExceptionCode.USER_NOT_FOUND}_${ControllerOrModulePrefix.USER}`) {
+      throw "用户不存在"
+    }
+    if (loginRes.code === `${UserExceptionCode.LOGIN_PASSWORD_ERROR}_${ControllerOrModulePrefix.USER}`) {
+      throw "密码错误"
+    }
 
     throw "登录失败, 请重试"
   }

@@ -2,12 +2,18 @@ import loginPageBgUrl from "./global-bg.jpg"
 import logoUrl from "../../styles/logo.png"
 import { CheckSmall, GithubOne } from "@icon-park/react"
 import { useMutation } from "@tanstack/react-query"
-import { login, LoginData, LoginError, LoginProps } from "../../server/login"
+import { login } from "../../server/login"
 import { proxy, useSnapshot } from "valtio"
 import { Message, Spin } from "@arco-design/web-react"
 
 type LoginStateStore = {
-  loginPayload: LoginProps
+  loginPayload: {
+    username: string
+    password: string
+    options: {
+      ifCarrySession: boolean
+    }
+  }
 }
 
 const loginStateStore = proxy<LoginStateStore>({
@@ -23,12 +29,11 @@ const loginStateStore = proxy<LoginStateStore>({
 const Login: React.FC = () => {
   const loginStateSnap = useSnapshot(loginStateStore)
 
-  const loginMutation = useMutation<LoginData, LoginError, LoginProps>({
-    mutationFn: ({ username, password, options }) => login(username, password, options),
-    onError: () => {
-      //TODO: 错误码处理
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onError: (err) => {
       Message.error({
-        content: "登录失败, 请重试.",
+        content: typeof err === "string" ? err : "登录失败, 请重试.",
         className: "rounded-md",
       })
     },
