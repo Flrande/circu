@@ -2,8 +2,8 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from "@nestjs/co
 import { ConfigService } from "@nestjs/config"
 import { Response } from "express"
 import { GlobalExceptionCode } from "src/app.constant"
-import { ICommonException } from "./common.exception"
-import { ControllerPrefix } from "./types"
+import { CommonExceptionResponse } from "./common.exception"
+import { ControllerOrModulePrefix } from "./types"
 
 /**
  * 全局异常过滤器, 识别不应暴露的异常并返回统一的响应
@@ -14,12 +14,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
   catch(exception: HttpException, host: ArgumentsHost) {
     const expressRes = host.switchToHttp().getResponse<Response>()
-    const exceptionRes = exception.getResponse() as ICommonException
+    const exceptionRes = exception.getResponse() as CommonExceptionResponse
 
     // 开发环境下不过滤
     if (exceptionRes.isFiltered && this.configService.get<string>("NODE_ENV") !== "DEV") {
-      const newRes: Omit<ICommonException, "isFiltered"> = {
-        code: `${GlobalExceptionCode.COMMON_EXCEPTION_CODE}_${ControllerPrefix.GLOBAL}`,
+      const newRes: Omit<CommonExceptionResponse, "isFiltered"> = {
+        code: `${GlobalExceptionCode.COMMON_EXCEPTION_CODE}_${ControllerOrModulePrefix.GLOBAL}`,
         message: "Error",
         data: {},
       }

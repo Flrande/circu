@@ -4,10 +4,10 @@ import * as decoding from "lib0/decoding"
 import * as syncProtocol from "y-protocols/sync"
 import * as awarenessProtocol from "y-protocols/awareness"
 import { Injectable } from "@nestjs/common"
-import { GeneralDocService } from "src/doc/service/general-doc.service"
 import { WSSharedDoc } from "./WSSharedDoc"
 import { CRDT_ERROR_EVENT, CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
 import { crdtPrisma } from "./crdt-prisma"
+import { DocService } from "src/doc/doc.service"
 
 /**
  * 交互协议:
@@ -43,7 +43,7 @@ const getWSDoc = (docId: string): [WSSharedDoc, boolean] => {
 
 @Injectable()
 export class CrdtService {
-  constructor(private readonly generalDocService: GeneralDocService) {}
+  constructor(private readonly docService: DocService) {}
 
   async setupCRDT(socket: CustomSocket): Promise<void> {
     if (!socket.handshake.query["docId"]) {
@@ -71,7 +71,7 @@ export class CrdtService {
     //TODO: 校验用户是否有读权限
     //TODO: 区分只读用户和可写用户
     try {
-      const docMeta = await this.generalDocService.getDocMetaDataById(userId, docId)
+      const docMeta = await this.docService.getDocMetaInfo(userId, docId)
 
       // 设置共享文档
       const [WSDoc, isNew] = getWSDoc(docMeta.id)

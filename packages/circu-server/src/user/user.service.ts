@@ -4,7 +4,7 @@ import { Request } from "express"
 import { AuthService } from "src/auth/auth.service"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
-import { ControllerPrefix } from "src/exception/types"
+import { ControllerOrModulePrefix } from "src/exception/types"
 import { UserExceptionCode } from "./user.constant"
 
 @Injectable()
@@ -25,7 +25,7 @@ export class UserService {
     if (existingUser) {
       throw new CommonException(
         {
-          code: `${UserExceptionCode.REGISTER_USERNAME_REPEAT}_${ControllerPrefix.USER}`,
+          code: `${UserExceptionCode.REGISTER_USERNAME_REPEAT}_${ControllerOrModulePrefix.USER}`,
           message: "用户名已存在",
           isFiltered: false,
         },
@@ -67,7 +67,7 @@ export class UserService {
     if (!result) {
       throw new CommonException(
         {
-          code: `${UserExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.USER}`,
+          code: `${UserExceptionCode.USER_NOT_FOUND}_${ControllerOrModulePrefix.USER}`,
           message: `未能找到用户信息(id: ${id})`,
         },
         HttpStatus.NOT_FOUND
@@ -104,8 +104,9 @@ export class UserService {
     if (!user) {
       throw new CommonException(
         {
-          code: `${UserExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.USER}`,
+          code: `${UserExceptionCode.USER_NOT_FOUND}_${ControllerOrModulePrefix.USER}`,
           message: `未能找到用户信息(username: ${payload.username})`,
+          isFiltered: false,
         },
         HttpStatus.NOT_FOUND
       )
@@ -116,7 +117,7 @@ export class UserService {
     if (!result) {
       throw new CommonException(
         {
-          code: `${UserExceptionCode.LOGIN_PASSWORD_ERROR}_${ControllerPrefix.USER}`,
+          code: `${UserExceptionCode.LOGIN_PASSWORD_ERROR}_${ControllerOrModulePrefix.USER}`,
           message: "密码错误",
           isFiltered: false,
         },

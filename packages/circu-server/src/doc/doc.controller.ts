@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nestjs/common"
-import { Doc } from "@prisma/client"
 import { Request } from "express"
 import { UserAuthGuard } from "src/guards/user-auth.guard"
 import { BodyZodSchema, ParamsZodSchema } from "src/interceptor/zod/set-zod-schema.decorator"

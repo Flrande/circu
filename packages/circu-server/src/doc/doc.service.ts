@@ -7,7 +7,7 @@ import { SLATE_VALUE_YDOC_KEY } from "src/ws/crdt/constants"
 import { slateNodesToInsertDelta } from "@slate-yjs/core"
 import { DocAuthService } from "./doc-auth.service"
 import { DocExceptionCode, DOC_DELETE_EXPIRE_DAY_TIME } from "./doc.constant"
-import { ControllerPrefix } from "src/exception/types"
+import { ControllerOrModulePrefix } from "src/exception/types"
 import { FolderAuthService } from "src/folder/folder-auth.service"
 
 @Injectable()
@@ -32,7 +32,7 @@ export class DocService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerOrModulePrefix.DOC}`,
           message: `当前用户无权访问该文件(文件id: ${docId})`,
           isFiltered: false,
         },
@@ -57,7 +57,7 @@ export class DocService {
     if (!result) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
           message: `未能找到文件信息(文件id: ${docId})`,
         },
         HttpStatus.NOT_FOUND
@@ -67,7 +67,7 @@ export class DocService {
     if (result.survivalStatus !== SurvivalStatus.ALIVE) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.DOC_DELETED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.DOC_DELETED}_${ControllerOrModulePrefix.DOC}`,
           message: `该文件已被删除(文件id: ${docId})`,
           isFiltered: false,
         },
@@ -131,7 +131,7 @@ export class DocService {
     if (!user) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.USER_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
           message: `未能找到用户信息(用户id: ${userId})`,
         },
         HttpStatus.NOT_FOUND
@@ -166,7 +166,7 @@ export class DocService {
     if (!user) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.USER_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
           message: `未能找到用户信息(用户id: ${userId})`,
         },
         HttpStatus.NOT_FOUND
@@ -216,7 +216,7 @@ export class DocService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.AUTH_MODIFY_DENIED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.AUTH_MODIFY_DENIED}_${ControllerOrModulePrefix.DOC}`,
           message: `当前用户无权修改该文件(文件id: ${data.parentFolderId})`,
           isFiltered: false,
         },
@@ -283,7 +283,7 @@ export class DocService {
     if (!author) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.USER_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
           message: `未能找到用户信息(用户id: ${userId})`,
         },
         HttpStatus.NOT_FOUND
@@ -315,7 +315,7 @@ export class DocService {
       if (!folder) {
         throw new CommonException(
           {
-            code: `${DocExceptionCode.DOC_PARENT_NOT_FOUND}_${ControllerPrefix.DOC}`,
+            code: `${DocExceptionCode.DOC_PARENT_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
             message: `未找到父文件夹信息(父文件夹id: ${data.parentFolderId})`,
           },
           HttpStatus.NOT_FOUND
@@ -332,7 +332,7 @@ export class DocService {
       if (!folderAdministratorRole) {
         throw new CommonException(
           {
-            code: `${DocExceptionCode.PARENT_ADMINISTRATOR_ROLE_NOT_FOUND}_${ControllerPrefix.DOC}`,
+            code: `${DocExceptionCode.PARENT_ADMINISTRATOR_ROLE_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
             message: `未找到父文件夹对应的管理员角色(父文件夹id: ${data.parentFolderId})`,
           },
           HttpStatus.NOT_FOUND
@@ -349,7 +349,7 @@ export class DocService {
       if (!folderCollaboratorRole) {
         throw new CommonException(
           {
-            code: `${DocExceptionCode.PARENT_COLLABORATOR_ROLE_NOT_FOUND}_${ControllerPrefix.DOC}`,
+            code: `${DocExceptionCode.PARENT_COLLABORATOR_ROLE_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
             message: `未找到父文件夹对应的编辑者角色(父文件夹id: ${data.parentFolderId})`,
           },
           HttpStatus.NOT_FOUND
@@ -366,7 +366,7 @@ export class DocService {
       if (!folderReaderRole) {
         throw new CommonException(
           {
-            code: `${DocExceptionCode.PARENT_READER_ROLE_NOT_FOUND}_${ControllerPrefix.DOC}`,
+            code: `${DocExceptionCode.PARENT_READER_ROLE_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
             message: `未找到父文件夹对应的阅读者权限(父文件夹id: ${data.parentFolderId})`,
           },
           HttpStatus.NOT_FOUND
@@ -520,7 +520,7 @@ export class DocService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerOrModulePrefix.DOC}`,
           message: `当前用户无权访问该文件(文件id: ${docId})`,
           isFiltered: false,
         },
@@ -537,7 +537,7 @@ export class DocService {
     if (!doc) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
           message: `未能找到文件信息(文件id: ${docId})`,
         },
         HttpStatus.NOT_FOUND
@@ -547,7 +547,7 @@ export class DocService {
     if (doc.survivalStatus !== SurvivalStatus.ALIVE) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.DOC_DELETED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.DOC_DELETED}_${ControllerOrModulePrefix.DOC}`,
           message: `文件已被删除(文件id: ${docId})`,
           isFiltered: false,
         },
@@ -580,7 +580,7 @@ export class DocService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerOrModulePrefix.DOC}`,
           message: `当前用户无权访问该文件(文件id: ${docId})`,
           isFiltered: false,
         },
@@ -597,7 +597,7 @@ export class DocService {
     if (!doc) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
           message: `未能找到文件信息(文件id: ${docId})`,
         },
         HttpStatus.NOT_FOUND
@@ -607,7 +607,7 @@ export class DocService {
     if (doc.survivalStatus !== SurvivalStatus.ALIVE) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.DOC_DELETED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.DOC_DELETED}_${ControllerOrModulePrefix.DOC}`,
           message: `文件已被删除(文件id: ${docId})`,
           isFiltered: false,
         },
@@ -680,7 +680,7 @@ export class DocService {
     if (!docData) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
           message: `未能找到文件信息(id: ${docId})`,
         },
         HttpStatus.NOT_FOUND
@@ -692,7 +692,7 @@ export class DocService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerOrModulePrefix.DOC}`,
           message: `当前用户没有该文件的管理员权限(文件夹id: ${docId})`,
           isFiltered: false,
         },
@@ -726,7 +726,7 @@ export class DocService {
     if (!docData) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
           message: `未能找到文件信息(文件id: ${docId})`,
         },
         HttpStatus.NOT_FOUND
@@ -738,7 +738,7 @@ export class DocService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerOrModulePrefix.DOC}`,
           message: `当前用户没有该文件的管理员权限(文件id: ${docId})`,
           isFiltered: false,
         },
@@ -750,7 +750,7 @@ export class DocService {
     if (docData.survivalStatus === SurvivalStatus.COMPLETELY_DELETED) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.DOC_PERMANENTLY_DELETED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.DOC_PERMANENTLY_DELETED}_${ControllerOrModulePrefix.DOC}`,
           message: `文件已被彻底删除(文件id: ${docId})`,
           isFiltered: false,
         },
@@ -766,7 +766,7 @@ export class DocService {
     ) {
       throw new CommonException(
         {
-          code: `${DocExceptionCode.DOC_DELETED_EXPIRED}_${ControllerPrefix.DOC}`,
+          code: `${DocExceptionCode.DOC_DELETED_EXPIRED}_${ControllerOrModulePrefix.DOC}`,
           message: `被删除的文件已过期(文件id: ${docId})`,
           isFiltered: false,
         },

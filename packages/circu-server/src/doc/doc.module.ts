@@ -9,5 +9,6 @@ import { DocService } from "./doc.service"
   imports: [FolderModule],
   controllers: [DocController],
   providers: [DocService, DocAuthService, PrismaService],
+  exports: [DocService],
 })
 export class DocModule {}

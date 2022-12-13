@@ -1,4 +1,4 @@
-import { successResponseSchemaFactory } from "src/interfaces/response/response"
+import { successResponseSchemaFactory } from "src/interfaces/response"
 import { z } from "zod"
 
 // 输入

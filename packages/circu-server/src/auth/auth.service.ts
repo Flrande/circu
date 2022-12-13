@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common"
+import { HttpStatus, Injectable } from "@nestjs/common"
 import { randomBytes, scrypt, timingSafeEqual } from "crypto"
 import { Buffer } from "buffer"
 import { AuthExceptionCode } from "./auth.constant"
 import { CommonException } from "src/exception/common.exception"
+import { ControllerOrModulePrefix } from "src/exception/types"
 
 @Injectable()
 export class AuthService {
@@ -21,10 +22,13 @@ export class AuthService {
       scrypt(passwordBuffer, salt, 64, (err, derivedKey) => {
         if (err) {
           reject(
-            new CommonException({
-              code: AuthExceptionCode.SCRYPT_PASSWORD_ERROR,
-              message: `${err.name}: ${err.message}`,
-            })
+            new CommonException(
+              {
+                code: `${AuthExceptionCode.HASH_PASSWORD_ERROR}_${ControllerOrModulePrefix.Auth}`,
+                message: `${err.name}: ${err.message}`,
+              },
+              HttpStatus.INTERNAL_SERVER_ERROR
+            )
           )
         }
 
@@ -44,10 +48,13 @@ export class AuthService {
       scrypt(passwordBuffer, salt, 64, (err, derivedKey) => {
         if (err) {
           reject(
-            new CommonException({
-              code: AuthExceptionCode.COMPARE_PASSWORD_ERROR,
-              message: `${err.name}: ${err.message}`,
-            })
+            new CommonException(
+              {
+                code: `${AuthExceptionCode.COMPARE_PASSWORD_ERROR}_${ControllerOrModulePrefix.Auth}`,
+                message: `${err.name}: ${err.message}`,
+              },
+              HttpStatus.INTERNAL_SERVER_ERROR
+            )
           )
         }
         resolve(timingSafeEqual(key, derivedKey))

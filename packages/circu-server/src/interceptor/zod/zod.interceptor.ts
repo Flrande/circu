@@ -6,7 +6,7 @@ import { CallHandler, ExecutionContext, HttpStatus, Injectable, NestInterceptor 
 import { Reflector } from "@nestjs/core"
 import { map, Observable } from "rxjs"
 import { CommonException } from "src/exception/common.exception"
-import { ControllerPrefix } from "src/exception/types"
+import { ControllerOrModulePrefix } from "src/exception/types"
 import { ZodType } from "zod"
 import { OUTPUT_ZOD_SCHEMA } from "./set-handler-output.decorator"
 import { BODY_ZOD_SCHEMA, PARAMS_ZOD_SCHEMA, QUERY_ZOD_SCHEMA } from "./set-zod-schema.decorator"
@@ -28,7 +28,7 @@ export class ZodIntercepter implements NestInterceptor {
       const bodySchema = this.reflector.get<ZodType>(BODY_ZOD_SCHEMA, handler)
       const querySchema = this.reflector.get<ZodType>(QUERY_ZOD_SCHEMA, handler)
 
-      const controllerPrefix = this.reflector.get<ControllerPrefix>("CONTROLLER_PREFIX", controller)
+      const ControllerOrModulePrefix = this.reflector.get<ControllerOrModulePrefix>("CONTROLLER_PREFIX", controller)
 
       // 校验输入载荷
       const params = request.params
@@ -36,7 +36,7 @@ export class ZodIntercepter implements NestInterceptor {
       if (!paramsResult.success) {
         throw new CommonException(
           {
-            code: `${0}_${controllerPrefix}`,
+            code: `${0}_${ControllerOrModulePrefix}`,
             isFiltered: false,
           },
           HttpStatus.BAD_REQUEST
@@ -47,7 +47,7 @@ export class ZodIntercepter implements NestInterceptor {
       if (!bodyResult.success) {
         throw new CommonException(
           {
-            code: `${0}_${controllerPrefix}`,
+            code: `${0}_${ControllerOrModulePrefix}`,
             isFiltered: false,
           },
           HttpStatus.BAD_REQUEST
@@ -58,7 +58,7 @@ export class ZodIntercepter implements NestInterceptor {
       if (!queryResult.success) {
         throw new CommonException(
           {
-            code: `${0}_${controllerPrefix}`,
+            code: `${0}_${ControllerOrModulePrefix}`,
             isFiltered: false,
           },
           HttpStatus.BAD_REQUEST
@@ -73,7 +73,7 @@ export class ZodIntercepter implements NestInterceptor {
           if (!result.success) {
             throw new CommonException(
               {
-                code: `${0}_${controllerPrefix}`,
+                code: `${0}_${ControllerOrModulePrefix}`,
                 isFiltered: true,
               },
               HttpStatus.INTERNAL_SERVER_ERROR

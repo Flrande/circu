@@ -2,7 +2,7 @@ import { HttpStatus, Injectable } from "@nestjs/common"
 import { Folder, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
 import { PrismaService } from "src/database/prisma.service"
 import { CommonException } from "src/exception/common.exception"
-import { ControllerPrefix } from "src/exception/types"
+import { ControllerOrModulePrefix } from "src/exception/types"
 import { FolderAuthService } from "./folder-auth.service"
 import { FolderExceptionCode, FOLDER_DELETE_EXPIRE_DAY_TIME } from "./folder.constant"
 
@@ -26,7 +26,7 @@ export class FolderService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.AUTH_ACCESS_DENIED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `当前用户无权访问该文件夹(文件夹id: ${folderId})`,
           isFiltered: false,
         },
@@ -53,7 +53,7 @@ export class FolderService {
     if (!result) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
           message: `未能找到文件夹信息(文件夹id: ${folderId})`,
         },
         HttpStatus.NOT_FOUND
@@ -63,7 +63,7 @@ export class FolderService {
     if (result.survivalStatus !== SurvivalStatus.ALIVE) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.FOLDER_DELETED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.FOLDER_DELETED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `该文件夹已被删除(文件夹id: ${folderId})`,
           isFiltered: false,
         },
@@ -134,7 +134,7 @@ export class FolderService {
     if (!user) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.USER_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
           message: `未能找到用户信息(用户id: ${userId})`,
         },
         HttpStatus.NOT_FOUND
@@ -171,7 +171,7 @@ export class FolderService {
     if (!user) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.USER_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
           message: `未能找到用户信息(用户id: ${userId})`,
         },
         HttpStatus.NOT_FOUND
@@ -224,7 +224,7 @@ export class FolderService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.AUTH_MODIFY_DENIED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.AUTH_MODIFY_DENIED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `当前用户无权修改该文件夹(文件夹id: ${data.parentFolderId})`,
           isFiltered: false,
         },
@@ -244,7 +244,7 @@ export class FolderService {
     if (!author) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.USER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.USER_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
           message: `未能找到用户信息(用户id: ${userId})`,
         },
         HttpStatus.NOT_FOUND
@@ -274,7 +274,7 @@ export class FolderService {
       if (!folder) {
         throw new CommonException(
           {
-            code: `${FolderExceptionCode.FOLDER_PARENT_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+            code: `${FolderExceptionCode.FOLDER_PARENT_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
             message: `未找到父文件夹信息(父文件夹id: ${data.parentFolderId})`,
           },
           HttpStatus.NOT_FOUND
@@ -291,7 +291,7 @@ export class FolderService {
       if (!folderAdministratorRole) {
         throw new CommonException(
           {
-            code: `${FolderExceptionCode.PARENT_ADMINISTRATOR_ROLE_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+            code: `${FolderExceptionCode.PARENT_ADMINISTRATOR_ROLE_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
             message: `未找到父文件夹对应的管理员角色(父文件夹id: ${data.parentFolderId})`,
           },
           HttpStatus.NOT_FOUND
@@ -308,7 +308,7 @@ export class FolderService {
       if (!folderCollaboratorRole) {
         throw new CommonException(
           {
-            code: `${FolderExceptionCode.PARENT_COLLABORATOR_ROLE_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+            code: `${FolderExceptionCode.PARENT_COLLABORATOR_ROLE_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
             message: `未找到父文件夹对应的编辑者角色(父文件夹id: ${data.parentFolderId})`,
           },
           HttpStatus.NOT_FOUND
@@ -325,7 +325,7 @@ export class FolderService {
       if (!folderReaderRole) {
         throw new CommonException(
           {
-            code: `${FolderExceptionCode.PARENT_READER_ROLE_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+            code: `${FolderExceptionCode.PARENT_READER_ROLE_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
             message: `未找到父文件夹对应的阅读者权限(父文件夹id: ${data.parentFolderId})`,
           },
           HttpStatus.NOT_FOUND
@@ -484,7 +484,7 @@ export class FolderService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.AUTH_ACCESS_DENIED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `当前用户无权访问该文件夹(文件夹id: ${folderId})`,
           isFiltered: false,
         },
@@ -501,7 +501,7 @@ export class FolderService {
     if (!folder) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
           message: `未能找到文件夹信息(文件夹id: ${folderId})`,
         },
         HttpStatus.NOT_FOUND
@@ -511,7 +511,7 @@ export class FolderService {
     if (folder.survivalStatus !== SurvivalStatus.ALIVE) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.FOLDER_DELETED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.FOLDER_DELETED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `文件夹已被删除(文件夹id: ${folderId})`,
           isFiltered: false,
         },
@@ -544,7 +544,7 @@ export class FolderService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.AUTH_ACCESS_DENIED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.AUTH_ACCESS_DENIED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `当前用户无权访问该文件夹(文件夹id: ${folderId})`,
           isFiltered: false,
         },
@@ -561,7 +561,7 @@ export class FolderService {
     if (!folder) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
           message: `未能找到文件夹信息(文件夹id: ${folderId})`,
         },
         HttpStatus.NOT_FOUND
@@ -571,7 +571,7 @@ export class FolderService {
     if (folder.survivalStatus !== SurvivalStatus.ALIVE) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.FOLDER_DELETED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.FOLDER_DELETED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `文件夹已被删除(文件夹id: ${folderId})`,
           isFiltered: false,
         },
@@ -644,7 +644,7 @@ export class FolderService {
     if (!folderData) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
           message: `未能找到文件夹信息(id: ${folderId})`,
         },
         HttpStatus.NOT_FOUND
@@ -656,7 +656,7 @@ export class FolderService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `当前用户没有该文件夹的管理员权限(文件夹id: ${folderId})`,
           isFiltered: false,
         },
@@ -753,7 +753,7 @@ export class FolderService {
     if (!folderData) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.FOLDER_NOT_FOUND}_${ControllerOrModulePrefix.FOLDER}`,
           message: `未能找到文件夹信息(文件夹id: ${folderId})`,
         },
         HttpStatus.NOT_FOUND
@@ -765,7 +765,7 @@ export class FolderService {
     if (!flag) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.AUTH_ADMINISTRATOR_DENIED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `当前用户没有该文件夹的管理员权限(文件夹id: ${folderId})`,
           isFiltered: false,
         },
@@ -777,7 +777,7 @@ export class FolderService {
     if (folderData.survivalStatus === SurvivalStatus.COMPLETELY_DELETED) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.FOLDER_PERMANENTLY_DELETED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.FOLDER_PERMANENTLY_DELETED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `文件夹已被彻底删除(文件夹id: ${folderId})`,
           isFiltered: false,
         },
@@ -793,7 +793,7 @@ export class FolderService {
     ) {
       throw new CommonException(
         {
-          code: `${FolderExceptionCode.FOLDER_DELETED_EXPIRED}_${ControllerPrefix.FOLDER}`,
+          code: `${FolderExceptionCode.FOLDER_DELETED_EXPIRED}_${ControllerOrModulePrefix.FOLDER}`,
           message: `被删除的文件夹已过期(文件夹id: ${folderId})`,
           isFiltered: false,
         },

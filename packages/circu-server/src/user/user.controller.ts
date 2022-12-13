@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Req, Param } from "@nestjs/common"
 import { Request } from "express"
 import { ControllerMeta } from "src/decorators/set-controller-meta.decorator"
-import { ControllerPrefix } from "src/exception/types"
+import { ControllerOrModulePrefix } from "src/exception/types"
 import { BodyZodSchema, ParamsZodSchema } from "src/interceptor/zod/set-zod-schema.decorator"
 import { GetUserInfoOutput, GetUserInfoParams } from "./schemas/get-user-info.schema"
 import { LoginBody, LoginOutput } from "./schemas/login.schema"
@@ -10,7 +10,7 @@ import { USER_ROUTE } from "./user.constant"
 import { UserService } from "./user.service"
 
 @Controller(USER_ROUTE)
-@ControllerMeta(ControllerPrefix.USER)
+@ControllerMeta(ControllerOrModulePrefix.USER)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
