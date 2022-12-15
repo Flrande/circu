@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common"
-import { DocModule } from "src/doc/doc.module"
+import { DocModule } from "../doc/doc.module"
 import { CrdtService } from "./crdt/crdt.service"
 import { WsGateway } from "./ws.gateway"
 

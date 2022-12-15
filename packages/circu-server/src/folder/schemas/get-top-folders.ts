@@ -1,5 +1,5 @@
-import { successResponseSchemaFactory } from "src/interfaces/response"
 import { z } from "zod"
+import { successResponseSchemaFactory } from "../../interfaces/response"
 
 // 无输入
 // 输出

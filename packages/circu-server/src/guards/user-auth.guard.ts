@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common"
 import { Request } from "express"
-import { PrismaService } from "src/database/prisma.service"
+import { PrismaService } from "../database/prisma.service"
 
 /**
  * 一个用于判断请求是否在内存数据库中有对应会话的守卫组件

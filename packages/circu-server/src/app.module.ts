@@ -1,8 +1,9 @@
 import { Module } from "@nestjs/common"
 import { ConfigModule } from "@nestjs/config"
-import { APP_FILTER } from "@nestjs/core"
+import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core"
 import { DocModule } from "./doc/doc.module"
 import { HttpExceptionFilter } from "./exception/http-exception.filter"
+import { ZodIntercepter } from "./interceptor/zod/zod.interceptor"
 import { UserModule } from "./user/user.module"
 import { WsModule } from "./ws/ws.module"
 
@@ -19,6 +20,10 @@ import { WsModule } from "./ws/ws.module"
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ZodIntercepter,
     },
   ],
 })

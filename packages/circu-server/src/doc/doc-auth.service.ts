@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common"
 import { Doc, RoleType, User } from "@prisma/client"
-import { PrismaService } from "src/database/prisma.service"
+import { PrismaService } from "../database/prisma.service"
 
 @Injectable()
 export class DocAuthService {
@@ -63,7 +63,7 @@ export class DocAuthService {
         and _roles_to_users."B" = ${userId}
       ;
     `
-
+    console.log(`user ${userId} read general doc ${docId} query result:`, queryResult)
     return queryResult.length !== 0
   }
 

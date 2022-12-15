@@ -5,9 +5,10 @@
 import { CallHandler, ExecutionContext, HttpStatus, Injectable, NestInterceptor } from "@nestjs/common"
 import { Reflector } from "@nestjs/core"
 import { map, Observable } from "rxjs"
-import { CommonException } from "src/exception/common.exception"
-import { ControllerOrModulePrefix } from "src/exception/types"
 import { ZodType } from "zod"
+import { CONTROLLER_META } from "../../decorators/set-controller-meta.decorator"
+import { ControllerOrModulePrefix } from "../../exception"
+import { CommonException } from "../../exception/common.exception"
 import { OUTPUT_ZOD_SCHEMA } from "./set-handler-output.decorator"
 import { BODY_ZOD_SCHEMA, PARAMS_ZOD_SCHEMA, QUERY_ZOD_SCHEMA } from "./set-zod-schema.decorator"
 
@@ -28,57 +29,66 @@ export class ZodIntercepter implements NestInterceptor {
       const bodySchema = this.reflector.get<ZodType>(BODY_ZOD_SCHEMA, handler)
       const querySchema = this.reflector.get<ZodType>(QUERY_ZOD_SCHEMA, handler)
 
-      const ControllerOrModulePrefix = this.reflector.get<ControllerOrModulePrefix>("CONTROLLER_PREFIX", controller)
+      const ControllerOrModulePrefix = this.reflector.get<ControllerOrModulePrefix>(CONTROLLER_META, controller)
 
       // 校验输入载荷
       const params = request.params
-      const paramsResult = paramsSchema.safeParse(params)
-      if (!paramsResult.success) {
-        throw new CommonException(
-          {
-            code: `${0}_${ControllerOrModulePrefix}`,
-            isFiltered: false,
-          },
-          HttpStatus.BAD_REQUEST
-        )
+      if (paramsSchema) {
+        const paramsResult = paramsSchema.safeParse(params)
+        if (!paramsResult.success) {
+          throw new CommonException(
+            {
+              code: `${0}_${ControllerOrModulePrefix}`,
+              isFiltered: false,
+            },
+            HttpStatus.BAD_REQUEST
+          )
+        }
       }
-      const body = request.body
-      const bodyResult = bodySchema.safeParse(body)
-      if (!bodyResult.success) {
-        throw new CommonException(
-          {
-            code: `${0}_${ControllerOrModulePrefix}`,
-            isFiltered: false,
-          },
-          HttpStatus.BAD_REQUEST
-        )
+      if (bodySchema) {
+        const body = request.body
+        const bodyResult = bodySchema.safeParse(body)
+        if (!bodyResult.success) {
+          throw new CommonException(
+            {
+              code: `${0}_${ControllerOrModulePrefix}`,
+              isFiltered: false,
+            },
+            HttpStatus.BAD_REQUEST
+          )
+        }
       }
-      const query = request.query
-      const queryResult = querySchema.safeParse(query)
-      if (!queryResult.success) {
-        throw new CommonException(
-          {
-            code: `${0}_${ControllerOrModulePrefix}`,
-            isFiltered: false,
-          },
-          HttpStatus.BAD_REQUEST
-        )
+      if (querySchema) {
+        const query = request.query
+        const queryResult = querySchema.safeParse(query)
+        if (!queryResult.success) {
+          throw new CommonException(
+            {
+              code: `${0}_${ControllerOrModulePrefix}`,
+              isFiltered: false,
+            },
+            HttpStatus.BAD_REQUEST
+          )
+        }
       }
 
       // 校验输出结果
       const outputSchema = this.reflector.get<ZodType>(OUTPUT_ZOD_SCHEMA, handler)
       return next.handle().pipe(
         map((data) => {
-          const result = outputSchema.safeParse(data)
-          if (!result.success) {
-            throw new CommonException(
-              {
-                code: `${0}_${ControllerOrModulePrefix}`,
-                isFiltered: true,
-              },
-              HttpStatus.INTERNAL_SERVER_ERROR
-            )
+          if (outputSchema) {
+            const result = outputSchema.safeParse(data)
+            if (!result.success) {
+              throw new CommonException(
+                {
+                  code: `${0}_${ControllerOrModulePrefix}`,
+                  isFiltered: true,
+                },
+                HttpStatus.INTERNAL_SERVER_ERROR
+              )
+            }
           }
+
           return data
         })
       )

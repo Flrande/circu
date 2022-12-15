@@ -18,6 +18,7 @@
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "allowJs": true,
     "checkJs": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
@@ -27,10 +28,10 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
     "incremental": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
     "strictBindCallApply": true
-  }
+  },
+  "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }

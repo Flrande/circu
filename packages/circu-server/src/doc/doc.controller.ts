@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Req, UseGuards } from "@nestjs/common"
 import { Request } from "express"
-import { UserAuthGuard } from "src/guards/user-auth.guard"
-import { BodyZodSchema, ParamsZodSchema } from "src/interceptor/zod/set-zod-schema.decorator"
+import { UserAuthGuard } from "../guards/user-auth.guard"
+import { BodyZodSchema, ParamsZodSchema } from "../interceptor/zod/set-zod-schema.decorator"
 import { DOC_ROUTE } from "./doc.constant"
 import { DocService } from "./doc.service"
 import { AddFastAccessDocOutput, AddFastAccessDocParams } from "./schemas/add-fast-access-doc.schema"
@@ -10,6 +10,7 @@ import { CreateDocBody, CreateDocOutput } from "./schemas/create-doc.schema"
 import { DeleteDocCompletelyOutput, DeleteDocCompletelyParams } from "./schemas/delete-doc-completely.schema"
 import { DeleteDocOutput, DeleteDocParams } from "./schemas/delete-doc.schema"
 import { GetDeletedDocsOutput } from "./schemas/get-deleted-docs.schema"
+import { GetDocInfoOutput, GetDocInfoParams } from "./schemas/get-doc-info.schema"
 import { GetDocMetaInfoOutput, GetDocMetaInfoParams } from "./schemas/get-doc-meta-info.schema"
 import { GetFastAccessDocsOutput } from "./schemas/get-fast-access-docs.schema"
 import { GetFavoriteDocsOutput } from "./schemas/get-favorite-docs.schema"
@@ -25,7 +26,7 @@ export class DocController {
   /**
    * 根据 id 获取文档元信息
    */
-  @Get("data/:id")
+  @Get("meta_data/:docId")
   @UseGuards(UserAuthGuard)
   @ParamsZodSchema(GetDocMetaInfoParams)
   async getDocMetaInfo(@Param() params: GetDocMetaInfoParams, @Req() req: Request): Promise<GetDocMetaInfoOutput> {

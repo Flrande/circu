@@ -1,8 +1,8 @@
 import { HttpStatus, Injectable } from "@nestjs/common"
 import { Folder, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
-import { PrismaService } from "src/database/prisma.service"
-import { CommonException } from "src/exception/common.exception"
-import { ControllerOrModulePrefix } from "src/exception/types"
+import { PrismaService } from "../database/prisma.service"
+import { ControllerOrModulePrefix } from "../exception"
+import { CommonException } from "../exception/common.exception"
 import { FolderAuthService } from "./folder-auth.service"
 import { FolderExceptionCode, FOLDER_DELETE_EXPIRE_DAY_TIME } from "./folder.constant"
 

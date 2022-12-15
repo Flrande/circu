@@ -2,8 +2,8 @@ import { HttpStatus, Injectable } from "@nestjs/common"
 import { randomBytes, scrypt, timingSafeEqual } from "crypto"
 import { Buffer } from "buffer"
 import { AuthExceptionCode } from "./auth.constant"
-import { CommonException } from "src/exception/common.exception"
-import { ControllerOrModulePrefix } from "src/exception/types"
+import { ControllerOrModulePrefix } from "../exception"
+import { CommonException } from "../exception/common.exception"
 
 @Injectable()
 export class AuthService {

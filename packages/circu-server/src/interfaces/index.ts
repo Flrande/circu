@@ -1,1 +1,1 @@
-export { SuccessResponse } from "./response"
+export type { SuccessResponse } from "./response"

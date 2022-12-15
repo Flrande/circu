@@ -1,4 +1,4 @@
-export const DOC_ROUTE = "/doc"
+export const DOC_ROUTE = "/api/doc"
 
 export enum DocExceptionCode {
   // 权限相关

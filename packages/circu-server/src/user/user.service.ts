@@ -1,10 +1,10 @@
 import { HttpStatus, Injectable } from "@nestjs/common"
 import { User } from "@prisma/client"
 import { Request } from "express"
-import { AuthService } from "src/auth/auth.service"
-import { PrismaService } from "src/database/prisma.service"
-import { CommonException } from "src/exception/common.exception"
-import { ControllerOrModulePrefix } from "src/exception/types"
+import { AuthService } from "../auth/auth.service"
+import { PrismaService } from "../database/prisma.service"
+import { ControllerOrModulePrefix } from "../exception"
+import { CommonException } from "../exception/common.exception"
 import { UserExceptionCode } from "./user.constant"
 
 @Injectable()

@@ -1,6 +1,9 @@
 {
   "extends": "../../config/tsconfig.json",
-  "compilerOptions": {},
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "compilerOptions": {
+    "composite": true,
+    "module": "esnext",
+    "moduleResolution": "node"
+  },
+  "include": ["src", "vite.config.ts"]
 }

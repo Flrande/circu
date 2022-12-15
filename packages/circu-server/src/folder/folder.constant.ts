@@ -1,4 +1,4 @@
-export const FOLDER_ROUTE = "/folder"
+export const FOLDER_ROUTE = "/api/folder"
 
 export enum FolderExceptionCode {
   // 权限相关

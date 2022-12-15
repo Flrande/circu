@@ -1,4 +1,4 @@
-export const USER_ROUTE = "/user"
+export const USER_ROUTE = "/api/user"
 
 export enum UserExceptionCode {
   // 用户名已存在

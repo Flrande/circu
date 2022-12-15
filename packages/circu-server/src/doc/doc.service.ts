@@ -1,14 +1,14 @@
 import * as Y from "yjs"
 import { HttpStatus, Injectable } from "@nestjs/common"
 import { Doc, DocType, Prisma, RoleType, SurvivalStatus, User } from "@prisma/client"
-import { PrismaService } from "src/database/prisma.service"
-import { CommonException } from "src/exception/common.exception"
-import { SLATE_VALUE_YDOC_KEY } from "src/ws/crdt/constants"
-import { slateNodesToInsertDelta } from "@slate-yjs/core"
+import { slateNodesToInsertDelta, yTextToSlateElement } from "@slate-yjs/core"
 import { DocAuthService } from "./doc-auth.service"
 import { DocExceptionCode, DOC_DELETE_EXPIRE_DAY_TIME } from "./doc.constant"
-import { ControllerOrModulePrefix } from "src/exception/types"
-import { FolderAuthService } from "src/folder/folder-auth.service"
+import { PrismaService } from "../database/prisma.service"
+import { ControllerOrModulePrefix } from "../exception"
+import { CommonException } from "../exception/common.exception"
+import { FolderAuthService } from "../folder/folder-auth.service"
+import { SLATE_VALUE_YDOC_KEY } from "../ws/crdt/constants"
 
 @Injectable()
 export class DocService {

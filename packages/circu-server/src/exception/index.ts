@@ -1,3 +1,3 @@
-export { CommonExceptionResponse } from "./common.exception"
+export type { CommonExceptionResponse } from "./common.exception"
 
 export * from "./types"
