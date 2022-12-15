@@ -7,7 +7,8 @@ import { Injectable } from "@nestjs/common"
 import { WSSharedDoc } from "./WSSharedDoc"
 import { CRDT_ERROR_EVENT, CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
 import { crdtPrisma } from "./crdt-prisma"
-import { DocService } from "src/doc/doc.service"
+import { DocService } from "../../doc/doc.service"
+import { ConfigService } from "@nestjs/config"
 
 /**
  * 交互协议:
@@ -43,7 +44,7 @@ const getWSDoc = (docId: string): [WSSharedDoc, boolean] => {
 
 @Injectable()
 export class CrdtService {
-  constructor(private readonly docService: DocService) {}
+  constructor(private readonly docService: DocService, private readonly configService: ConfigService) {}
 
   async setupCRDT(socket: CustomSocket): Promise<void> {
     if (!socket.handshake.query["docId"]) {
@@ -51,10 +52,13 @@ export class CrdtService {
       socket.disconnect()
       return
     }
-    const docId = socket.handshake.query["docId"] as string
-    //FIXME: 先用一个已知 id 用于开发测试, 等待前端登录功能完成
-    // const userId = socket.request.session.userid
-    const userId = "cla68my2i0000undojkj0kaoi"
+
+    const docId = this.configService.get<string>("COLLABORATE_TEST_DOC_ID")
+      ? this.configService.get<string>("COLLABORATE_TEST_DOC_ID")
+      : (socket.handshake.query["docId"] as string)
+    const userId = this.configService.get<string>("COLLABORATE_TEST_USER_ID")
+      ? this.configService.get<string>("COLLABORATE_TEST_USER_ID")
+      : socket.request.session.userid
 
     if (!userId) {
       socket.emit(CRDT_ERROR_EVENT, "未认证")
@@ -99,7 +103,7 @@ export class CrdtService {
         const encoder = encoding.createEncoder()
         const decoder = decoding.createDecoder(message)
         const messageType = decoding.readVarUint(decoder)
-        console.log("server get message", messageType)
+
         switch (messageType) {
           case MESSAGE_SYNC: {
             encoding.writeVarUint(encoder, MESSAGE_SYNC)

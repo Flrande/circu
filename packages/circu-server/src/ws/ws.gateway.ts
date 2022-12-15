@@ -15,7 +15,6 @@ export class WsGateway implements OnGatewayConnection {
   constructor(private readonly crdtService: CrdtService) {}
 
   async handleConnection(socket: Socket): Promise<void> {
-    console.log("server connect with", socket.id)
     await this.crdtService.setupCRDT(socket)
   }
 }
