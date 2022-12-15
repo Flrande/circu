@@ -85,6 +85,80 @@ export class DocService {
   }
 
   /**
+   * 根据 id 查询文档信息, 包含文档内容
+   *
+   * 需要操作者的用户 id, 用于判断操作者是否有权限获得文档信息
+   */
+  async getDocInfo(
+    userId: User["id"],
+    docId: Doc["id"]
+  ): Promise<Pick<Doc, "id" | "lastModified" | "lastDeleted" | "authorId" | "parentFolderId"> & { value: {} }> {
+    // 校验权限
+    const flag = await this.docAuthService.verifyUserReadGeneralDoc(userId, docId)
+    if (!flag) {
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerOrModulePrefix.DOC}`,
+          message: `当前用户无权访问该文件(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
+    }
+
+    const result = await this.prismaService.doc.findUnique({
+      where: {
+        id: docId,
+      },
+      select: {
+        id: true,
+        lastModified: true,
+        value: true,
+        lastDeleted: true,
+        survivalStatus: true,
+        authorId: true,
+        parentFolderId: true,
+      },
+    })
+
+    if (!result) {
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
+          message: `未能找到文件信息(文件id: ${docId})`,
+        },
+        HttpStatus.NOT_FOUND
+      )
+    }
+
+    if (result.survivalStatus !== SurvivalStatus.ALIVE) {
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.DOC_DELETED}_${ControllerOrModulePrefix.DOC}`,
+          message: `该文件已被删除(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.NOT_FOUND
+      )
+    }
+
+    // 将 value 字段的值转换为 json
+    const YDoc = new Y.Doc()
+    Y.applyUpdate(YDoc, result.value)
+    const YDocXmlText = YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText
+    const JsonValue = yTextToSlateElement(YDocXmlText)
+
+    return {
+      id: result.id,
+      lastModified: result.lastModified,
+      value: JsonValue,
+      lastDeleted: result.lastDeleted,
+      authorId: result.authorId,
+      parentFolderId: result.parentFolderId,
+    }
+  }
+
+  /**
    * 接受用户 id, 返回该用户个人空间的顶部文档
    */
   async getTopDocs(userId: User["id"]): Promise<Pick<Doc, "id" | "lastModified" | "authorId" | "parentFolderId">[]> {

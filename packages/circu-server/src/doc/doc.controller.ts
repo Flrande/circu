@@ -40,6 +40,22 @@ export class DocController {
   }
 
   /**
+   * 根据 id 获取文档信息
+   */
+  @Get("data/:docId")
+  @UseGuards(UserAuthGuard)
+  @ParamsZodSchema(GetDocInfoParams)
+  async getDocInfo(@Param() params: GetDocInfoParams, @Req() req: Request): Promise<GetDocInfoOutput> {
+    const result = await this.docService.getDocInfo(req.session.userid!, params.docId)
+
+    return {
+      code: 0,
+      message: "查询成功",
+      data: result,
+    }
+  }
+
+  /**
    * 获取被删除的但仍可回收的文档
    */
   @Get("deleted")
