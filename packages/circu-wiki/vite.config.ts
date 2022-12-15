@@ -21,6 +21,6 @@ export default defineConfig({
     port: 5000,
   },
   optimizeDeps: {
-    exclude: ["slate-react"],
+    exclude: ["slate-react", "cache-manager"],
   },
 })

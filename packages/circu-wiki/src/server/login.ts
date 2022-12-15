@@ -1,9 +1,6 @@
 import ky from "ky"
 import type { ServerResponse } from "./types"
-
-//FIXME: hack, https://stackoverflow.com/questions/74185198/typescript-losing-zod-and-trpc-types-across-monorepo-projects-types-result-in
-import type { LoginOutput } from "../../../circu-server/dist/index.d"
-import { ControllerOrModulePrefix, UserExceptionCode } from "circu-server"
+import { ControllerOrModulePrefix, LoginOutput, UserExceptionCode } from "circu-server"
 
 type Login = (arg: {
   username: string
