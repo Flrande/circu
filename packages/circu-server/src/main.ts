@@ -9,10 +9,15 @@ const Redis = require("ioredis")
 const RedisStore = connectRedis(session)
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule)
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: process.env.CLIENT_URL ? process.env.CLIENT_URL : "http://localhost:5000",
+    },
+  })
 
   const configService = app.get(ConfigService)
   const redisClient = new Redis()
+
   const sessionMiddleware = session({
     store: new RedisStore({ client: redisClient }),
     secret: configService.getOrThrow("SESSION_SECRET"),

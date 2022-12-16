@@ -4,8 +4,10 @@ import { CrdtService } from "./crdt/crdt.service"
 
 @WebSocketGateway(process.env.WS_PORT ? parseInt(process.env.WS_PORT) : 8000, {
   path: "/crdt/",
-  //TODO: 合理化跨域规则
-  cors: true,
+  cors: {
+    origin: process.env.CLIENT_URL ? process.env.CLIENT_URL : "http://localhost:5000",
+    credentials: true,
+  },
 })
 export class WsGateway implements OnGatewayConnection {
   @WebSocketServer()
