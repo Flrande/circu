@@ -6,6 +6,7 @@ import * as syncProtocol from "y-protocols/sync"
 import { proxy } from "valtio"
 import { io } from "socket.io-client"
 import { CRDT_ERROR_EVENT, CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
+import { subscribeKey } from "valtio/utils"
 
 export type SocketIoProviderState = {
   connecting: boolean
@@ -41,6 +42,10 @@ export const createSocketIoProvider: (
     error: null,
   })
 
+  subscribeKey(store, "error", (error) => {
+    console.log(error)
+  })
+
   let socket: CustomSocket
   if (docId) {
     socket = io(serverUrl, {
@@ -56,7 +61,7 @@ export const createSocketIoProvider: (
       store.connected = false
       store.connecting = false
       store.sync = false
-      store.error = err.message
+      store.error = `connect_error: ${err.message}`
     })
 
     socket.on("disconnect", (reason) => {
@@ -69,7 +74,7 @@ export const createSocketIoProvider: (
       store.connected = false
       store.connecting = false
       store.sync = false
-      store.error = reason
+      store.error = `disconnect: ${reason}`
     })
 
     socket.on("connect", () => {
@@ -96,7 +101,7 @@ export const createSocketIoProvider: (
       store.connected = false
       store.connecting = false
       store.sync = false
-      store.error = msg
+      store.error = `${CRDT_ERROR_EVENT}: ${msg}`
     })
 
     socket.on(CRDT_MESSAGE_EVENT, (buffer) => {

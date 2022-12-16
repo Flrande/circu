@@ -2,7 +2,7 @@ import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from "@nestjs/
 import { Server, Socket } from "socket.io"
 import { CrdtService } from "./crdt/crdt.service"
 
-@WebSocketGateway(process.env.WS_PORT ? parseInt(process.env.WS_PORT) : 8000, {
+@WebSocketGateway({
   path: "/crdt/",
   cors: {
     origin: process.env.CLIENT_URL ? process.env.CLIENT_URL : "http://localhost:5000",

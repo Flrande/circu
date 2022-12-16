@@ -21,7 +21,7 @@ export const login: Login = async ({ username, password, options }) => {
   const loginRes: ServerResponse<LoginOutput> = await ky
     .post(import.meta.env.VITE_CIRCU_SERVER_URL + USER_ROUTE + "/login", {
       json: body,
-      credentials: "omit",
+      credentials: "include",
     })
     .json()
 

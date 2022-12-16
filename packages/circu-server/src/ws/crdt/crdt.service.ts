@@ -8,7 +8,6 @@ import { WSSharedDoc } from "./WSSharedDoc"
 import { CRDT_ERROR_EVENT, CRDT_MESSAGE_EVENT, CustomSocket, MESSAGE_AWARENESS, MESSAGE_SYNC } from "./constants"
 import { crdtPrisma } from "./crdt-prisma"
 import { DocService } from "../../doc/doc.service"
-import { ConfigService } from "@nestjs/config"
 
 /**
  * 交互协议:
@@ -44,7 +43,7 @@ const getWSDoc = (docId: string): [WSSharedDoc, boolean] => {
 
 @Injectable()
 export class CrdtService {
-  constructor(private readonly docService: DocService, private readonly configService: ConfigService) {}
+  constructor(private readonly docService: DocService) {}
 
   async setupCRDT(socket: CustomSocket): Promise<void> {
     if (!socket.handshake.query["docId"]) {
@@ -53,12 +52,8 @@ export class CrdtService {
       return
     }
 
-    const docId = this.configService.get<string>("COLLABORATE_TEST_DOC_ID")
-      ? this.configService.get<string>("COLLABORATE_TEST_DOC_ID")
-      : (socket.handshake.query["docId"] as string)
-    const userId = this.configService.get<string>("COLLABORATE_TEST_USER_ID")
-      ? this.configService.get<string>("COLLABORATE_TEST_USER_ID")
-      : socket.request.session.userid
+    const docId = socket.handshake.query["docId"] as string
+    const userId = socket.request.session.userid
 
     if (!userId) {
       socket.emit(CRDT_ERROR_EVENT, "未认证")

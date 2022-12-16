@@ -5,9 +5,8 @@ import { CircuProvider, createCircuEditor, CustomElement, CustomText } from "cir
 import { useEffect, useMemo, useState } from "react"
 import { createSocketIoProvider } from "../crdt/provider"
 import { SLATE_VALUE_YDOC_KEY } from "../crdt/constants"
-import { useParams } from "react-router-dom"
 import { subscribeKey } from "valtio/utils"
-import { Button } from "@arco-design/web-react"
+import { Button, Message } from "@arco-design/web-react"
 import type { Editor } from "slate"
 import DocEditable from "./DocEditable"
 import { useSnapshot } from "valtio"
@@ -95,8 +94,10 @@ const Doc: React.FC = () => {
           onClick={() => {
             if (provider) {
               if (providerStore.connected || providerStore.connecting) {
+                Message.info("disconnect")
                 provider.disconnect()
               } else {
+                Message.info("connect")
                 provider.connect()
               }
             }
