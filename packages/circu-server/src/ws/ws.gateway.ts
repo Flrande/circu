@@ -2,8 +2,7 @@ import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from "@nestjs/
 import { Server, Socket } from "socket.io"
 import { CrdtService } from "./crdt/crdt.service"
 
-//TODO: 端口 -> 环境变量
-@WebSocketGateway(8000, {
+@WebSocketGateway(process.env.WS_PORT ? parseInt(process.env.WS_PORT) : 8000, {
   path: "/crdt/",
   //TODO: 合理化跨域规则
   cors: true,

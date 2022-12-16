@@ -29,6 +29,6 @@ async function bootstrap() {
 
   app.useWebSocketAdapter(new SessionAdapter(sessionMiddleware, app))
 
-  await app.listen(6000)
+  await app.listen(configService.getOrThrow<string>("PORT"))
 }
 bootstrap()
