@@ -17,7 +17,7 @@ async function bootstrap() {
   })
 
   const configService = app.get(ConfigService)
-  const redisClient = new Redis()
+  const redisClient = new Redis(process.env.REDIS_URL ? process.env.REDIS_URL : undefined)
 
   const sessionMiddleware = session({
     store: new RedisStore({ client: redisClient }),
