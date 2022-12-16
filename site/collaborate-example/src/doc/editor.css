@@ -1,0 +1,8 @@
+.editor-container::-webkit-scrollbar {
+  width: 8px;
+  background-color: rgba(39, 39, 39, 0.75);
+}
+
+.editor-container::-webkit-scrollbar-thumb {
+  background-color: rgb(71, 76, 80);
+}

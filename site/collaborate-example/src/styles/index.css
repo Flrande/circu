@@ -1,0 +1,14 @@
+@import url("../doc/editor.css");
+@import url("./normalize.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "LXGW WenKai", sans-serif;
+}
+
+code {
+  font-family: "LXGW WenKai Mono", sans-serif;
+}
