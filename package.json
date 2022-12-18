@@ -5,7 +5,7 @@
   "description": "",
   "scripts": {
     "circu:dev": "pnpm concurrently \"pnpm server:start:dev\" \"pnpm wiki:dev\"",
-    "collaborate-example:dev": "pnpm --filter collaborate-example dev",
+    "site-demo:dev": "pnpm concurrently \"pnpm server:start:dev\" \"pnpm --filter collaborate-example dev\"",
     "editor:dev": "pnpm cross-env VITE_INITIAL_VALUE_MODE=dev pnpm --filter circu-editor dev",
     "editor:dev:huge": "pnpm cross-env VITE_INITIAL_VALUE_MODE=huge pnpm --filter circu-editor dev",
     "editor:dev:empty": "pnpm cross-env VITE_INITIAL_VALUE_MODE=empty pnpm --filter circu-editor dev",
