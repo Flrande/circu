@@ -7,6 +7,8 @@
 - circu-wiki - 应用前端
 - slate-react - circu-editor 的渲染层部分, 主要代码来自于 [Slate.js 官方](https://github.com/ianstormtaylor/slate)
 
+一个尚有许多问题的在线 [Demo](https://circu.up.railway.app/) (已支持基本的多人协同)
+
 ## Usage
 
 本项目仍处在开发阶段，目前只有富文本编辑器部分完成度较高，可以通过以下步骤尝试使用，若发现 bug 非常欢迎提 issue。
