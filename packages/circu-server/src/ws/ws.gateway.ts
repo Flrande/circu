@@ -1,11 +1,12 @@
 import { OnGatewayConnection, WebSocketGateway, WebSocketServer } from "@nestjs/websockets"
 import { Server, Socket } from "socket.io"
+import { corsOrigins } from "../constants"
 import { CrdtService } from "./crdt/crdt.service"
 
 @WebSocketGateway({
   path: "/crdt/",
   cors: {
-    origin: process.env.CLIENT_URL ? process.env.CLIENT_URL : "http://localhost:5000",
+    origin: corsOrigins,
     credentials: true,
   },
 })

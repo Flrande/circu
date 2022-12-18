@@ -4,18 +4,12 @@ import session from "express-session"
 import { ConfigService } from "@nestjs/config"
 import connectRedis from "connect-redis"
 import { SessionAdapter } from "./ws/session-adapter"
+import { corsOrigins } from "./constants"
 
 const Redis = require("ioredis")
 const RedisStore = connectRedis(session)
 
 async function bootstrap() {
-  const corsOrigins: string[] = ["http://localhost:5000"]
-  if (process.env.CLIENT_URL) {
-    corsOrigins.push(process.env.CLIENT_URL)
-  }
-  if (process.env.PRIVATE_PLAYGROUND_URL) {
-    corsOrigins.push(process.env.PRIVATE_PLAYGROUND_URL)
-  }
   const app = await NestFactory.create(AppModule, {
     cors: {
       origin: corsOrigins,
