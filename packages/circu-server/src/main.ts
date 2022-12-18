@@ -9,9 +9,16 @@ const Redis = require("ioredis")
 const RedisStore = connectRedis(session)
 
 async function bootstrap() {
+  const corsOrigins: string[] = ["http://localhost:5000"]
+  if (process.env.CLIENT_URL) {
+    corsOrigins.push(process.env.CLIENT_URL)
+  }
+  if (process.env.PRIVATE_PLAYGROUND_URL) {
+    corsOrigins.push(process.env.PRIVATE_PLAYGROUND_URL)
+  }
   const app = await NestFactory.create(AppModule, {
     cors: {
-      origin: process.env.CLIENT_URL ? process.env.CLIENT_URL : "http://localhost:5000",
+      origin: corsOrigins,
       credentials: true,
     },
   })
