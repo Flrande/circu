@@ -8,6 +8,7 @@ declare module "process" {
         SESSION_SECRET?: string
         PORT?: string
         CLIENT_URL?: string
+        PRIVATE_PLAYGROUND_URL?: string
       }
     }
   }
