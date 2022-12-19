@@ -1,4 +1,4 @@
-export const corsOrigins: string[] = ["https://localhost:5000"]
+export const corsOrigins: string[] = []
 if (process.env.CLIENT_URL) {
   corsOrigins.push(process.env.CLIENT_URL)
 }
