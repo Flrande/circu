@@ -82,7 +82,7 @@ export class ZodIntercepter implements NestInterceptor {
               throw new CommonException(
                 {
                   code: `${0}_${ControllerOrModulePrefix}`,
-                  isFiltered: true,
+                  isFiltered: false,
                 },
                 HttpStatus.INTERNAL_SERVER_ERROR
               )
