@@ -9,6 +9,8 @@ import { ControllerOrModulePrefix } from "../exception"
 import { CommonException } from "../exception/common.exception"
 import { FolderAuthService } from "../folder/folder-auth.service"
 import { SLATE_VALUE_YDOC_KEY } from "../ws/crdt/constants"
+import { Element, Node } from "slate"
+import { Optional } from "../types/utils"
 
 @Injectable()
 export class DocService {
@@ -92,7 +94,11 @@ export class DocService {
   async getDocInfo(
     userId: User["id"],
     docId: Doc["id"]
-  ): Promise<Pick<Doc, "id" | "lastModified" | "lastDeleted" | "authorId" | "parentFolderId"> & { value: {} }> {
+  ): Promise<
+    Pick<Doc, "id" | "lastModified" | "lastDeleted" | "authorId" | "parentFolderId"> & {
+      value: Element
+    }
+  > {
     // 校验权限
     const flag = await this.docAuthService.verifyUserReadGeneralDoc(userId, docId)
     if (!flag) {
@@ -580,6 +586,108 @@ export class DocService {
       })
 
       return createDocResult
+    }
+  }
+
+  /**
+   * 更新文档
+   *
+   * 需要操作者的用户 id, 用于判断操作者是否有权限更新文档
+   */
+  async updateDoc(
+    userId: User["id"],
+    docId: Doc["id"],
+    newData: Optional<Pick<Doc, "authorId"> & { value: Record<string, unknown>[] }>
+  ): Promise<
+    Pick<Doc, "id" | "lastModified" | "lastDeleted" | "authorId" | "parentFolderId"> & {
+      value: Element
+    }
+  > {
+    // 校验是否有写权限
+    const flag = await this.docAuthService.verifyUserWriteGeneralDoc(userId, docId)
+    if (!flag) {
+      throw new CommonException(
+        {
+          code: `${DocExceptionCode.AUTH_ACCESS_DENIED}_${ControllerOrModulePrefix.DOC}`,
+          message: `当前用户无权更新该文件(文件id: ${docId})`,
+          isFiltered: false,
+        },
+        HttpStatus.FORBIDDEN
+      )
+    }
+
+    let newDocData: Prisma.DocUpdateInput = {}
+    // 检测新的作者是否存在
+    if (newData.authorId) {
+      const newAuthor = await this.prismaService.user.findUnique({
+        where: {
+          id: newData.authorId,
+        },
+      })
+      if (!newAuthor) {
+        throw new CommonException(
+          {
+            code: `${DocExceptionCode.USER_NOT_FOUND}_${ControllerOrModulePrefix.DOC}`,
+            message: `新的作者不存在(用户id: ${newData.authorId})`,
+            isFiltered: false,
+          },
+          HttpStatus.BAD_REQUEST
+        )
+      }
+      newDocData = { author: { connect: { id: newData.authorId } } }
+    }
+
+    if (newData.value) {
+      if (newData.value.every((node) => Node.isNode(node))) {
+        const YDoc = new Y.Doc()
+        const YDocXmlText = YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText
+        const initialDelta = slateNodesToInsertDelta(newData.value as unknown as Node[])
+        YDoc.transact(() => {
+          YDocXmlText.applyDelta(initialDelta)
+        }, userId)
+        const newBuffer = Buffer.from(Y.encodeStateAsUpdate(YDoc))
+        newDocData = { ...newDocData, value: newBuffer }
+      } else {
+        throw new CommonException(
+          {
+            code: `${DocExceptionCode.DOC_VALUE_UPDATE_INVALID}_${ControllerOrModulePrefix.DOC}`,
+            message: `文档内容不合法`,
+            isFiltered: false,
+          },
+          HttpStatus.BAD_REQUEST
+        )
+      }
+    }
+
+    // 更新文档
+    const updateDocResult = await this.prismaService.doc.update({
+      where: {
+        id: docId,
+      },
+      data: newDocData,
+      select: {
+        id: true,
+        lastModified: true,
+        value: true,
+        lastDeleted: true,
+        survivalStatus: true,
+        authorId: true,
+        parentFolderId: true,
+      },
+    })
+
+    const YDoc = new Y.Doc()
+    Y.applyUpdate(YDoc, updateDocResult.value)
+    const YDocXmlText = YDoc.get(SLATE_VALUE_YDOC_KEY, Y.XmlText) as Y.XmlText
+    const JsonValue = yTextToSlateElement(YDocXmlText)
+
+    return {
+      id: updateDocResult.id,
+      lastModified: updateDocResult.lastModified,
+      value: JsonValue,
+      lastDeleted: updateDocResult.lastDeleted,
+      authorId: updateDocResult.authorId,
+      parentFolderId: updateDocResult.parentFolderId,
     }
   }
 

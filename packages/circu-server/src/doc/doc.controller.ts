@@ -18,6 +18,7 @@ import { GetTopDocsOutput } from "./schemas/get-top-docs"
 import { RemoveFastAccessDocOutput, RemoveFastAccessDocParams } from "./schemas/remove-fast-access-doc.schema"
 import { RemoveFavoriteDocOutput, RemoveFavoriteDocParams } from "./schemas/remove-favorite-doc.schema"
 import { RevertDocOutput, RevertDocParams } from "./schemas/revert-doc.schema"
+import { UpdateDocBody, UpdateDocOutput } from "./schemas/update-doc.schema"
 
 @Controller(DOC_ROUTE)
 export class DocController {
@@ -132,6 +133,22 @@ export class DocController {
     return {
       code: 0,
       message: "创建成功",
+      data: result,
+    }
+  }
+
+  /**
+   * 改变文档的值
+   */
+  @Post("update")
+  @UseGuards(UserAuthGuard)
+  @BodyZodSchema(UpdateDocBody)
+  async updateDoc(@Body() body: UpdateDocBody, @Req() req: Request): Promise<UpdateDocOutput> {
+    const result = await this.docService.updateDoc(req.session.userid!, body.docId, body.updatePayload)
+
+    return {
+      code: 0,
+      message: "更新成功",
       data: result,
     }
   }

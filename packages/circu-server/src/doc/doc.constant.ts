@@ -26,6 +26,8 @@ export enum DocExceptionCode {
   DOC_PERMANENTLY_DELETED,
   // 未能找到父文档
   DOC_PARENT_NOT_FOUND,
+  // 更新文档时文档取值不合法
+  DOC_VALUE_UPDATE_INVALID,
 
   // 用户相关
   // 未找到用户
