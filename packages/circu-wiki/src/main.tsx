@@ -5,7 +5,6 @@ import App from "./App"
 import "overlayscrollbars/overlayscrollbars.css"
 import "react-loading-skeleton/dist/skeleton.css"
 import "circu-editor/src/styles/index.css"
-import "lxgw-wenkai-webfont/style.css"
 import "./styles/index.css"
 
 document.body.setAttribute("arco-theme", "dark")

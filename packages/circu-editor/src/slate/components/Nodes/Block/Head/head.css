@@ -11,25 +11,25 @@
 }
 
 .circu-head-1 > :nth-child(2) {
-  @apply text-3xl mb-1 mt-2 font-semibold tracking-wide;
+  @apply text-3xl mb-1 mt-2 font-bold tracking-wide;
 }
 
 .circu-head-2 > :nth-child(2) {
-  @apply text-2xl mt-1 font-semibold tracking-wide;
+  @apply text-2xl mt-1 font-medium tracking-wide;
 }
 
 .circu-head-3 > :nth-child(2) {
-  @apply text-xl mt-1 font-semibold tracking-wide;
+  @apply text-xl mt-1 font-medium tracking-wide;
 }
 
 .circu-head-4 > :nth-child(2) {
-  @apply text-lg mt-1 font-semibold tracking-wide;
+  @apply text-lg mt-1 font-medium tracking-wide;
 }
 
 .circu-head-5 > :nth-child(2) {
-  @apply text-base mt-1 font-semibold tracking-wide;
+  @apply text-base mt-1 font-medium tracking-wide;
 }
 
 .circu-head-6 > :nth-child(2) {
-  @apply text-base mt-1 font-semibold tracking-wide;
+  @apply text-base mt-1 font-medium tracking-wide;
 }

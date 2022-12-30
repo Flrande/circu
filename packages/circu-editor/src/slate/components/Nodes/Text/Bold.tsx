@@ -4,7 +4,7 @@ const Bold: React.FC<React.PropsWithChildren<unknown>> = ({ children }) => {
   return (
     <span
       style={{
-        fontWeight: "700",
+        fontWeight: "500",
       }}
     >
       {children}

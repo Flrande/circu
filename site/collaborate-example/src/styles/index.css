@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100;300;400;500;700;900&display=swap");
 @import url("../doc/editor.css");
 @import url("./normalize.css");
 
@@ -6,9 +7,10 @@
 @tailwind utilities;
 
 body {
-  font-family: "LXGW WenKai", sans-serif;
+  font-family: "Noto Sans SC", sans-serif, monaco, Consolas, "Lucida Console", monospace;
+  font-weight: 100;
 }
 
 code {
-  font-family: "LXGW WenKai Mono", sans-serif;
+  font-family: monaco, Consolas, Lucida Console, monospace;
 }

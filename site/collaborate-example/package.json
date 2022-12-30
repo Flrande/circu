@@ -17,7 +17,6 @@
     "circu-server": "workspace:0.0.1",
     "ky": "^0.32.2",
     "lib0": "^0.2.52",
-    "lxgw-wenkai-webfont": "^1.6.0",
     "overlayscrollbars": "^2.0.1",
     "randomcolor": "^0.6.2",
     "react": "^18.2.0",

@@ -92,13 +92,13 @@ const Doc: React.FC = () => {
       <div className={"border-b border-[#5f5f5f]"}>
         <Button
           onClick={() => {
-            if (provider) {
-              if (providerStore.connected || providerStore.connecting) {
+            if (editor) {
+              if (YjsEditor.connected(editor)) {
                 Message.info("disconnect")
-                provider.disconnect()
+                YjsEditor.disconnect(editor)
               } else {
                 Message.info("connect")
-                provider.connect()
+                YjsEditor.connect(editor)
               }
             }
           }}

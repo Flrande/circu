@@ -3,7 +3,6 @@ import * as ReactDOMClient from "react-dom/client"
 import App from "./App"
 
 import "overlayscrollbars/overlayscrollbars.css"
-import "lxgw-wenkai-webfont/style.css"
 import "./normalize.css"
 import "@icon-park/react/styles/index.css"
 import "./styles/index.css"

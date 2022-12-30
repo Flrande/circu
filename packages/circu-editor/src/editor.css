@@ -1,8 +1,9 @@
 body {
   @apply bg-neutral-900;
-  font-family: "LXGW WenKai", sans-serif;
+  font-family: "Noto Sans SC", sans-serif, monaco, Consolas, "Lucida Console", monospace;
+  font-weight: 100;
 }
 
 code {
-  font-family: "LXGW WenKai Mono", sans-serif;
+  font-family: monaco, Consolas, Lucida Console, monospace;
 }
