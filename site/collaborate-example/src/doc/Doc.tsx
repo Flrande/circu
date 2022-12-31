@@ -6,10 +6,9 @@ import { useEffect, useMemo, useState } from "react"
 import { createSocketIoProvider } from "../crdt/provider"
 import { SLATE_VALUE_YDOC_KEY } from "../crdt/constants"
 import { subscribeKey } from "valtio/utils"
-import { Button, Message } from "@arco-design/web-react"
+import { Button } from "@arco-design/web-react"
 import type { Editor } from "slate"
 import DocEditable from "./DocEditable"
-import { useSnapshot } from "valtio"
 import { useMutation } from "@tanstack/react-query"
 import { login } from "../server/login"
 
@@ -40,7 +39,6 @@ const Doc: React.FC = () => {
       ),
     [loginFlag]
   )
-  const providerStoreSnap = useSnapshot(providerStore)
 
   const editor = useMemo(() => {
     if (provider) {
@@ -64,9 +62,6 @@ const Doc: React.FC = () => {
         if (v) {
           console.log("YjsEditor connect")
           YjsEditor.connect(editor)
-        } else {
-          console.log("YjsEditor disconnect")
-          YjsEditor.disconnect(editor)
         }
       })
 
@@ -92,13 +87,11 @@ const Doc: React.FC = () => {
       <div className={"border-b border-[#5f5f5f]"}>
         <Button
           onClick={() => {
-            if (editor) {
-              if (YjsEditor.connected(editor)) {
-                Message.info("disconnect")
-                YjsEditor.disconnect(editor)
+            if (provider) {
+              if (providerStore.connected) {
+                provider.disconnect()
               } else {
-                Message.info("connect")
-                YjsEditor.connect(editor)
+                provider.connect()
               }
             }
           }}
@@ -107,7 +100,7 @@ const Doc: React.FC = () => {
       <div
         className={"editor-container overflow-y-scroll"}
         style={{
-          pointerEvents: providerStoreSnap.sync ? undefined : "none",
+          pointerEvents: editor && YjsEditor.connected(editor) ? undefined : "none",
         }}
       >
         {provider && editor && (

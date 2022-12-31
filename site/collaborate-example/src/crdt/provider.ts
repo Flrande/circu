@@ -43,7 +43,7 @@ export const createSocketIoProvider: (
   })
 
   subscribeKey(store, "error", (error) => {
-    console.log(error)
+    console.log("provider error: ", error)
   })
 
   let socket: CustomSocket
@@ -75,6 +75,8 @@ export const createSocketIoProvider: (
       store.connecting = false
       store.sync = false
       store.error = `disconnect: ${reason}`
+
+      console.log("disconnect: ", reason)
     })
 
     socket.on("connect", () => {
@@ -84,17 +86,11 @@ export const createSocketIoProvider: (
       syncProtocol.writeSyncStep1(encoder, YDoc)
       socket.emit("crdt:message", encoding.toUint8Array(encoder))
 
-      // broadcast local awareness state
-      // if (awareness.getLocalState() !== null) {
-      //   const encoderAwarenessState = encoding.createEncoder()
-      //   encoding.writeVarUint(encoderAwarenessState, MESSAGE_AWARENESS)
-      //   encoding.writeUint8Array(encoderAwarenessState, encodeAwarenessUpdate(awareness, [YDoc.clientID]))
-      //   socket.emit("crdt:message", encoding.toUint8Array(encoderAwarenessState))
-      // }
-
       store.connecting = false
       store.connected = true
       store.error = null
+
+      console.log("connect, socket.id: ", socket.id)
     })
 
     socket.on(CRDT_ERROR_EVENT, (msg) => {
