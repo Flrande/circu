@@ -18,7 +18,8 @@ export const useOnCopy = () => {
       )
 
       if (nodeEntryArr.length === 1) {
-        str = SlateNode.string(nodeEntryArr[0][0])
+        const [startPoint, endPoint] = SlateRange.edges(editor.selection)
+        str = SlateNode.string(nodeEntryArr[0][0]).slice(startPoint.offset, endPoint.offset)
       } else {
         const [startPoint, endPoint] = SlateRange.edges(editor.selection)
         const startText = SlateNode.string(nodeEntryArr[0][0]).slice(startPoint.offset)
