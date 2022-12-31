@@ -48,12 +48,7 @@ export class WSSharedDoc extends Y.Doc {
     }
 
     const updateHandler = async (update: Uint8Array, origin: any, doc: WSSharedDoc) => {
-      console.log(
-        "server doc get update from",
-        (origin as CustomSocket).id
-        // "server doc conns",
-        // [...doc.conns.keys()].map((s) => s.id)
-      )
+      console.log("server doc get update from", (origin as CustomSocket).id)
       if (doc.conns.has(origin)) {
         //TODO: 通过 Redis 异步广播
         const encoder = encoding.createEncoder()

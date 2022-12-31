@@ -63,7 +63,6 @@ export class DocAuthService {
         and _roles_to_users."B" = ${userId}
       ;
     `
-    console.log(`user ${userId} read general doc ${docId} query result:`, queryResult)
     return queryResult.length !== 0
   }
 
