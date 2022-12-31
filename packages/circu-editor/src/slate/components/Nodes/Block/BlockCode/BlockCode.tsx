@@ -2,13 +2,14 @@ import { ReactEditor, useSelected, useSlateStatic } from "slate-react"
 import type { CustomRenderElementProps, KeysUnion } from "../../../../types/utils"
 import type { IBlockCode, ICodeAreaLangMap } from "./types"
 import { Button, Select } from "@arco-design/web-react"
-import { Transforms } from "slate"
+import { Editor, Path, Transforms } from "slate"
 import { codeAreaLangMap } from "./constant"
 import React, { useEffect, useRef, useState } from "react"
 import { useDropBlock } from "../../../Draggable/useDropBlock"
 import DragMarkLine from "../../../Draggable/DragMarkLine"
 import { useMouseXBlockDetect } from "../../../../state/mouse"
 import { OverlayScrollbars } from "overlayscrollbars"
+import { EMPTY_PARAGRAPH_FACTORY } from "../Paragraph/types"
 
 const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes, children, element }) => {
   const isSelected = useSelected()
@@ -28,6 +29,8 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
 
   const selectorOsInstanceRef = useRef<OverlayScrollbars | undefined>()
   const codeOsInstanceRef = useRef<OverlayScrollbars | undefined>()
+
+  const [parentNode] = Editor.parent(editor, blockCodePath)
 
   useEffect(() => {
     const codeLinesWrapperDom = ReactEditor.toDOMNode(editor, element.children[0])
@@ -69,40 +72,16 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
       }}
       className={"bg-zinc-800 text-sm font-normal rounded relative"}
     >
-      {blockCodePath.at(-1) !== 0 && (
-        <div
-          // 点击两个相邻代码块的中间区域, 插入一个空行
-          onClick={() => {
-            Transforms.insertNodes(
-              editor,
-              {
-                type: "paragraph",
-                children: [
-                  {
-                    type: "__block-element-content",
-                    children: [
-                      {
-                        type: "text-line",
-                        children: [
-                          {
-                            text: "",
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
-              },
-              {
-                at: blockCodePath,
-              }
-            )
-          }}
-          data-circu-node="block-space"
-          contentEditable={false}
-          className={"absolute left-0 -top-2 w-full h-2 select-none"}
-        ></div>
-      )}
+      <div
+        onClick={() => {
+          Transforms.insertNodes(editor, EMPTY_PARAGRAPH_FACTORY(), {
+            at: ReactEditor.findPath(editor, element),
+          })
+        }}
+        data-circu-node="block-space"
+        contentEditable={false}
+        className={"absolute left-0 -top-2 w-full h-2 select-none"}
+      ></div>
       <div
         contentEditable={false}
         style={{
@@ -196,6 +175,18 @@ const BlockCode: React.FC<CustomRenderElementProps<IBlockCode>> = ({ attributes,
           </code>
         </div>
       </div>
+      {blockCodePath.at(-1) === parentNode.children.length - 1 && (
+        <div
+          onClick={() => {
+            Transforms.insertNodes(editor, EMPTY_PARAGRAPH_FACTORY(), {
+              at: Path.next(ReactEditor.findPath(editor, element)),
+            })
+          }}
+          data-circu-node="block-space"
+          contentEditable={false}
+          className={"absolute left-0 -bottom-2 w-full h-2 select-none"}
+        ></div>
+      )}
       <DragMarkLine activeDirection={dragActiveLine}></DragMarkLine>
     </div>
   )

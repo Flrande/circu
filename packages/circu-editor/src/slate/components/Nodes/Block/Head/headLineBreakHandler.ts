@@ -3,7 +3,7 @@ import { BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../../../../types/constant"
 import type { BlockElementExceptTextLine } from "../../../../types/interface"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
-import type { IParagraph } from "../Paragraph/types"
+import { EMPTY_PARAGRAPH_FACTORY, IParagraph } from "../Paragraph/types"
 import type { IHead } from "./types"
 
 /**
@@ -55,24 +55,7 @@ export const headLineBreakHandler = (editor: Editor, currentEntry: NodeEntry<Blo
     } else {
       // 若标题不处于折叠状态, 标题结尾换行时产生段落块
       if (Point.equals(selection.anchor, Editor.end(editor, currentBlockPath))) {
-        const newNode: IParagraph = {
-          type: "paragraph",
-          children: [
-            {
-              type: "__block-element-content",
-              children: [
-                {
-                  type: "text-line",
-                  children: [
-                    {
-                      text: "",
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        }
+        const newNode: IParagraph = EMPTY_PARAGRAPH_FACTORY()
         Transforms.insertNodes(editor, newNode, {
           at: Path.next(currentBlockPath),
           select: true,

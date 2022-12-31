@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { Editor, NodeEntry, Transforms } from "slate"
 import { useSlateStatic } from "slate-react"
 import type { IHead } from "../components/Nodes/Block/Head/types"
-import type { IParagraph } from "../components/Nodes/Block/Paragraph/types"
+import { EMPTY_PARAGRAPH_FACTORY, IParagraph } from "../components/Nodes/Block/Paragraph/types"
 import { SlateElement } from "../types/slate"
 
 export const useEndLine = () => {
@@ -22,24 +22,7 @@ export const useEndLine = () => {
         return
       }
 
-      const blankLineNode: IParagraph = {
-        type: "paragraph",
-        children: [
-          {
-            type: "__block-element-content",
-            children: [
-              {
-                type: "text-line",
-                children: [
-                  {
-                    text: "",
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      }
+      const blankLineNode: IParagraph = EMPTY_PARAGRAPH_FACTORY()
       Transforms.insertNodes(editor, blankLineNode, {
         at: [editor.children.length],
       })

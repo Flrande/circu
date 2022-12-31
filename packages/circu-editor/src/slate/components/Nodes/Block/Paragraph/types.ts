@@ -6,3 +6,26 @@ export type IParagraph = {
   isHidden?: true
   children: [__IBlockElementContent, __IBlockElementChildren] | [__IBlockElementContent]
 }
+
+export const EMPTY_PARAGRAPH_FACTORY: () => IParagraph = () =>
+  Object.assign(
+    {},
+    {
+      type: "paragraph",
+      children: [
+        {
+          type: "__block-element-content",
+          children: [
+            {
+              type: "text-line",
+              children: [
+                {
+                  text: "",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    }
+  ) as IParagraph
