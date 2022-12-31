@@ -1,5 +1,9 @@
 import { Editor, NodeEntry, Path, Point, Transforms } from "slate"
-import { BLOCK_ELEMENTS_WITH_CHILDREN, BLOCK_ELEMENTS_EXCEPT_TEXT_LINE } from "../../../../types/constant"
+import {
+  BLOCK_ELEMENTS_WITH_CHILDREN,
+  BLOCK_ELEMENTS_EXCEPT_TEXT_LINE,
+  BLOCK_ELEMENTS_WITHOUT_CHILDREN,
+} from "../../../../types/constant"
 import type { BlockElementWithChildren, BlockElementExceptTextLine } from "../../../../types/interface"
 import { SlateElement, SlateRange } from "../../../../types/slate"
 import { arrayIncludes } from "../../../../utils/general"
@@ -399,14 +403,14 @@ export const calculateIndentLevel = (editor: Editor, path: Path): number => {
   const ancestorsPath = Path.ancestors(path)
 
   // 计算方法: 从 Editor 或仅含子节点块的块级节点开始计算 Path 的长度
-  const bottomPath = ancestorsPath.find((path) => {
+  const bottomPath = ancestorsPath.reverse().find((path) => {
     const [tmpNode] = Editor.node(editor, path)
 
     if (Editor.isEditor(tmpNode)) {
       return true
     }
 
-    if (SlateElement.isElement(tmpNode) && arrayIncludes(BLOCK_ELEMENTS_EXCEPT_TEXT_LINE, tmpNode.type)) {
+    if (SlateElement.isElement(tmpNode) && arrayIncludes(BLOCK_ELEMENTS_WITHOUT_CHILDREN, tmpNode.type)) {
       return true
     }
 
