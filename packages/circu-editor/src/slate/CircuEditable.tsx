@@ -7,6 +7,7 @@ import { useRenderLeaf, useRenderElement } from "./hooks/renderHooks"
 import { useDecorate } from "./hooks/useDecorate"
 import { useEndLine } from "./hooks/useEndLine"
 import { useOnCopy } from "./hooks/useOnCopy"
+import { useScrollBar } from "./hooks/useScrollbar"
 
 const CircuEditable: React.FC<{
   customDecorate?: (entry: NodeEntry) => BaseRange[]
@@ -34,6 +35,7 @@ const CircuEditable: React.FC<{
 
   useToolBar()
   useEndLine()
+  useScrollBar()
 
   return (
     <Editable
