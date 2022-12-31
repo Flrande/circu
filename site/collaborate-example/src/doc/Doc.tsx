@@ -58,6 +58,10 @@ const Doc: React.FC = () => {
         }
       )
 
+      if (providerStore.sync) {
+        console.log("YjsEditor connect")
+        YjsEditor.connect(editor)
+      }
       subscribeKey(providerStore, "sync", (v) => {
         if (v) {
           console.log("YjsEditor connect")
