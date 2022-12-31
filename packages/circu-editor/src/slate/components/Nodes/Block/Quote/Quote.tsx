@@ -54,7 +54,7 @@ const Quote: React.FC<CustomRenderElementProps<IQuote>> = ({ attributes, childre
         ></div>
       )}
       <div className={"h-full absolute border-l-2 border-solid border-zinc-500 rounded-[1px] left-0"}></div>
-      {children}
+      <div className={"circu-quote"}>{children}</div>
     </div>
   )
 }

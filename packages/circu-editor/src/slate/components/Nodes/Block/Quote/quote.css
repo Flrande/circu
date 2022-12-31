@@ -1,0 +1,3 @@
+.circu-quote > :nth-child(1) {
+  @apply grid gap-y-2;
+}
