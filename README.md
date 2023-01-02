@@ -11,10 +11,7 @@
 
 ## Usage
 
-本项目仍处在开发阶段，目前只有富文本编辑器部分完成度较高，可以通过以下步骤尝试使用，若发现 bug 非常欢迎提 issue。
-
-1. `pnpm install`
-2. `pnpm editor:dev:empty`
+本项目仍处在开发阶段，可以体验上面的 Demo
 
 ## Roadmap
 
