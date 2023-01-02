@@ -1,5 +1,6 @@
 import * as Y from "yjs"
 import randomColor from "randomcolor"
+import { faker } from "@faker-js/faker"
 import { withCursors, withYHistory, withYjs, YjsEditor } from "@slate-yjs/core"
 import { CircuProvider, createCircuEditor, CustomElement, CustomText } from "circu-editor"
 import { useEffect, useMemo, useState } from "react"
@@ -53,7 +54,7 @@ const Doc: React.FC = () => {
               format: "hex",
             }),
             //TODO: 获取当前登录用户的名字
-            name: "Tom",
+            name: faker.name.findName(),
           },
         }
       )
