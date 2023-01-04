@@ -11,7 +11,7 @@
 
 ## Usage
 
-本项目仍处在开发阶段，可以体验上面的 Demo
+本项目仍处在开发阶段，可以体验上面的 Demo。编辑器之后会用 [blocksuite](https://github.com/toeverything/blocksuite) 重写，所以现在不会处理新的 bug
 
 ## Roadmap
 
